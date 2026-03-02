@@ -1,0 +1,148 @@
+---
+title: "Introdução"
+description: "Documentação completa da API REST do Timely.ai para gerenciamento de CRM."
+---
+
+<Note>
+  Esta documentação é destinada a desenvolvedores e empresas que desejam integrar seus sistemas com o Timely.ai.
+  Para informações sobre o uso da plataforma, consulte os [Guias](/index).
+</Note>
+
+## Visão geral
+
+A API do Timely.ai permite gerenciar programaticamente todos os recursos da plataforma:
+
+- **Agentes** — criação, configuração e gerenciamento de agentes IA
+- **Treinamentos** — gestão da base de conhecimento dos agentes
+- **Canais** — configuração de canais de comunicação (WhatsApp, Telegram, Email, Website)
+- **Contatos** — cadastro e gerenciamento de clientes
+- **Leads** — controle do funil de vendas com scoring e qualificação
+- **Oportunidades** — acompanhamento de negócios e valores
+- **Pipeline** — visualização das colunas do pipeline de vendas
+- **Conversas** — histórico de conversas, envio de mensagens e handoff humano
+- **Campos Personalizados** — definição de campos customizados para o CRM
+- **Interações** — consulta e gerenciamento de interações com filtros avançados
+- **Intenções** — configuração de intenções dos agentes IA
+- **Ações de Inatividade** — ações automáticas quando o cliente fica inativo
+- **Regras de Transferência** — regras para transferência automática de atendimento
+- **MCP Servers** — gerenciamento de servidores Model Context Protocol
+- **Chats** — gerenciamento de mensagens, edição e handoff humano
+
+## Base URL
+
+```
+https://api.timelyai.com.br
+```
+
+Todos os endpoints utilizam o prefixo `/v1`.
+
+## Autenticação
+
+Todas as requisições (exceto `/v1/health`) requerem autenticação via header `x-api-key`:
+
+```bash
+curl -H "x-api-key: sua_chave_aqui" \
+  https://api.timelyai.com.br/v1/me
+```
+
+Também é aceito o header `Authorization: Bearer <token>` para chaves com prefixo `tml`.
+
+Para obter sua chave de API, acesse a [página de desenvolvedores](https://app.timelyai.com.br/developers).
+
+## Scopes
+
+Cada API key possui escopos que controlam quais recursos podem ser acessados:
+
+| Scope | Descrição |
+|---|---|
+| `agents:read` | Leitura de agentes, configurações, webhooks, créditos e histórico |
+| `agents:write` | Criação, atualização, exclusão e operações de agentes |
+| `trainings:read` | Leitura de treinamentos dos agentes |
+| `trainings:write` | Criação, atualização e exclusão de treinamentos |
+| `channels:read` | Leitura de canais, configurações, QR code e widget |
+| `channels:write` | Criação, atualização, exclusão de canais e configurações |
+| `contacts:read` | Leitura de contatos |
+| `contacts:write` | Criação, atualização e exclusão de contatos |
+| `leads:read` | Leitura de leads |
+| `leads:write` | Criação, atualização e exclusão de leads |
+| `pipeline:read` | Leitura de oportunidades e colunas do pipeline |
+| `pipeline:write` | Criação, atualização e exclusão de oportunidades |
+| `conversations:read` | Leitura de conversas |
+| `messages:read` | Leitura de mensagens das conversas |
+| `chats:write` | Envio, edição, exclusão de mensagens e handoff humano |
+| `custom-fields:read` | Leitura de campos personalizados |
+| `custom-fields:write` | Criação, atualização e arquivamento de campos personalizados |
+| `interactions:read` | Leitura de interações e mensagens |
+| `interactions:write` | Encerramento de interações |
+| `intentions:read` | Leitura de intenções dos agentes |
+| `intentions:write` | Criação, atualização e exclusão de intenções |
+| `idle-actions:read` | Leitura de ações de inatividade |
+| `idle-actions:write` | Criação, atualização e exclusão de ações de inatividade |
+| `transfer-rules:read` | Leitura de regras de transferência |
+| `transfer-rules:write` | Criação, atualização e exclusão de regras de transferência |
+| `webhooks:read` | Leitura de webhooks dos agentes |
+| `webhooks:write` | Criação e atualização de webhooks |
+| `mcp:read` | Leitura de servidores e ferramentas MCP |
+| `mcp:write` | Gerenciamento de servidores MCP, ferramentas e conexões |
+
+Use o endpoint `GET /v1/me` para verificar os scopes da sua API key.
+
+## Rate limiting
+
+A API limita a **100 requisições por minuto** por API key. Os headers de resposta incluem:
+
+| Header | Descrição |
+|---|---|
+| `X-RateLimit-Limit` | Limite de requisições por janela (100) |
+| `X-RateLimit-Remaining` | Requisições restantes na janela atual |
+| `X-RateLimit-Reset` | Timestamp Unix do reset da janela |
+
+Ao exceder o limite, a API retorna status `429` com o header `Retry-After` indicando quantos segundos aguardar.
+
+## Paginação
+
+Endpoints de listagem suportam paginação com os seguintes parâmetros:
+
+| Parâmetro | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `page` | integer | `1` | Número da página (mínimo 1) |
+| `limit` | integer | `20` | Itens por página (1-100) |
+| `sort` | string | varia | Campo de ordenação |
+| `order` | string | `desc` | Direção: `asc` ou `desc` |
+
+A resposta inclui um objeto `pagination`:
+
+```json
+{
+  "data": [...],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "total_pages": 8
+  }
+}
+```
+
+## Formato de erros
+
+Todas as respostas de erro seguem o mesmo formato:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "customer_name: String must contain at least 1 character(s)",
+    "status": 400
+  }
+}
+```
+
+| Código | HTTP | Descrição |
+|---|---|---|
+| `UNAUTHORIZED` | 401 | API key inválida ou ausente |
+| `FORBIDDEN` | 403 | Scope insuficiente |
+| `NOT_FOUND` | 404 | Recurso não encontrado |
+| `VALIDATION_ERROR` | 400 | Dados da requisição inválidos |
+| `RATE_LIMIT_EXCEEDED` | 429 | Limite de requisições excedido |
+| `INTERNAL_ERROR` | 500 | Erro interno do servidor |
