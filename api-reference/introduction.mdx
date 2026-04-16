@@ -1,10 +1,10 @@
 ---
 title: "Introdução"
-description: "Documentação completa da API REST do Timely.ai para gerenciamento de CRM."
+description: "API REST do Timely.ai para automação de atendimento com IA."
 ---
 
 <Note>
-  Esta documentação é destinada a desenvolvedores e empresas que desejam integrar seus sistemas com o Timely.ai.
+  Esta documentação é destinada a desenvolvedores que desejam integrar seus sistemas com o Timely.ai.
   Para informações sobre o uso da plataforma, consulte os [Guias](/index).
 </Note>
 
@@ -16,17 +16,12 @@ A API do Timely.ai permite gerenciar programaticamente todos os recursos da plat
 - **Treinamentos** — gestão da base de conhecimento dos agentes
 - **Canais** — configuração de canais de comunicação (WhatsApp, Telegram, Email, Website)
 - **Contatos** — cadastro e gerenciamento de clientes
-- **Leads** — controle do funil de vendas com scoring e qualificação
-- **Oportunidades** — acompanhamento de negócios e valores
-- **Pipeline** — visualização das colunas do pipeline de vendas
-- **Conversas** — histórico de conversas, envio de mensagens e handoff humano
-- **Campos Personalizados** — definição de campos customizados para o CRM
-- **Interações** — consulta e gerenciamento de interações com filtros avançados
-- **Intenções** — configuração de intenções dos agentes IA
-- **Ações de Inatividade** — ações automáticas quando o cliente fica inativo
-- **Regras de Transferência** — regras para transferência automática de atendimento
+- **Conversas** — histórico de conversas e mensagens
+- **Campos Personalizados** — definição de campos customizados para contatos
+- **Chats** — operações em chats ativos e handoff humano
+- **Messages** — acesso direto a mensagens individuais
 - **MCP Servers** — gerenciamento de servidores Model Context Protocol
-- **Chats** — gerenciamento de mensagens, edição e handoff humano
+- **Webhooks** — receba eventos em tempo real
 
 ## Base URL
 
@@ -45,8 +40,6 @@ curl -H "x-api-key: sua_chave_aqui" \
   https://api.timelyai.com.br/v1/me
 ```
 
-Também é aceito o header `Authorization: Bearer <token>` para chaves com prefixo `tml`.
-
 Para obter sua chave de API, acesse a [página de desenvolvedores](https://app.timelyai.com.br/developers).
 
 ## Scopes
@@ -56,34 +49,26 @@ Cada API key possui escopos que controlam quais recursos podem ser acessados:
 | Scope | Descrição |
 |---|---|
 | `agents:read` | Leitura de agentes, configurações, webhooks, créditos e histórico |
-| `agents:write` | Criação, atualização, exclusão e operações de agentes |
+| `agents:write` | Criação, atualização e ativação/desativação de agentes |
+| `agents:delete` | Exclusão de agentes |
 | `trainings:read` | Leitura de treinamentos dos agentes |
 | `trainings:write` | Criação, atualização e exclusão de treinamentos |
 | `channels:read` | Leitura de canais, configurações, QR code e widget |
-| `channels:write` | Criação, atualização, exclusão de canais e configurações |
+| `channels:write` | Criação, atualização e exclusão de canais |
 | `contacts:read` | Leitura de contatos |
 | `contacts:write` | Criação, atualização e exclusão de contatos |
-| `leads:read` | Leitura de leads |
-| `leads:write` | Criação, atualização e exclusão de leads |
-| `pipeline:read` | Leitura de oportunidades e colunas do pipeline |
-| `pipeline:write` | Criação, atualização e exclusão de oportunidades |
 | `conversations:read` | Leitura de conversas |
 | `messages:read` | Leitura de mensagens das conversas |
-| `chats:write` | Envio, edição, exclusão de mensagens e handoff humano |
+| `messages:write` | Envio de mensagens em conversas |
+| `messages:delete` | Exclusão de mensagens |
+| `chats:write` | Operações em chats, edição de mensagens e handoff humano |
 | `custom-fields:read` | Leitura de campos personalizados |
 | `custom-fields:write` | Criação, atualização e arquivamento de campos personalizados |
-| `interactions:read` | Leitura de interações e mensagens |
-| `interactions:write` | Encerramento de interações |
-| `intentions:read` | Leitura de intenções dos agentes |
-| `intentions:write` | Criação, atualização e exclusão de intenções |
-| `idle-actions:read` | Leitura de ações de inatividade |
-| `idle-actions:write` | Criação, atualização e exclusão de ações de inatividade |
-| `transfer-rules:read` | Leitura de regras de transferência |
-| `transfer-rules:write` | Criação, atualização e exclusão de regras de transferência |
-| `webhooks:read` | Leitura de webhooks dos agentes |
-| `webhooks:write` | Criação e atualização de webhooks |
 | `mcp:read` | Leitura de servidores e ferramentas MCP |
-| `mcp:write` | Gerenciamento de servidores MCP, ferramentas e conexões |
+| `mcp:write` | Gerenciamento de servidores MCP e ferramentas |
+| `webhooks:read` | Leitura de webhooks e histórico de entregas |
+| `webhooks:write` | Criação, atualização e teste de webhooks |
+| `webhooks:delete` | Exclusão de webhooks |
 
 Use o endpoint `GET /v1/me` para verificar os scopes da sua API key.
 
@@ -107,7 +92,6 @@ Endpoints de listagem suportam paginação com os seguintes parâmetros:
 |---|---|---|---|
 | `page` | integer | `1` | Número da página (mínimo 1) |
 | `limit` | integer | `20` | Itens por página (1-100) |
-| `sort` | string | varia | Campo de ordenação |
 | `order` | string | `desc` | Direção: `asc` ou `desc` |
 
 A resposta inclui um objeto `pagination`:
@@ -146,3 +130,75 @@ Todas as respostas de erro seguem o mesmo formato:
 | `VALIDATION_ERROR` | 400 | Dados da requisição inválidos |
 | `RATE_LIMIT_EXCEEDED` | 429 | Limite de requisições excedido |
 | `INTERNAL_ERROR` | 500 | Erro interno do servidor |
+
+## Webhooks
+
+Webhooks permitem receber notificações em tempo real quando eventos ocorrem na plataforma.
+
+### Eventos disponíveis
+
+| Evento | Descrição |
+|---|---|
+| `conversation.created` | Nova conversa iniciada |
+| `conversation.closed` | Conversa encerrada |
+| `conversation.transferred` | Conversa transferida |
+| `message.received` | Mensagem recebida do cliente |
+| `message.sent` | Mensagem enviada pelo agente |
+| `contact.created` | Novo contato cadastrado |
+| `contact.updated` | Contato atualizado |
+| `appointment.created` | Agendamento criado |
+| `appointment.cancelled` | Agendamento cancelado |
+| `appointment.completed` | Agendamento concluído |
+
+### Payload
+
+Cada entrega de webhook inclui:
+
+```json
+{
+  "event": "message.received",
+  "timestamp": "2026-04-16T01:30:00.000Z",
+  "webhook_id": "uuid-do-webhook",
+  "data": {
+    // dados específicos do evento
+  }
+}
+```
+
+### Assinatura
+
+Todas as entregas incluem uma assinatura HMAC-SHA256 para verificação:
+
+| Header | Descrição |
+|---|---|
+| `X-Webhook-Signature` | `sha256=<hex>` — assinatura HMAC do payload |
+| `X-Webhook-Timestamp` | Timestamp Unix da entrega |
+| `X-Webhook-ID` | ID do webhook |
+
+Para verificar a assinatura:
+
+```javascript
+const crypto = require('crypto');
+
+function verifySignature(secret, timestamp, body, signature) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(`${timestamp}.${body}`)
+    .digest('hex');
+  
+  return `sha256=${expected}` === signature;
+}
+```
+
+### Retentativas
+
+Se a entrega falhar (timeout ou status >= 300), o sistema faz até 5 tentativas com backoff:
+- Imediata
+- 1 minuto
+- 5 minutos  
+- 15 minutos
+- 1 hora
+
+Após 5 falhas consecutivas, o webhook é desativado automaticamente.
+
+Use `POST /v1/webhooks/{id}/test` para testar a conectividade antes de ativar.
