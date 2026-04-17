@@ -1,0 +1,2174 @@
+Timely AI API Documentation
+===========================
+
+API Name: Timely AI | API v1
+Version: 1.0.0
+Base URL: https://api.timelyai.com.br
+Contact: contato@timelyai.com.br
+Website: https://app.timelyai.com.br
+
+Description: REST API for managing contacts, leads, opportunities, pipeline, and conversations in your CRM.
+
+
+AUTHENTICATION
+===========================
+
+Method: API Key via header
+Header name: x-api-key
+Obtain your key at: https://app.timelyai.com.br/developers
+
+All endpoints require authentication unless otherwise noted.
+Include the header in every request:
+  x-api-key: YOUR_API_KEY
+
+
+GENERAL NOTES
+===========================
+
+- All IDs are UUIDs
+- Timestamps are in ISO 8601 format
+- Paginated endpoints return a "pagination" object with: page, limit, total, total_pages
+- Default pagination: page=1, limit=20, max limit=100
+- Sort order default: desc
+- All responses are wrapped in a "data" key
+- Errors are returned in an "error" object with: code, message, status
+- Rate limiting headers: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After
+
+Available scopes:
+  contacts:read, contacts:write, leads:read, leads:write, pipeline:read, pipeline:write,
+  conversations:read, messages:read, chats:write, agents:read, agents:write,
+  trainings:read, trainings:write, channels:read, channels:write,
+  custom-fields:read, custom-fields:write, interactions:read, interactions:write,
+  intentions:read, intentions:write, idle-actions:read, idle-actions:write,
+  transfer-rules:read, transfer-rules:write, webhooks:read, webhooks:write,
+  mcp:read, mcp:write
+
+Common error responses:
+  401 - UNAUTHORIZED: Invalid or missing API key
+  403 - FORBIDDEN: Missing required scope
+  404 - NOT_FOUND: Resource not found
+  400 - VALIDATION_ERROR: Invalid request data
+  429 - RATE_LIMIT_EXCEEDED: Too many requests
+
+
+SHARED PARAMETERS
+===========================
+
+Page (query)
+  - name: page
+  - type: integer
+  - default: 1
+  - minimum: 1
+  - description: Page number (starts at 1)
+
+Limit (query)
+  - name: limit
+  - type: integer
+  - default: 20
+  - minimum: 1
+  - maximum: 100
+  - description: Items per page (max 100)
+
+Order (query)
+  - name: order
+  - type: string
+  - default: desc
+  - enum: asc, desc
+  - description: Sort direction
+
+Search (query)
+  - name: search
+  - type: string
+  - description: Search term (partial match, case-insensitive)
+
+IdPath (path)
+  - name: id
+  - type: string (uuid)
+  - required: true
+  - description: Unique resource ID (UUID)
+
+AgentIdPath (path)
+  - name: id
+  - type: string (uuid)
+  - required: true
+  - description: Agent ID (UUID)
+
+ToolIdPath (path)
+  - name: toolId
+  - type: string (uuid)
+  - required: true
+  - description: Tool ID (UUID)
+
+McpIdPath (path)
+  - name: mcpId
+  - type: string (uuid)
+  - required: true
+  - description: MCP server ID (UUID)
+
+
+===============================================================================
+ENDPOINTS
+===============================================================================
+
+
+SYSTEM
+===========================
+
+--- GET /v1/health ---
+Summary: Health check
+Description: Checks if the API is running. Does not require authentication.
+Authentication: None
+Parameters: None
+Response 200:
+  - status: string (example: "ok")
+  - timestamp: string (date-time, example: "2025-01-15T10:30:00.000Z")
+
+Example:
+  curl https://api.timelyai.com.br/v1/health
+
+
+--- GET /v1/me ---
+Summary: API key information
+Description: Returns information about the API key used in the request, including scopes and permissions.
+Parameters: None
+Response 200:
+  data: ApiKeyInfo object
+    - id: string (uuid) -- API key ID
+    - company_id: string (uuid) -- Company ID
+    - workspace_id: string|null (uuid) -- Workspace ID (if applicable)
+    - key_name: string -- API key name
+    - scopes: array of strings -- Access scopes
+    - is_active: boolean -- Whether the API key is active
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/me
+
+
+CONTACTS
+===========================
+
+--- GET /v1/contacts ---
+Summary: List contacts
+Description: Returns a paginated list of contacts. Supports filtering by status and searching by name, email, or phone.
+Scope required: contacts:read
+Parameters:
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, customer_name, customer_email, status)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - status: string (query, optional, enum: active, inactive, blocked)
+  - search: string (query, optional) -- Search term (partial, case-insensitive)
+Response 200:
+  data: array of Contact objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/contacts?page=1&limit=20&status=active"
+
+
+--- POST /v1/contacts ---
+Summary: Create contact
+Description: Creates a new contact. Requires scope contacts:write.
+Scope required: contacts:write
+Request body (JSON, required):
+  - customer_name: string (required, 1-255 chars) -- Contact name
+  - customer_phone: string (optional, max 50 chars) -- Phone number
+  - customer_email: string (optional, email format, max 255 chars) -- Email
+  - customer_company: string (optional, max 255 chars) -- Company name
+  - customer_position: string (optional, max 255 chars) -- Job title
+  - tags: array of strings (optional) -- Tags for categorization
+  - notes: string (optional) -- Notes about the contact
+  - source: string (optional, max 100 chars) -- Contact origin (e.g., website, referral)
+  - status: string (optional, enum: active, inactive, blocked, default: active)
+  - metadata: object (optional) -- Free-form additional data
+Response 201:
+  data: Contact object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"customer_name":"Joao Silva","customer_email":"joao@empresa.com","customer_phone":"+5547999999999"}' \
+    https://api.timelyai.com.br/v1/contacts
+
+
+--- GET /v1/contacts/{id} ---
+Summary: Get contact
+Description: Returns details of a specific contact. Requires scope contacts:read.
+Parameters:
+  - id: string (path, required, uuid) -- Contact ID
+Response 200:
+  data: Contact object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/contacts/CONTACT_UUID
+
+
+--- PUT /v1/contacts/{id} ---
+Summary: Update contact
+Description: Updates an existing contact. All fields are optional. Requires scope contacts:write.
+Parameters:
+  - id: string (path, required, uuid) -- Contact ID
+Request body (JSON, required):
+  - customer_name: string (optional, 1-255 chars)
+  - customer_phone: string (optional, max 50 chars)
+  - customer_email: string (optional, email, max 255 chars)
+  - customer_company: string (optional, max 255 chars)
+  - customer_position: string (optional, max 255 chars)
+  - tags: array of strings (optional)
+  - notes: string (optional)
+  - source: string (optional, max 100 chars)
+  - status: string (optional, enum: active, inactive, blocked)
+  - metadata: object (optional)
+Response 200:
+  data: Contact object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"status":"inactive"}' \
+    https://api.timelyai.com.br/v1/contacts/CONTACT_UUID
+
+
+--- DELETE /v1/contacts/{id} ---
+Summary: Delete contact
+Description: Permanently removes a contact. Requires scope contacts:write.
+Parameters:
+  - id: string (path, required, uuid) -- Contact ID
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/contacts/CONTACT_UUID
+
+
+LEADS
+===========================
+
+--- GET /v1/leads ---
+Summary: List leads
+Description: Returns a paginated list of leads. Supports filtering by status and searching by name or email.
+Scope required: leads:read
+Parameters:
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, customer_name, status, score)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - status: string (query, optional, enum: new, contacted, qualified, proposal, negotiation, won, lost)
+  - search: string (query, optional)
+Response 200:
+  data: array of Lead objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/leads?status=qualified"
+
+
+--- POST /v1/leads ---
+Summary: Create lead
+Description: Creates a new lead. Requires scope leads:write.
+Request body (JSON, required):
+  - customer_name: string (required, 1-255 chars)
+  - customer_phone: string (optional, max 50 chars)
+  - customer_email: string (optional, email, max 255 chars)
+  - status: string (optional, enum: new, contacted, qualified, proposal, negotiation, won, lost, default: new)
+  - score: integer (optional, 0-100)
+  - budget_range: string (optional, max 100 chars)
+  - pain_points: array of strings (optional)
+  - contact_id: string (optional, uuid) -- Associated contact ID
+  - qualification_data: object (optional) -- Free-form qualification data
+Response 201:
+  data: Lead object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"customer_name":"Maria Souza","score":75,"status":"qualified"}' \
+    https://api.timelyai.com.br/v1/leads
+
+
+--- GET /v1/leads/{id} ---
+Summary: Get lead
+Description: Returns details of a specific lead. Requires scope leads:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: Lead object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/leads/LEAD_UUID
+
+
+--- PUT /v1/leads/{id} ---
+Summary: Update lead
+Description: Updates an existing lead. All fields are optional. Requires scope leads:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - customer_name: string (optional, 1-255 chars)
+  - customer_phone: string (optional, max 50 chars)
+  - customer_email: string (optional, email, max 255 chars)
+  - status: string (optional, enum: new, contacted, qualified, proposal, negotiation, won, lost)
+  - score: integer (optional, 0-100)
+  - budget_range: string (optional, max 100 chars)
+  - pain_points: array of strings (optional)
+  - contact_id: string (optional, uuid)
+  - qualification_data: object (optional)
+Response 200:
+  data: Lead object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"status":"won","score":95}' \
+    https://api.timelyai.com.br/v1/leads/LEAD_UUID
+
+
+--- DELETE /v1/leads/{id} ---
+Summary: Delete lead
+Description: Permanently removes a lead. Requires scope leads:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/leads/LEAD_UUID
+
+
+OPPORTUNITIES
+===========================
+
+--- GET /v1/opportunities ---
+Summary: List opportunities
+Description: Returns a paginated list of opportunities. Supports filtering by stage and associated lead.
+Scope required: pipeline:read
+Parameters:
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, title, value, probability, stage)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - stage: string (query, optional, enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
+  - lead_id: string (query, optional, uuid) -- Filter by associated lead
+Response 200:
+  data: array of Opportunity objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/opportunities?stage=proposal"
+
+
+--- POST /v1/opportunities ---
+Summary: Create opportunity
+Description: Creates a new business opportunity. Requires scope pipeline:write.
+Request body (JSON, required):
+  - title: string (required, 1-255 chars)
+  - lead_id: string (optional, uuid)
+  - value: number (optional, min: 0) -- Estimated value
+  - probability: integer (optional, 0-100) -- Closing probability percentage
+  - stage: string (optional, enum: prospecting, qualification, proposal, negotiation, closing, won, lost, default: prospecting)
+Response 201:
+  data: Opportunity object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"title":"Projeto de automacao","value":15000,"probability":70,"stage":"proposal"}' \
+    https://api.timelyai.com.br/v1/opportunities
+
+
+--- GET /v1/opportunities/{id} ---
+Summary: Get opportunity
+Description: Returns details of a specific opportunity. Requires scope pipeline:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: Opportunity object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/opportunities/OPP_UUID
+
+
+--- PUT /v1/opportunities/{id} ---
+Summary: Update opportunity
+Description: Updates an existing opportunity. All fields are optional. Requires scope pipeline:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - title: string (optional, 1-255 chars)
+  - lead_id: string (optional, uuid)
+  - value: number (optional, min: 0)
+  - probability: integer (optional, 0-100)
+  - stage: string (optional, enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
+Response 200:
+  data: Opportunity object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"stage":"won","probability":100}' \
+    https://api.timelyai.com.br/v1/opportunities/OPP_UUID
+
+
+--- DELETE /v1/opportunities/{id} ---
+Summary: Delete opportunity
+Description: Permanently removes an opportunity. Requires scope pipeline:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/opportunities/OPP_UUID
+
+
+PIPELINE
+===========================
+
+--- GET /v1/pipeline/columns ---
+Summary: List pipeline columns
+Description: Returns all sales pipeline columns, ordered by position. Requires scope pipeline:read.
+Parameters: None
+Response 200:
+  data: array of PipelineColumn objects
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/pipeline/columns
+
+
+CONVERSATIONS
+===========================
+
+--- GET /v1/conversations ---
+Summary: List conversations
+Description: Returns a paginated list of conversations. Supports filtering by channel, status, and searching by customer name.
+Scope required: conversations:read
+Parameters:
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "last_message_at", enum: created_at, last_message_at, customer_name, channel, status)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - channel: string (query, optional) -- Filter by communication channel
+  - status: string (query, optional) -- Filter by conversation status
+  - search: string (query, optional) -- Search term
+Response 200:
+  data: array of Conversation objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/conversations?channel=whatsapp"
+
+
+--- GET /v1/conversations/{id} ---
+Summary: Get conversation
+Description: Returns details of a specific conversation. Requires scope conversations:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: Conversation object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/conversations/CONV_UUID
+
+
+--- DELETE /v1/conversations/{id} ---
+Summary: Delete conversation
+Description: Permanently removes a conversation and all its messages. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/conversations/CONV_UUID
+
+
+--- GET /v1/conversations/{id}/messages ---
+Summary: List messages
+Description: Returns a paginated list of messages from a conversation. Requires scope messages:read.
+Parameters:
+  - id: string (path, required, uuid) -- Conversation ID
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "created_at")
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+Response 200:
+  data: array of Message objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages?order=asc"
+
+
+--- POST /v1/conversations/{id}/messages ---
+Summary: Send message
+Description: Sends a new message in the conversation. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Conversation ID
+Request body (JSON, required):
+  - content: string (required, min 1 char) -- Message content
+  - type: string (optional, enum: text, image, audio, document, default: text) -- Message type
+  - media_url: string (optional, uri) -- Media URL (required for image, audio, document types)
+Response 201:
+  data: Message object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"content":"Ola, como posso ajudar?"}' \
+    https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages
+
+
+--- DELETE /v1/conversations/{id}/messages ---
+Summary: Clear messages
+Description: Removes all messages from a conversation. The conversation is kept but becomes empty. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Conversation ID
+Response 200:
+  data: { deleted: boolean, count: integer }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages
+
+
+--- PUT /v1/conversations/{id}/messages/{messageId} ---
+Summary: Edit message
+Description: Edits the content of a specific message in the conversation. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Conversation ID
+  - messageId: string (path, required, uuid) -- Message ID
+Request body (JSON, required):
+  - content: string (required, min 1 char) -- New message content
+Response 200:
+  data: Message object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"content":"Mensagem editada com novo conteudo"}' \
+    https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages/MSG_UUID
+
+
+--- DELETE /v1/conversations/{id}/messages/{messageId} ---
+Summary: Delete message
+Description: Permanently removes an individual message from the conversation. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Conversation ID
+  - messageId: string (path, required, uuid) -- Message ID
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages/MSG_UUID
+
+
+--- POST /v1/conversations/{id}/human-handoff ---
+Summary: Initiate human handoff
+Description: Transfers the conversation to human support. AI stops responding automatically until handling is resumed. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Conversation ID
+Request body (JSON, optional):
+  - attendant_id: string (optional, uuid) -- Specific human attendant ID (auto-distributed if not provided)
+  - reason: string (optional, max 500 chars) -- Reason for transfer
+Response 200:
+  data: HumanHandoffResponse object
+    - conversation_id: string (uuid)
+    - status: string (enum: human_active)
+    - attendant_id: string|null (uuid)
+    - transferred_at: string (date-time)
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"reason":"Cliente solicitou falar com um atendente"}' \
+    https://api.timelyai.com.br/v1/conversations/CONV_UUID/human-handoff
+
+
+--- POST /v1/conversations/{id}/ai-resume ---
+Summary: Resume AI handling
+Description: Resumes automatic AI handling after a period of human support. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Conversation ID
+Response 200:
+  data: AiResumeResponse object
+    - conversation_id: string (uuid)
+    - status: string (enum: ai_active)
+    - resumed_at: string (date-time)
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/conversations/CONV_UUID/ai-resume
+
+
+AGENTS
+===========================
+
+--- GET /v1/agents ---
+Summary: List agents
+Description: Returns a paginated list of AI agents. Supports filtering by status and searching by name. Requires scope agents:read.
+Parameters:
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, name, status)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - status: string (query, optional, enum: active, inactive)
+  - search: string (query, optional)
+Response 200:
+  data: array of Agent objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/agents?status=active"
+
+
+--- POST /v1/agents ---
+Summary: Create agent
+Description: Creates a new AI agent. Requires scope agents:write.
+Request body (JSON, required):
+  - name: string (required, 1-255 chars)
+  - description: string (optional, max 1000 chars)
+  - model: string (optional, enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus, default: gpt-4o)
+  - personality: string (optional, max 2000 chars)
+  - behavior_rules: array of strings (optional) -- Behavior rules
+  - communication_style: string (optional, enum: formal, normal, casual, default: normal)
+Response 201:
+  data: Agent object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"Assistente de Vendas","model":"gpt-4o","communication_style":"formal"}' \
+    https://api.timelyai.com.br/v1/agents
+
+
+--- GET /v1/agents/{id} ---
+Summary: Get agent
+Description: Returns details of a specific agent. Requires scope agents:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: Agent object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID
+
+
+--- PUT /v1/agents/{id} ---
+Summary: Update agent
+Description: Updates an existing agent. All fields are optional. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - name: string (optional, 1-255 chars)
+  - description: string (optional, max 1000 chars)
+  - model: string (optional, enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
+  - personality: string (optional, max 2000 chars)
+  - behavior_rules: array of strings (optional)
+  - communication_style: string (optional, enum: formal, normal, casual)
+  - max_tokens: integer (optional)
+  - temperature: number (optional, 0-1)
+Response 200:
+  data: Agent object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"temperature":0.8,"max_tokens":4096}' \
+    https://api.timelyai.com.br/v1/agents/AGENT_UUID
+
+
+--- DELETE /v1/agents/{id} ---
+Summary: Delete agent
+Description: Permanently removes an agent. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID
+
+
+--- POST /v1/agents/{id}/activate ---
+Summary: Activate agent
+Description: Activates an agent that is inactive. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: Agent object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/activate
+
+
+--- POST /v1/agents/{id}/deactivate ---
+Summary: Deactivate agent
+Description: Deactivates an agent that is active. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: Agent object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/deactivate
+
+
+--- GET /v1/agents/{id}/settings ---
+Summary: Get agent settings
+Description: Returns the settings of a specific agent. Requires scope agents:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: AgentSettings object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/settings
+
+
+--- PUT /v1/agents/{id}/settings ---
+Summary: Update agent settings
+Description: Updates the settings of an agent. All fields are optional. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - model: string (optional, enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
+  - temperature: number (optional, 0-1)
+  - max_tokens: integer (optional)
+  - communication_style: string (optional, enum: formal, normal, casual)
+  - response_format: string|null (optional, enum: text, json, markdown, null)
+  - language: string|null (optional) -- Preferred response language (e.g., "pt-BR")
+Response 200:
+  data: AgentSettings object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"model":"claude-3.7-sonnet","temperature":0.7,"language":"pt-BR"}' \
+    https://api.timelyai.com.br/v1/agents/AGENT_UUID/settings
+
+
+--- GET /v1/agents/{id}/webhooks ---
+Summary: Get agent webhooks
+Description: Returns the webhooks configured for an agent. Requires scope agents:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: AgentWebhooks object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/webhooks
+
+
+--- PUT /v1/agents/{id}/webhooks ---
+Summary: Update agent webhooks
+Description: Updates the webhooks of an agent. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - webhooks: array of objects
+    - url: string (uri) -- Webhook URL
+    - events: array of strings -- Events that trigger the webhook (e.g., conversation.started, conversation.ended, message.received)
+    - headers: object|null -- Custom headers sent with the webhook
+    - is_active: boolean -- Whether the webhook is active
+Response 200:
+  data: AgentWebhooks object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"webhooks":[{"url":"https://example.com/webhook","events":["message.received"],"is_active":true}]}' \
+    https://api.timelyai.com.br/v1/agents/AGENT_UUID/webhooks
+
+
+--- POST /v1/agents/{id}/conversation ---
+Summary: Converse with agent
+Description: Sends a message to the agent and receives a response. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - message: string (required, min 1 char) -- Message sent to the agent
+  - conversation_id: string (optional, uuid) -- Existing conversation ID (omit to start new conversation)
+  - type: string (optional, enum: text, image, audio, default: text)
+Response 200:
+  data: AgentConversationResponse object
+    - response: string -- Response generated by the agent
+    - conversation_id: string (uuid) -- Conversation ID
+    - tokens_used: integer -- Tokens consumed in the response
+    - model: string -- Model used for generation
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"message":"Ola, preciso de ajuda com meu pedido"}' \
+    https://api.timelyai.com.br/v1/agents/AGENT_UUID/conversation
+
+
+--- POST /v1/agents/{id}/context ---
+Summary: Add context
+Description: Adds context to an existing conversation with the agent. Requires scope agents:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - conversation_id: string (required, uuid) -- Conversation ID
+  - role: string (optional, enum: system, user, assistant, default: system) -- Context message role
+  - content: string (required, min 1 char) -- Context content to add
+Response 200:
+  data: { success: boolean }
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"conversation_id":"CONV_UUID","content":"O cliente e VIP e tem prioridade no atendimento"}' \
+    https://api.timelyai.com.br/v1/agents/AGENT_UUID/context
+
+
+--- GET /v1/agents/{id}/credits ---
+Summary: Agent credit consumption
+Description: Returns the agent's credit consumption for the period. Requires scope agents:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: AgentCredits object
+    - total_credits: number -- Total credits consumed in the period
+    - period_start: string (date-time)
+    - period_end: string (date-time)
+    - breakdown: array of objects
+      - date: string (date)
+      - credits: number
+      - conversations: integer
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/credits
+
+
+--- GET /v1/agents/{id}/behavior-history ---
+Summary: Behavior history
+Description: Returns the agent's behavior change history. Requires scope agents:read.
+Parameters:
+  - id: string (path, required, uuid)
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+Response 200:
+  data: array of AgentBehaviorHistory objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/behavior-history
+
+
+TRAININGS
+===========================
+
+--- POST /v1/agents/{id}/trainings ---
+Summary: Create training
+Description: Creates a new training for an agent. Type can be text, URL, or file. Requires scope trainings:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - type: string (required, enum: text, url, file) -- Training type
+  - content: string (optional) -- Training content (required for text and url types)
+  - file_url: string (optional) -- File upload URL (for file type only)
+  - name: string (optional, max 255 chars) -- Training identifier name
+Response 201:
+  data: Training object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"type":"text","content":"Nossa empresa oferece servicos de automacao...","name":"Info da empresa"}' \
+    https://api.timelyai.com.br/v1/agents/AGENT_UUID/trainings
+
+
+--- GET /v1/agents/{id}/trainings ---
+Summary: List trainings
+Description: Returns a paginated list of trainings for an agent. Requires scope trainings:read.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, type, status)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - type: string (query, optional, enum: text, url, file) -- Filter by training type
+  - status: string (query, optional, enum: processing, completed, failed) -- Filter by training status
+Response 200:
+  data: array of Training objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/agents/AGENT_UUID/trainings?type=text&status=completed"
+
+
+--- PUT /v1/trainings/{id} ---
+Summary: Update training
+Description: Updates an existing training. Only text-type trainings can be updated. Requires scope trainings:write.
+Parameters:
+  - id: string (path, required, uuid) -- Training ID
+Request body (JSON, required):
+  - content: string (optional) -- New training content (text type only)
+Response 200:
+  data: Training object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"content":"Conteudo de treinamento atualizado..."}' \
+    https://api.timelyai.com.br/v1/trainings/TRAINING_UUID
+
+
+--- DELETE /v1/trainings/{id} ---
+Summary: Delete training
+Description: Permanently removes a training. Requires scope trainings:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/trainings/TRAINING_UUID
+
+
+CHANNELS
+===========================
+
+--- POST /v1/channels ---
+Summary: Create channel
+Description: Creates a new communication channel. Requires scope channels:write.
+Request body (JSON, required):
+  - name: string (required, 1-255 chars) -- Channel name
+  - type: string (required, enum: whatsapp, telegram, email, website) -- Channel type
+  - agent_id: string (required, uuid) -- Associated agent ID
+Response 201:
+  data: Channel object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"WhatsApp Principal","type":"whatsapp","agent_id":"AGENT_UUID"}' \
+    https://api.timelyai.com.br/v1/channels
+
+
+--- GET /v1/channels ---
+Summary: List channels
+Description: Returns a paginated list of communication channels. Supports filtering by type and status. Requires scope channels:read.
+Parameters:
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, name, type, status)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - type: string (query, optional, enum: whatsapp, telegram, email, website)
+  - status: string (query, optional, enum: active, inactive, connecting, error)
+  - search: string (query, optional)
+Response 200:
+  data: array of Channel objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/channels?type=whatsapp&status=active"
+
+
+--- PUT /v1/channels/{id} ---
+Summary: Update channel
+Description: Updates an existing channel. All fields are optional. Requires scope channels:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - name: string (optional, 1-255 chars)
+  - agent_id: string (optional, uuid) -- Associated agent ID
+Response 200:
+  data: Channel object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"WhatsApp Vendas"}' \
+    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID
+
+
+--- DELETE /v1/channels/{id} ---
+Summary: Delete channel
+Description: Permanently removes a communication channel. Requires scope channels:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID
+
+
+--- GET /v1/channels/{id}/config ---
+Summary: Get channel configuration
+Description: Returns the configuration of a specific channel. Requires scope channels:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: ChannelConfig object
+    - provider: string|null -- Channel provider
+    - api_key: string|null -- Provider API key
+    - welcome_message: string|null -- Welcome message
+    - auto_reply: boolean -- Auto-reply enabled
+    - business_hours: object|null -- Business hours configuration
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/config
+
+
+--- PUT /v1/channels/{id}/config ---
+Summary: Update channel configuration
+Description: Updates the configuration of an existing channel. Requires scope channels:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - provider: string|null (optional)
+  - api_key: string|null (optional)
+  - welcome_message: string|null (optional)
+  - auto_reply: boolean (optional)
+  - business_hours: object|null (optional)
+Response 200:
+  data: ChannelConfig object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"welcome_message":"Ola! Como posso ajudar?","auto_reply":true}' \
+    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/config
+
+
+--- GET /v1/channels/{id}/qr-code ---
+Summary: Get QR code
+Description: Returns the QR code for WhatsApp channel connection. Requires scope channels:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: ChannelQRCode object
+    - qr_code: string -- QR code in base64 format
+    - expires_at: string (date-time) -- QR code expiration date
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/qr-code
+
+
+--- POST /v1/channels/{id}/conversation ---
+Summary: Start conversation on channel
+Description: Starts a new conversation on a specific channel. Requires scope channels:write.
+Parameters:
+  - id: string (path, required, uuid) -- Channel ID
+Request body (JSON, required):
+  - contact_id: string (optional, uuid) -- Existing contact ID
+  - customer_name: string (optional, max 255 chars)
+  - customer_phone: string (optional, max 50 chars)
+  - customer_email: string (optional, email, max 255 chars)
+  - initial_message: string (optional) -- Initial conversation message
+Response 201:
+  data: Conversation object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"customer_name":"Joao Silva","customer_phone":"+5547999999999","initial_message":"Ola, gostaria de mais informacoes."}' \
+    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/conversation
+
+
+--- GET /v1/channels/{id}/widget/links ---
+Summary: Get widget links
+Description: Returns the widget embedding links for the channel. Requires scope channels:read.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: WidgetLinks object
+    - script_url: string -- Widget script URL
+    - iframe_url: string -- Widget iframe URL
+    - embed_code: string -- HTML embed code
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/widget/links
+
+
+--- PUT /v1/channels/{id}/widget/settings ---
+Summary: Update widget settings
+Description: Updates the visual settings of the channel widget. Requires scope channels:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - primary_color: string|null (optional) -- Primary widget color (hex, e.g., "#6366f1")
+  - position: string (optional, enum: bottom-right, bottom-left) -- Widget position on page
+  - title: string|null (optional) -- Widget title
+  - subtitle: string|null (optional) -- Widget subtitle
+  - welcome_message: string|null (optional) -- Widget welcome message
+  - avatar_url: string|null (optional) -- Widget avatar URL
+  - show_branding: boolean (optional) -- Show Timely AI branding on widget
+Response 200:
+  data: WidgetSettings object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"primary_color":"#6366f1","position":"bottom-right","title":"Fale conosco"}' \
+    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/widget/settings
+
+
+CUSTOM FIELDS
+===========================
+
+--- GET /v1/custom-fields ---
+Summary: List custom fields
+Description: Returns all custom fields for the company, ordered by display_order. Requires scope custom-fields:read.
+Parameters: None
+Response 200:
+  data: array of CustomField objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/custom-fields
+
+
+--- POST /v1/custom-fields ---
+Summary: Create custom field
+Description: Creates a new custom field. Requires scope custom-fields:write.
+Request body (JSON, required):
+  - name: string (required, 1-255 chars) -- Field name
+  - field_type: string (optional, enum: text, number, date, select, multiselect, boolean, default: text)
+  - options: array of strings (optional) -- Options for select/multiselect types
+  - is_required: boolean (optional) -- Whether the field is required
+  - display_order: integer (optional, min: 0) -- Display order
+Response 201:
+  data: CustomField object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"Cargo","field_type":"text"}' \
+    https://api.timelyai.com.br/v1/custom-fields
+
+
+--- PUT /v1/custom-fields/{id} ---
+Summary: Update custom field
+Description: Updates an existing custom field. Requires scope custom-fields:write.
+Parameters:
+  - id: string (path, required, uuid)
+Request body (JSON, required):
+  - name: string (optional, 1-255 chars)
+  - field_type: string (optional, enum: text, number, date, select, multiselect, boolean)
+  - options: array of strings (optional)
+  - is_required: boolean (optional)
+  - display_order: integer (optional, min: 0)
+Response 200:
+  data: CustomField object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"Job Title","is_required":true}' \
+    https://api.timelyai.com.br/v1/custom-fields/FIELD_UUID
+
+
+--- PUT /v1/custom-fields/{id}/archive ---
+Summary: Archive custom field
+Description: Archives a custom field (sets is_archived=true). Requires scope custom-fields:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: CustomField object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/custom-fields/FIELD_UUID/archive
+
+
+INTERACTIONS
+===========================
+
+--- GET /v1/interactions ---
+Summary: List interactions
+Description: Returns a paginated list of interactions (conversations) with filters. Requires scope interactions:read.
+Parameters:
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+  - status: string (query, optional, enum: active, closed, pending)
+  - channel: string (query, optional) -- Filter by communication channel
+  - agent_id: string (query, optional, uuid) -- Filter by agent ID
+  - from: string (query, optional, date-time) -- Start date (ISO 8601)
+  - to: string (query, optional, date-time) -- End date (ISO 8601)
+Response 200:
+  data: array of Conversation objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/interactions?status=active&agent_id=AGENT_UUID"
+
+
+--- GET /v1/interactions/{id}/messages ---
+Summary: List interaction messages
+Description: Returns a paginated list of messages from an interaction. Requires scope interactions:read.
+Parameters:
+  - id: string (path, required, uuid) -- Interaction ID
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+Response 200:
+  data: array of Message objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/interactions/INTERACTION_UUID/messages"
+
+
+--- DELETE /v1/interactions/{id} ---
+Summary: Close interaction
+Description: Closes an interaction (sets status='closed'). This is a soft delete operation. Requires scope interactions:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { closed: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/interactions/INTERACTION_UUID
+
+
+INTENTIONS
+===========================
+
+--- GET /v1/agent/{id}/intentions ---
+Summary: List agent intentions
+Description: Returns a paginated list of intentions configured for the agent. Requires scope intentions:read.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+Response 200:
+  data: array of Intention objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions
+
+
+--- POST /v1/agent/{id}/intentions ---
+Summary: Create intention
+Description: Creates a new intention for the agent. Requires scope intentions:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - name: string (required, 1-255 chars) -- Intention name
+  - description: string (optional) -- Intention description
+  - examples: array of strings (optional) -- Example phrases
+  - action_type: string (optional, max 100 chars) -- Action type (e.g., "schedule")
+  - action_config: object (optional) -- Action configuration
+Response 201:
+  data: Intention object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"Agendamento","description":"Cliente quer agendar uma reuniao","examples":["quero marcar uma reuniao","agendar horario"]}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions
+
+
+--- PUT /v1/agent/{id}/intentions/{intentionId} ---
+Summary: Update intention
+Description: Updates an agent intention. Requires scope intentions:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - intentionId: string (path, required, uuid) -- Intention ID
+Request body (JSON, required):
+  - name: string (optional, 1-255 chars)
+  - description: string (optional)
+  - examples: array of strings (optional)
+  - action_type: string (optional, max 100 chars)
+  - action_config: object (optional)
+Response 200:
+  data: Intention object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"Agendamento de Reuniao","action_type":"schedule"}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
+
+
+--- DELETE /v1/agent/{id}/intentions/{intentionId} ---
+Summary: Delete intention
+Description: Removes an intention from the agent. Requires scope intentions:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - intentionId: string (path, required, uuid) -- Intention ID
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
+
+
+IDLE ACTIONS
+===========================
+
+--- GET /v1/agent/{id}/idle-actions ---
+Summary: List idle actions
+Description: Returns a paginated list of idle actions for the agent. Requires scope idle-actions:read.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+Response 200:
+  data: array of IdleAction objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions
+
+
+--- POST /v1/agent/{id}/idle-actions ---
+Summary: Create idle action
+Description: Creates a new idle action for the agent. Triggered automatically after a period of customer inactivity. Requires scope idle-actions:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - name: string (required, 1-255 chars) -- Action name
+  - action_type: string (optional, enum: message, send_message, transfer, close, webhook, default: message)
+  - trigger_after_minutes: integer (required, 1-1440) -- Minutes of inactivity before trigger
+  - action_config: object (optional) -- Action configuration
+  - is_active: boolean (optional) -- Whether the action is active
+Response 201:
+  data: IdleAction object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"Lembrete de inatividade","trigger_after_minutes":30,"action_type":"message"}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions
+
+
+--- PUT /v1/agent/{id}/idle-actions/{actionId} ---
+Summary: Update idle action
+Description: Updates an idle action for the agent. Requires scope idle-actions:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - actionId: string (path, required, uuid) -- Idle action ID
+Request body (JSON, required):
+  - name: string (optional, 1-255 chars)
+  - action_type: string (optional, enum: message, send_message, transfer, close, webhook)
+  - trigger_after_minutes: integer (optional, 1-1440)
+  - action_config: object (optional)
+  - is_active: boolean (optional)
+Response 200:
+  data: IdleAction object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"trigger_after_minutes":60,"is_active":false}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
+
+
+--- DELETE /v1/agent/{id}/idle-actions/{actionId} ---
+Summary: Delete idle action
+Description: Removes an idle action from the agent. Requires scope idle-actions:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - actionId: string (path, required, uuid) -- Idle action ID
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
+
+
+TRANSFER RULES
+===========================
+
+--- GET /v1/agent/{id}/transfer-rules ---
+Summary: List transfer rules
+Description: Returns a paginated list of transfer rules for the agent, ordered by priority. Requires scope transfer-rules:read.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - page: integer (query, optional, default: 1)
+  - limit: integer (query, optional, default: 20, max: 100)
+  - order: string (query, optional, default: "desc", enum: asc, desc)
+Response 200:
+  data: array of TransferRule objects
+  pagination: Pagination object
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules
+
+
+--- POST /v1/agent/{id}/transfer-rules ---
+Summary: Create transfer rule
+Description: Creates a new transfer rule for the agent. Requires scope transfer-rules:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - name: string (required, 1-255 chars) -- Rule name
+  - condition_type: string (required, enum: keyword, intent, time, custom)
+  - condition_config: object (optional, default: {}) -- Condition configuration
+  - target_type: string (required, enum: agent, team, department, webhook)
+  - target_id: string (optional, max 255 chars) -- Target entity ID
+  - priority: integer (optional, min: 0) -- Rule priority
+  - is_active: boolean (optional) -- Whether the rule is active
+Response 201:
+  data: TransferRule object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"name":"Transferir para vendas","condition_type":"keyword","target_type":"department","priority":1}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules
+
+
+--- PUT /v1/agent/{id}/transfer-rules/{ruleId} ---
+Summary: Update transfer rule
+Description: Updates a transfer rule for the agent. Requires scope transfer-rules:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - ruleId: string (path, required, uuid) -- Transfer rule ID
+Request body (JSON, required):
+  - name: string (optional, 1-255 chars)
+  - condition_type: string (optional, enum: keyword, intent, time, custom)
+  - condition_config: object (optional)
+  - target_type: string (optional, enum: agent, team, department, webhook)
+  - target_id: string (optional, max 255 chars)
+  - priority: integer (optional, min: 0)
+  - is_active: boolean (optional)
+Response 200:
+  data: TransferRule object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"priority":0,"is_active":false}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
+
+
+--- DELETE /v1/agent/{id}/transfer-rules/{ruleId} ---
+Summary: Delete transfer rule
+Description: Removes a transfer rule from the agent. Requires scope transfer-rules:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - ruleId: string (path, required, uuid) -- Transfer rule ID
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
+
+
+MCP (Model Context Protocol)
+===========================
+
+--- POST /v1/agent/{id}/mcp/add ---
+Summary: Add MCP server
+Description: Adds a new MCP server to the agent. Requires scope mcp:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - url: string (required, uri) -- MCP server URL
+  - type: string (optional, enum: sse, http, default: http) -- Connection type
+  - name: string (required, 1-255 chars) -- Server name
+  - auth_config: object (optional) -- Authentication configuration
+Response 201:
+  data: MCPServer object
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"url":"https://mcp.example.com/api","name":"My MCP Server","type":"http"}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/add
+
+
+--- POST /v1/agent/{id}/mcp/connect ---
+Summary: Test MCP connection
+Description: Tests connectivity with an MCP server via HTTP request. Private/internal URLs are blocked for security. Requires scope mcp:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Request body (JSON, required):
+  - url: string (required, uri) -- MCP server URL to test
+Response 200:
+  data:
+    - status: string (enum: connected, unreachable) -- Connection status
+    - url: string (uri) -- Tested URL
+    - http_status: integer -- HTTP status code returned (if accessible)
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"url":"https://mcp.example.com/api"}' \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/connect
+
+
+--- GET /v1/agent/{id}/mcp/tools ---
+Summary: List MCP tools
+Description: Returns all available tools from the agent's MCP servers. Requires scope mcp:read.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Response 200:
+  data: array of MCPTool objects
+
+Example:
+  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/tools
+
+
+--- PUT /v1/agent/{id}/mcp/tools/{toolId}/active ---
+Summary: Activate MCP tool
+Description: Activates an MCP tool (removes from disabled tools list). Requires scope mcp:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - toolId: string (path, required, uuid) -- Tool ID
+Response 200:
+  data: { tool_id: string (uuid), active: true }
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/active
+
+
+--- PUT /v1/agent/{id}/mcp/tools/{toolId}/inactive ---
+Summary: Deactivate MCP tool
+Description: Deactivates an MCP tool (adds to disabled tools list). Requires scope mcp:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - toolId: string (path, required, uuid) -- Tool ID
+Response 200:
+  data: { tool_id: string (uuid), active: false }
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/inactive
+
+
+--- POST /v1/agent/{id}/mcp/sync-tools ---
+Summary: Sync MCP tools
+Description: Triggers MCP tool rediscovery via discovery service. Requires scope mcp:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+Response 200:
+  data: { status: string (e.g., "syncing"), agent_id: string (uuid) }
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/sync-tools
+
+
+--- DELETE /v1/agent/{id}/mcp/{mcpId} ---
+Summary: Delete MCP server
+Description: Removes an MCP server and all associated tools. Requires scope mcp:write.
+Parameters:
+  - id: string (path, required, uuid) -- Agent ID
+  - mcpId: string (path, required, uuid) -- MCP server ID
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/MCP_UUID
+
+
+CHATS
+===========================
+
+--- DELETE /v1/chats/{id} ---
+Summary: Soft delete chat
+Description: Soft deletes a conversation (sets status='deleted'). Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean, id: string (uuid) }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID
+
+
+--- DELETE /v1/chats/{id}/messages ---
+Summary: Delete all messages
+Description: Removes all messages from a conversation. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID/messages
+
+
+--- DELETE /v1/chats/{id}/messages/{messageId} ---
+Summary: Delete message
+Description: Removes a specific message from a conversation. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Chat ID
+  - messageId: string (path, required, uuid) -- Message ID
+Response 200:
+  data: { deleted: boolean }
+
+Example:
+  curl -X DELETE -H "x-api-key: YOUR_KEY" \
+    https://api.timelyai.com.br/v1/chats/CHAT_UUID/messages/MSG_UUID
+
+
+--- PUT /v1/chats/{id}/messages/{messageId} ---
+Summary: Edit message
+Description: Edits the content of an existing message. The message will be marked as edited. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid) -- Chat ID
+  - messageId: string (path, required, uuid) -- Message ID
+Request body (JSON, required):
+  - content: string (required, min 1 char) -- New message content
+Response 200:
+  data: Message object
+
+Example:
+  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+    -d '{"content":"Novo conteudo da mensagem"}' \
+    https://api.timelyai.com.br/v1/chats/CHAT_UUID/messages/MSG_UUID
+
+
+--- POST /v1/chats/{id}/start-human ---
+Summary: Start human takeover
+Description: Pauses the AI agent and starts human support in the conversation. A system message is logged. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { id: string (uuid), ai_mode: string (e.g., "paused") }
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID/start-human
+
+
+--- POST /v1/chats/{id}/stop-human ---
+Summary: Stop human takeover
+Description: Resumes AI agent control in the conversation. A system message is logged. Requires scope chats:write.
+Parameters:
+  - id: string (path, required, uuid)
+Response 200:
+  data: { id: string (uuid), ai_mode: string (e.g., "auto") }
+
+Example:
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID/stop-human
+
+
+===============================================================================
+SCHEMAS / DATA MODELS
+===============================================================================
+
+
+--- Health ---
+  - status: string (example: "ok")
+  - timestamp: string (date-time)
+
+
+--- ApiKeyInfo ---
+  - id: string (uuid) -- API key ID
+  - company_id: string (uuid) -- Company ID
+  - workspace_id: string|null (uuid) -- Workspace ID
+  - key_name: string -- API key name
+  - scopes: array of strings -- Access scopes (see AUTHENTICATION section for full list)
+  - is_active: boolean -- Whether the API key is active
+
+
+--- Pagination ---
+  - page: integer -- Current page (example: 1)
+  - limit: integer -- Items per page (example: 20)
+  - total: integer -- Total items (example: 150)
+  - total_pages: integer -- Total pages (example: 8)
+
+
+--- Error ---
+  - error: object
+    - code: string -- Error code (e.g., "VALIDATION_ERROR")
+    - message: string -- Descriptive error message
+    - status: integer -- HTTP status code
+
+
+--- Contact ---
+  - id: string (uuid) -- Unique contact ID
+  - company_id: string (uuid) -- Company ID
+  - customer_name: string -- Contact name
+  - customer_phone: string|null -- Phone number (e.g., "+5547999999999")
+  - customer_email: string|null (email) -- Email address
+  - customer_company: string|null -- Company name
+  - customer_position: string|null -- Job title
+  - tags: array|null of strings -- Contact tags
+  - notes: string|null -- Notes about the contact
+  - source: string|null -- Contact origin
+  - status: string (enum: active, inactive, blocked)
+  - metadata: object|null -- Free-form additional data
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- ContactCreate ---
+  Required: customer_name
+  - customer_name: string (1-255 chars)
+  - customer_phone: string (max 50 chars)
+  - customer_email: string (email, max 255 chars)
+  - customer_company: string (max 255 chars)
+  - customer_position: string (max 255 chars)
+  - tags: array of strings
+  - notes: string
+  - source: string (max 100 chars)
+  - status: string (enum: active, inactive, blocked, default: active)
+  - metadata: object
+
+
+--- ContactUpdate ---
+  All fields optional
+  - customer_name: string (1-255 chars)
+  - customer_phone: string (max 50 chars)
+  - customer_email: string (email, max 255 chars)
+  - customer_company: string (max 255 chars)
+  - customer_position: string (max 255 chars)
+  - tags: array of strings
+  - notes: string
+  - source: string (max 100 chars)
+  - status: string (enum: active, inactive, blocked)
+  - metadata: object
+
+
+--- Lead ---
+  - id: string (uuid)
+  - company_id: string (uuid)
+  - customer_name: string
+  - customer_phone: string|null
+  - customer_email: string|null (email)
+  - status: string (enum: new, contacted, qualified, proposal, negotiation, won, lost)
+  - score: integer|null (0-100)
+  - budget_range: string|null
+  - pain_points: array|null of strings
+  - contact_id: string|null (uuid) -- Associated contact ID
+  - qualification_data: object|null -- Free-form qualification data
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- LeadCreate ---
+  Required: customer_name
+  - customer_name: string (1-255 chars)
+  - customer_phone: string (max 50 chars)
+  - customer_email: string (email, max 255 chars)
+  - status: string (enum: new, contacted, qualified, proposal, negotiation, won, lost, default: new)
+  - score: integer (0-100)
+  - budget_range: string (max 100 chars)
+  - pain_points: array of strings
+  - contact_id: string (uuid)
+  - qualification_data: object
+
+
+--- LeadUpdate ---
+  All fields optional
+  - customer_name: string (1-255 chars)
+  - customer_phone: string (max 50 chars)
+  - customer_email: string (email, max 255 chars)
+  - status: string (enum: new, contacted, qualified, proposal, negotiation, won, lost)
+  - score: integer (0-100)
+  - budget_range: string (max 100 chars)
+  - pain_points: array of strings
+  - contact_id: string (uuid)
+  - qualification_data: object
+
+
+--- Opportunity ---
+  - id: string (uuid)
+  - company_id: string (uuid)
+  - title: string
+  - lead_id: string|null (uuid)
+  - value: number|null (min: 0) -- Estimated value
+  - probability: integer|null (0-100) -- Closing probability percentage
+  - stage: string (enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- OpportunityCreate ---
+  Required: title
+  - title: string (1-255 chars)
+  - lead_id: string (uuid)
+  - value: number (min: 0)
+  - probability: integer (0-100)
+  - stage: string (enum: prospecting, qualification, proposal, negotiation, closing, won, lost, default: prospecting)
+
+
+--- OpportunityUpdate ---
+  All fields optional
+  - title: string (1-255 chars)
+  - lead_id: string (uuid)
+  - value: number (min: 0)
+  - probability: integer (0-100)
+  - stage: string (enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
+
+
+--- PipelineColumn ---
+  - id: string (uuid)
+  - company_id: string (uuid)
+  - name: string -- Column name
+  - position: integer -- Column position in ordering
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- Conversation ---
+  - id: string (uuid)
+  - company_id: string (uuid)
+  - customer_name: string|null
+  - channel: string|null -- Communication channel (e.g., whatsapp, telegram, email, website)
+  - status: string|null -- Conversation status
+  - last_message_at: string|null (date-time)
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- Message ---
+  - id: string (uuid)
+  - conversation_id: string (uuid)
+  - content: string|null -- Message content
+  - role: string|null -- Sender role (e.g., user, assistant, system)
+  - created_at: string (date-time)
+
+
+--- MessageCreate ---
+  Required: content
+  - content: string (min 1 char)
+  - type: string (enum: text, image, audio, document, default: text)
+  - media_url: string (uri) -- Required for image, audio, document types
+
+
+--- MessageUpdate ---
+  Required: content
+  - content: string (min 1 char) -- New message content
+
+
+--- HumanHandoffRequest ---
+  All fields optional
+  - attendant_id: string (uuid) -- Specific human attendant ID
+  - reason: string (max 500 chars) -- Reason for transfer
+
+
+--- HumanHandoffResponse ---
+  - conversation_id: string (uuid)
+  - status: string (enum: human_active)
+  - attendant_id: string|null (uuid)
+  - transferred_at: string (date-time)
+
+
+--- AiResumeResponse ---
+  - conversation_id: string (uuid)
+  - status: string (enum: ai_active)
+  - resumed_at: string (date-time)
+
+
+--- Agent ---
+  - id: string (uuid)
+  - company_id: string (uuid)
+  - name: string
+  - description: string|null
+  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
+  - status: string (enum: active, inactive)
+  - personality: string|null
+  - behavior_rules: array|null of strings
+  - communication_style: string (enum: formal, normal, casual)
+  - max_tokens: integer|null
+  - temperature: number|null (0-1)
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- AgentCreate ---
+  Required: name
+  - name: string (1-255 chars)
+  - description: string (max 1000 chars)
+  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus, default: gpt-4o)
+  - personality: string (max 2000 chars)
+  - behavior_rules: array of strings
+  - communication_style: string (enum: formal, normal, casual, default: normal)
+
+
+--- AgentUpdate ---
+  All fields optional
+  - name: string (1-255 chars)
+  - description: string (max 1000 chars)
+  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
+  - personality: string (max 2000 chars)
+  - behavior_rules: array of strings
+  - communication_style: string (enum: formal, normal, casual)
+  - max_tokens: integer
+  - temperature: number (0-1)
+
+
+--- AgentSettings ---
+  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
+  - temperature: number (0-1)
+  - max_tokens: integer
+  - communication_style: string (enum: formal, normal, casual)
+  - response_format: string|null (enum: text, json, markdown, null)
+  - language: string|null -- Preferred response language (e.g., "pt-BR")
+
+
+--- AgentWebhooks ---
+  - webhooks: array of objects
+    - url: string (uri) -- Webhook URL
+    - events: array of strings -- Events that trigger the webhook
+    - headers: object|null -- Custom headers
+    - is_active: boolean
+
+
+--- AgentConversationRequest ---
+  Required: message
+  - message: string (min 1 char)
+  - conversation_id: string (uuid) -- Omit to start new conversation
+  - type: string (enum: text, image, audio, default: text)
+
+
+--- AgentConversationResponse ---
+  - response: string -- Agent-generated response
+  - conversation_id: string (uuid)
+  - tokens_used: integer -- Tokens consumed
+  - model: string -- Model used for generation
+
+
+--- AgentContextRequest ---
+  Required: conversation_id, content
+  - conversation_id: string (uuid)
+  - role: string (enum: system, user, assistant, default: system)
+  - content: string (min 1 char) -- Context content
+
+
+--- AgentCredits ---
+  - total_credits: number -- Total credits consumed in period
+  - period_start: string (date-time)
+  - period_end: string (date-time)
+  - breakdown: array of objects
+    - date: string (date)
+    - credits: number
+    - conversations: integer
+
+
+--- AgentBehaviorHistory ---
+  - changed_at: string (date-time)
+  - field: string -- Changed field name
+  - old_value: string|null -- Previous value
+  - new_value: string|null -- New value
+  - changed_by: string (uuid) -- User who made the change
+
+
+--- Training ---
+  - id: string (uuid)
+  - agent_id: string (uuid)
+  - company_id: string (uuid)
+  - type: string (enum: text, url, file)
+  - content: string -- Training content (text or URL)
+  - file_name: string|null -- File name (file type only)
+  - file_size: integer|null -- File size in bytes (file type only)
+  - status: string (enum: processing, completed, failed)
+  - error_message: string|null -- Error message (only when status is failed)
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- TrainingCreate ---
+  Required: type
+  - type: string (enum: text, url, file)
+  - content: string -- Required for text and url types
+  - file_url: string -- File upload URL (file type only)
+  - name: string (max 255 chars) -- Training identifier name
+
+
+--- TrainingUpdate ---
+  - content: string -- New training content (text type only)
+
+
+--- Channel ---
+  - id: string (uuid)
+  - company_id: string (uuid)
+  - agent_id: string (uuid) -- Associated agent ID
+  - name: string
+  - type: string (enum: whatsapp, telegram, email, website)
+  - status: string (enum: active, inactive, connecting, error)
+  - phone_number: string|null -- Phone number (for whatsapp/telegram)
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- ChannelCreate ---
+  Required: name, type, agent_id
+  - name: string (1-255 chars)
+  - type: string (enum: whatsapp, telegram, email, website)
+  - agent_id: string (uuid)
+
+
+--- ChannelUpdate ---
+  All fields optional
+  - name: string (1-255 chars)
+  - agent_id: string (uuid)
+
+
+--- ChannelConfig ---
+  - provider: string|null
+  - api_key: string|null -- Provider API key
+  - welcome_message: string|null
+  - auto_reply: boolean
+  - business_hours: object|null
+
+
+--- ChannelQRCode ---
+  - qr_code: string -- QR code in base64 format
+  - expires_at: string (date-time)
+
+
+--- ChannelConversationRequest ---
+  All fields optional
+  - contact_id: string (uuid) -- Existing contact ID
+  - customer_name: string (max 255 chars)
+  - customer_phone: string (max 50 chars)
+  - customer_email: string (email, max 255 chars)
+  - initial_message: string -- Initial conversation message
+
+
+--- WidgetLinks ---
+  - script_url: string -- Widget script URL
+  - iframe_url: string -- Widget iframe URL
+  - embed_code: string -- HTML embed code
+
+
+--- WidgetSettings ---
+  - primary_color: string|null -- Primary color (hex, e.g., "#6366f1")
+  - position: string (enum: bottom-right, bottom-left)
+  - title: string|null
+  - subtitle: string|null
+  - welcome_message: string|null
+  - avatar_url: string|null
+  - show_branding: boolean
+
+
+--- CustomField ---
+  - id: string (uuid)
+  - company_id: string (uuid)
+  - name: string
+  - field_type: string (enum: text, number, date, select, multiselect, boolean)
+  - options: array|null of strings -- Options for select/multiselect
+  - is_required: boolean
+  - display_order: integer
+  - is_archived: boolean
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- CustomFieldCreate ---
+  Required: name
+  - name: string (1-255 chars)
+  - field_type: string (enum: text, number, date, select, multiselect, boolean, default: text)
+  - options: array of strings
+  - is_required: boolean
+  - display_order: integer (min: 0)
+
+
+--- Intention ---
+  - id: string (uuid)
+  - agent_id: string (uuid)
+  - name: string
+  - description: string|null
+  - examples: array|null of strings -- Example phrases
+  - action_type: string|null -- Action type (e.g., "schedule")
+  - action_config: object|null -- Action configuration
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- IntentionCreate ---
+  Required: name
+  - name: string (1-255 chars)
+  - description: string
+  - examples: array of strings
+  - action_type: string (max 100 chars)
+  - action_config: object
+
+
+--- IdleAction ---
+  - id: string (uuid)
+  - agent_id: string (uuid)
+  - company_id: string (uuid)
+  - name: string
+  - action_type: string (enum: message, send_message, transfer, close, webhook)
+  - trigger_after_minutes: integer -- Minutes of inactivity before trigger
+  - action_config: object|null
+  - is_active: boolean
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- IdleActionCreate ---
+  Required: name, trigger_after_minutes
+  - name: string (1-255 chars)
+  - action_type: string (enum: message, send_message, transfer, close, webhook, default: message)
+  - trigger_after_minutes: integer (1-1440)
+  - action_config: object
+  - is_active: boolean
+
+
+--- TransferRule ---
+  - id: string (uuid)
+  - agent_id: string (uuid)
+  - company_id: string (uuid)
+  - name: string
+  - condition_type: string (enum: keyword, intent, time, custom)
+  - condition_config: object
+  - target_type: string (enum: agent, team, department, webhook)
+  - target_id: string|null
+  - priority: integer
+  - is_active: boolean
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- TransferRuleCreate ---
+  Required: name, condition_type, target_type
+  - name: string (1-255 chars)
+  - condition_type: string (enum: keyword, intent, time, custom)
+  - condition_config: object (default: {})
+  - target_type: string (enum: agent, team, department, webhook)
+  - target_id: string (max 255 chars)
+  - priority: integer (min: 0)
+  - is_active: boolean
+
+
+--- MCPServer ---
+  - id: string (uuid)
+  - agent_id: string (uuid)
+  - company_id: string (uuid)
+  - url: string (uri)
+  - type: string (enum: sse, http)
+  - name: string
+  - auth_config: object|null
+  - created_at: string (date-time)
+  - updated_at: string (date-time)
+
+
+--- MCPServerAdd ---
+  Required: url, name
+  - url: string (uri)
+  - type: string (enum: sse, http, default: http)
+  - name: string (1-255 chars)
+  - auth_config: object
+
+
+--- MCPTool ---
+  - id: string (uuid)
+  - mcp_server_id: string (uuid)
+  - tool_name: string
+  - description: string|null
+  - input_schema: object|null
+  - created_at: string (date-time)
+
+
+--- AgentContext ---
+  - id: string (uuid)
+  - agent_id: string (uuid)
+  - company_id: string (uuid)
+  - content: string
+  - title: string|null
+  - source: string|null
+  - created_at: string (date-time)
+
+
+--- AgentContextCreate ---
+  Required: content
+  - content: string (min 1 char)
+  - title: string (max 255 chars)
+  - source: string (max 100 chars)
+
+
+===============================================================================
+ERROR RESPONSES
+===============================================================================
+
+All error responses follow the same format:
+
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error description",
+    "status": 400
+  }
+}
+
+Standard error codes:
+  - UNAUTHORIZED (401): Invalid or missing API key
+  - FORBIDDEN (403): Missing required scope for the operation
+  - NOT_FOUND (404): Resource not found
+  - VALIDATION_ERROR (400): Invalid request data
+  - RATE_LIMIT_EXCEEDED (429): Too many requests
+
+Rate limiting response headers (429):
+  - Retry-After: Seconds until the limit resets
+  - X-RateLimit-Limit: Request limit per window (e.g., 100)
+  - X-RateLimit-Remaining: Remaining requests in current window
+  - X-RateLimit-Reset: Unix timestamp of window reset
