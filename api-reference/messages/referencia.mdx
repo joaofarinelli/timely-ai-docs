@@ -1,0 +1,55 @@
+---
+title: "Referência de Messages"
+sidebarTitle: "Referência"
+description: "Endpoints para acessar e excluir mensagens individuais por ID"
+---
+
+## Conceito
+
+O grupo **Messages** oferece acesso direto a mensagens individuais pelo seu identificador único — sem precisar saber a qual conversa pertencem. Esses endpoints são úteis em cenários onde você já tem o `message_id` em mãos (por exemplo, recebido via webhook) e precisa buscar os detalhes completos ou remover a mensagem.
+
+Para listar mensagens dentro do contexto de uma conversa específica, use os endpoints do grupo [Conversations](/api-reference/conversations/referencia) ou [Chats](/api-reference/chats/referencia), que oferecem paginação e filtros por conversa.
+
+## Estrutura de uma mensagem
+
+Uma mensagem na Timely.ai representa qualquer unidade de comunicação trocada em uma conversa: texto, imagem, áudio, vídeo, documento ou mensagem interativa (botões, listas). Cada mensagem registra o remetente (contato, agente IA ou humano), o canal de origem, o status de entrega e os metadados da plataforma (como o `wamid` do WhatsApp ou o `message_id` do Telegram).
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único da mensagem na Timely |
+| `conversation_id` | string (UUID) | Conversa à qual pertence |
+| `channel_id` | string (UUID) | Canal pelo qual foi enviada/recebida |
+| `content` | string | Conteúdo textual da mensagem |
+| `type` | enum | `text` \| `image` \| `audio` \| `video` \| `document` \| `interactive` |
+| `direction` | enum | `inbound` (cliente → agente) \| `outbound` (agente → cliente) |
+| `sender_type` | enum | `contact` \| `agent` \| `human` |
+| `sender_id` | string (UUID) | ID do remetente |
+| `status` | enum | `sent` \| `delivered` \| `read` \| `failed` |
+| `media_url` | string | URL da mídia (para mensagens com anexo) |
+| `external_id` | string | ID externo da mensagem na plataforma de origem |
+| `metadata` | object | Dados adicionais da plataforma (wamid, etc.) |
+| `created_at` | string | ISO 8601 de criação |
+
+## Quando usar Messages vs Conversations vs Chats
+
+| Cenário | Grupo recomendado |
+|---------|-------------------|
+| Buscar uma mensagem específica por ID | **Messages** |
+| Listar todo o histórico de uma conversa | **Conversations** |
+| Enviar mensagem como atendente humano | **Chats** |
+| Analisar conversas em bulk | **Conversations** |
+| Reagir a um evento de webhook com message_id | **Messages** |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

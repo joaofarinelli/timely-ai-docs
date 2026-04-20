@@ -1,0 +1,103 @@
+---
+title: "Takeover — Humano Assume a Conversa"
+description: "Pause o agente de IA temporariamente e assuma o controle da conversa, com retorno automático configurável"
+---
+
+O **Takeover** é a forma mais rápida de um atendente assumir uma conversa sem interromper definitivamente o agente de IA. Em vez de transferir a conversa para uma fila humana permanente, você pausa a IA, responde o que for necessário e ela volta automaticamente quando você sinalizar — ou após o tempo configurado expirar.
+
+<img
+  src="/images/screenshots/placeholder-takeover-panel.png"
+  alt="Painel de Takeover ativo com timer"
+  className="rounded-lg border"
+/>
+
+## Como o Takeover funciona
+
+O sistema usa a tabela `ai_pause_logs` para registrar cada evento do ciclo de vida da pausa. Os estados possíveis são:
+
+| Estado | Significado |
+|--------|------------|
+| `pause_activated` | Humano assumiu — IA parou de responder |
+| `interaction_blocked` | Mensagem do agente bloqueada durante pausa ativa |
+| `auto_resume` | Timer expirou — IA voltou automaticamente |
+| `force_resume` | Atendente encerrou a pausa manualmente |
+| `extend_pause` | Atendente estendeu o tempo de pausa |
+
+<Note>
+  Enquanto o Takeover está ativo, qualquer tentativa do agente de IA de enviar mensagem é registrada como `interaction_blocked` e descartada. O contato nunca recebe uma resposta dupla.
+</Note>
+
+## Ativando o Takeover
+
+<Steps>
+  <Step title="Abra a conversa na Inbox">
+    Acesse [Inbox → Live Chat](/guides/inbox/chat-history) e selecione a conversa que você quer assumir.
+  </Step>
+  <Step title="Clique em 'Pausar IA'">
+    No cabeçalho da conversa, clique no botão **Pausar IA**. Um modal confirma a ação e exibe um campo para definir a duração.
+  </Step>
+  <Step title="Defina a duração da pausa">
+    Escolha por quanto tempo a IA ficará pausada: **15 min**, **30 min**, **1 hora**, **2 horas** ou **indefinido**. O padrão do workspace é configurável em Configurações → Atendimento.
+  </Step>
+  <Step title="Assuma e responda">
+    A partir daqui, só você envia mensagens. O timer aparece no cabeçalho em contagem regressiva.
+  </Step>
+</Steps>
+
+## Retorno automático
+
+Quando o timer expira, o sistema executa a retomada automática:
+
+<CardGroup cols={2}>
+  <Card title="Auto Resume" icon="clock-rotate-left">
+    O agente de IA volta ao controle da conversa sem intervenção humana. Um evento `auto_resume` é registrado no log com o motivo `"timer_expired"`.
+  </Card>
+  <Card title="Force Resume" icon="hand">
+    O atendente clica em **Devolver para IA** antes do timer acabar. O evento `force_resume` é registrado imediatamente.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Se você precisar de mais tempo, clique em **Estender pausa** antes do timer chegar a zero. Cada extensão registra um evento `extend_pause` com a nova duração, mantendo o histórico completo da auditoria.
+</Tip>
+
+## Auditoria e logs
+
+Cada ação do ciclo de Takeover é persistida na função Edge `pause-logger` com os seguintes campos:
+
+- `conversation_id` — qual conversa foi pausada
+- `action` — o tipo do evento (veja tabela acima)
+- `reason` — texto descritivo do motivo
+- `duration_minutes` — duração configurada (quando aplicável)
+- `triggered_by` — ID do atendente ou `"system"` para auto-resumes
+- `previous_ai_mode` / `new_ai_mode` — antes e depois da mudança de modo
+
+Você pode consultar o histórico completo de uma conversa via API:
+
+```bash
+POST /functions/v1/pause-logger
+{
+  "action": "get_timeline",
+  "conversationId": "<id>"
+}
+```
+
+A resposta retorna os eventos em ordem cronológica, útil para auditorias e relatórios de SLA.
+
+## Configurando o timer padrão
+
+<Steps>
+  <Step title="Acesse Configurações do Workspace">
+    Vá em **Configurações → Atendimento → Takeover**.
+  </Step>
+  <Step title="Defina a duração padrão">
+    Escolha o valor padrão que aparece pré-selecionado quando um atendente ativa o Takeover.
+  </Step>
+  <Step title="Habilite retorno automático">
+    Ative ou desative o auto-resume. Se desativado, a pausa fica indefinida até o atendente encerrar manualmente.
+  </Step>
+</Steps>
+
+<Note>
+  A configuração de duração é por workspace. Times diferentes podem ter tempos padrão diferentes — útil para separar Vendas (pausas longas) de Suporte (pausas curtas).
+</Note>

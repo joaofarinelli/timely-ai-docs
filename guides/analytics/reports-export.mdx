@@ -1,0 +1,87 @@
+---
+title: Exportação de Relatórios
+description: Exporte dados de atendimento e analytics em CSV ou XLSX para análise externa, auditoria e integrações.
+---
+
+A exportação de relatórios permite baixar dados estruturados da sua operação para uso em planilhas, ferramentas de BI externas ou arquivos de auditoria. Você pode exportar conversas, métricas de agentes, uso de tokens e dados do BI Dashboard.
+
+## Formatos disponíveis
+
+| Formato | Extensão | Ideal para |
+|---|---|---|
+| CSV | `.csv` | Importação em qualquer ferramenta de BI, banco de dados ou planilha |
+| Excel | `.xlsx` | Relatórios formatados com múltiplas abas, fórmulas e gráficos |
+
+## Acessando a exportação
+
+<Steps>
+  <Step title="Abra a seção de Analytics">
+    No menu lateral, clique em **Analytics**.
+  </Step>
+  <Step title="Acesse a aba de Exportações">
+    Selecione a aba **Exportações** (ou clique no botão **Exportar relatório** disponível no Dashboard ou BI Dashboard).
+  </Step>
+  <Step title="Selecione o tipo de relatório">
+    Escolha qual conjunto de dados exportar. Veja os tipos disponíveis na seção abaixo.
+  </Step>
+  <Step title="Configure o período">
+    Defina a data de início e fim do relatório usando o seletor de calendário.
+  </Step>
+  <Step title="Escolha o formato">
+    Selecione **CSV** ou **XLSX** no seletor de formato.
+  </Step>
+  <Step title="Clique em Exportar">
+    O arquivo é gerado e o download inicia automaticamente. Para relatórios grandes, o arquivo pode levar alguns segundos para ficar pronto.
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/reports-export.png" alt="Tela de exportação de relatórios com seletores de tipo, período e formato" />
+</Frame>
+
+## Tipos de relatório
+
+<AccordionGroup>
+  <Accordion title="Conversas">
+    Exporta todas as conversas no período selecionado com os campos: ID da conversa, canal, agente responsável, data de abertura, data de encerramento, status, CSAT (quando disponível) e número de mensagens trocadas.
+  </Accordion>
+  <Accordion title="Mensagens">
+    Exporta o conteúdo completo de cada mensagem: ID, conversa de origem, remetente (usuário ou agente), timestamp e texto. Útil para análise de linguagem e treinamento de modelos.
+  </Accordion>
+  <Accordion title="Performance de agentes">
+    Exporta métricas por agente: total de conversas, tempo médio de resposta, taxa de resolução, CSAT médio e consumo de tokens no período.
+  </Accordion>
+  <Accordion title="Uso de tokens (BI)">
+    Exporta o consumo detalhado de tokens por agente, modelo e dia. Inclui estimativa de custo calculada com base nas taxas de preço do provedor configurado.
+  </Accordion>
+  <Accordion title="Leads e contatos">
+    Exporta a base de contatos com os campos: nome, telefone, e-mail, canal de origem, data do primeiro contato e tags associadas.
+  </Accordion>
+</AccordionGroup>
+
+## Exportação por gráfico
+
+Além da exportação completa, cada gráfico no Dashboard e no BI Dashboard tem um botão de download individual. Clique no ícone de download no canto de qualquer gráfico para exportar apenas aquele conjunto de dados em CSV.
+
+## Agendamento de relatórios
+
+<Info>
+  Relatórios agendados (envio automático por e-mail em periodicidade configurável) estão disponíveis nos planos Pro e Enterprise. No plano Starter, a exportação é sempre manual.
+</Info>
+
+Para configurar um relatório agendado (quando disponível no seu plano):
+
+1. Na tela de Exportações, clique em **Agendar envio**.
+2. Selecione o tipo de relatório, período (semanal, quinzenal, mensal) e formato.
+3. Informe o e-mail ou lista de e-mails que receberão o arquivo.
+4. Salve. O relatório será gerado e enviado automaticamente na data configurada.
+
+## Limites e considerações
+
+- Exportações com mais de 100 mil linhas são processadas de forma assíncrona. Você recebe um e-mail com o link de download quando o arquivo fica pronto.
+- Os dados exportados respeitam as mesmas políticas de acesso da plataforma. Um manager exporta apenas dados do seu workspace atual.
+- Arquivos gerados ficam disponíveis para download por 7 dias no histórico de exportações.
+
+## Permissões necessárias
+
+Exportação disponível para **owner**, **manager** e **trainer**. Attendants e members não têm acesso a esta funcionalidade.

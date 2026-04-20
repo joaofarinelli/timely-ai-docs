@@ -1,0 +1,135 @@
+---
+title: "Boas Práticas — Knowledge Base"
+description: "Granularidade de documentos, evitar duplicatas, quando usar Q&A vs. documento livre, limpeza periódica e como monitorar misses de retrieval."
+---
+
+## Visão geral
+
+Uma base de conhecimento bem estruturada é tão importante quanto a configuração do agente. O pipeline RAG recupera trechos — não documentos inteiros — e a qualidade da recuperação depende diretamente de como o conteúdo está organizado. Esta página reúne as práticas que fazem diferença concreta na precisão das respostas.
+
+## Granularidade dos documentos
+
+**Documentos muito grandes** prejudicam a qualidade. Quando você carrega um PDF de 200 páginas, o chunker divide automaticamente em pedaços de ~4.000 caracteres. Se um mesmo chunk mistura informações sobre assuntos diferentes (ex.: política de devolução + especificações técnicas), a recuperação pode trazer um chunk irrelevante para a pergunta do usuário.
+
+**Documentos muito pequenos** também têm problemas. Um chunk de 3 linhas muitas vezes perde contexto necessário para ser útil fora do seu documento original.
+
+Orientação prática:
+
+- **Ideal por documento**: 1 a 5 páginas dedicadas a um único tema.
+- **Ideal por chunk**: auto-gerado, mas pode ser otimizado dividindo documentos longos em arquivos menores por seção.
+- Se um documento aborda 10 assuntos diferentes, considere dividi-lo em 10 arquivos menores, um por assunto.
+
+<Tip>
+  Um bom teste de granularidade: leia um chunk isolado sem ver o restante do documento. Se ele fizer sentido por si só e responder uma pergunta específica, a granularidade está boa.
+</Tip>
+
+## Evitar duplicatas
+
+Conteúdo duplicado é um dos problemas mais comuns em bases de conhecimento que crescem organicamente. Duplicatas causam dois efeitos negativos:
+
+1. **Desperdício de cota de indexação** — você paga para indexar o mesmo conteúdo duas vezes.
+2. **Respostas inconsistentes** — se duas versões do mesmo FAQ têm respostas ligeiramente diferentes, o agente pode recuperar qualquer uma delas, gerando inconsistência.
+
+Estratégias para evitar duplicatas:
+
+- Antes de adicionar um documento, busque por termos-chave na base para ver se conteúdo similar já existe.
+- Defina uma **fonte canônica** para cada tipo de informação. Ex.: política de preços sempre vem do documento oficial, nunca de e-mails ou apresentações copiados.
+- Quando atualizar uma informação, exclua o documento antigo **antes** de adicionar o novo. Não mantenha versões antigas "por precaução".
+- Para FAQs, use Q&A manual em vez de documentos — é mais fácil editar uma resposta do Q&A do que localizar um trecho específico num PDF.
+
+## Q&A vs. documento livre
+
+Escolha a fonte certa para cada tipo de conteúdo:
+
+| Critério | Q&A manual | Documento (PDF/texto) |
+|----------|:----------:|:---------------------:|
+| Indexação imediata | Sim | Não (assíncrono) |
+| Controle sobre o que é recuperado | Total | Parcial (chunking automático) |
+| Atualização fácil | Sim | Requer reupload |
+| Conteúdo extenso | Não ideal | Sim |
+| Conteúdo estruturado (tabelas, listas) | Parcial | Sim |
+| FAQs e perguntas frequentes | Primeira escolha | Segunda opção |
+| Manuais e documentação técnica | Não recomendado | Primeira escolha |
+| Políticas e regulamentos longos | Não recomendado | Primeira escolha |
+
+**Use Q&A quando:**
+- A pergunta é bem definida e a resposta é curta e direta.
+- Você quer garantia de que o agente recupere exatamente aquela resposta.
+- O conteúdo muda com frequência (editar Q&A é mais rápido que reuploar documentos).
+
+**Use documento quando:**
+- O conteúdo é extenso e contextualmente rico.
+- A pergunta do usuário pode vir de ângulos variados não previstos.
+- O conteúdo inclui tabelas, imagens com texto alternativo ou estrutura hierárquica.
+
+## Qualidade do conteúdo indexado
+
+A busca semântica funciona por similaridade de significado, não por palavras-chave exatas. Isso significa que o estilo e a clareza do conteúdo impactam diretamente a recuperação.
+
+- **Escreva em linguagem natural** — o mesmo estilo das perguntas dos usuários. Documentos técnicos com siglas e jargões internos têm menor taxa de recuperação para perguntas coloquiais.
+- **Inclua variações** — se os usuários chamam o produto de "sistema", "plataforma" e "app", mencione as três variações nos documentos.
+- **Evite abreviações sem explicação** — "o CRM envia o ticket para o ATD via API REST" é difícil de recuperar para "como o sistema registra minha solicitação?".
+- **Separe conceitos distintos** em parágrafos diferentes — o chunker divide por tamanho, não por tema. Parágrafos curtos e focados ajudam a criar chunks coesos.
+
+## Limpeza periódica
+
+Bases de conhecimento crescem com o tempo e acumulam conteúdo desatualizado. Reserve tempo para manutenção regular:
+
+**Mensal:**
+- Verifique documentos em status **Erro** e corrija ou re-faça upload.
+- Remova Q&As de promoções ou eventos que já terminaram.
+- Atualize preços, prazos e políticas que mudaram.
+
+**Trimestral:**
+- Audite os documentos por data de criação. Documentos com mais de 6 meses sem revisão provavelmente estão desatualizados.
+- Consolide documentos sobrepostos.
+- Revise o threshold e o top-k à luz dos dados de uso.
+
+**Anual:**
+- Reconsidere a estrutura da base. Bases que cresceram desordenadamente podem se beneficiar de uma reorganização completa em temas.
+
+## Monitorar misses de retrieval
+
+Um **miss de retrieval** ocorre quando o usuário faz uma pergunta que a base deveria responder, mas o agente não encontrou nenhum chunk relevante (acima do threshold). O agente então responde com base no conhecimento geral do LLM, o que pode ser impreciso ou genérico.
+
+Como identificar misses:
+
+- No painel de [Analytics](/guides/analytics), filtre conversas onde o agente respondeu algo como "não tenho essa informação" ou "você pode verificar no site". Essas frases costumam indicar que a busca não retornou resultados.
+- Revise conversas com avaliação negativa (quando o sistema de feedback estiver ativo) — muitas estão relacionadas a misses.
+- Use a funcionalidade de **busca semântica** na própria interface da base de conhecimento para testar manualmente se uma pergunta retorna resultados relevantes.
+
+Como corrigir misses:
+
+1. Adicione um Q&A com a pergunta exata que falhou.
+2. Reduza o threshold em 0.05 e reavalie.
+3. Adicione o conteúdo ausente como documento ou Q&A.
+4. Reformule trechos do documento para usar linguagem mais próxima da que os usuários usam.
+
+## Limites e capacidade
+
+| Recurso | Limite padrão |
+|---------|--------------|
+| Bases por workspace | Conforme plano |
+| Documentos por base | Conforme plano |
+| Tamanho máximo por arquivo | 50 MB |
+| Páginas rastreadas por URL (crawler) | Configurável, padrão 50 |
+| Q&As por base | Sem limite fixo |
+
+Verifique os limites do seu plano em [Configurações → Assinatura](/guides/settings/subscriptions).
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Criando uma KB" href="/guides/knowledge/creating">
+    Como criar e popular uma nova base de conhecimento do zero.
+  </Card>
+  <Card title="Conectar ao agente" href="/guides/knowledge/linking-agent">
+    Ative a base num agente e ajuste os parâmetros de retrieval.
+  </Card>
+  <Card title="Q&A" href="/guides/knowledge/qa">
+    Adicione pares de pergunta e resposta indexados instantaneamente.
+  </Card>
+  <Card title="Analytics" href="/guides/analytics">
+    Monitore o desempenho do agente e identifique gaps de conhecimento.
+  </Card>
+</CardGroup>

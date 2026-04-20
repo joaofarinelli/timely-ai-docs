@@ -1,0 +1,181 @@
+---
+title: "Gerenciar Assinatura"
+description: "Como visualizar o plano atual, fazer upgrade ou downgrade, alterar o ciclo de faturamento, atualizar o método de pagamento, consultar o histórico de faturas e cancelar a assinatura."
+---
+
+## Visão geral
+
+A seção **Assinatura** mostra o plano ativo do workspace, os recursos incluídos e todas as opções de gerenciamento do ciclo de vida da sua assinatura. O acesso é restrito ao `owner` do workspace — apenas essa role tem a permissão `manage_billing`.
+
+Acesse em **Configurações → Assinatura** (ou **Faturamento**, dependendo da versão da interface).
+
+## Plano atual
+
+O card de plano exibe as informações da assinatura ativa:
+
+| Campo | Descrição |
+|-------|-----------|
+| **Nome do plano** | Identificador do plano contratado |
+| **Status** | Ativa, Pagamento pendente, Processando ou Cancelada |
+| **Ciclo** | Mensal ou anual |
+| **Próxima cobrança** | Data e valor da próxima fatura |
+| **Recursos incluídos** | Limites de mensagens, agentes, membros e créditos de IA |
+
+A barra de uso de créditos mostra o consumo do período atual em relação ao limite do plano. As cores seguem o padrão: verde (até 70%), laranja (70–90%) e vermelho (acima de 90%).
+
+### Status da assinatura
+
+| Status | Descrição | Ação recomendada |
+|--------|-----------|-----------------|
+| **Ativa** | Tudo funcionando normalmente | — |
+| **Pagamento pendente** | Cobrança falhou — tentativas automáticas em andamento | Atualizar cartão |
+| **Processando** | Pagamento recebido, plano sendo ativado | Aguardar (geralmente minutos) |
+| **Cancelada** | Assinatura encerrada | Reativar ou contratar novo plano |
+
+<Warning>
+  Quando o status é **Pagamento pendente**, o workspace continua funcionando por um período de carência. Se o pagamento não for regularizado dentro do prazo, o acesso a novos agentes e canais pode ser suspenso.
+</Warning>
+
+## Fazendo upgrade ou downgrade
+
+<Steps>
+  <Step title="Clique em Alterar plano">
+    No card do plano atual, clique em **Alterar plano** (ou **Ver planos disponíveis**). O modal de planos é exibido com todos os planos disponíveis e seus recursos.
+  </Step>
+  <Step title="Selecione o ciclo de faturamento">
+    No topo do modal, escolha entre **Mensal** e **Anual**. Planos anuais têm desconto em relação ao equivalente mensal. O preço mensal equivalente é exibido em ambos os modos para facilitar a comparação.
+  </Step>
+  <Step title="Escolha o plano desejado">
+    Compare os planos disponíveis. Cada plano exibe:
+
+    - Preço mensal (ou anual)
+    - Limite de mensagens por mês
+    - Número máximo de agentes
+    - Número máximo de membros
+    - Créditos de IA incluídos
+    - Recursos exclusivos (se houver)
+
+    Clique em **Selecionar** no plano desejado.
+  </Step>
+  <Step title="Confirme a mudança">
+    Um modal de confirmação exibe o **preview da mudança**: valor a pagar hoje (crédito proporcional do plano atual aplicado), novo valor mensal e data de início do novo ciclo.
+
+    Leia os detalhes e clique em **Confirmar mudança** para aplicar.
+  </Step>
+</Steps>
+
+### Upgrade
+
+Upgrades são aplicados **imediatamente**. O sistema calcula o valor proporcional do período restante do plano atual e deduz do primeiro pagamento do novo plano. Você tem acesso imediato aos recursos do novo plano.
+
+### Downgrade
+
+Downgrades são aplicados no **início do próximo ciclo de faturamento** — não imediatamente. Você continua no plano atual até o fim do período pago e passa para o plano inferior na renovação. Um aviso de "mudança agendada" aparece no card do plano atual durante esse período.
+
+Para cancelar um downgrade agendado antes de ele entrar em vigor, clique em **Cancelar mudança agendada** no card do plano.
+
+## Ciclo de faturamento
+
+O ciclo determina com que frequência a assinatura é cobrada:
+
+- **Mensal**: cobrado todo mês na data de início da assinatura. Mais flexibilidade para cancelar ou mudar de plano.
+- **Anual**: cobrado uma vez por ano. Desconto significativo em relação ao ciclo mensal.
+
+Para alterar o ciclo sem mudar o plano (ex.: de mensal para anual no mesmo plano), use o fluxo de **Alterar plano** descrito acima — o ciclo pode ser mudado durante o processo de confirmação.
+
+<Tip>
+  Se você está satisfeito com o plano atual e projeta uso consistente por mais de 6 meses, a migração para o ciclo anual costuma ser mais econômica. O modal de confirmação exibe a economia estimada antes de você confirmar.
+</Tip>
+
+## Método de pagamento
+
+### Consultando o método atual
+
+Na seção **Pagamento**, o método cadastrado é exibido de forma mascarada (ex.: Visa •••• 4242, válido até 12/27). O nome do titular e o tipo de cartão também são exibidos.
+
+### Atualizando o cartão
+
+<Steps>
+  <Step title="Clique em Atualizar cartão">
+    Na seção de pagamento, clique em **Atualizar método de pagamento** (ou **Trocar cartão**).
+  </Step>
+  <Step title="Insira os novos dados">
+    Um formulário seguro de captura de cartão é exibido. Preencha número do cartão, data de validade, CVV e nome do titular. Os dados são transmitidos diretamente ao processador de pagamentos — a Timely.ai não armazena dados do cartão em seus servidores.
+  </Step>
+  <Step title="Confirme">
+    Clique em **Salvar cartão**. Uma cobrança de verificação de R$ 1,00 pode ser feita e estornada automaticamente para validar o cartão.
+  </Step>
+</Steps>
+
+Se o status da assinatura está como **Pagamento pendente** por falha no cartão anterior, atualizar o método de pagamento aciona uma nova tentativa de cobrança automaticamente.
+
+## Dados de faturamento
+
+Na seção **Dados de cobrança**, você pode manter atualizado o e-mail para recebimento de faturas e o CPF ou CNPJ que aparece nos documentos fiscais. Clique em **Editar** para atualizar os campos e em **Salvar** para confirmar.
+
+## Histórico de faturas
+
+A tabela de histórico lista todas as cobranças realizadas na assinatura:
+
+| Coluna | Descrição |
+|--------|-----------|
+| **Data** | Data da cobrança |
+| **Descrição** | Plano e período de referência |
+| **Valor** | Valor cobrado em reais |
+| **Status** | Pago, Pendente ou Falhou |
+| **Recibo** | Link para download do PDF |
+
+Clique em **Baixar recibo** em qualquer linha para obter o documento em PDF. Os recibos podem ser usados para reembolso ou lançamentos contábeis.
+
+## Reativando uma assinatura cancelada
+
+Se a assinatura foi cancelada e você deseja reativar:
+
+1. Acesse **Configurações → Assinatura**.
+2. No card do plano, clique em **Reativar assinatura**.
+3. Selecione o plano desejado (pode ser diferente do anterior).
+4. Confirme o método de pagamento e clique em **Reativar**.
+
+A reativação cria uma nova assinatura a partir da data atual. O histórico de conversas, agentes e configurações do workspace é preservado durante o período cancelado.
+
+## Cancelando a assinatura
+
+<Steps>
+  <Step title="Acesse Configurações → Assinatura">
+    Role até o fim da página ou localize o link **Cancelar assinatura** no card do plano.
+  </Step>
+  <Step title="Clique em Cancelar assinatura">
+    Um modal de confirmação é exibido, informando a data em que o acesso expira (fim do período pago atual) e o que acontece com os dados após o cancelamento.
+  </Step>
+  <Step title="Confirme o cancelamento">
+    Leia os termos e confirme. O cancelamento é imediato no sistema, mas o acesso ao workspace permanece ativo até o fim do período pago.
+  </Step>
+</Steps>
+
+<Warning>
+  O cancelamento não exclui os dados do workspace. As conversas, agentes e contatos ficam armazenados pelo período definido nos termos de serviço. Se você reativar a assinatura dentro desse período, tudo estará disponível.
+</Warning>
+
+## Boas práticas
+
+- Configure o e-mail de faturamento para uma caixa de grupo (ex.: financeiro@suaempresa.com) em vez de um e-mail pessoal. Isso garante que as faturas cheguem mesmo se o owner mudar.
+- Faça upgrade **antes** de ultrapassar os limites do plano. Upgrades retroativos não são aplicados — se o limite for atingido durante o mês, algumas mensagens podem ser bloqueadas.
+- Baixe os recibos mensalmente e armazene em local seguro para facilitar a conciliação contábil no fim do ano.
+- Revise o plano a cada 3 meses comparando o uso real com os limites. Workspaces em crescimento rápido frequentemente subutilizam planos superiores por tempo demais.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Dashboard de Uso" href="/guides/settings/usage">
+    Monitore o consumo antes de decidir sobre upgrade ou downgrade.
+  </Card>
+  <Card title="Planos disponíveis" href="/guides/billing/plans">
+    Compare todos os planos e recursos disponíveis na Timely.ai.
+  </Card>
+  <Card title="Visão geral de Configurações" href="/guides/settings/overview">
+    Mapa completo de todas as subseções de Configurações.
+  </Card>
+  <Card title="Chaves de API" href="/guides/team/api-keys">
+    Gerencie as chaves de acesso para integrações externas.
+  </Card>
+</CardGroup>

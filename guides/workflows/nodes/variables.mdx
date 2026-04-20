@@ -1,0 +1,226 @@
+---
+title: "Nó Variáveis"
+description: "Defina, armazene e transforme valores para reutilizar em qualquer ponto do workflow via {{ $vars.nome }}."
+---
+
+## O que faz
+
+O nó **Definir Variável** cria ou sobrescreve variáveis com escopo de execução: elas existem durante toda a vida de uma execução do workflow e ficam acessíveis em qualquer nó posterior via `{{ $vars.nome_da_variavel }}`.
+
+Use-o para:
+
+- Extrair campos de um payload volumoso e dar nomes claros a eles
+- Calcular valores derivados (ex.: concatenar nome e sobrenome)
+- Armazenar resultados intermediários que serão usados em múltiplos nós
+- Inicializar contadores ou flags de controle antes de um loop
+
+---
+
+## Entrada e saída
+
+**Entrada:** os dados disponíveis no contexto do workflow no momento da execução do nó — `$trigger`, `$json`, `$vars` existentes e outputs de nós anteriores via `node_key`.
+
+**Output:** cada variável definida fica disponível via `{{ $vars.nome }}` em todos os nós seguintes. O nó em si não produz um `$json` — ele apenas popula o estado compartilhado de variáveis.
+
+---
+
+## Configuração
+
+<Steps>
+  <Step title="Adicione o nó ao fluxo">
+    Na paleta de componentes, selecione **Ações > Definir Variável** e arraste para o canvas na posição desejada.
+  </Step>
+  <Step title="Clique em Adicionar para criar cada variável">
+    Cada variável tem três campos obrigatórios: **Nome**, **Tipo** e **Valor**.
+  </Step>
+  <Step title="Defina o Nome">
+    Use nomes descritivos em snake_case, sem espaços ou caracteres especiais. Exemplos: `cliente_email`, `total_pedido`, `flag_vip`.
+
+    Após digitar o nome, o painel mostra a expressão de acesso:
+    ```
+    {{ $vars.cliente_email }}
+    ```
+  </Step>
+  <Step title="Escolha o Tipo">
+    O tipo determina como o valor é armazenado e interpretado:
+
+    | Tipo | Quando usar |
+    |---|---|
+    | `string` | Textos, IDs, nomes, e-mails |
+    | `number` | Valores numéricos para cálculos ou comparações |
+    | `boolean` | Flags de controle: `true` ou `false` |
+    | `json` | Objetos ou arrays complexos |
+    | `expression` | Template dinâmico que referencia outros dados do workflow |
+  </Step>
+  <Step title="Defina o Valor">
+    - **string / number / boolean:** valor fixo ou campo dinâmico via `{{ $trigger.campo }}`
+    - **json:** editor de textarea com sintaxe JSON completa
+    - **expression:** template com qualquer expressão `{{ }}` — o valor é resolvido em tempo de execução
+  </Step>
+  <Step title="Adicione quantas variáveis precisar">
+    Um único nó pode definir múltiplas variáveis de uma vez. Isso evita encadear vários nós Definir Variável para operações simples.
+  </Step>
+</Steps>
+
+---
+
+## Tipos em detalhe
+
+### string
+
+Armazena texto. Suporta templates dinâmicos como valor.
+
+```
+Valor: {{ $trigger.body.nome }} {{ $trigger.body.sobrenome }}
+```
+
+Resultado: `"João Silva"`
+
+---
+
+### number
+
+Armazena número inteiro ou decimal. O campo aceita valores literais ou referências numéricas.
+
+```
+Valor: {{ $trigger.body.quantidade }}
+```
+
+Resultado: `12`
+
+---
+
+### boolean
+
+Aceita apenas `true` ou `false`. Útil para flags que controlam condicionais mais à frente no fluxo.
+
+```
+Valor: true
+```
+
+---
+
+### json
+
+Editor de bloco para objetos e arrays complexos. Suporta templates `{{ }}` dentro do JSON.
+
+```json
+{
+  "cliente_id": "{{ $trigger.body.id }}",
+  "plano":      "{{ $json.body.plano }}",
+  "ativo":      true
+}
+```
+
+---
+
+### expression
+
+O tipo mais flexível. O valor inteiro é tratado como um template — útil para concatenações, operações condicionais ou qualquer dado que precise de composição dinâmica.
+
+```
+{{ $trigger.body.ddd }}{{ $trigger.body.numero }}
+```
+
+Resultado: `"11999887766"`
+
+---
+
+## Exemplos
+
+### Extrair e renomear campos de um webhook
+
+<CodeGroup>
+```json Payload recebido no trigger
+{
+  "body": {
+    "customer": {
+      "full_name": "Ana Lima",
+      "contact_email": "ana@empresa.com",
+      "mobile": "5511988776655"
+    },
+    "order": {
+      "ref": "ORD-4821",
+      "total_brl": 1490.00
+    }
+  }
+}
+```
+
+```text Variáveis definidas no nó
+nome       (string)     → {{ $trigger.body.customer.full_name }}
+email      (string)     → {{ $trigger.body.customer.contact_email }}
+telefone   (string)     → {{ $trigger.body.customer.mobile }}
+pedido_id  (string)     → {{ $trigger.body.order.ref }}
+valor      (number)     → {{ $trigger.body.order.total_brl }}
+```
+
+```json Resultado acessível nos nós seguintes
+$vars.nome       = "Ana Lima"
+$vars.email      = "ana@empresa.com"
+$vars.telefone   = "5511988776655"
+$vars.pedido_id  = "ORD-4821"
+$vars.valor      = 1490.00
+```
+</CodeGroup>
+
+---
+
+### Inicializar contador para loop
+
+Antes de um nó Loop que processa uma lista de itens:
+
+```text
+contador   (number)   → 0
+total      (number)   → {{ $trigger.body.itens.length }}
+erros      (json)     → []
+```
+
+Dentro do loop, o nó JavaScript pode incrementar `vars.contador` a cada iteração.
+
+---
+
+### Construir objeto para envio HTTP
+
+Quando o nó HTTP precisa de um body complexo, monte-o em uma variável `json` primeiro:
+
+```json
+{
+  "destinatario": {
+    "nome":  "{{ $vars.nome }}",
+    "email": "{{ $vars.email }}"
+  },
+  "pedido": "{{ $vars.pedido_id }}",
+  "valor":  "{{ $vars.valor }}"
+}
+```
+
+No nó HTTP, use `{{ $vars.payload_envio }}` no campo de corpo.
+
+---
+
+## Escopo e imutabilidade
+
+- As variáveis existem **apenas durante a execução atual** — não persistem entre execuções diferentes do mesmo workflow.
+- Um nó posterior pode sobrescrever uma variável definindo uma com o **mesmo nome**; o valor anterior é perdido.
+- Variáveis definidas dentro de um loop ficam disponíveis fora do loop após cada iteração com o valor da última iteração.
+
+---
+
+## Limites
+
+| Parâmetro | Valor |
+|---|---|
+| Variáveis por nó | Sem limite prático |
+| Tamanho máximo de uma variável `json` | 1 MB |
+| Escopo | Execução atual (não persistente) |
+| Tipos suportados | `string`, `number`, `boolean`, `json`, `expression` |
+
+---
+
+## Próximos passos
+
+- [Nó JavaScript](/guides/workflows/nodes/javascript) — manipular variáveis com lógica customizada
+- [Nó HTTP Request](/guides/workflows/nodes/http) — usar variáveis como parâmetros de requisição
+- [Nó LLM](/guides/workflows/nodes/llm) — passar variáveis como entrada para transformação com IA
+- [Visão geral dos nós](/guides/workflows/nodes/overview) — ver todos os tipos de nó disponíveis

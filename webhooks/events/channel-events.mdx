@@ -1,0 +1,168 @@
+---
+title: "Eventos de canal"
+description: "Disparados quando canais são conectados, desconectados ou apresentam erros de comunicação"
+---
+
+Esses eventos monitoram a saúde dos seus canais de comunicação — WhatsApp, Instagram, widget, Telegram e outros. Use-os para reagir automaticamente a desconexões, alertar a equipe técnica e evitar que clientes fiquem sem resposta por causa de um canal caído.
+
+## Lista de eventos
+
+| Evento | Quando dispara |
+|--------|----------------|
+| `channel.connected` | Um canal é conectado com sucesso ao workspace |
+| `channel.disconnected` | Um canal perde a conexão |
+| `channel.error` | O canal apresenta erro recorrente sem se desconectar completamente |
+
+---
+
+## `channel.connected`
+
+### Quando dispara
+
+Um canal é conectado com sucesso — seja na primeira configuração, seja reconectado após uma desconexão. Para WhatsApp via QR Code, dispara no momento em que o scan é concluído. Para WABA, dispara após a verificação do webhook pela Meta.
+
+### Payload
+
+```json
+{
+  "event": "channel.connected",
+  "event_id": "evt_01HX8A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T10:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "channel_name": "Suporte WhatsApp",
+    "phone_number": "+5547988543326",
+    "provider": "waba",
+    "status": "connected",
+    "connected_by": "usr_321",
+    "connected_at": "2026-04-19T10:00:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `channel_id` | string | ID único do canal |
+| `channel_type` | enum | `whatsapp`, `instagram`, `widget`, `telegram`, `slack` |
+| `channel_name` | string | Nome dado ao canal no workspace |
+| `phone_number` | string \| null | Número do canal (para canais de telefonia) |
+| `provider` | string \| null | Provedor específico: `waba`, `qrcode`, `meta_ig`, etc. |
+| `status` | enum | Sempre `connected` nesse evento |
+| `connected_by` | string \| null | ID do usuário que realizou a conexão |
+| `connected_at` | string | Timestamp ISO 8601 da conexão |
+
+### Exemplo de uso
+
+<Note>
+  Use `channel.connected` para atualizar o status operacional no seu painel interno e notificar a equipe quando um canal estratégico voltar a funcionar após manutenção.
+</Note>
+
+---
+
+## `channel.disconnected`
+
+### Quando dispara
+
+Um canal perde a conexão com a plataforma. Para WhatsApp via QR Code, isso acontece quando o celular fica sem internet ou o WhatsApp Web é desconectado de outro lugar. Para WABA e Instagram, acontece quando as credenciais expiram ou o token é revogado.
+
+### Payload
+
+```json
+{
+  "event": "channel.disconnected",
+  "event_id": "evt_01HX8B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-19T23:15:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "channel_name": "Suporte WhatsApp",
+    "phone_number": "+5547988543326",
+    "provider": "waba",
+    "status": "disconnected",
+    "disconnection_reason": "token_expired",
+    "last_active_at": "2026-04-19T23:14:30Z",
+    "disconnected_at": "2026-04-19T23:15:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `status` | enum | Sempre `disconnected` nesse evento |
+| `disconnection_reason` | enum | `token_expired`, `revoked`, `phone_offline`, `session_conflict`, `unknown` |
+| `last_active_at` | string | Última vez que o canal estava operacional |
+| `disconnected_at` | string | Timestamp ISO 8601 da desconexão |
+
+### Exemplo de uso
+
+<Warning>
+  Configure alertas críticos para `channel.disconnected` — mensagens enviadas por contatos enquanto o canal está desconectado ficam enfileiradas, mas você não pode responder. Reconecte o canal o quanto antes pelo dashboard em **Canais**.
+</Warning>
+
+<Tip>
+  Para WhatsApp via QR Code, `disconnection_reason: "phone_offline"` é o mais comum. Considere migrar para WABA (WhatsApp Business API oficial) para evitar dependência do celular ficar ligado.
+</Tip>
+
+---
+
+## `channel.error`
+
+### Quando dispara
+
+O canal apresenta erros recorrentes mas ainda não perdeu a conexão completamente — por exemplo, falhas intermitentes de envio de mensagens, rate limits do canal sendo atingidos ou latência anormalmente alta. Esse evento é mais informativo que crítico, mas merece atenção.
+
+### Payload
+
+```json
+{
+  "event": "channel.error",
+  "event_id": "evt_01HX8C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T22:05:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "channel_name": "Suporte WhatsApp",
+    "phone_number": "+5547988543326",
+    "provider": "waba",
+    "status": "degraded",
+    "error_code": "131056",
+    "error_message": "Too many messages sent from this phone number in a short time",
+    "error_category": "rate_limit",
+    "affected_message_ids": [
+      "msg_01HX8C01",
+      "msg_01HX8C02",
+      "msg_01HX8C03"
+    ],
+    "occurred_at": "2026-04-19T22:05:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `status` | enum | `degraded` — o canal está com problemas mas ainda conectado |
+| `error_code` | string | Código de erro retornado pelo canal ou provedor |
+| `error_message` | string | Descrição legível do erro |
+| `error_category` | enum | `rate_limit`, `auth_error`, `provider_error`, `network_error`, `unknown` |
+| `affected_message_ids` | array | IDs das mensagens impactadas pelo erro (pode ser vazio) |
+| `occurred_at` | string | Timestamp ISO 8601 da ocorrência |
+
+### Exemplo de uso
+
+<Note>
+  Use `error_category: "rate_limit"` como sinal para ajustar o volume de disparos de broadcasts. Rate limits do WhatsApp Business API aumentam gradualmente conforme a reputação do número — não force o limite ou o número pode ser banido.
+</Note>
+
+<Info>
+  Se você receber `channel.error` com `error_category: "auth_error"` seguido em breve de `channel.disconnected`, o token do canal expirou. Vá em **Canais** no dashboard e reconecte o canal com as credenciais atualizadas.
+</Info>

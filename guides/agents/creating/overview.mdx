@@ -1,0 +1,115 @@
+---
+title: "Criando um agente"
+description: "Dois caminhos para criar um agente na Timely.ai: o wizard tradicional passo a passo ou a criação conversacional guiada pelo Time AI."
+---
+
+Criar um agente na Timely.ai leva menos de dois minutos. Você escolhe entre dois fluxos no momento da criação — ambos chegam ao mesmo resultado, mas com experiências diferentes.
+
+## Visão geral
+
+Ao clicar em **Novo agente** na seção Agentes, um modal de escolha é exibido:
+
+<Frame caption="Modal de escolha do fluxo de criação">
+  <img src="/images/screenshots/placeholder-agent-creation-choice.png" alt="Escolha entre criar com Time AI ou manualmente" />
+</Frame>
+
+<CardGroup cols={2}>
+  <Card title="Criar com o Time AI" icon="sparkles">
+    Fluxo conversacional — você descreve o agente em linguagem natural e o Time AI configura tudo automaticamente. Ideal para quem está começando.
+  </Card>
+  <Card title="Criar manualmente" icon="settings">
+    Wizard estruturado com etapas claras — nome, objetivo e configurações básicas. Ideal para quem quer controle total desde o início.
+  </Card>
+</CardGroup>
+
+## Criação com o Time AI (beta)
+
+O Time AI faz perguntas em linguagem natural para entender o contexto do seu agente e, ao final, gera o perfil e o prompt inicial automaticamente.
+
+<Steps>
+  <Step title="Inicie o fluxo conversacional">
+    Clique em **Criar com o Time AI** no modal de escolha. Um chat abre no painel central.
+  </Step>
+  <Step title="Descreva seu agente">
+    Responda às perguntas do Time AI: qual o nome do agente, o que ele deve fazer, qual o tom de comunicação, quais canais ele vai atender e se precisa de alguma restrição.
+
+    Exemplo de descrição:
+    ```
+    "Quero um agente chamado Sofia, para atendimento de e-commerce.
+    Ela deve responder dúvidas sobre pedidos, prazo de entrega e trocas.
+    Tom amigável, mas profissional. Sem emojis."
+    ```
+  </Step>
+  <Step title="Revise o rascunho gerado">
+    O Time AI exibe o nome, objetivo e um prompt inicial gerado. Você pode ajustar ou confirmar.
+  </Step>
+  <Step title="Agente criado">
+    O agente aparece na lista com status **Rascunho**. Agora você pode refinar prompt, adicionar treinamento e conectar tools.
+  </Step>
+</Steps>
+
+<Tip>
+Mesmo usando o Time AI para criar, você pode editar manualmente qualquer campo depois. O fluxo conversacional é um ponto de partida, não uma restrição.
+</Tip>
+
+## Criação manual (wizard)
+
+O wizard guia você por três etapas lineares com campos estruturados.
+
+<Steps>
+  <Step title="Nome do agente">
+    Digite o nome que o agente vai usar nas conversas. Esse nome fica visível para os clientes no widget e no WhatsApp.
+
+    <Frame caption="Etapa 1 — Nome do agente">
+      <img src="/images/screenshots/placeholder-agent-create-step-1.png" alt="Campo de nome do agente" />
+    </Frame>
+  </Step>
+  <Step title="Objetivo">
+    Descreva em uma ou duas frases o que o agente deve fazer. Esse texto alimenta o prompt inicial gerado automaticamente.
+
+    Exemplos:
+    - "Atender clientes no pós-venda, responder sobre status de pedidos e iniciar processos de troca."
+    - "Qualificar leads inbound, coletar nome, e-mail e orçamento antes de passar para o time comercial."
+  </Step>
+  <Step title="Configurações básicas">
+    Três opções de comportamento que você pode ativar ou desativar:
+
+    | Configuração | O que faz |
+    |---|---|
+    | Transferência para humano | Permite que o agente transfira a conversa para um atendente |
+    | Usar emojis | O agente pode incluir emojis nas respostas |
+    | Dividir respostas | Mensagens longas são quebradas em blocos menores (ideal para WhatsApp) |
+  </Step>
+  <Step title="Agente criado">
+    Clique em **Criar agente**. O agente aparece na lista com status **Rascunho**, pronto para configuração detalhada.
+  </Step>
+</Steps>
+
+## Depois da criação
+
+Com o agente criado, você acessa a tela de configuração completa com todas as abas disponíveis:
+
+<CardGroup cols={2}>
+  <Card title="Modelo" href="/guides/agents/settings/model">
+    Escolha o provedor e o modelo de LLM adequado ao caso de uso.
+  </Card>
+  <Card title="Prompt" href="/guides/agents/settings/prompt">
+    Escreva ou refine o prompt de sistema com o editor avançado.
+  </Card>
+  <Card title="Treinamento" href="/guides/agents/training">
+    Adicione documentos, sites e Q&A à base de conhecimento.
+  </Card>
+  <Card title="Tools" href="/guides/tools/composio">
+    Conecte apps externos para o agente executar ações reais.
+  </Card>
+</CardGroup>
+
+## Limites e boas práticas
+
+<Note>
+Agentes em status **Rascunho** não recebem mensagens de clientes. Publique o agente em um canal para ativá-lo.
+</Note>
+
+- Escolha um nome que reflita a persona do agente — clientes veem esse nome no chat.
+- Não pule a etapa de prompt: um prompt bem escrito reduz alucinações e melhora a consistência das respostas.
+- Configure as regras de transferência antes de publicar se sua operação tiver atendentes humanos.

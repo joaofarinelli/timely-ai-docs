@@ -1,0 +1,95 @@
+---
+title: "Anatomia de um agente"
+description: "Entenda os blocos que compõem um agente de IA na Timely.ai — de perfil e modelo até canais, voz e treinamento."
+---
+
+Um agente é a unidade central da Timely.ai. Ele conversa com seus clientes, executa tarefas, acessa ferramentas externas e pode transferir o atendimento para outro agente ou para um humano — tudo de forma autônoma.
+
+## Visão geral
+
+Todo agente é composto por seis blocos interdependentes. Você pode configurá-los na ordem que quiser, mas cada bloco impacta diretamente o comportamento final do agente.
+
+<CardGroup cols={3}>
+  <Card title="Perfil" icon="user">
+    Nome, avatar, objetivo e configurações básicas de comportamento (emojis, divisão de resposta, transferência para humano).
+  </Card>
+  <Card title="Modelo" icon="cpu">
+    O provedor de LLM e o modelo específico que o agente usa para raciocinar — OpenAI, Anthropic, Google ou OpenRouter.
+  </Card>
+  <Card title="Prompt" icon="file-text">
+    Instrução de sistema que define personalidade, tom, limites e fluxo de conversa. Editável com histórico de versões e melhoria automática por IA.
+  </Card>
+  <Card title="Treinamento" icon="book-open">
+    Base de conhecimento do agente: documentos, sites, textos livres, pares de Q&A e vídeos do YouTube.
+  </Card>
+  <Card title="Tools" icon="wrench">
+    Integrações com apps externos via Composio — Google Calendar, Notion, HubSpot, Stripe e mais 25 apps disponíveis.
+  </Card>
+  <Card title="Voz" icon="mic">
+    Síntese de voz com Cartesia, ElevenLabs ou Fish Audio, incluindo clonagem de voz personalizada.
+  </Card>
+</CardGroup>
+
+## Canais suportados
+
+Um agente pode ser publicado em múltiplos canais ao mesmo tempo:
+
+- **WhatsApp** — via integração com a API oficial Meta
+- **Instagram Direct** — respostas automáticas a mensagens diretas
+- **Widget de site** — chat incorporado via snippet JavaScript
+- **API** — consumo direto via endpoints REST para integrações customizadas
+
+## Regras de transferência
+
+Além dos seis blocos principais, cada agente pode ter até 10 **regras de transferência**. Uma regra define uma condição em linguagem natural (ex.: "quando o cliente solicitar falar com um humano") e um destino: outro agente ou um atendente da equipe.
+
+## Execuções e rastreabilidade
+
+Cada conversa processada pelo agente gera um **registro de execução** com todos os passos: chamadas ao modelo, ferramentas acionadas, erros e latências. Você pode inspecionar essas execuções no canvas visual em tempo real.
+
+## Como os blocos se conectam
+
+```
+Mensagem do cliente
+        ↓
+   [Canais] recebem e roteiam
+        ↓
+   [Modelo + Prompt] raciocinam
+        ↓
+   [Treinamento] fornece contexto via RAG
+        ↓
+   [Tools] executam ações externas
+        ↓
+   [Voz] converte a resposta (se necessário)
+        ↓
+   [Regras de Transferência] decidem handoff
+        ↓
+  Resposta ao cliente
+```
+
+<Note>
+Você não precisa configurar todos os blocos para publicar um agente. Um agente com apenas perfil, modelo e prompt já é funcional. Adicione treinamento e tools conforme a complexidade do seu caso de uso.
+</Note>
+
+## Limites e boas práticas
+
+- Cada workspace pode ter múltiplos agentes ativos simultaneamente.
+- Um agente sem prompt configurado usa um prompt padrão genérico — sempre escreva um prompt customizado para melhores resultados.
+- Tools e treinamento aumentam o custo em créditos por execução; calibre o modelo de acordo com o orçamento.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Criar um agente" href="/guides/agents/creating/overview">
+    Siga o passo a passo para criar seu primeiro agente — via wizard ou com a criação conversacional do Time AI.
+  </Card>
+  <Card title="Escolher o modelo certo" href="/guides/agents/settings/model">
+    Compare provedores, capacidades e custo em créditos para escolher o modelo ideal.
+  </Card>
+  <Card title="Escrever o prompt" href="/guides/agents/settings/prompt">
+    Aprenda a usar o editor de prompt com histórico de versões e melhoria automática.
+  </Card>
+  <Card title="Treinar o agente" href="/guides/agents/training">
+    Adicione documentos, sites, Q&A e vídeos à base de conhecimento.
+  </Card>
+</CardGroup>

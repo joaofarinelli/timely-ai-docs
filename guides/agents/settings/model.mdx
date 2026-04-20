@@ -1,0 +1,128 @@
+---
+title: "Modelos de IA"
+description: "Provedores suportados, comparativo de modelos, capacidades e custo em créditos para escolher o LLM certo para cada agente."
+---
+
+O modelo de linguagem define a inteligência e o custo de cada execução do agente. A Timely.ai suporta quatro provedores com modelos atualizados — você escolhe o mais adequado para cada caso de uso.
+
+## Visão geral
+
+Acesse a aba **Modelo** nas configurações do agente para alterar o provedor e o modelo a qualquer momento. A mudança entra em vigor imediatamente na próxima execução.
+
+<Frame caption="Seletor de modelo — provedores e lista de modelos disponíveis">
+  <img src="/images/screenshots/placeholder-agent-models.png" alt="Configuração de modelo do agente" />
+</Frame>
+
+## Provedores suportados
+
+<Tabs>
+  <Tab title="OpenAI">
+    Os modelos GPT da OpenAI são referência em capacidade agentica e raciocínio. Ideais para agentes que precisam executar múltiplas ferramentas em sequência.
+
+    | Modelo | Custo | Velocidade | Créditos/execução |
+    |---|---|---|---|
+    | GPT-5.2 | Alto | Médio | 5 |
+    | GPT-5.1 | Alto | Médio | 4 |
+
+    <Note>
+    Modelos GPT-5 não suportam ajuste de temperatura — o parâmetro de temperatura é ignorado e a API opera no modo padrão.
+    </Note>
+  </Tab>
+  <Tab title="Anthropic">
+    Os modelos Claude se destacam em instruções longas e complexas, raciocínio estruturado e segurança de conteúdo. Melhor opção para agentes de suporte com regras detalhadas.
+
+    | Modelo | Custo | Velocidade | Créditos/execução | Recomendado |
+    |---|---|---|---|---|
+    | Claude Opus 4.6 | Alto | Médio | 20 | — |
+    | Claude Sonnet 4.6 | Médio | Rápido | 4 | Sim |
+    | Claude Haiku 4.5 | Baixo | Muito rápido | 3 | — |
+
+    <Warning>
+    Quando o raciocínio (thinking) está ativado em modelos Anthropic, a temperatura é forçada para 1.0 pela API — o controle de temperatura na interface não tem efeito nesses casos.
+    </Warning>
+  </Tab>
+  <Tab title="Google">
+    Os modelos Gemini são multimodais — processam texto, imagens e documentos. Indicados para agentes que recebem arquivos ou imagens dos clientes.
+
+    | Modelo | Custo | Velocidade | Créditos/execução |
+    |---|---|---|---|
+    | Gemini 3.1 Pro Preview | Alto | Médio | 6 |
+    | Gemini 3.0 Pro Preview | Alto | Médio | 6 |
+    | Gemini 2.5 Pro | Alto | Médio | 4 |
+    | Gemini 2.5 Flash | Médio | Rápido | 2 |
+  </Tab>
+  <Tab title="OpenRouter">
+    OpenRouter é um gateway que dá acesso a modelos de múltiplos provedores através de uma única API. Ideal para experimentar modelos alternativos de menor custo.
+
+    | Modelo | Custo | Velocidade | Créditos/execução |
+    |---|---|---|---|
+    | Kimi K2.5 (Moonshot AI) | Baixo | Rápido | 1 |
+  </Tab>
+</Tabs>
+
+## Parâmetros de configuração
+
+Além do modelo, você ajusta dois parâmetros que afetam o comportamento das respostas:
+
+### Temperatura
+
+Controla a variabilidade das respostas. Escala de 0 a 1:
+
+- **Próximo de 0** — respostas mais determinísticas e consistentes. Ideal para suporte técnico, FAQ e cenários onde a precisão é crítica.
+- **Próximo de 1** — respostas mais criativas e variadas. Ideal para agentes de marketing, copywriting ou interações mais humanas.
+
+### Passos máximos
+
+Define o número máximo de etapas de raciocínio que o agente pode executar por mensagem (incluindo chamadas a tools). Padrão: 25.
+
+- Aumente para fluxos complexos com múltiplas ferramentas encadeadas.
+- Reduza para economizar créditos em casos de uso simples como FAQ.
+
+## Como escolher o modelo certo
+
+<AccordionGroup>
+  <Accordion title="Atendimento ao cliente e FAQ">
+    **Claude Haiku 4.5** ou **Gemini 2.5 Flash** — baixo custo, resposta rápida, suficiente para a maioria das perguntas frequentes.
+  </Accordion>
+  <Accordion title="Agente comercial com múltiplas tools">
+    **Claude Sonnet 4.6** (recomendado) ou **GPT-5.1** — equilíbrio entre inteligência, velocidade e custo. Suporta uso intenso de ferramentas.
+  </Accordion>
+  <Accordion title="Raciocínio complexo e análise de dados">
+    **Claude Opus 4.6** ou **Gemini 3.1 Pro Preview** — máxima capacidade analítica. Use quando a qualidade da resposta é mais importante que o custo.
+  </Accordion>
+  <Accordion title="Processamento de imagens e documentos">
+    **Gemini 2.5 Pro** ou **Gemini 3.1 Pro Preview** — capacidade multimodal nativa para análise de imagens, PDFs e planilhas enviados pelo cliente.
+  </Accordion>
+  <Accordion title="Alto volume com orçamento limitado">
+    **Kimi K2.5** via OpenRouter — custo muito baixo (1 crédito/execução) para casos de uso de texto simples com alto volume de mensagens.
+  </Accordion>
+</AccordionGroup>
+
+## Workspace LLM providers
+
+Além dos provedores nativos, workspaces no plano Enterprise podem configurar **provedores customizados** — conectando modelos hospedados em infraestrutura própria (ex.: modelos open source via API compatível com OpenAI).
+
+<Info>
+A configuração de provedores customizados está disponível em **Configurações do Workspace > Modelos de IA**. Entre em contato com o suporte para habilitar esse recurso.
+</Info>
+
+## Limites e boas práticas
+
+<Note>
+O custo em créditos por execução é uma estimativa. O consumo real varia conforme o tamanho do prompt, histórico da conversa e quantidade de chamadas a tools na mesma execução.
+</Note>
+
+- Comece com **Claude Sonnet 4.6** — é o modelo recomendado para a maioria dos casos de uso.
+- Monitore o consumo de créditos em **Configurações > Faturamento** para ajustar o modelo conforme o volume cresce.
+- Teste o agente no [Playground](/guides/agents/settings/internal-chat) antes de publicar ao alterar o modelo.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Editor de prompt" href="/guides/agents/settings/prompt">
+    Saiba como escrever um prompt eficiente para o modelo escolhido.
+  </Card>
+  <Card title="Testar o agente" href="/guides/agents/settings/internal-chat">
+    Use o Playground para validar o comportamento antes de publicar.
+  </Card>
+</CardGroup>

@@ -1,0 +1,106 @@
+---
+title: API Keys
+description: Crie, configure escopos, rotacione e revogue chaves de API para integrar sistemas externos à Timely.ai.
+---
+
+As API Keys da Timely.ai permitem que sistemas externos acessem os recursos da plataforma de forma programática — sem precisar de credenciais de usuário. Use chaves de API para integrar seu CRM, sistemas internos ou pipelines de automação.
+
+## Como funcionam as API Keys
+
+Cada chave é gerada com um prefixo `tml_` seguido de uma string aleatória. A chave completa é exibida **apenas no momento da criação** — depois disso, apenas o prefixo mascarado fica visível na interface por segurança. Guarde a chave em um gerenciador de segredos imediatamente após criar.
+
+As chaves são escopadas por workspace. Uma chave criada em um workspace não funciona em outros workspaces da mesma conta.
+
+## Criando uma API Key
+
+<Steps>
+  <Step title="Acesse Configurações > API Keys">
+    No menu lateral, clique em **Configurações** e selecione a aba **API Keys**.
+  </Step>
+  <Step title="Clique em Nova chave">
+    Clique no botão **Nova chave** no canto superior direito.
+  </Step>
+  <Step title="Nomeie a chave">
+    Dê um nome descritivo que identifique o sistema que vai usar a chave (ex.: "Integração CRM Salesforce", "Pipeline de dados").
+  </Step>
+  <Step title="Defina os escopos">
+    Selecione as permissões que a chave terá. Aplique o princípio de menor privilégio: conceda apenas os escopos necessários para a integração.
+  </Step>
+  <Step title="Configure a expiração (opcional)">
+    Defina por quantos dias a chave ficará válida. Deixe em branco para uma chave sem expiração. Recomendamos sempre configurar expiração em ambientes de produção.
+  </Step>
+  <Step title="Copie e guarde a chave">
+    A chave completa é exibida uma única vez. Copie imediatamente e armazene em um gerenciador de segredos (AWS Secrets Manager, 1Password, HashiCorp Vault, etc.).
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/api-keys-create.png" alt="Diálogo de criação de API Key com campos de nome, escopos e expiração" />
+</Frame>
+
+## Escopos disponíveis
+
+| Escopo | O que permite |
+|---|---|
+| `read` | Leitura de dados (conversas, agentes, contatos, analytics) |
+| `write` | Criação e atualização de registros |
+| `conversations` | Acesso específico a conversas (envio de mensagens, encerramento) |
+| `agents` | Gerenciamento de agentes via API |
+| `analytics` | Acesso a métricas e exportações |
+
+Para a maioria das integrações de leitura de dados, o escopo `read` é suficiente. Evite criar chaves com `write` em ambientes de produção a menos que a integração precise criar ou modificar registros.
+
+## Gerenciando chaves existentes
+
+Na lista de API Keys, cada entrada mostra:
+
+- Nome da chave
+- Prefixo mascarado (`tml_xxxx...`)
+- Status (ativa / inativa)
+- Último uso
+- Data de expiração (quando configurada)
+- Número de requisições realizadas
+
+<AccordionGroup>
+  <Accordion title="Ativar / Desativar uma chave">
+    Clique no menu de opções da chave e selecione **Ativar** ou **Desativar**. Desativar uma chave bloqueia imediatamente qualquer requisição que a utilize, sem deletá-la. Útil para pausar uma integração temporariamente.
+  </Accordion>
+  <Accordion title="Editar nome e descrição">
+    Clique em **Editar** no menu de opções para alterar o nome ou a descrição da chave. Escopos e expiração não podem ser alterados após a criação — nesse caso, delete e crie uma nova chave.
+  </Accordion>
+  <Accordion title="Ver estatísticas de uso">
+    Clique em **Ver uso** para abrir o painel de estatísticas da chave: total de requisições, taxa de sucesso, endpoints mais acessados e atividade recente.
+  </Accordion>
+  <Accordion title="Deletar (revogar) uma chave">
+    Clique em **Deletar** no menu de opções. A chave é revogada imediatamente e permanentemente. Qualquer sistema que a utilizava perde acesso na hora. Não é possível desfazer.
+  </Accordion>
+</AccordionGroup>
+
+## Rotação de chaves
+
+Rotacionar uma chave significa criar uma nova com os mesmos escopos e deletar a antiga. Faça isso:
+
+- Periodicamente (boa prática de segurança, recomendado a cada 90 dias)
+- Após suspeita de comprometimento
+- Quando um colaborador que tinha acesso à chave deixa a empresa
+
+Processo de rotação sem downtime:
+
+1. Crie uma nova chave com os mesmos escopos.
+2. Atualize a nova chave em todos os sistemas que usam a chave antiga.
+3. Teste para confirmar que os sistemas funcionam com a nova chave.
+4. Delete a chave antiga.
+
+## Segurança
+
+<Warning>
+  Nunca exponha API Keys em código-fonte, repositórios públicos ou logs de aplicação. Use variáveis de ambiente ou cofres de segredos para armazenar as chaves.
+</Warning>
+
+- Chaves com escopos de `write` devem ter expiração configurada.
+- Mantenha uma chave por integração — nunca reutilize a mesma chave em múltiplos sistemas.
+- Monitore o painel de uso regularmente para detectar uso anormal ou não esperado.
+
+## Permissões necessárias
+
+Apenas **owner** e **manager** podem criar, editar e revogar API Keys.

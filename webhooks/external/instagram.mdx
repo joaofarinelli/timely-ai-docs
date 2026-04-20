@@ -1,0 +1,237 @@
+---
+title: "Instagram (Meta Graph API)"
+description: "Formato dos webhooks da Instagram Graph API — mensagens DM, respostas a stories e menções recebidas pelo seu perfil"
+---
+
+Quando você conecta seu perfil Instagram na Timely.ai, a plataforma registra um webhook no Facebook App associado à sua conta Instagram Business. A Meta passa a enviar eventos desse perfil para a Timely, que os normaliza e os repassa para os [webhooks do seu workspace](/webhooks/overview).
+
+Esta página documenta o formato bruto que a Meta envia — útil para depuração e para quem mantém integrações diretas.
+
+## Pré-requisitos de configuração
+
+Para receber eventos do Instagram via webhook, seu app na Meta precisa ter:
+
+- Permissões `instagram_basic`, `instagram_manage_messages` e `pages_messaging`
+- Página do Facebook vinculada ao perfil Instagram Business
+- Campo `instagram` selecionado nas assinaturas de webhook
+
+<Info>
+  A Timely.ai gerencia toda essa configuração automaticamente quando você conecta o Instagram pelo dashboard em **Configurações → Canais → Instagram**. Você só precisa desta documentação se estiver integrando diretamente com a Graph API.
+</Info>
+
+## Validação da assinatura
+
+Idêntica ao WABA: a Meta usa o App Secret com HMAC-SHA256 no header `X-Hub-Signature-256`.
+
+```python Python
+import hashlib
+import hmac
+import os
+from flask import request, abort
+
+APP_SECRET = os.environ["META_APP_SECRET"]
+
+def verify_meta_signature():
+    signature = request.headers.get("X-Hub-Signature-256", "")
+    raw_body = request.get_data()
+    expected = "sha256=" + hmac.new(
+        APP_SECRET.encode(),
+        raw_body,
+        hashlib.sha256
+    ).hexdigest()
+    if not hmac.compare_digest(signature, expected):
+        abort(401)
+```
+
+## Payload: mensagem direta (DM)
+
+Uma mensagem enviada diretamente para o inbox da sua conta Instagram Business.
+
+```json
+{
+  "object": "instagram",
+  "entry": [
+    {
+      "id": "PAGE_ID",
+      "time": 1713456789,
+      "messaging": [
+        {
+          "sender": { "id": "IGSID_DO_USUARIO" },
+          "recipient": { "id": "IGSID_DA_SUA_CONTA" },
+          "timestamp": 1713456789000,
+          "message": {
+            "mid": "aGVsbG8gd29ybGQgaW4gYmFzZTY0",
+            "text": "Olá! Quero informações sobre o produto.",
+            "is_echo": false
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Mensagem com mídia anexada
+
+```json
+{
+  "message": {
+    "mid": "aGVsbG8gd29ybGQgaW4gYmFzZTY0",
+    "attachments": [
+      {
+        "type": "image",
+        "payload": {
+          "url": "https://cdn.instagram.com/image123.jpg"
+        }
+      }
+    ]
+  }
+}
+```
+
+O campo `type` pode ser `image`, `video`, `audio` ou `file`.
+
+## Payload: resposta a story (story reply)
+
+Quando um usuário responde a um story do seu perfil, o evento chega com referência ao story original.
+
+```json
+{
+  "object": "instagram",
+  "entry": [
+    {
+      "id": "PAGE_ID",
+      "time": 1713456800,
+      "messaging": [
+        {
+          "sender": { "id": "IGSID_DO_USUARIO" },
+          "recipient": { "id": "IGSID_DA_SUA_CONTA" },
+          "timestamp": 1713456800000,
+          "message": {
+            "mid": "bGVsbG8gd29ybGQgaW4gYmFzZTY0",
+            "text": "Adorei esse produto!",
+            "reply_to": {
+              "story": {
+                "id": "17858893269000001",
+                "url": "https://www.instagram.com/stories/sua_conta/17858893269000001/"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+<Note>
+  O link do story em `reply_to.story.url` expira. Não armazene a URL — armazene apenas o `id` do story para referência futura.
+</Note>
+
+## Payload: menção em story
+
+Quando um usuário menciona seu perfil em um story próprio.
+
+```json
+{
+  "object": "instagram",
+  "entry": [
+    {
+      "id": "PAGE_ID",
+      "time": 1713456900,
+      "changes": [
+        {
+          "field": "mentions",
+          "value": {
+            "media_id": "17858893269000002",
+            "comment_id": "17858893269000003"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+Para buscar os detalhes da menção (URL, conteúdo), use a Graph API:
+
+```bash
+GET https://graph.facebook.com/v19.0/{PAGE_ID}?fields=mentioned_media.fields(media_url,timestamp)&media_id={MEDIA_ID}
+```
+
+## Payload: reação a mensagem
+
+```json
+{
+  "messaging": [
+    {
+      "sender": { "id": "IGSID_DO_USUARIO" },
+      "recipient": { "id": "IGSID_DA_SUA_CONTA" },
+      "timestamp": 1713457000000,
+      "reaction": {
+        "mid": "aGVsbG8gd29ybGQgaW4gYmFzZTY0",
+        "action": "react",
+        "emoji": "\u2764\ufe0f"
+      }
+    }
+  ]
+}
+```
+
+O campo `action` pode ser `react` ou `unreact`.
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `entry[].id` | string | ID da Página do Facebook vinculada |
+| `messaging[].sender.id` | string | Instagram Scoped ID (IGSID) do usuário |
+| `messaging[].recipient.id` | string | IGSID da sua conta Business |
+| `messaging[].timestamp` | number | Timestamp em milissegundos |
+| `message.mid` | string | ID único da mensagem |
+| `message.is_echo` | boolean | `true` se a mensagem foi enviada pelo seu próprio perfil |
+| `message.reply_to.story` | object | Presente em respostas a stories |
+| `reaction.emoji` | string | Emoji Unicode da reação |
+
+## Diferença entre evento de messaging e changes
+
+A Meta usa dois formatos de envelope diferentes para o Instagram:
+
+- **`entry[].messaging`** — mensagens diretas, story replies, leituras e reações. Contém o array `messaging` com o remetente e destinatário.
+- **`entry[].changes`** — menções e atualizações de comentários. Contém o array `changes` com `field` e `value`.
+
+Seu handler precisa verificar qual chave está presente antes de processar.
+
+```typescript Node.js
+app.post("/webhook/instagram", (req, res) => {
+  const body = req.body;
+  if (body.object !== "instagram") return res.sendStatus(404);
+
+  for (const entry of body.entry) {
+    if (entry.messaging) {
+      for (const event of entry.messaging) {
+        if (event.message) handleDM(event);
+        if (event.reaction) handleReaction(event);
+      }
+    }
+    if (entry.changes) {
+      for (const change of entry.changes) {
+        if (change.field === "mentions") handleMention(change.value);
+      }
+    }
+  }
+
+  res.sendStatus(200);
+});
+```
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Webhooks da plataforma" icon="bell" href="/webhooks/overview">
+    Eventos normalizados que a Timely.ai envia para o seu servidor.
+  </Card>
+  <Card title="Canais — API Reference" icon="plug" href="/api-reference/channels/referencia">
+    Conecte e gerencie canais Instagram via API.
+  </Card>
+</CardGroup>

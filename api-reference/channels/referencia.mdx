@@ -1,0 +1,66 @@
+---
+title: "Referência de Channels"
+sidebarTitle: "Referência"
+description: "Endpoints para conectar e gerenciar canais de comunicação — WhatsApp, Instagram, Telegram e widget de site"
+---
+
+## Conceito
+
+Um **Channel** é a conexão entre um agente Timely.ai e uma plataforma de mensagens onde seus clientes estão. Cada canal representa uma conta ou número ativo: um número WhatsApp Business, um perfil Instagram Business, um bot do Telegram ou um widget de chat embutido no seu site. O agente associado ao canal recebe todas as mensagens que chegam por aquele canal e responde por ele.
+
+Um agente pode ter múltiplos canais associados. Um canal, no entanto, pertence a exatamente um agente por vez — se você precisar trocar o agente de um canal, basta atualizar a associação.
+
+## Tipos de canal
+
+| Tipo | Identificador | Observações |
+|------|--------------|-------------|
+| WhatsApp Business | `whatsapp` | Requer WABA aprovada pela Meta |
+| Instagram | `instagram` | Requer perfil Business e Página vinculada |
+| Telegram | `telegram` | Requer Bot Token do @BotFather |
+| Widget (site) | `widget` | Sem conta externa — gerado pela Timely |
+
+## Ciclo de vida
+
+```
+criar canal (disconnected)
+    │
+    ▼
+conectar (scanning QR / inserindo token)
+    │
+    ▼
+connected → recebe mensagens → agente processa
+    │
+    ├── reconectar se cair → connected
+    │
+    ▼
+desconectar ou deletar
+```
+
+Canais WhatsApp passam pelo fluxo de leitura de QR code ou vinculação com número oficial. O endpoint `GET /v1/channels/{id}/qr-code` retorna o QR code em base64 durante a janela de conexão.
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único do canal |
+| `agent_id` | string (UUID) | Agente associado |
+| `type` | enum | `whatsapp` \| `instagram` \| `telegram` \| `widget` |
+| `name` | string | Nome descritivo do canal |
+| `status` | enum | `connected` \| `disconnected` \| `error` |
+| `phone_number` | string | Número associado (para WhatsApp/Telegram) |
+| `username` | string | Username do perfil (para Instagram/Telegram) |
+| `widget_token` | string | Token público de inicialização do widget |
+| `created_at` | string | ISO 8601 de criação |
+| `last_connected_at` | string | ISO 8601 da última conexão bem-sucedida |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

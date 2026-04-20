@@ -1,0 +1,172 @@
+---
+title: "Rate Limits e Erros"
+description: "Limites de requisição por minuto, paginação e todos os códigos de erro da API"
+---
+
+## Rate limiting
+
+Cada API key está sujeita a um limite de **100 requisições por minuto**. O limite é contado por janela deslizante de 60 segundos, por chave.
+
+### Headers de controle
+
+Toda resposta inclui headers que informam o estado atual do seu limite:
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 87
+X-RateLimit-Reset: 1745078400
+```
+
+| Header | Descrição |
+|---|---|
+| `X-RateLimit-Limit` | Limite total da janela atual |
+| `X-RateLimit-Remaining` | Requisições restantes na janela |
+| `X-RateLimit-Reset` | Timestamp Unix em que o contador zera |
+
+### Quando o limite é atingido
+
+A API retorna `429 Too Many Requests` com o header `Retry-After` informando quantos segundos aguardar:
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 12
+Content-Type: application/json
+
+{
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Limite de 100 requisições por minuto atingido. Aguarde 12 segundos.",
+    "status": 429
+  }
+}
+```
+
+### Implementando retry com backoff
+
+```js
+async function requestWithRetry(url, options, maxAttempts = 3) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const res = await fetch(url, options);
+
+    if (res.status !== 429) return res;
+
+    const retryAfter = parseInt(res.headers.get("Retry-After") ?? "5", 10);
+    console.log(`Rate limited. Aguardando ${retryAfter}s (tentativa ${attempt}/${maxAttempts})`);
+    await new Promise(r => setTimeout(r, retryAfter * 1000));
+  }
+  throw new Error("Número máximo de tentativas atingido");
+}
+```
+
+<Tip>
+  Se você opera com volumes altos e atingir o limite com frequência, considere distribuir a carga por múltiplos workspaces ou entre em contato pelo **contato@timelyai.com.br** para discutir limites customizados no plano Enterprise.
+</Tip>
+
+## Paginação
+
+Todas as rotas de listagem suportam paginação via query params:
+
+```
+GET /v1/conversations?page=3&per_page=50
+```
+
+| Parâmetro | Padrão | Máximo | Descrição |
+|---|---|---|---|
+| `page` | `1` | — | Número da página |
+| `per_page` | `20` | `100` | Itens por página |
+
+A resposta inclui o envelope `meta` com total de registros:
+
+```json
+{
+  "data": [ ... ],
+  "meta": {
+    "page": 3,
+    "per_page": 50,
+    "total": 347,
+    "total_pages": 7
+  }
+}
+```
+
+Use `total_pages` para saber quando parar de paginar. Quando `page > total_pages`, o campo `data` retorna array vazio.
+
+## Códigos de erro
+
+A API usa status HTTP semânticos. Todos os erros seguem o mesmo formato de envelope:
+
+```json
+{
+  "error": {
+    "code": "CODIGO_DO_ERRO",
+    "message": "Descrição legível do problema.",
+    "status": 400
+  }
+}
+```
+
+### Tabela de erros
+
+| Status | Quando ocorre | O que fazer |
+|---|---|---|
+| `400 Bad Request` | Payload inválido, campo obrigatório ausente, formato incorreto | Leia `error.message` — ele especifica o campo problemático |
+| `401 Unauthorized` | Header `x-api-key` ausente, chave inválida ou revogada | Verifique a chave em **Configurações → API Keys** |
+| `403 Forbidden` | Chave válida, mas sem o escopo necessário para a operação | Adicione o escopo faltante à chave ou crie uma nova |
+| `404 Not Found` | Recurso não existe ou não pertence ao seu workspace | Confirme o ID e o workspace ativo |
+| `409 Conflict` | Recurso já existe (ex: canal com o mesmo nome, webhook duplicado) | Ajuste o payload ou atualize o recurso existente |
+| `429 Too Many Requests` | Limite de 100 req/min atingido | Use o header `Retry-After` para aguardar |
+| `500 Internal Server Error` | Erro inesperado no servidor da Timely.ai | Tente novamente. Se persistir, abra um ticket em **contato@timelyai.com.br** |
+
+### Códigos de erro internos (`error.code`)
+
+Além do status HTTP, o campo `code` identifica a causa exata:
+
+<AccordionGroup>
+  <Accordion title="Autenticação e autorização">
+    | Código | Descrição |
+    |---|---|
+    | `MISSING_API_KEY` | Header `x-api-key` não foi enviado |
+    | `INVALID_API_KEY` | Chave não existe ou foi revogada |
+    | `INSUFFICIENT_SCOPE` | Escopo necessário não está na chave |
+    | `WORKSPACE_ACCESS_DENIED` | Chave não tem acesso ao workspace informado |
+  </Accordion>
+
+  <Accordion title="Recursos não encontrados">
+    | Código | Descrição |
+    |---|---|
+    | `AGENT_NOT_FOUND` | Agente não existe neste workspace |
+    | `CONVERSATION_NOT_FOUND` | Conversa não encontrada |
+    | `CONTACT_NOT_FOUND` | Contato não encontrado |
+    | `CHANNEL_NOT_FOUND` | Canal não existe ou não está ativo |
+    | `WEBHOOK_NOT_FOUND` | Endpoint de webhook não encontrado |
+  </Accordion>
+
+  <Accordion title="Validação">
+    | Código | Descrição |
+    |---|---|
+    | `VALIDATION_ERROR` | Um ou mais campos com formato inválido |
+    | `MISSING_REQUIRED_FIELD` | Campo obrigatório ausente no payload |
+    | `INVALID_PHONE_FORMAT` | Número de telefone fora do formato E.164 |
+    | `PAYLOAD_TOO_LARGE` | Corpo da requisição excede o limite de 5 MB |
+  </Accordion>
+
+  <Accordion title="Limites e conflitos">
+    | Código | Descrição |
+    |---|---|
+    | `RATE_LIMIT_EXCEEDED` | 100 req/min atingido |
+    | `DUPLICATE_WEBHOOK_URL` | URL de webhook já cadastrada neste workspace |
+    | `CHANNEL_ALREADY_CONNECTED` | Canal já conectado a outro agente |
+    | `PLAN_LIMIT_REACHED` | Limite de agentes ou canais do plano atingido |
+  </Accordion>
+</AccordionGroup>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Checklist de produção" href="/start/production">
+    Verifique tudo antes de ir ao ar com clientes reais.
+  </Card>
+  <Card title="Webhooks" href="/start/webhooks-intro">
+    Receba eventos em tempo real sem fazer polling.
+  </Card>
+</CardGroup>

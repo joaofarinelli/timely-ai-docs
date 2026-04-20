@@ -1,0 +1,92 @@
+---
+title: "Integração Hotmart"
+description: "Conecte sua conta Hotmart para automatizar mensagens e fluxos com base em eventos de compra, cancelamento e assinatura."
+---
+
+A integração com a [Hotmart](https://www.hotmart.com) permite que a Timely.ai reaja automaticamente a eventos do seu produto digital — aprovação de compra, reembolso, cancelamento de assinatura e muito mais. O fluxo começa quando a Hotmart entrega um evento ao webhook da Timely.ai e termina com uma mensagem personalizada para o comprador.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-hotmart-integration.png" alt="Painel de integracao Hotmart" />
+</Frame>
+
+## Conectando sua conta
+
+<Steps>
+  <Step title="Acesse a pagina de integracao">
+    No menu lateral, vá até **Integrações > Hotmart**.
+  </Step>
+  <Step title="Adicione uma conexao">
+    Clique em **Nova Conexão** e informe um nome identificador. A Timely.ai gerará automaticamente a URL do webhook e o `hottok` de segurança.
+  </Step>
+  <Step title="Configure o webhook na Hotmart">
+    No painel da Hotmart, acesse **Ferramentas > Webhooks** e cadastre a URL gerada. Cole o `hottok` no campo correspondente da Hotmart para autenticar os eventos.
+  </Step>
+  <Step title="Confirme a conexao">
+    Clique em **Testar conexão** na Timely.ai. A Hotmart enviará um evento de teste e você verá a confirmação de recebimento.
+  </Step>
+</Steps>
+
+<Note>
+  A URL do webhook segue o padrão: `POST /functions/v1/hotmart-webhook?company_id={seu-company-id}`. Cada empresa tem sua própria URL — nunca compartilhe a mesma URL entre contas diferentes.
+</Note>
+
+## Eventos suportados
+
+A Timely.ai processa 14 tipos de eventos da Hotmart, organizados em dois grupos:
+
+### Ciclo de vida de compra
+
+| Evento Hotmart | O que significa |
+|---|---|
+| `PURCHASE_APPROVED` | Compra aprovada — gatilho principal de boas-vindas |
+| `PURCHASE_COMPLETE` | Pagamento compensado (tratado igual ao aprovado) |
+| `PURCHASE_CANCELED` | Compra cancelada pelo comprador |
+| `PURCHASE_REFUNDED` | Reembolso processado |
+| `PURCHASE_PROTEST` | Contestação aberta |
+| `PURCHASE_CHARGEBACK` | Chargeback registrado |
+| `PURCHASE_EXPIRED` | Prazo de pagamento expirado |
+| `PURCHASE_DELAYED` | Pagamento em análise |
+| `PURCHASE_BILLET_PRINTED` | Boleto gerado (aguardando pagamento) |
+| `PURCHASE_OUT_OF_SHOPPING_CART` | Abandono de carrinho |
+
+### Ciclo de vida de assinatura
+
+| Evento Hotmart | O que significa |
+|---|---|
+| `SUBSCRIPTION_CANCELLATION` | Assinatura cancelada |
+| `SWITCH_PLAN` | Mudança de plano |
+| `UPDATE_SUBSCRIPTION_CHARGE_DATE` | Alteração da data de cobrança |
+| `CLUB_FIRST_ACCESS` | Primeiro acesso ao Clube Hotmart |
+
+## Automações por evento
+
+Na aba **Automações** da integração, você ativa ou desativa individualmente as respostas automáticas para cada tipo de evento. Por exemplo:
+
+- `PURCHASE_APPROVED` → enviar mensagem de boas-vindas + link de acesso
+- `PURCHASE_REFUNDED` → enviar mensagem de confirmação de reembolso
+- `SUBSCRIPTION_CANCELLATION` → iniciar fluxo de retenção ou pesquisa de saída
+- `PURCHASE_OUT_OF_SHOPPING_CART` → enviar mensagem de recuperação de carrinho
+
+<Warning>
+  A autenticação usa o campo `hottok` enviado pela Hotmart no corpo do payload (ou no header `X-Hotmart-Hottok`). Eventos recebidos sem o hottok correto são rejeitados com `401`. Guarde o secret gerado em local seguro.
+</Warning>
+
+## Templates de mensagem
+
+Na aba **Templates**, você personaliza as mensagens enviadas para cada evento. Use variáveis dinâmicas populadas com dados do payload da Hotmart:
+
+| Variável | Dado |
+|---|---|
+| `{{comprador_nome}}` | Nome do comprador |
+| `{{produto_nome}}` | Nome do produto comprado |
+| `{{valor}}` | Valor da transação |
+| `{{data_compra}}` | Data da aprovação |
+
+## Log de eventos e métricas
+
+- **Aba Eventos**: exibe todos os eventos recebidos com status de processamento (`pending`, `processed`, `failed`), timestamp e payload completo.
+- **Aba Métricas**: gráficos de volume de eventos por tipo e taxa de sucesso de processamento ao longo do tempo.
+
+<Tip>
+  Use o log de eventos para depurar configurações. Se um evento aparece como `failed`, o payload recebido fica armazenado para inspeção — facilitando a identificação de problemas de mapeamento.
+</Tip>

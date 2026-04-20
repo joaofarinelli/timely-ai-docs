@@ -1,0 +1,223 @@
+---
+title: "Nó HTTP Request"
+description: "Chame qualquer API REST externa dentro do seu workflow — GET, POST, PUT, PATCH ou DELETE, com autenticação, headers customizados e retry automático."
+---
+
+## O que faz
+
+O nó **Requisição HTTP** permite que o workflow se comunique com qualquer serviço externo que tenha uma API REST. Use-o para buscar dados de um ERP, postar em uma API de CRM de terceiros, acionar um webhook externo ou integrar com serviços que não têm conector nativo na Timely.
+
+A execução é síncrona: o workflow aguarda a resposta antes de avançar para o próximo nó.
+
+---
+
+## Entrada e saída
+
+**Entrada:** configurações definidas no painel do nó — URL, método, headers, corpo e parâmetros de autenticação. Valores dinâmicos são resolvidos via templates `{{ }}` antes do envio.
+
+**Output exposto para nós seguintes:**
+
+```json
+{
+  "status":     200,
+  "statusText": "OK",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": { ... }
+}
+```
+
+Acesse o corpo da resposta via `{{ $json.body }}` ou um campo específico via `{{ $json.body.campo }}`.
+
+---
+
+## Configuração
+
+<Steps>
+  <Step title="Defina o método e a URL">
+    Escolha o método HTTP (`GET`, `POST`, `PUT`, `PATCH` ou `DELETE`) e insira a URL completa. Você pode usar templates dinâmicos na URL:
+
+    ```
+    https://api.meucrm.com/contatos/{{ $trigger.body.cliente_id }}
+    ```
+  </Step>
+  <Step title="Configure os headers">
+    Na aba **Headers**, adicione os headers necessários. Os mais comuns estão disponíveis em atalhos rápidos:
+
+    | Header | Uso |
+    |---|---|
+    | `Content-Type: application/json` | Body em JSON |
+    | `Authorization: Bearer {token}` | Autenticação Bearer |
+    | `Accept: application/json` | Forçar resposta JSON |
+    | `X-API-Key: {chave}` | Autenticação por API Key |
+
+    Para headers sensíveis, use variáveis de workflow em vez de valores fixos: `{{ $vars.api_token }}`.
+  </Step>
+  <Step title="Configure o corpo da requisição">
+    Disponível apenas para `POST`, `PUT` e `PATCH`. Escolha o tipo:
+
+    - **JSON** — corpo em formato JSON com suporte a templates `{{ }}`
+    - **Form Data** — pares chave/valor codificados como `application/x-www-form-urlencoded`
+    - **Texto** — corpo livre sem formatação
+    - **Sem corpo** — omite o body completamente
+
+    Exemplo de corpo JSON com dados dinâmicos:
+
+    ```json
+    {
+      "nome":     "{{ $trigger.body.cliente.nome }}",
+      "email":    "{{ $trigger.body.cliente.email }}",
+      "origem":   "timely-workflow",
+      "criado_em": "{{ $trigger.body.timestamp }}"
+    }
+    ```
+  </Step>
+  <Step title="Configurações avançadas">
+    Na aba **Avançado**, ajuste:
+
+    - **Timeout** — tempo máximo de espera (padrão: 10 000 ms, máximo: 30 000 ms)
+    - **Tentativas (retry)** — 0, 1, 2 ou 3 retries em caso de falha
+    - **Intervalo entre retries** — entre 100 ms e 10 000 ms
+  </Step>
+</Steps>
+
+---
+
+## Exemplos
+
+### GET — buscar dados de um contato
+
+<CodeGroup>
+```http Requisição enviada
+GET https://api.meucrm.com/contatos/C-4821
+Authorization: Bearer eyJhbGci...
+Accept: application/json
+```
+
+```json Saída do nó (disponível como $json)
+{
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "id": "C-4821",
+    "nome": "Carlos Menezes",
+    "plano": "enterprise",
+    "ativo": true
+  }
+}
+```
+</CodeGroup>
+
+No nó seguinte: `{{ $json.body.nome }}` retorna `"Carlos Menezes"`.
+
+---
+
+### POST — criar um lead em sistema externo
+
+<CodeGroup>
+```json Configuração do corpo (template)
+{
+  "nome":    "{{ $trigger.body.nome }}",
+  "email":   "{{ $trigger.body.email }}",
+  "telefone":"{{ $trigger.body.telefone }}",
+  "origem":  "webhook-timely"
+}
+```
+
+```json Saída do nó após execução
+{
+  "status": 201,
+  "statusText": "Created",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "id": "LEAD-00892",
+    "criado_em": "2026-04-19T14:30:00Z"
+  }
+}
+```
+</CodeGroup>
+
+---
+
+### Autenticação Basic
+
+Para APIs que usam Basic Auth, adicione manualmente o header `Authorization` com o valor codificado, ou use um nó JavaScript antes para montar o header:
+
+```javascript
+const usuario = vars.api_usuario;
+const senha   = vars.api_senha;
+const encoded = btoa(`${usuario}:${senha}`);
+return { authorization: `Basic ${encoded}` };
+```
+
+Em seguida, no nó HTTP, use `{{ node_js.authorization }}` no campo do header `Authorization`.
+
+---
+
+### Encadear dois nós HTTP
+
+Fluxo comum: buscar dados em uma API e enviar para outra.
+
+```
+[Webhook trigger]
+      |
+[HTTP GET — busca pedido na API do ERP]
+      |
+[Definir Variável — extrai campos relevantes]
+      |
+[HTTP POST — cria registro no sistema de logística]
+      |
+[Retornar Resposta]
+```
+
+No segundo nó HTTP, o corpo usa o output do primeiro:
+
+```json
+{
+  "pedido_externo": "{{ $vars.pedido_id }}",
+  "peso_kg":        "{{ $vars.peso }}",
+  "endereco":       "{{ $vars.endereco }}"
+}
+```
+
+---
+
+## Tratamento de erros
+
+Quando a requisição falha (timeout, status 4xx/5xx ou erro de rede), o nó marca a execução com `success: false`. Se retries estiverem configurados, o sistema tenta novamente com o intervalo definido antes de marcar como falha definitiva.
+
+Para tratar erros programaticamente, adicione um nó Condição após o HTTP verificando `{{ $json.status }}`:
+
+- Caminho verdadeiro: `{{ $json.status }}` é igual a `200` (ou `201`)
+- Caminho falso: qualquer outro status — redirecione para lógica de fallback
+
+---
+
+## Limites
+
+| Parâmetro | Valor |
+|---|---|
+| Timeout máximo | 30 000 ms (30 s) |
+| Retries | 0 a 3 |
+| Intervalo entre retries | 100 ms a 10 000 ms |
+| Tamanho máximo da resposta | 10 MB |
+| Protocolos suportados | HTTPS (recomendado), HTTP |
+
+<Warning>
+  Evite colocar tokens e senhas diretamente na URL ou no corpo. Prefira variáveis de workflow definidas em nós Definir Variável ou recuperadas de integrações seguras.
+</Warning>
+
+---
+
+## Próximos passos
+
+- [Nó Variáveis](/guides/workflows/nodes/variables) — armazenar campos da resposta para uso nos próximos nós
+- [Nó JavaScript](/guides/workflows/nodes/javascript) — transformar ou validar a resposta antes de continuar
+- [Nó LLM](/guides/workflows/nodes/llm) — processar texto retornado pela API com IA
+- [Visão geral dos nós](/guides/workflows/nodes/overview) — ver todos os tipos de nó disponíveis

@@ -1,0 +1,174 @@
+---
+title: "Treinamento"
+description: "Cinco tipos de treinamento para adicionar conhecimento ao agente — documentos, sites, texto livre, Q&A e YouTube — e como o pipeline RAG funciona."
+---
+
+O treinamento é a base de conhecimento do agente. Enquanto o prompt define o comportamento, o treinamento fornece o conteúdo — políticas, catálogos, manuais, perguntas frequentes e qualquer informação que o agente precise para responder com precisão.
+
+## Visão geral
+
+Acesse a aba **Treinamento** nas configurações do agente. Você pode adicionar conhecimento de cinco fontes diferentes, e elas coexistem na mesma base.
+
+<Frame caption="Aba de treinamento com os cinco tipos de fonte">
+  <img src="/images/screenshots/placeholder-agent-training.png" alt="Tela de treinamento do agente" />
+</Frame>
+
+## Como o RAG funciona
+
+A Timely.ai usa **Retrieval-Augmented Generation (RAG)** para injetar conhecimento relevante em cada execução:
+
+1. Todo conteúdo adicionado é dividido em **chunks** (trechos) e transformado em vetores de embedding.
+2. Quando o cliente envia uma mensagem, o sistema busca os chunks mais semanticamente próximos à pergunta.
+3. Os chunks recuperados são injetados no contexto do modelo junto com o prompt e o histórico da conversa.
+4. O modelo gera a resposta baseado nesse contexto enriquecido.
+
+<Info>
+Apenas os trechos mais relevantes são injetados — não o documento inteiro. Isso economiza tokens e mantém o contexto focado.
+</Info>
+
+## Tipos de treinamento
+
+<Tabs>
+  <Tab title="Documento">
+    Faça upload de arquivos diretamente na plataforma. Formatos suportados:
+
+    - PDF (manuais, contratos, catálogos)
+    - DOCX (documentos Word)
+    - TXT (textos simples)
+    - CSV (tabelas de dados)
+
+    <Steps>
+      <Step title="Acesse a aba Documentos">
+        Na seção de treinamento, clique em **Documentos** e depois em **Adicionar documento**.
+      </Step>
+      <Step title="Faça o upload">
+        Arraste o arquivo ou use o seletor. Arquivos grandes podem levar alguns segundos para processar.
+      </Step>
+      <Step title="Aguarde o processamento">
+        O sistema extrai o texto, divide em chunks e gera os embeddings. O status muda para **Processado** quando concluído.
+      </Step>
+    </Steps>
+
+    <Note>
+    Documentos com muitas imagens e pouco texto (ex.: apresentações com slides visuais) têm qualidade de extração reduzida. Prefira exportar para PDF com texto selecionável.
+    </Note>
+  </Tab>
+  <Tab title="Website">
+    Indexe páginas da web diretamente pela URL. O crawler acessa a página, extrai o conteúdo textual e o processa como treinamento.
+
+    <Steps>
+      <Step title="Adicione a URL">
+        Clique em **Adicionar site** e informe a URL completa (ex.: `https://seusite.com/politica-de-privacidade`).
+      </Step>
+      <Step title="Configure o rastreamento">
+        Escolha se o crawler deve seguir links internos da página (crawling profundo) ou processar apenas a URL informada.
+      </Step>
+      <Step title="Inicie o rastreamento">
+        Clique em **Rastrear**. O progresso é exibido em tempo real. URLs já processadas aparecem na lista com data de indexação.
+      </Step>
+    </Steps>
+
+    <Warning>
+    Páginas protegidas por login ou CAPTCHA não podem ser rastreadas. Para esse conteúdo, use o tipo **Texto** ou **Documento**.
+    </Warning>
+  </Tab>
+  <Tab title="Texto">
+    Para conteúdo que não existe em arquivo ou URL — políticas internas, instruções específicas, scripts de vendas.
+
+    <Steps>
+      <Step title="Abra o editor de texto">
+        Clique em **Adicionar texto**. Um editor de texto livre é exibido.
+      </Step>
+      <Step title="Cole ou escreva o conteúdo">
+        Adicione o texto diretamente. Você pode formatar com Markdown para melhor estruturação.
+      </Step>
+      <Step title="Salve e processe">
+        Clique em **Salvar**. O texto é imediatamente adicionado à base de conhecimento.
+      </Step>
+    </Steps>
+
+    <Tip>
+    Use títulos (`# Seção`) e listas para estruturar o conteúdo. O sistema de RAG respeita a estrutura e agrupa chunks por seção, melhorando a precisão da recuperação.
+    </Tip>
+  </Tab>
+  <Tab title="Q&A">
+    Pares de pergunta e resposta — a forma mais precisa de treinar um agente para perguntas frequentes específicas.
+
+    <Steps>
+      <Step title="Acesse o gerenciador de Q&A">
+        Clique em **Q&A** na aba de treinamento.
+      </Step>
+      <Step title="Adicione um par">
+        Clique em **Nova pergunta**. Preencha a pergunta exatamente como um cliente faria e a resposta ideal que o agente deve dar.
+      </Step>
+      <Step title="Organize por categoria e tags">
+        Use categorias (ex.: "Entrega", "Pagamento") e tags para organizar e facilitar a busca no gerenciador. Isso não afeta o comportamento do RAG, mas ajuda na manutenção.
+      </Step>
+    </Steps>
+
+    O gerenciador de Q&A tem busca integrada — filtre por texto, categoria ou tag para encontrar e editar entradas rapidamente.
+
+    <Tip>
+    Adicione variações da mesma pergunta como entradas separadas com a mesma resposta. Isso melhora a cobertura semântica e a taxa de recuperação para perguntas similares.
+    </Tip>
+  </Tab>
+  <Tab title="YouTube">
+    Transcreva vídeos do YouTube e adicione o conteúdo à base de conhecimento. Ideal para treinamentos em vídeo, tutoriais e webinars.
+
+    <Steps>
+      <Step title="Cole a URL do vídeo">
+        Acesse **YouTube** na seção de treinamento e informe a URL completa do vídeo.
+      </Step>
+      <Step title="Valide o vídeo">
+        O sistema exibe o título, canal e thumbnail para confirmação. Clique em **Processar**.
+      </Step>
+      <Step title="Aguarde a transcrição">
+        O sistema extrai a transcrição automática do YouTube (ou legenda fechada quando disponível), divide em chunks e gera os embeddings.
+      </Step>
+    </Steps>
+
+    <Note>
+    Vídeos sem legendas automáticas ou fechadas no YouTube não podem ser processados. O status do vídeo é exibido na lista após a tentativa de processamento.
+    </Note>
+  </Tab>
+</Tabs>
+
+## Visualizador de base de conhecimento
+
+Na aba **Treinamento**, você pode abrir o **Visualizador de Base de Conhecimento** para:
+
+- Listar todos os chunks indexados e seus metadados
+- Testar a busca semântica — simule uma pergunta e veja quais chunks seriam recuperados
+- Identificar conteúdo duplicado ou desatualizado para remoção
+
+## Limites de tokens
+
+O volume de conteúdo que pode ser armazenado e processado por execução tem limites dependentes do plano:
+
+| Plano | Armazenamento total | Chunks injetados por execução |
+|---|---|---|
+| Starter | 5 MB de texto processado | Até 5 chunks |
+| Pro | 50 MB de texto processado | Até 10 chunks |
+| Enterprise | Ilimitado | Até 20 chunks |
+
+<Warning>
+Adicionar muito conteúdo não garante respostas melhores. O sistema injeta apenas os chunks mais relevantes — a qualidade da organização e da escrita do conteúdo é mais importante que o volume.
+</Warning>
+
+## Boas práticas
+
+- Mantenha cada documento focado em um único tema. Documentos muito extensos e genéricos reduzem a precisão da recuperação.
+- Atualize o treinamento sempre que políticas ou produtos mudam. Conteúdo desatualizado causa respostas incorretas.
+- Prefira Q&A para perguntas críticas onde a resposta precisa ser exata e consistente.
+- Use o Visualizador de Base de Conhecimento para testar a busca antes de publicar o agente.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Conectar tools" href="/guides/tools/composio">
+    Adicione ferramentas para o agente agir além de responder — agendar, criar registros, enviar e-mails.
+  </Card>
+  <Card title="Testar o agente" href="/guides/agents/settings/internal-chat">
+    Use o Playground e a busca semântica para validar a base de conhecimento.
+  </Card>
+</CardGroup>

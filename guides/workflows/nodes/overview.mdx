@@ -1,0 +1,140 @@
+---
+title: "Visão geral dos nós"
+description: "Catálogo completo de nós disponíveis no editor de Workflows da Timely.ai — triggers, ações e lógica."
+---
+
+Todo workflow começa com um **Trigger**, passa por nós de **Lógica** e **Ação** e, quando precisa devolver dados ao chamador, termina em um nó de **Resposta**. Esta página apresenta todos os tipos disponíveis, uma descrição curta e os principais casos de uso de cada um.
+
+---
+
+## Triggers
+
+Os triggers são o ponto de entrada de qualquer workflow. Um workflow só pode ter um trigger ativo por vez. Ele define **o que inicia** a execução e disponibiliza o payload inicial para os nós seguintes via `{{ $trigger }}`.
+
+| Tipo | Identificador interno | Quando usar |
+|---|---|---|
+| **Webhook** | `trigger_webhook` | Receber um POST externo de outro sistema (ERP, e-commerce, formulário) |
+| **Agendamento** | `trigger_schedule` | Executar em horário fixo — relatórios diários, sincronizações periódicas |
+| **Requisição do Agente** | `trigger_agent_request` | Deixar um agente IA disparar este workflow como uma ferramenta |
+
+### Webhook
+
+Gera uma URL dedicada. O sistema aceita POST (ou o método que você configurar), valida a assinatura Bearer quando habilitada e expõe todo o payload — body, headers e query params — para os nós seguintes.
+
+Ideal para: notificações de pagamento, formulários de lead, callbacks de APIs parceiras.
+
+[Ver documentação completa do nó Webhook](/guides/workflows/nodes/webhook)
+
+### Agendamento (Cron)
+
+Configura uma expressão cron com fuso horário. A interface visual cobre intervalos comuns (5 min, 1 h, diário, semanal, mensal) sem precisar escrever cron manualmente; para casos avançados, o modo "Expressão Cron" aceita qualquer expressão de 5 campos.
+
+Ideal para: relatórios matinais, limpeza de filas, envio de lembretes recorrentes.
+
+### Requisição do Agente
+
+O agente chama este workflow via tool call com parâmetros estruturados que você define — nome, tipo (`string`, `number`, `boolean`) e se são obrigatórios. O workflow processa e pode retornar uma resposta estruturada de volta ao agente.
+
+Ideal para: consultar APIs externas durante uma conversa, enriquecer dados de contato em tempo real.
+
+---
+
+## Ações
+
+Os nós de ação realizam trabalho concreto: fazem chamadas HTTP, manipulam dados, interagem com o CRM ou invocam IA. Eles recebem os dados do nó anterior e produzem um output acessível pelos nós seguintes.
+
+| Tipo | Identificador interno | Quando usar |
+|---|---|---|
+| **Requisição HTTP** | `action_http_request` | Chamar qualquer API externa REST |
+| **Definir Variável** | `action_set_variable` | Armazenar ou transformar valores para reutilizar no fluxo |
+| **Atualizar Contato** | `action_contact` | Criar ou editar contatos no CRM |
+| **Código JavaScript** | `code_javascript` | Transformações de dados que exigem lógica customizada |
+| **Transformação IA** | `ai_transform` | Usar LLM para reescrever, classificar ou extrair informações |
+| **Retornar Resposta** | `action_webhook_response` | Enviar resposta HTTP ao chamador do webhook ou agente |
+
+### Requisição HTTP
+
+Suporta GET, POST, PUT, PATCH e DELETE. Configurável com headers customizados, autenticação Bearer, Basic ou API Key, corpo JSON / form-urlencoded, timeout de até 30 s e até 3 retries com intervalo configurável.
+
+[Ver documentação completa do nó HTTP](/guides/workflows/nodes/http)
+
+### Definir Variável
+
+Cria ou sobrescreve variáveis com tipos `string`, `number`, `boolean`, `json` ou `expression`. As variáveis ficam disponíveis em todo o workflow via `{{ $vars.nome_da_variavel }}`.
+
+[Ver documentação completa do nó Variáveis](/guides/workflows/nodes/variables)
+
+### Atualizar Contato
+
+Cria, atualiza ou faz upsert de contatos no CRM da Timely. O identificador pode ser telefone, e-mail ou ID interno. Suporta nome, telefone, e-mail, estágio de pipeline e tags.
+
+### Código JavaScript
+
+Executa JS em um Worker isolado. Acesso às variáveis do fluxo via `input`, `trigger` e `vars`. Timeout de 10 segundos, sem acesso à rede ou ao sistema de arquivos.
+
+[Ver documentação completa do nó JavaScript](/guides/workflows/nodes/javascript)
+
+### Transformação IA
+
+Chama um modelo de linguagem diretamente (sem persona de agente) para processar um campo de entrada com base em um prompt. Suporta saída em texto ou JSON estruturado com schema opcional.
+
+[Ver documentação completa do nó LLM](/guides/workflows/nodes/llm)
+
+### Retornar Resposta
+
+Nó terminal que encerra o workflow e envia uma resposta HTTP ao chamador. Configurável com status code, Content-Type e corpo dinâmico via templates `{{ }}`. Obrigatório quando o trigger está no modo `response_mode: node`.
+
+---
+
+## Lógica
+
+Os nós de lógica controlam o fluxo de execução — bifurcam, ramificam, repetem ou pausam. Eles não produzem dados novos por si só, mas determinam quais nós serão executados a seguir.
+
+| Tipo | Identificador interno | Quando usar |
+|---|---|---|
+| **Condição (If/Else)** | `logic_condition` | Bifurcar o fluxo com base em uma condição booleana |
+| **Switch** | `logic_switch` | Ramificar em mais de dois caminhos com base em um valor |
+| **Loop** | `logic_loop` | Iterar sobre cada item de um array |
+| **Atraso** | `logic_delay` | Pausar a execução por um tempo configurável |
+
+### Condição (If/Else)
+
+Avalia um conjunto de regras com operadores como `igual a`, `contém`, `começa com`, `regex` e outros doze operadores. As regras podem ser combinadas com `AND` ou `OR`. Produz dois caminhos de saída: verdadeiro e falso.
+
+### Switch
+
+Compara um campo com múltiplos valores definidos (igualdade, contém ou regex) e roteia para o caso correspondente. Sempre possui um caminho padrão para quando nenhum caso coincide.
+
+### Loop
+
+Itera sobre um array, executando o subfluxo interno para cada item. Em cada iteração, expõe o item atual via `{{ $vars.item }}` e o índice via `{{ $vars.index }}`. Limite máximo de 100 iterações por execução.
+
+### Atraso
+
+Pausa o workflow por segundos, minutos ou horas antes de continuar. Útil para respeitar janelas de tempo ou escalonar envios.
+
+---
+
+## Referência rápida de variáveis globais
+
+Todos os nós têm acesso às seguintes referências de dados durante a execução:
+
+| Expressão | Descrição |
+|---|---|
+| `{{ $trigger }}` | Payload completo do trigger (body, headers, query) |
+| `{{ $trigger.campo }}` | Campo específico do payload do trigger |
+| `{{ $json }}` | Output do nó imediatamente anterior |
+| `{{ $vars.nome }}` | Variável definida por um nó Definir Variável |
+| `{{ node_key.campo }}` | Output de um nó específico pelo seu identificador |
+
+---
+
+## Próximos passos
+
+- [Visão geral de Workflows](/guides/workflows/overview) — como criar, publicar e monitorar workflows
+- [Nó Webhook](/guides/workflows/nodes/webhook) — receber requisições externas
+- [Nó Agente](/guides/workflows/nodes/agent) — integrar agentes IA no workflow
+- [Nó HTTP](/guides/workflows/nodes/http) — chamar APIs externas
+- [Nó Variáveis](/guides/workflows/nodes/variables) — gerenciar estado no fluxo
+- [Nó LLM](/guides/workflows/nodes/llm) — transformações com IA
+- [Nó JavaScript](/guides/workflows/nodes/javascript) — lógica customizada

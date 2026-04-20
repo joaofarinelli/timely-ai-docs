@@ -1,0 +1,109 @@
+---
+title: "Ferramentas de Datagrid"
+description: "Permita que o agente leia e escreva em tabelas customizadas da Timely.ai — catálogos de produtos, listas de imóveis, registros de leads e mais."
+---
+
+## Visão geral
+
+As **ferramentas de Datagrid** conectam o agente às tabelas customizadas (datasheets) que você cria na Timely.ai. Com elas, o agente pode consultar, inserir e atualizar registros durante uma conversa — de forma autônoma, sem que o usuário precise sair do chat.
+
+Pense nas tabelas como planilhas estruturadas dentro da Timely.ai, mas com suporte a busca semântica e integração direta com o agente. Elas são ideais para dados que mudam com frequência e que o agente precisa acessar em tempo real — catálogo de produtos com disponibilidade, lista de imóveis com filtros, base de leads, agenda de horários disponíveis, entre outros.
+
+## Ações disponíveis
+
+O agente pode executar quatro ações em um Datagrid:
+
+| Ação | Descrição |
+|---|---|
+| `semantic_search` | Busca registros usando similaridade semântica — encontra linhas cujo conteúdo é semanticamente próximo da consulta, mesmo sem correspondência exata de palavras. |
+| `similarity_search` | Busca por texto com correspondência aproximada — útil para buscas por nome, código ou descrição curta. |
+| `insert_row` | Insere um novo registro na tabela com os valores informados pelo agente. |
+| `update_row` | Atualiza um registro existente identificado pelo `row_id`. |
+
+A busca semântica usa o mesmo modelo de embeddings da busca na base de conhecimento (`text-embedding-3-small`, 1.536 dimensões), garantindo que o agente encontre registros relevantes mesmo quando o usuário usa termos diferentes dos cadastrados.
+
+## Como configurar
+
+<Steps>
+  <Step title="Crie a tabela no Datagrid">
+    Acesse [Tabelas](/guides/tables/overview) no menu principal e crie uma nova tabela. Defina as colunas necessárias com os tipos corretos: texto, número ou booleano.
+
+    Colunas marcadas como **obrigatórias** serão exigidas pelo agente ao inserir um novo registro.
+  </Step>
+  <Step title="Popule a tabela com dados">
+    Importe seus dados (CSV, planilha) ou adicione registros manualmente. Os registros são indexados automaticamente para busca semântica após a inserção.
+  </Step>
+  <Step title="Abra as configurações do agente">
+    No agente desejado, vá até a aba de ferramentas e localize a seção **Datagrid**. Você verá as tabelas disponíveis no workspace.
+  </Step>
+  <Step title="Vincule a tabela ao agente">
+    Selecione a tabela que o agente deve acessar. Em seguida, defina quais ações o agente pode executar nessa tabela:
+
+    - Habilite **busca** (semântica e/ou similaridade) se o agente precisa consultar registros.
+    - Habilite **inserção** se o agente pode criar novos registros.
+    - Habilite **atualização** se o agente pode modificar registros existentes.
+
+    <Warning>
+    Habilite inserção e atualização apenas quando o caso de uso realmente exige. O agente pode inserir ou modificar dados incorretos se o prompt não estiver bem orientado. Comece com leitura e valide antes de liberar escrita.
+    </Warning>
+  </Step>
+  <Step title="Configure as instruções da ferramenta">
+    Escreva uma instrução clara descrevendo o conteúdo da tabela e quando o agente deve usá-la. Exemplo: "Esta tabela contém o catálogo de apartamentos disponíveis para locação. Use a busca semântica quando o cliente descrever o tipo de imóvel que procura."
+
+    Essa instrução é injetada no prompt do sistema do agente.
+  </Step>
+  <Step title="Teste no Playground">
+    Faça consultas que devem acionar a ferramenta e verifique se o agente retorna os registros corretos e formata bem a resposta.
+  </Step>
+</Steps>
+
+## Casos de uso
+
+### Catálogo de produtos
+
+Configure uma tabela com colunas como nome, descrição, preço e disponibilidade. O agente usa a busca semântica para encontrar produtos que correspondem ao que o cliente descreveu — mesmo que use palavras diferentes das do cadastro.
+
+Exemplo de conversa:
+> Usuário: "Tem alguma coisa pra presente de criança de 5 anos?"
+> Agente: (busca semanticamente por "presente criança 5 anos") → retorna produtos da categoria infantil com faixa etária adequada.
+
+### Lista de imóveis
+
+Tabela com tipo de imóvel, localização, metragem, número de quartos e valor. O agente filtra semanticamente com base na descrição do cliente e apresenta as opções disponíveis com formatação clara.
+
+### Registro de leads
+
+O agente insere novos leads captados na conversa diretamente na tabela — nome, e-mail, telefone, interesse e canal de origem. Integra com o fluxo de atendimento sem precisar de uma integração externa de CRM.
+
+### Base de preços dinâmica
+
+Tabela atualizada frequentemente com preços, promoções e condições. O agente consulta antes de responder sobre valores, garantindo que sempre usa a informação mais recente.
+
+### Controle de disponibilidade
+
+Para negócios com vagas, horários ou estoques limitados. O agente consulta a disponibilidade em tempo real e, quando o cliente confirma, atualiza o registro para refletir a reserva.
+
+## Boas práticas
+
+- **Nomeie as colunas com clareza**: o agente usa o nome da coluna para interpretar o dado. "preco_reais" é melhor do que "pr" ou "valor".
+- **Marque colunas obrigatórias**: evita que o agente insira registros incompletos.
+- **Use colunas de tipo correto**: datas como texto podem dificultar comparações; valores numéricos devem ser do tipo número para suportar operações matemáticas.
+- **Limite o número de resultados retornados**: o padrão é 10 resultados por busca, com limite de 100. Para a maioria dos casos, 5 a 10 resultados são suficientes para o agente formular uma boa resposta.
+- **Revise os dados periodicamente**: registros desatualizados geram respostas incorretas — especialmente em tabelas de estoque, preços e disponibilidade.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Tabelas customizadas" href="/guides/tables/overview">
+    Aprenda a criar e gerenciar tabelas (datasheets) no workspace.
+  </Card>
+  <Card title="Busca na base de conhecimento" href="/guides/tools/knowledge-search">
+    Entenda a diferença entre busca em Datagrid e busca na base de conhecimento.
+  </Card>
+  <Card title="Visão geral das ferramentas" href="/guides/tools/overview">
+    Compare todos os tipos de ferramentas disponíveis na Timely.ai.
+  </Card>
+  <Card title="Integrações Composio" href="/guides/tools/composio">
+    Conecte apps externos como Google Sheets, Airtable e Notion ao agente.
+  </Card>
+</CardGroup>

@@ -1,0 +1,88 @@
+---
+title: "Referência de MCP Servers"
+sidebarTitle: "Referência"
+description: "Endpoints para conectar servidores MCP aos agentes — expanda as capacidades de ação da IA com ferramentas externas"
+---
+
+## Conceito
+
+**MCP Servers** (Model Context Protocol) são servidores externos que expõem ferramentas e recursos para que os agentes da Timely.ai possam executar ações no mundo real durante uma conversa. Em vez de o agente apenas responder com texto, ele pode usar ferramentas do MCP para consultar um banco de dados, criar um evento no calendário, buscar um pedido no e-commerce, enviar um email ou qualquer outra ação que o servidor MCP suporte.
+
+O protocolo MCP é um padrão aberto — qualquer servidor compatível pode ser conectado a um agente Timely. Você pode usar servidores públicos disponíveis na comunidade ou desenvolver o seu próprio para integrar sistemas internos da sua empresa.
+
+## Como funciona a integração
+
+```
+cliente envia mensagem
+    │
+    ▼
+agente IA processa e decide usar uma tool
+    │
+    ▼
+Timely.ai chama o MCP Server com os parâmetros da tool
+    │
+    ▼
+MCP Server executa a ação e retorna o resultado
+    │
+    ▼
+agente incorpora o resultado na resposta ao cliente
+```
+
+## Ciclo de vida de um MCP Server
+
+```
+adicionar servidor (URL + configuração)
+    │
+    ▼
+conectar → Timely faz handshake com o servidor
+    │
+    ▼
+listar tools disponíveis
+    │
+    ▼
+ativar tools específicas no agente
+    │
+    ├── sincronizar tools (atualizar lista)
+    │
+    ├── desativar tools específicas
+    │
+    └── desconectar / deletar
+```
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único do MCP Server no workspace |
+| `agent_id` | string (UUID) | Agente ao qual está conectado |
+| `name` | string | Nome descritivo do servidor |
+| `url` | string | URL do endpoint MCP (SSE ou HTTP) |
+| `transport` | enum | `sse` \| `http` |
+| `status` | enum | `connected` \| `disconnected` \| `error` |
+| `auth_type` | enum | `none` \| `bearer` \| `api_key` |
+| `auth_token` | string | Token de autenticação (write-only) |
+| `tools_count` | number | Quantidade de tools disponíveis no servidor |
+| `active_tools` | array | Lista de slugs das tools ativadas no agente |
+| `created_at` | string | ISO 8601 de adição ao workspace |
+
+## Campos de uma Tool
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `slug` | string | Identificador único da tool no servidor |
+| `name` | string | Nome legível da tool |
+| `description` | string | O que a tool faz (usado pelo LLM para decidir quando usá-la) |
+| `parameters` | object | JSON Schema dos parâmetros da tool |
+| `active` | boolean | Se a tool está ativada para o agente |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

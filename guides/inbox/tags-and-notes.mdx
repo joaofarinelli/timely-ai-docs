@@ -1,0 +1,108 @@
+---
+title: "Tags e Notas"
+description: "Organize conversas com etiquetas, adicione notas internas visíveis apenas para a equipe e mantenha trilha de auditoria completa"
+---
+
+Tags e notas são as ferramentas de organização e colaboração interna da Inbox. Tags categorizam conversas para filtros e relatórios; notas são comentários internos que o contato nunca vê, usados para passar contexto entre atendentes ou registrar informações importantes da thread.
+
+<img
+  src="/images/screenshots/placeholder-tags-notes-panel.png"
+  alt="Painel lateral com tags e notas de uma conversa"
+  className="rounded-lg border"
+/>
+
+## Tags
+
+### O que são
+
+Tags são etiquetas de texto livre aplicadas a uma conversa. Elas aparecem como badges coloridos na lista de conversas e podem ser usadas como filtro na Inbox e em relatórios de Analytics.
+
+Exemplos de uso:
+
+- `cobrança` — conversa relacionada a pagamento ou fatura
+- `reclamação` — cliente insatisfeito, para monitorar volume de reclamações
+- `lead-quente` — oportunidade de venda identificada
+- `bug-reportado` — erro de produto relatado pelo contato
+- `vip` — contato estratégico que merece atenção prioritária
+
+### Adicionando tags
+
+<Steps>
+  <Step title="Abra a conversa">
+    Selecione a thread na lista de conversas para carregar o painel central.
+  </Step>
+  <Step title="Acesse o painel lateral">
+    No painel de contexto à direita (ou no menu de ações no cabeçalho), clique em **Tags**.
+  </Step>
+  <Step title="Digite ou selecione">
+    Comece a digitar para filtrar tags existentes ou crie uma nova pressionando **Enter**. A tag é criada no escopo do workspace.
+  </Step>
+  <Step title="Confirme">
+    A tag aparece imediatamente na lista de conversas e no cabeçalho da thread.
+  </Step>
+</Steps>
+
+<Tip>
+  Crie uma convenção de nomenclatura para as tags antes de começar — ex: prefixos `tipo-*`, `status-*`, `produto-*`. Isso facilita muito a filtragem e os relatórios de Analytics.
+</Tip>
+
+### Filtrando por tags
+
+Na Inbox, use o filtro avançado para selecionar uma ou mais tags. Conversas precisam ter **todas** as tags selecionadas para aparecer (lógica AND). Para OR, use filtros separados em abas diferentes.
+
+<Note>
+  Tags aplicadas por atendentes também podem ser inferidas automaticamente pelo agente de IA via regras de handover. Conversas com certos padrões recebem tags como `"reclamação"` ou `"cancelamento"` antes mesmo de entrar na fila.
+</Note>
+
+## Notas internas
+
+### O que são
+
+Notas são comentários privados da equipe, visíveis apenas para atendentes e managers. O contato nunca recebe nem vê as notas. São ideais para:
+
+- Passar briefing entre turnos de atendimento
+- Registrar informações sensíveis (ex: "cliente ameaçou ação legal")
+- Anotar combinados feitos fora da plataforma
+- Documentar exceções aprovadas por supervisão
+
+### Adicionando uma nota
+
+<Steps>
+  <Step title="Abra a conversa">
+    Selecione a thread na Inbox.
+  </Step>
+  <Step title="Clique em 'Nota Interna'">
+    No rodapé do chat, troque o modo de resposta para **Nota**. O campo de texto muda de cor para indicar o modo interno.
+  </Step>
+  <Step title="Escreva e envie">
+    Digite o comentário e pressione **Enter**. A nota aparece na timeline do chat com um badge diferenciado — sem confundir com mensagens reais.
+  </Step>
+</Steps>
+
+### Trilha de auditoria
+
+<CardGroup cols={2}>
+  <Card title="Timeline completa" icon="timeline">
+    Tags adicionadas, notas criadas, mudanças de status e eventos de Takeover aparecem juntos na timeline cronológica da conversa.
+  </Card>
+  <Card title="Autoria registrada" icon="user-check">
+    Cada nota e cada mudança de tag registra o ID e o nome do atendente responsável, com timestamp ISO 8601.
+  </Card>
+  <Card title="Imutabilidade" icon="lock">
+    Notas não podem ser editadas após criação — apenas excluídas por owners e managers. Isso garante integridade da trilha.
+  </Card>
+  <Card title="Exportação" icon="download">
+    Histórico de notas e tags é incluído na exportação de conversa via API. Útil para processos de compliance.
+  </Card>
+</CardGroup>
+
+<Note>
+  Atendentes com role `attendant` podem criar e visualizar notas, mas não excluí-las. Apenas `manager` e `owner` têm permissão de exclusão para garantir rastreabilidade completa.
+</Note>
+
+## Boas práticas
+
+- **Seja objetivo** nas notas — o próximo atendente precisa entender em segundos
+- **Use tags consistentes** — evite sinônimos como `cobranca`, `pagamento` e `fatura` para o mesmo assunto
+- **Revise tags periodicamente** — faça uma limpeza mensal de tags que não fazem mais sentido para o negócio
+- **Combine tags + notas** — tags para categorização, notas para contexto detalhado

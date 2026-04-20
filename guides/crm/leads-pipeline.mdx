@@ -1,0 +1,114 @@
+---
+title: "Pipeline de Leads"
+description: "Board Kanban para gerenciar leads por estágio de funil, com drag-and-drop, automação de transição e score de qualificação"
+---
+
+O Pipeline de Leads é um board Kanban que organiza seus contatos em estágios de funil de vendas. Cada card representa um lead, e você move ele entre colunas conforme o avanço da negociação — manualmente por drag-and-drop ou automaticamente via regras de automação.
+
+<img
+  src="/images/screenshots/placeholder-leads-kanban.png"
+  alt="Board Kanban do Pipeline de Leads com estágios e cards"
+  className="rounded-lg border"
+/>
+
+## Estágios padrão
+
+O pipeline vem com sete estágios predefinidos, mas você pode personalizar a lista:
+
+| Estágio | Cor | Descrição |
+|---------|-----|-----------|
+| **Novo** | Azul | Lead recém-criado ou importado |
+| **Contatado** | Amarelo | Primeiro contato realizado |
+| **Qualificado** | Verde | Perfil confirma potencial de compra |
+| **Proposta** | Roxo | Proposta comercial enviada |
+| **Negociação** | Laranja | Em processo de fechamento |
+| **Ganho** | Verde escuro | Venda concluída |
+| **Perdido** | Vermelho | Oportunidade encerrada sem venda |
+
+<Note>
+  O agente de IA pode mover leads automaticamente entre estágios via a ferramenta `update-lead-stage`. Configure no prompt quando e como o agente deve fazer essa transição — por exemplo, quando o contato confirmar interesse ou solicitar uma proposta.
+</Note>
+
+## Criando um lead
+
+<Steps>
+  <Step title="Abra o Pipeline">
+    No menu lateral, vá em **CRM → Pipeline de Leads**.
+  </Step>
+  <Step title="Clique em '+ Novo Lead'">
+    O botão fica no canto superior direito do board.
+  </Step>
+  <Step title="Preencha os dados">
+    Campos disponíveis: nome, e-mail, telefone, empresa, cargo, fonte do lead (`website`, `whatsapp`, `instagram`, `indicação`, `importação`), faixa de orçamento, prazo de decisão e pontos de dor.
+  </Step>
+  <Step title="Vincule a um contato">
+    Se o lead já existe como contato na base, você pode vinculá-lo no campo `contact_id`. Isso conecta o lead ao histórico de conversas do contato.
+  </Step>
+  <Step title="Salve">
+    O card aparece na coluna **Novo** automaticamente.
+  </Step>
+</Steps>
+
+## Movendo leads
+
+<Tabs>
+  <Tab title="Drag-and-drop">
+    Arraste o card da coluna atual para a coluna de destino. O sistema usa `@dnd-kit/core` com detecção por `closestCorners` — funciona em desktop e touch screen.
+  </Tab>
+  <Tab title="Pelo card">
+    Abra o card e use o dropdown **Mover para** para selecionar o estágio de destino. Útil quando o board está cheio e o drag é difícil.
+  </Tab>
+  <Tab title="Automação">
+    Configure regras em **Configurações → Pipeline** para mover leads automaticamente. Ex: "quando conversa for encerrada com tag `proposta-enviada` → mover para Proposta".
+  </Tab>
+</Tabs>
+
+<Tip>
+  Toda movimentação de estágio registra um evento na timeline do contato vinculado. Você sempre sabe quando e por quem o lead foi movido, com motivo quando preenchido.
+</Tip>
+
+## Score de leads
+
+Cada lead tem um `score` numérico de 0 a 100 que representa a qualidade da oportunidade. O score é calculado com base em:
+
+- Completude do perfil (e-mail, telefone, empresa preenchidos)
+- Faixa de orçamento declarada
+- Prazo de decisão (quanto mais curto, mais alto o score)
+- Número de interações via chat
+- Estágio atual no funil
+
+O score aparece como badge em cada card do Kanban. Use o filtro de score mínimo para ver apenas leads quentes.
+
+## Filtros e busca
+
+<CardGroup cols={2}>
+  <Card title="Busca por texto" icon="magnifying-glass">
+    Filtra por nome do lead, empresa ou e-mail em tempo real enquanto você digita. Opera sobre todos os estágios simultaneamente.
+  </Card>
+  <Card title="Filtro por fonte" icon="filter">
+    Selecione `website`, `whatsapp`, `instagram` ou outra fonte para ver apenas leads de um canal específico. Ideal para medir ROI por canal.
+  </Card>
+</CardGroup>
+
+## Convertendo um lead
+
+Quando o lead é ganho, use o botão **Converter** no card para:
+
+1. Marcar o estágio como `won`
+2. Criar um registro de cliente na base de contatos com todos os dados do lead
+3. Opcionalmente abrir um workflow de onboarding automaticamente
+
+O diálogo de conversão (`ConversionDialog`) permite ajustar dados antes de confirmar e associar o lead a um workspace ou produto específico.
+
+<Note>
+  Leads marcados como `lost` ficam visíveis no board mas são excluídos do funil ativo por padrão. Use o toggle **Mostrar perdidos** para incluí-los na visualização e analisar padrões de perda.
+</Note>
+
+## Métricas do pipeline
+
+No canto superior do board, o painel de métricas exibe:
+
+- **Total de leads ativos** — excluindo ganhos e perdidos
+- **Taxa de conversão** — leads ganhos / total
+- **Ticket médio** — média das faixas de orçamento dos leads qualificados
+- **Tempo médio no funil** — dias desde criação até ganho ou perda

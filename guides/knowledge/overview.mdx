@@ -1,0 +1,74 @@
+---
+title: "Visão Geral — Knowledge Base"
+description: "Entenda como a Knowledge Base funciona internamente com RAG, embeddings e busca semântica, e como ela se conecta aos seus agentes."
+---
+
+A Knowledge Base é o repositório de conhecimento dos seus agentes IA. Em vez de depender apenas do que está no prompt de sistema, o agente consulta a base durante a conversa e recupera trechos altamente relevantes antes de formular a resposta — uma arquitetura chamada **RAG (Retrieval-Augmented Generation)**.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-knowledge-overview.png" alt="Pipeline RAG da Knowledge Base" />
+</Frame>
+
+## Pipeline RAG passo a passo
+
+<Steps>
+  <Step title="Ingestao de conteudo">
+    Você adiciona conteúdo à base — PDFs, pares de Q&A, páginas de site ou vídeos do YouTube. Cada conteúdo é armazenado como documento na tabela `knowledge_base_documents`.
+  </Step>
+  <Step title="Chunking">
+    O processador (`knowledge-process-document`) divide o texto em pedaços de ~4.000 caracteres com sobreposição de ~400 caracteres entre chunks consecutivos. Essa sobreposição preserva o contexto nas fronteiras.
+  </Step>
+  <Step title="Embeddings">
+    Cada chunk é convertido em um vetor numérico de alta dimensão pela API de embeddings da OpenAI (enviados em lotes de até 100 por requisição). Os vetores são armazenados na tabela `knowledge_chunks`.
+  </Step>
+  <Step title="Busca semantica">
+    Quando o agente precisa de informação, a função `knowledge-search` converte a pergunta do usuário em vetor e executa uma busca por similaridade coseno no banco. Os chunks mais próximos semanticamente são retornados.
+  </Step>
+  <Step title="Geracao aumentada">
+    Os trechos recuperados são injetados no contexto do LLM junto com a mensagem do usuário. O agente responde com base nessa informação específica — não em memória de treinamento genérico.
+  </Step>
+</Steps>
+
+## Relação entre bases e agentes
+
+Cada **base de conhecimento** é uma coleção independente de documentos. Você pode ter múltiplas bases e associar bases diferentes a agentes diferentes.
+
+<CardGroup cols={2}>
+  <Card title="Isolamento por base" icon="database">
+    Documentos de uma base nunca aparecem na busca de outra base — escopo controlado.
+  </Card>
+  <Card title="Multiplas fontes" icon="layer-group">
+    Uma mesma base pode conter PDFs, Q&As, sites e vídeos combinados.
+  </Card>
+  <Card title="Busca por agente" icon="robot">
+    A busca semântica é sempre filtrada por `knowledge_base_id` + `company_id`.
+  </Card>
+  <Card title="Threshold configuravel" icon="sliders">
+    O parâmetro `similarity_threshold` controla o quão similar um chunk precisa ser para ser incluído na resposta.
+  </Card>
+</CardGroup>
+
+## Parâmetros da busca semântica
+
+| Parâmetro | Descrição | Padrão |
+|---|---|---|
+| `similarity_threshold` | Limiar mínimo de similaridade coseno (0 a 1) | `0.7` |
+| `limit` | Número máximo de chunks retornados | `5` |
+| `document_ids` | Filtrar por documentos específicos dentro da base | Todos |
+
+<Note>
+  Chunks com similaridade abaixo do `similarity_threshold` são descartados mesmo que o agente pergunte sobre o assunto. Se o agente "não sabe" algo que deveria saber, tente diminuir esse threshold ou revisar a qualidade do conteúdo indexado.
+</Note>
+
+## Tipos de conteúdo suportados
+
+| Tipo | Como adicionar | Processamento |
+|---|---|---|
+| Documento (PDF, texto) | Upload de arquivo | Extração de texto + chunking + embeddings |
+| Q&A manual | Interface de perguntas e respostas | Vetorização direta da pergunta e resposta |
+| Site | URL para crawler | Firecrawl → chunking → embeddings |
+| Vídeo YouTube | URL do vídeo | Transcrição automática → chunking → embeddings |
+
+<Tip>
+  Comece com Q&As manuais para os tópicos mais frequentes. Eles são indexados instantaneamente e têm alta precisão porque você controla exatamente o que será recuperado.
+</Tip>

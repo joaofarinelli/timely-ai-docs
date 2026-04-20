@@ -1,0 +1,105 @@
+---
+title: "Health Scores"
+description: "Score de engajamento calculado automaticamente para cada contato e empresa, usado em segmentação, alertas e automações de retenção"
+---
+
+O **Health Score** é uma pontuação de 0 a 100 que mede o nível de engajamento e saúde do relacionamento com cada contato ou empresa. Ele é calculado diariamente de forma automática pelo sistema e serve como base para segmentação de campanhas, alertas de risco de churn e automações de retenção.
+
+<img
+  src="/images/screenshots/placeholder-health-score-dashboard.png"
+  alt="Dashboard de health scores com distribuição de risco"
+  className="rounded-lg border"
+/>
+
+## Como o score é calculado
+
+O cálculo roda todo dia às 6h UTC (3h BRT) via a edge function `calculate-health-scores`, que chama a stored procedure `calculate_company_health_score` no PostgreSQL para cada empresa ativa.
+
+Os fatores que influenciam o score incluem:
+
+| Fator | Peso | Descrição |
+|-------|------|-----------|
+| Frequência de conversas | Alto | Quantas interações ocorreram nos últimos 30 dias |
+| Recência | Alto | Quantos dias desde a última interação |
+| Taxa de resposta | Médio | % de mensagens do contato que receberam resposta |
+| Engajamento com follow-ups | Médio | Abertura e resposta a mensagens proativas |
+| Completude do perfil | Baixo | Campos do contato preenchidos |
+
+O resultado final é um número entre 0 e 100 com um `risk_level` associado:
+
+<CardGroup cols={3}>
+  <Card title="Verde (70–100)" icon="circle-check">
+    Contato ativo e engajado. Relacionamento saudável. Sem ação necessária.
+  </Card>
+  <Card title="Amarelo (40–69)" icon="triangle-exclamation">
+    Engajamento em queda. Candidato a campanha de reativação.
+  </Card>
+  <Card title="Vermelho (0–39)" icon="circle-xmark">
+    Contato inativo ou em risco de churn. Alerta automático disparado.
+  </Card>
+</CardGroup>
+
+## Alertas automáticos
+
+Quando o score cai para a faixa vermelha com uma variação negativa maior que 15 pontos em relação ao dia anterior (`score_delta <= -15`), o sistema insere automaticamente um evento na fila de e-mails do lifecycle com o template `inactivity-3d`. Esse alerta notifica a equipe para agir antes que o churn se concretize.
+
+<Note>
+  Os alertas são enviados por melhor esforço — se o e-mail falhar, o evento fica com status `pending` na tabela `lifecycle_email_events` para retry automático. Você pode monitorar isso no dashboard de saúde do sistema em **Admin → Follow-up Health**.
+</Note>
+
+## Visualizando os scores
+
+<Tabs>
+  <Tab title="Por contato">
+    Abra o perfil de qualquer contato em **CRM → Contatos** e veja o badge de health score no topo do painel. O número é acompanhado da cor de risco e da variação em relação ao cálculo anterior.
+  </Tab>
+  <Tab title="Visão geral da empresa">
+    Em **Admin → Health Scores**, você vê a distribuição da sua base inteira: quantos contatos estão em verde, amarelo e vermelho, com tendência de 30 dias.
+  </Tab>
+  <Tab title="Dashboard de Follow-up">
+    O **Follow-up Health Dashboard** exibe métricas operacionais do sistema: jobs na fila, completados nas últimas 24h, falhas e circuit breakers ativos.
+  </Tab>
+</Tabs>
+
+## Usando scores em segmentação
+
+O health score é um filtro disponível em qualquer lugar que tenha filtragem de contatos:
+
+<Steps>
+  <Step title="Abra a lista de contatos">
+    Vá em **CRM → Contatos** e clique em **Filtros avançados**.
+  </Step>
+  <Step title="Adicione filtro de health score">
+    Selecione **Health Score** e defina o operador: `menor que`, `maior que` ou `entre`. Ex: `menor que 40` para isolar contatos em risco.
+  </Step>
+  <Step title="Salve o segmento (opcional)">
+    Nomeie o filtro para reutilizar como segmento em Broadcasts e Follow-ups sem precisar reconfigurar.
+  </Step>
+  <Step title="Aja sobre o segmento">
+    Use o segmento para disparar uma campanha de reativação via Broadcast, configurar um follow-up automático ou atribuir os contatos para um atendente humano revisar.
+  </Step>
+</Steps>
+
+<Tip>
+  Combine `risk_level = red` com `ultima_interacao > 7 dias` para criar um segmento de "reativação urgente" — contatos em risco que há mais de uma semana não respondem. Essa combinação tem o maior potencial de recuperação com menor esforço.
+</Tip>
+
+## Recalculando manualmente
+
+Se você importou um grande volume de contatos ou fez mudanças significativas nos dados e quer atualizar os scores imediatamente sem esperar o cron, use a API:
+
+```bash
+POST /functions/v1/calculate-health-scores
+Authorization: Bearer <seu-service-role-key>
+Content-Type: application/json
+
+{
+  "company_id": "<seu-company-id>"
+}
+```
+
+Para testar sem gravar no banco, adicione `"dry_run": true` ao body. O response inclui o total de empresas processadas, contagem de erros e a distribuição de risco calculada.
+
+<Note>
+  O recálculo manual consome recursos de banco de dados proporcionais ao tamanho da base. Para bases com mais de 10 mil contatos, prefira aguardar o cron diário ou executar fora do horário de pico (antes das 9h BRT).
+</Note>

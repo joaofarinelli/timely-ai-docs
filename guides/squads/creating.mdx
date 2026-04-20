@@ -1,0 +1,98 @@
+---
+title: "Criando um squad"
+description: "Como criar um squad na Timely: nomear, escolher o modo (hierárquico ou horizontal), adicionar agentes, definir papéis e vincular canais."
+---
+
+## Visão geral
+
+Squads são grupos de agentes que trabalham juntos para atender uma conversa. Em vez de um único agente lidar com tudo, o squad permite distribuir responsabilidades — um agente triador recebe a mensagem, interpreta a intenção e encaminha para o especialista mais adequado. Isso aumenta a taxa de resolução sem aumentar a complexidade do prompt de cada agente individualmente.
+
+A Timely suporta dois modos de squad que determinam como o roteamento acontece: **Hierárquico** e **Horizontal**. A escolha do modo é obrigatória na criação e afeta diretamente como você precisa estruturar os agentes dentro do squad.
+
+## Modos de squad
+
+### Hierárquico
+
+No modo hierárquico existe um agente **gerente** (manager) que recebe todas as conversas e decide para qual agente membro encaminhar. O gerente é o ponto central de triagem — ele analisa a intenção do contato e delega para o especialista correto.
+
+Use esse modo quando você tem um fluxo claro de triagem → especialização e quer que um único agente controle o roteamento. É o mais adequado para operações de suporte estruturado com múltiplas filas de especialidade.
+
+**Requisito de criação:** Um agente `manager` deve ser definido como líder do squad. Sem ele, o squad não pode ser ativado nem receber canais.
+
+### Horizontal
+
+No modo horizontal existe um agente **principal** (principal) que coordena, mas todos os agentes membros podem ser acionados diretamente com base em regras de roteamento configuradas. Não há hierarquia rígida — a conversa vai para o agente mais adequado com base nos critérios definidos.
+
+Use esse modo quando os agentes têm competências similares e a distribuição de carga ou especialização por critérios (idioma, canal, horário) é mais importante que a triagem centralizada.
+
+**Requisito de criação:** Um agente `principal` deve ser definido como coordenador do squad.
+
+## Como configurar
+
+<Steps>
+  <Step title="Acesse o painel de Squads">
+    No menu lateral, acesse **Squads**. Clique em **+ Novo squad** no canto superior direito.
+  </Step>
+
+  <Step title="Dê um nome ao squad">
+    No campo **Nome**, escreva um nome descritivo — por exemplo "Suporte Técnico", "Vendas Inbound" ou "Atendimento Premium". O nome aparece nos relatórios e no painel de squads. Limite de 100 caracteres.
+  </Step>
+
+  <Step title="Adicione uma descrição (opcional)">
+    O campo **Descrição** é opcional mas recomendado para equipes maiores. Descreva o propósito do squad e quais tipos de conversa ele deve receber.
+  </Step>
+
+  <Step title="Escolha o modo do squad">
+    Selecione **Hierárquico** ou **Horizontal** clicando no card correspondente. A escolha determina qual papel de liderança você precisará definir nos próximos passos.
+  </Step>
+
+  <Step title="Clique em Criar">
+    Clique no botão **Criar squad**. O squad é criado em estado inativo — você ainda precisa adicionar agentes antes de vinculá-lo a um canal.
+  </Step>
+
+  <Step title="Adicione agentes ao squad">
+    Dentro da tela de detalhes do squad, clique em **Adicionar agente**. Escolha o agente da sua lista e defina o papel:
+    - Para squads **Hierárquicos**: um agente com papel `manager` e os demais como `member`.
+    - Para squads **Horizontais**: um agente com papel `principal` e os demais como `member` ou `specialist`.
+
+    O limite é de 20 agentes ativos por squad.
+  </Step>
+
+  <Step title="Configure as regras de roteamento (opcional)">
+    No modo horizontal, você pode definir critérios de roteamento — como encaminhar conversas em espanhol para um agente específico, ou priorizar o agente de cobrança para contatos com tag `inadimplente`. Essas regras ficam no campo `routing_config` do squad.
+  </Step>
+
+  <Step title="Vincule um canal ao squad">
+    Com pelo menos o agente líder adicionado, acesse a aba **Canais** e vincule um canal (WhatsApp, Instagram ou widget). O squad só pode receber conversas após ter um canal vinculado e estar ativo.
+  </Step>
+</Steps>
+
+## Exemplos / Casos de uso
+
+**Squad de suporte técnico hierárquico:** Um agente "Triagem" como gerente recebe todas as mensagens e encaminha para "Especialista Hardware" ou "Especialista Software" com base na descrição do problema. O gerente tem prompt focado em identificação de categoria; os especialistas têm prompts detalhados para cada domínio.
+
+**Squad de vendas horizontal:** Três agentes com especialidades similares (plano Starter, plano Pro, plano Enterprise) recebem conversas com base no tamanho da empresa identificado no primeiro contato. O agente principal coordena, mas não é gargalo — conversas são roteadas diretamente.
+
+**Squad multilíngue:** Um agente principal em português recebe todas as conversas. Se detectar mensagem em espanhol, encaminha para o agente "Vendas ES". Se detectar inglês, encaminha para "Sales EN". O roteamento por idioma dispensa a criação de squads separados por mercado.
+
+## Boas práticas
+
+<Tip>
+No modo hierárquico, invista especialmente no prompt do agente gerente. Ele é o ponto de falha crítico — um gerente que roteia mal impacta toda a operação do squad. Escreva exemplos explícitos de qual especialista deve receber cada tipo de dúvida.
+</Tip>
+
+- Não crie squads com um único agente. Para um agente só, use o agente diretamente no canal sem squad — a camada extra de roteamento não agrega valor.
+- Antes de vincular um canal ao squad, teste o fluxo de triagem via Chat interno de cada agente membro para garantir que os prompts estão alinhados.
+- Squads com conversas ativas não podem ser excluídos. Se precisar descomissionar um squad, transfira as conversas abertas primeiro ou aguarde o encerramento natural.
+- Um canal só pode ser vinculado a um squad por vez. Se você vincular o mesmo canal a outro squad, ele será desvinculado automaticamente do anterior.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Visão geral de Squads" href="/guides/squads/overview">
+    Entenda como squads se encaixam na arquitetura de atendimento da Timely.
+  </Card>
+  <Card title="Criação de agentes" href="/guides/agents/creating/from-scratch">
+    Crie os agentes que vão compor o squad antes de montá-lo.
+  </Card>
+</CardGroup>

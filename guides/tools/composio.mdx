@@ -1,0 +1,220 @@
+---
+title: "Tools e integrações"
+description: "29 apps disponíveis via Composio — como conectar, configurar por tool e usar o catálogo de ferramentas no agente."
+---
+
+Tools são integrações com apps externos que permitem ao agente executar ações reais além de responder texto. Com uma tool conectada, o agente pode criar eventos no Google Calendar, registrar leads no HubSpot, enviar mensagens no Slack ou consultar pedidos no Shopify — tudo dentro de uma conversa.
+
+## Visão geral
+
+Todas as integrações são fornecidas via **Composio**, uma plataforma de conectores que abstrai a autenticação e a execução das ferramentas. Na Timely.ai, você gerencia as tools na aba **Tools** do agente.
+
+<Frame caption="Aba de tools com catálogo de apps disponíveis">
+  <img src="/images/screenshots/placeholder-agent-tools.png" alt="Catálogo de tools do agente" />
+</Frame>
+
+## Apps disponíveis (29)
+
+<Tabs>
+  <Tab title="Produtividade">
+    <CardGroup cols={3}>
+      <Card title="Notion" icon="notion">
+        Busque, crie e gerencie páginas, databases e blocos. 19 tools disponíveis.
+      </Card>
+      <Card title="Google Sheets" icon="table">
+        Leia, escreva, formate e execute SQL em planilhas. 15+ tools disponíveis.
+      </Card>
+      <Card title="ClickUp" icon="check-square">
+        Gerencie tarefas, projetos, time tracking e documentos.
+      </Card>
+      <Card title="Trello" icon="trello">
+        Gestão visual de tarefas e projetos com boards e cards.
+      </Card>
+      <Card title="Asana" icon="layout">
+        Gestão de projetos e trabalho em equipe com tasks e timelines.
+      </Card>
+      <Card title="Airtable" icon="database">
+        Banco de dados visual — crie bases, tabelas, registros e campos. 17 tools disponíveis.
+      </Card>
+      <Card title="Canva" icon="image">
+        Crie, edite e gerencie designs.
+      </Card>
+    </CardGroup>
+  </Tab>
+  <Tab title="Agendamento">
+    <CardGroup cols={2}>
+      <Card title="Google Calendar" icon="calendar">
+        Crie, liste, atualize e exclua eventos. Verifique disponibilidade com Free/Busy. Gerencie ACLs e configurações. 40+ tools disponíveis.
+      </Card>
+      <Card title="Google Meet" icon="video">
+        Crie salas de reunião, consulte conferências passadas, transcrições e sessões de participantes. 6 tools disponíveis.
+      </Card>
+    </CardGroup>
+
+    <Tip>
+    Quando Google Calendar e Google Meet estão ambos conectados ao mesmo agente, o sistema automaticamente coordena a criação de eventos com link Meet incluso quando o usuário pede um agendamento com data e hora.
+    </Tip>
+  </Tab>
+  <Tab title="Desenvolvimento">
+    <CardGroup cols={2}>
+      <Card title="GitHub" icon="github">
+        Repositórios, issues e pull requests.
+      </Card>
+      <Card title="Jira" icon="jira">
+        Gestão de projetos e rastreamento de bugs.
+      </Card>
+      <Card title="Linear" icon="linear">
+        Gestão de issues para times de engenharia. 35+ tools disponíveis.
+      </Card>
+      <Card title="Supabase" icon="database">
+        Execute queries SQL, liste projetos e verifique saúde do serviço. 4 tools disponíveis.
+      </Card>
+      <Card title="Neon" icon="database">
+        Consulte e gerencie banco de dados Neon Serverless Postgres.
+      </Card>
+    </CardGroup>
+  </Tab>
+  <Tab title="CRM">
+    <CardGroup cols={3}>
+      <Card title="HubSpot" icon="hubspot">
+        Contatos, empresas, deals, tickets, notas, e-mails e pipelines. 50+ tools disponíveis.
+      </Card>
+      <Card title="Salesforce" icon="salesforce">
+        CRM enterprise e automação de vendas.
+      </Card>
+      <Card title="Apollo.io" icon="search">
+        Prospecção e enriquecimento de leads. Busque pessoas e empresas. 14 tools disponíveis.
+      </Card>
+      <Card title="Kommo" icon="funnel">
+        CRM de vendas — leads, contatos, empresas, tarefas e pipelines. 50+ tools disponíveis.
+      </Card>
+      <Card title="Zendesk" icon="headphones">
+        Suporte ao cliente e helpdesk.
+      </Card>
+    </CardGroup>
+  </Tab>
+  <Tab title="Pagamentos e E-commerce">
+    <CardGroup cols={2}>
+      <Card title="Stripe" icon="stripe">
+        Gerencie pagamentos, clientes, assinaturas e faturas.
+      </Card>
+      <Card title="Shopify" icon="shopify">
+        Produtos, pedidos, clientes e inventário.
+      </Card>
+    </CardGroup>
+  </Tab>
+  <Tab title="Comunicação">
+    <CardGroup cols={2}>
+      <Card title="Slack" icon="slack">
+        Envie mensagens, crie canais, gerencie usuários, reações, threads e lembretes. 27 tools disponíveis.
+      </Card>
+      <Card title="Gmail" icon="mail">
+        E-mail e correspondência profissional.
+      </Card>
+    </CardGroup>
+  </Tab>
+  <Tab title="Redes Sociais">
+    <CardGroup cols={2}>
+      <Card title="Twitter/X" icon="twitter">
+        Crie tweets, busque, gerencie perfil, likes e retweets. 11 tools disponíveis.
+      </Card>
+      <Card title="LinkedIn" icon="linkedin">
+        Crie publicações, gerencie perfil e consulte informações de empresas. 4 tools disponíveis.
+      </Card>
+      <Card title="Meta Ads" icon="meta">
+        Campanhas, orçamentos, públicos e criativos no Facebook e Instagram Ads. 21 tools disponíveis.
+      </Card>
+    </CardGroup>
+  </Tab>
+  <Tab title="Automação">
+    <CardGroup cols={3}>
+      <Card title="Browser Tool" icon="globe">
+        Navegue sites, preencha formulários, extraia dados e resolva CAPTCHAs em cloud browser. 5 tools disponíveis.
+      </Card>
+      <Card title="Browse.ai" icon="robot">
+        Web scraping e monitoramento de sites com robôs configuráveis. 11 tools disponíveis.
+      </Card>
+      <Card title="Apify" icon="spider">
+        Mine leads de LinkedIn, Google Maps, Instagram e outras plataformas usando Actors do Apify Store. 8 tools disponíveis.
+      </Card>
+    </CardGroup>
+  </Tab>
+</Tabs>
+
+## Como conectar um app
+
+<Steps>
+  <Step title="Abra o catálogo de tools">
+    Na aba **Tools** do agente, clique em **Adicionar tool** para abrir o catálogo de apps disponíveis.
+  </Step>
+  <Step title="Selecione o app">
+    Navegue pelo catálogo ou use a busca por nome. Clique no card do app desejado.
+  </Step>
+  <Step title="Autentique o app">
+    Dependendo do app, a autenticação é feita de formas diferentes:
+
+    <AccordionGroup>
+      <Accordion title="OAuth (maioria dos apps)">
+        Clique em **Conectar via OAuth**. Uma janela do navegador abre para você autorizar o acesso na conta do app. Após autorizar, a conexão é estabelecida automaticamente.
+
+        Apps com OAuth: Notion, Google Calendar, Google Meet, Google Sheets, ClickUp, Trello, Asana, Airtable, Canva, GitHub, Jira, Linear, Supabase, Shopify, HubSpot, Salesforce, Zendesk, Slack, Gmail, LinkedIn.
+      </Accordion>
+      <Accordion title="Credenciais próprias (apps selecionados)">
+        Alguns apps exigem que você crie um app de desenvolvedor próprio e informe as credenciais. Nesses casos, um formulário é exibido com os campos necessários.
+
+        Apps com credenciais próprias: **Twitter/X** (Client ID e Client Secret OAuth 2.0), **Meta Ads** (App ID e App Secret), **Apollo.io** (API Key), **Kommo** (Integration ID e Secret Key), **Browse.ai** (API Key), **Apify** (OAuth DCR).
+      </Accordion>
+      <Accordion title="Sem autenticação">
+        **Browser Tool** não requer autenticação — está disponível imediatamente após ser adicionado ao agente.
+      </Accordion>
+    </AccordionGroup>
+  </Step>
+  <Step title="Selecione as tools">
+    Após conectar, escolha quais ferramentas específicas do app o agente pode usar. Habilitar apenas o necessário evita que o agente chame tools inadequadas.
+  </Step>
+  <Step title="Salve e teste">
+    Clique em **Salvar**. Use o [Playground](/guides/agents/settings/internal-chat) para testar se o agente aciona as tools corretamente.
+  </Step>
+</Steps>
+
+## Configuração por tool
+
+Dentro de cada app conectado, você pode configurar cada tool individualmente pelo **Catálogo de Tools**:
+
+- **Ativar/desativar**: controla se o agente pode usar aquela tool específica.
+- **Descrição customizada**: reescreva a descrição da tool para dar contexto adicional ao modelo sobre quando usá-la.
+- **Parâmetros padrão**: alguns parâmetros podem ser fixados com valores padrão (ex.: sempre usar o mesmo calendário).
+
+<Frame caption="Configuração individual de tool dentro de um app conectado">
+  <img src="/images/screenshots/placeholder-agent-tool-config.png" alt="Configuração de tool individual" />
+</Frame>
+
+## Tool catalog
+
+O **Tool Catalog** é uma visão consolidada de todas as tools habilitadas no agente — de todos os apps conectados. Use para:
+
+- Ver quais tools estão ativas de forma centralizada
+- Reordenar a prioridade de tools quando apps têm ferramentas com funções similares
+- Identificar tools que podem causar conflito de comportamento
+
+## Boas práticas
+
+<Note>
+Habilite apenas as tools que o agente realmente precisa. Cada tool disponível adiciona contexto ao prompt de raciocínio do modelo — muitas tools desnecessárias podem confundir o agente e aumentar o custo por execução.
+</Note>
+
+- Para apps de CRM (HubSpot, Kommo, Salesforce), comece com tools de leitura (list, get, search) antes de habilitar escrita (create, update, delete).
+- Use a descrição customizada de cada tool para guiar o agente: "Use esta tool apenas quando o cliente perguntar sobre o status de um pedido específico".
+- Teste cada tool individualmente no Playground antes de combinar múltiplos apps.
+- Apps que requerem credenciais próprias (Twitter/X, Meta Ads, Apollo.io, Kommo) exigem configuração no portal do desenvolvedor do respectivo serviço antes de conectar.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar voz" href="/guides/agents/voice">
+    Adicione síntese de voz ao agente para atendimentos por áudio.
+  </Card>
+  <Card title="Regras de transferência" href="/guides/agents/transfer-rules">
+    Defina quando o agente deve passar a conversa para outro agente ou humano.
+  </Card>
+</CardGroup>

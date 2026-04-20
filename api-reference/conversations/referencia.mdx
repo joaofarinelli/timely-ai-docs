@@ -1,0 +1,64 @@
+---
+title: "Referência de Conversations"
+sidebarTitle: "Referência"
+description: "Endpoints para acessar o histórico de conversas, gerenciar mensagens e controlar handoff humano"
+---
+
+## Conceito
+
+Uma **Conversation** representa o fio completo de uma troca entre um cliente e um agente Timely — do primeiro "olá" até o encerramento. Cada conversa pertence a exatamente um canal, um contato e um agente, e contém todas as mensagens trocadas em ordem cronológica. O status da conversa controla se o agente de IA está respondendo automaticamente ou se um humano assumiu o atendimento.
+
+Conversas são criadas automaticamente quando um cliente inicia contato por qualquer canal conectado. Você também pode criar conversas programaticamente via API — útil para proativamente iniciar um atendimento com um contato existente.
+
+## Status da conversa
+
+| Status | Descrição |
+|--------|-----------|
+| `open` | Conversa ativa, agente respondendo automaticamente |
+| `human` | Humano assumiu o atendimento (handoff ativo) |
+| `closed` | Conversa encerrada — agente não responde novas mensagens |
+| `waiting` | Aguardando resposta do cliente |
+
+## Ciclo de vida
+
+```
+cliente envia mensagem → conversa criada (open)
+    │
+    ├── agente IA responde automaticamente
+    │       │
+    │       ├── handoff solicitado → human
+    │       │       │
+    │       │       └── humano resolve → retomar IA (open) ou fechar (closed)
+    │       │
+    │       └── conversa resolvida → closed
+    │
+    └── sem resposta do cliente → waiting → timeout → closed
+```
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único da conversa |
+| `agent_id` | string (UUID) | Agente que gerencia a conversa |
+| `channel_id` | string (UUID) | Canal pelo qual a conversa chegou |
+| `contact_id` | string (UUID) | Contato associado |
+| `status` | enum | `open` \| `human` \| `closed` \| `waiting` |
+| `assigned_to` | string (UUID) | ID do atendente humano (se em handoff) |
+| `subject` | string | Assunto ou resumo automático |
+| `tags` | array | Tags para categorização |
+| `created_at` | string | ISO 8601 de início da conversa |
+| `closed_at` | string | ISO 8601 de encerramento |
+| `last_message_at` | string | ISO 8601 da última mensagem |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

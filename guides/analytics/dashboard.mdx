@@ -1,0 +1,76 @@
+---
+title: Dashboard de Analytics
+description: Métricas em tempo real do seu atendimento — conversas ativas, tempo de resposta, fila e performance dos agentes.
+---
+
+O Dashboard de Analytics é a visão central de saúde do seu atendimento. Ele exibe métricas atualizadas em tempo real e indicadores históricos para que você identifique rapidamente gargalos, picos de demanda e oportunidades de melhoria.
+
+## Acessando o dashboard
+
+No menu lateral, clique em **Analytics**. A aba **Dashboard** é a view padrão da seção.
+
+<Frame>
+  <img src="/images/analytics-dashboard.png" alt="Dashboard de analytics com cards de métricas em tempo real" />
+</Frame>
+
+## Métricas em tempo real
+
+Os cards no topo da página mostram o estado atual do atendimento, com atualização automática a cada 60 segundos:
+
+<AccordionGroup>
+  <Accordion title="Conversas ativas">
+    Total de sessões de atendimento em andamento no momento. O indicador de cor (verde, amarelo, vermelho) sinaliza se o volume está dentro da capacidade normal, em alerta ou crítico com base nos seus históricos de pico.
+  </Accordion>
+  <Accordion title="Tempo médio de resposta">
+    Média de tempo entre a última mensagem do usuário e a resposta do agente, calculada sobre as conversas ativas das últimas 1 hora. Inclui variação em relação à hora anterior para contextualizar a tendência.
+  </Accordion>
+  <Accordion title="Tamanho da fila">
+    Conversas aguardando atribuição a um agente. Um número elevado aqui indica necessidade de aumentar a capacidade de atendimento ou revisar a configuração de roteamento.
+  </Accordion>
+  <Accordion title="Taxa de resolução">
+    Percentual de conversas encerradas como resolvidas nas últimas 24 horas. Uma queda nessa taxa pode indicar problemas com a base de conhecimento dos agentes ou aumento na complexidade das demandas.
+  </Accordion>
+  <Accordion title="Satisfação CSAT">
+    Score médio de satisfação coletado via pesquisas pós-atendimento. Exibido quando há dados suficientes no período selecionado.
+  </Accordion>
+</AccordionGroup>
+
+## Filtros de período
+
+Use o seletor de datas no canto superior direito para ajustar o período de análise:
+
+- Hoje
+- Últimos 7 dias
+- Últimos 30 dias
+- Período personalizado (calendário)
+
+<Info>
+  Os cards de tempo real sempre refletem o momento atual, independente do filtro de período. O filtro afeta apenas os gráficos e tabelas de histórico abaixo dos cards.
+</Info>
+
+## Gráficos históricos
+
+Abaixo dos cards de tempo real, o dashboard exibe gráficos de série temporal com:
+
+- **Volume de conversas por hora** — útil para identificar picos e vales de demanda ao longo do dia.
+- **Distribuição por canal** — breakdown de conversas por WhatsApp, Instagram, widget e outros canais conectados.
+- **Performance por agente** — ranking dos agentes com mais conversas, menor tempo de resposta e maior taxa de resolução.
+- **Conversas por status** — pizza com a proporção de conversas abertas, em espera, resolvidas e abandonadas.
+
+## Alertas visuais
+
+Os indicadores de status nos cards seguem um padrão consistente:
+
+| Status | Cor | Significado |
+|---|---|---|
+| Bom | Verde | Dentro dos limites normais |
+| Atenção | Amarelo | Próximo ao limite — monitorar |
+| Crítico | Vermelho | Ação necessária |
+
+## Exportando dados do dashboard
+
+Para exportar os dados exibidos, acesse **Analytics > Exportações** ou use o botão de download disponível em cada gráfico individualmente. Veja mais detalhes na página [Exportação de Relatórios](/guides/analytics/reports-export).
+
+## Permissões necessárias
+
+Apenas usuários com as roles **owner**, **manager** ou **trainer** têm acesso ao dashboard de analytics. Attendants e members não visualizam esta seção.

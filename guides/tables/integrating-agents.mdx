@@ -1,0 +1,169 @@
+---
+title: "Integrando Tabelas com Agentes"
+description: "Configure o agente para consultar, filtrar, inserir e atualizar linhas em tabelas durante conversas. Casos de uso: catálogo, agenda de eventos, inventário e registro de leads."
+---
+
+## Visão geral
+
+Quando uma tabela está conectada a um agente, o agente ganha ferramentas (tools) para interagir com os dados em tempo real durante as conversas. Isso transforma o agente de um respondedor de perguntas em um sistema que lê e escreve dados estruturados conforme a conversa avança.
+
+As ferramentas disponíveis cobrem quatro ações:
+
+| Ação | Descrição |
+|------|-----------|
+| `semantic_search` | Busca por linguagem natural em colunas com indexação semântica |
+| `similarity_search` | Busca por similaridade de texto sem vetorização |
+| `insert_row` | Insere uma nova linha na tabela |
+| `update_row` | Atualiza valores de uma linha existente |
+
+O agente decide automaticamente qual ação usar com base na instrução do prompt de sistema e no contexto da conversa.
+
+## Conectando uma tabela ao agente
+
+<Steps>
+  <Step title="Acesse o agente">
+    No menu lateral, clique em **Agentes** e selecione o agente que usará a tabela.
+  </Step>
+  <Step title="Abra a aba de Ferramentas">
+    Dentro da configuração do agente, acesse a aba **Ferramentas** (ou **Tools** / **Tabelas**, dependendo da versão da interface).
+  </Step>
+  <Step title="Adicione a tabela">
+    Clique em **+ Adicionar tabela** e selecione a tabela desejada na lista. Apenas tabelas do mesmo workspace estão disponíveis.
+  </Step>
+  <Step title="Configure as ações permitidas">
+    Para cada tabela conectada, escolha quais ações o agente pode executar:
+
+    - **Consultar** (search) — ativa `semantic_search` e `similarity_search`
+    - **Inserir** — ativa `insert_row`
+    - **Atualizar** — ativa `update_row`
+
+    Ative apenas o que o caso de uso requer. Se a tabela é um catálogo de produtos somente leitura, ative apenas consulta.
+  </Step>
+  <Step title="Instrua o agente no prompt de sistema">
+    A tabela está conectada, mas o agente precisa saber quando e como usá-la. Adicione instruções específicas no prompt de sistema do agente. Exemplos:
+
+    > "Quando o usuário perguntar sobre produtos disponíveis, consulte a tabela 'Catálogo de Produtos' usando busca semântica com a pergunta do usuário como query."
+
+    > "Após coletar nome, e-mail e interesse do lead, insira as informações na tabela 'Leads WhatsApp' antes de encerrar a conversa."
+  </Step>
+  <Step title="Teste no chat de preview">
+    Use o chat de preview do agente para verificar se as ações na tabela ocorrem conforme esperado. Faça perguntas que deveriam acionar buscas e conversas que deveriam acionar inserções.
+  </Step>
+</Steps>
+
+## Como o agente usa cada ação
+
+### Consulta (semantic_search / similarity_search)
+
+Quando o usuário faz uma pergunta que o agente identifica como relacionada à tabela, ele executa uma busca e usa os resultados para formular a resposta.
+
+Exemplo de fluxo:
+
+```
+Usuário: "Vocês têm algum serviço de limpeza para carros grandes?"
+Agente: [executa semantic_search na tabela "Catálogo de Serviços" com query "limpeza carros grandes"]
+        [recebe: "Higienização Premium SUV — R$ 250 — inclui motor, tapetes e vidros"]
+Agente: "Sim! Temos a Higienização Premium para SUVs e utilitários esportivos,
+         por R$ 250, que inclui motor, tapetes e vidros. Posso agendar para você?"
+```
+
+A resposta é gerada com base nos dados reais da tabela — não no conhecimento genérico do LLM.
+
+### Inserção (insert_row)
+
+O agente coleta dados durante a conversa e, quando tem todos os campos necessários (especialmente os marcados como obrigatórios), insere uma nova linha na tabela.
+
+Exemplo de fluxo:
+
+```
+Agente: "Qual o seu nome completo?"
+Usuário: "Carlos Mendes"
+Agente: "E o seu e-mail?"
+Usuário: "carlos@empresa.com"
+Agente: "Qual o produto que você tem interesse?"
+Usuário: "Plano Empresarial"
+Agente: [executa insert_row na tabela "Leads" com:
+          nome="Carlos Mendes", email="carlos@empresa.com", interesse="Plano Empresarial"]
+Agente: "Perfeito! Registrei seu interesse. Nossa equipe vai entrar em contato em até 24 horas."
+```
+
+### Atualização (update_row)
+
+O agente localiza uma linha existente (via busca prévia) e atualiza um ou mais campos.
+
+Exemplo de fluxo:
+
+```
+Usuário: "Quero atualizar meu e-mail de contato"
+Agente: [executa similarity_search para localizar o registro do usuário pelo nome]
+        [encontra row_id da linha correspondente]
+Agente: "Qual é o novo e-mail?"
+Usuário: "carlos.novo@empresa.com"
+Agente: [executa update_row com row_id e novo valor de email]
+Agente: "E-mail atualizado para carlos.novo@empresa.com."
+```
+
+## Casos de uso detalhados
+
+### Catálogo de produtos
+
+**Tabela**: colunas `nome` (String + semântica), `descricao` (String + semântica), `preco` (Number), `disponivel` (Boolean), `categoria` (String).
+
+**Ações habilitadas**: apenas consulta.
+
+**Instrução no prompt**: "Quando o usuário perguntar sobre produtos, preços ou disponibilidade, consulte a tabela 'Catálogo'. Mostre apenas produtos com `disponivel = true`. Se não encontrar resultado relevante, informe que o produto não está disponível no momento."
+
+### Agenda de eventos
+
+**Tabela**: colunas `nome_evento` (String + semântica), `data` (String), `horario` (String), `local` (String), `vagas_disponiveis` (Number).
+
+**Ações habilitadas**: consulta e atualização (para decrementar vagas ao confirmar inscrição).
+
+**Instrução no prompt**: "Quando o usuário quiser se inscrever em um evento, consulte a tabela 'Agenda de Eventos', mostre os eventos disponíveis (vagas > 0) e, ao confirmar a inscrição, atualize o campo `vagas_disponiveis` subtraindo 1."
+
+### Inventário / controle de estoque
+
+**Tabela**: colunas `produto` (String + semântica), `sku` (String), `quantidade` (Number), `localizacao` (String).
+
+**Ações habilitadas**: consulta e atualização.
+
+**Instrução no prompt**: "Consulte a tabela 'Inventário' para verificar disponibilidade de produtos. Ao registrar uma saída de estoque, atualize o campo `quantidade` com o novo valor."
+
+### Registro de leads
+
+**Tabela**: colunas `nome` (String, obrigatório), `email` (String, obrigatório), `telefone` (String), `canal_origem` (String), `interesse` (String), `data_registro` (String).
+
+**Ações habilitadas**: apenas inserção.
+
+**Instrução no prompt**: "Após coletar nome, e-mail e interesse do lead, insira os dados na tabela 'Leads'. Preencha `canal_origem` com o nome do canal de atendimento atual. Preencha `data_registro` com a data de hoje."
+
+## Limites e considerações
+
+- O agente executa no máximo uma ação por turno de conversa. Fluxos que exigem busca + inserção na mesma mensagem podem precisar de dois turnos.
+- O campo `limit` das buscas é, por padrão, 10 e no máximo 100. Para catálogos muito grandes, instrua o agente a fazer buscas específicas em vez de buscas gerais.
+- Ações de inserção e atualização são permanentes e imediatas — não há desfazer automático. Se o agente inserir dados incorretos, é necessário corrigir manualmente na interface da tabela.
+- A validação de tipos é feita antes da inserção: valores não numéricos em colunas `Number` causam erro e o agente reporta a falha ao usuário.
+
+## Boas práticas
+
+- **Seja específico no prompt sobre quando usar a tabela.** O agente tem acesso a várias ferramentas simultaneamente — instruções vagas podem fazer ele não usar a tabela quando deveria, ou usar quando não deveria.
+- **Limite as ações ao mínimo necessário.** Se a tabela é um catálogo somente leitura, não ative inserção nem atualização — reduz o risco de dados incorretos.
+- **Use campos obrigatórios com critério.** Campos obrigatórios forçam o agente a coletar informação antes de inserir. Úteis para dados críticos, mas em excesso tornam a conversa longa.
+- **Teste com casos extremos.** Simule usuários que pulam perguntas, dão respostas vagas ou fornecem dados no formato errado. Verifique como o agente lida com cada situação.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Criando tabelas" href="/guides/tables/creating">
+    Como criar tabelas e configurar colunas com os tipos corretos.
+  </Card>
+  <Card title="Busca semântica" href="/guides/tables/semantic-search">
+    Detalhes sobre indexação e busca por linguagem natural.
+  </Card>
+  <Card title="Agentes" href="/guides/agents/overview">
+    Configuração completa de agentes de IA na Timely.ai.
+  </Card>
+  <Card title="Ferramentas" href="/guides/tools">
+    Todas as ferramentas disponíveis para agentes, além das tabelas.
+  </Card>
+</CardGroup>

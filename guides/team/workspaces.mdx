@@ -1,0 +1,97 @@
+---
+title: Workspaces
+description: Como criar e gerenciar múltiplos workspaces, alternar entre contextos e entender o isolamento de dados entre ambientes.
+---
+
+Workspaces são ambientes isolados dentro da mesma conta da Timely.ai. Cada workspace tem seus próprios agentes, canais, conversas e configurações. Equipes que gerenciam múltiplos clientes, produtos ou times usam workspaces para manter tudo separado sem precisar criar contas diferentes.
+
+## O que é isolado por workspace?
+
+Cada workspace tem separação completa dos seguintes recursos:
+
+- Agentes e squads
+- Canais conectados (WhatsApp, Instagram, widget)
+- Conversas e contatos
+- Provedores LLM configurados
+- API Keys
+- Integrações (Composio)
+
+Configurações de empresa, membros e billing são compartilhados entre todos os workspaces da mesma conta.
+
+## Workspace ativo
+
+O workspace ativo é o contexto em que você está operando no momento. Toda ação realizada na plataforma — criar agente, ver conversas, exportar relatório — acontece dentro do workspace ativo.
+
+O nome do workspace ativo aparece no topo do menu lateral. Um indicador visual (badge ou ícone) sinaliza qual workspace está selecionado.
+
+## Alternando entre workspaces
+
+<Steps>
+  <Step title="Clique no seletor de workspace">
+    No topo do menu lateral, clique no nome do workspace atual para abrir o seletor.
+  </Step>
+  <Step title="Escolha o workspace de destino">
+    A lista exibe todos os workspaces aos quais você tem acesso. Clique no workspace desejado.
+  </Step>
+  <Step title="Aguarde o carregamento do contexto">
+    A plataforma recarrega os dados no contexto do novo workspace. A URL e os dados exibidos na tela são atualizados automaticamente.
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/workspace-switcher.png" alt="Seletor de workspace no menu lateral com lista de workspaces disponíveis" />
+</Frame>
+
+<Info>
+  A troca de workspace não encerra sua sessão nem requer novo login. O sistema valida sua role no workspace de destino automaticamente.
+</Info>
+
+## Criando um workspace
+
+A criação de workspaces adicionais está disponível conforme o plano da conta.
+
+<Steps>
+  <Step title="Acesse as configurações de workspace">
+    No seletor de workspace, clique em **Gerenciar workspaces** ou acesse **Configurações > Workspaces**.
+  </Step>
+  <Step title="Clique em Novo workspace">
+    Clique no botão **Novo workspace** no canto superior direito da lista.
+  </Step>
+  <Step title="Configure o workspace">
+    Informe o nome do workspace. Opcionalmente, adicione uma descrição para identificar o propósito do ambiente.
+  </Step>
+  <Step title="Salve">
+    O workspace é criado imediatamente e você é automaticamente redirecionado para ele como owner.
+  </Step>
+</Steps>
+
+## Permissões por workspace
+
+Um mesmo membro pode ter roles diferentes em cada workspace. O owner da conta é owner em todos os workspaces por padrão. Membros convidados têm a role atribuída no momento do convite para aquele workspace específico.
+
+Para gerenciar a role de um membro em um workspace específico:
+
+1. Certifique-se de estar no workspace correto (veja o seletor no menu lateral).
+2. Acesse **Configurações > Time**.
+3. Ajuste a role do membro conforme necessário.
+
+A mudança afeta apenas o workspace ativo — não propaga para outros workspaces.
+
+## Deletar um workspace
+
+<Warning>
+  Deletar um workspace é irreversível. Todos os agentes, conversas, contatos e configurações do workspace são permanentemente removidos. Faça backup das informações importantes antes de prosseguir.
+</Warning>
+
+Para deletar um workspace:
+
+1. Acesse **Configurações > Workspaces**.
+2. Clique no menu de opções do workspace que deseja deletar.
+3. Selecione **Deletar workspace**.
+4. Confirme digitando o nome do workspace no campo de confirmação.
+
+O workspace principal (criado junto com a conta) não pode ser deletado.
+
+## Workspace e provedores LLM
+
+Cada workspace pode ter seus próprios provedores LLM configurados com credenciais distintas. Isso permite usar uma chave OpenAI diferente para cada workspace, com orçamentos separados. Veja [Provedores LLM](/guides/settings/providers) para detalhes.

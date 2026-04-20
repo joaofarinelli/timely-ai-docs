@@ -1,0 +1,103 @@
+---
+title: "YouTube"
+description: "Indexe vídeos do YouTube na Knowledge Base — a Timely.ai extrai a transcrição automaticamente e gera embeddings para busca semântica."
+---
+
+Com a integração de YouTube, você pode transformar qualquer vídeo em conhecimento pesquisável para o seu agente. A Timely.ai extrai a transcrição do vídeo automaticamente, processa o texto em chunks e gera os embeddings — sem que você precise transcrever nada manualmente.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-youtube-knowledge.png" alt="Gerenciador de videos do YouTube" />
+</Frame>
+
+## Como funciona
+
+O pipeline segue estas etapas internamente:
+
+<Steps>
+  <Step title="Validacao da URL">
+    Você informa a URL do vídeo. O sistema valida se é um link de YouTube válido e busca os metadados públicos do vídeo (título, canal, thumbnail).
+  </Step>
+  <Step title="Confirmacao pelo usuario">
+    Os dados do vídeo são exibidos para confirmação antes de iniciar o processamento — título, canal e thumbnail — para garantir que é o vídeo correto.
+  </Step>
+  <Step title="Extracao da transcricao">
+    O `youtube-processor` busca a transcrição automática ou as legendas do vídeo via API do YouTube.
+  </Step>
+  <Step title="Chunking e embeddings">
+    O texto da transcrição é dividido em chunks (seguindo o mesmo pipeline de documentos) e vetorizado pela OpenAI.
+  </Step>
+  <Step title="Disponibilizacao na base">
+    Os chunks ficam disponíveis imediatamente para busca semântica pelo agente.
+  </Step>
+</Steps>
+
+## Adicionando um vídeo
+
+<Steps>
+  <Step title="Abra a secao YouTube">
+    No agente, acesse **Knowledge Base > YouTube**.
+  </Step>
+  <Step title="Cole a URL do video">
+    Informe a URL completa do vídeo do YouTube. Formatos aceitos:
+    - `https://www.youtube.com/watch?v=VIDEO_ID`
+    - `https://youtu.be/VIDEO_ID`
+  </Step>
+  <Step title="Confirme o video">
+    Verifique o título e canal exibidos. Clique em **Confirmar e processar**.
+  </Step>
+  <Step title="Aguarde o processamento">
+    O status muda para `processing` e, em seguida, para `success` quando concluído. O tempo varia de acordo com a duração do vídeo.
+  </Step>
+</Steps>
+
+<Note>
+  O vídeo precisa ter transcrição ou legenda disponível publicamente. Vídeos sem legendas automáticas ou manuais habilitadas não podem ser processados.
+</Note>
+
+## Limitações importantes
+
+| Limitação | Detalhe |
+|---|---|
+| Máximo de caracteres indexados | 1.028 caracteres por chunk (tamanho máximo configurado no processador) |
+| Suporte a idiomas | Depende das legendas disponíveis no YouTube |
+| Vídeos privados | Não suportados — apenas vídeos públicos |
+| Lives e streams | Transcrições ao vivo podem ter qualidade reduzida |
+
+## Gerenciando vídeos indexados
+
+A lista de vídeos indexados exibe para cada item:
+
+| Informação | Descrição |
+|---|---|
+| Thumbnail | Miniatura do vídeo |
+| Título | Título do vídeo no YouTube |
+| Canal | Nome do canal que publicou o vídeo |
+| Total de chunks | Número de trechos gerados da transcrição |
+| Data de indexação | Quando o vídeo foi processado |
+
+Para remover um vídeo da base, clique no menu de ações e selecione **Excluir**. Todos os chunks e embeddings do vídeo são deletados.
+
+<Warning>
+  A exclusão de um vídeo indexado remove permanentemente todos os chunks associados. O agente deixa de ter acesso ao conteúdo desse vídeo imediatamente após a exclusão.
+</Warning>
+
+## Casos de uso recomendados
+
+<CardGroup cols={2}>
+  <Card title="Treinamentos e tutoriais" icon="graduation-cap">
+    Indexe vídeos de onboarding ou treinamentos internos para que o agente responda perguntas sobre o conteúdo.
+  </Card>
+  <Card title="Webinars e palestras" icon="video">
+    Torne acessível o conhecimento compartilhado em eventos gravados sem transcrever manualmente.
+  </Card>
+  <Card title="Demonstracoes de produto" icon="play">
+    Vídeos de demo do produto permitem que o agente explique funcionalidades específicas com base no que foi dito no vídeo.
+  </Card>
+  <Card title="FAQ em video" icon="circle-question">
+    Se sua equipe gravou respostas para perguntas frequentes em vídeo, indexe-as e o agente saberá o que foi explicado.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Vídeos com legendas manuais (criadas por humanos) geram transcrições de qualidade muito superior às legendas automáticas geradas pelo YouTube. Prefira vídeos com legenda manual para tópicos críticos.
+</Tip>

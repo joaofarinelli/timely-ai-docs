@@ -1,0 +1,90 @@
+---
+title: "Referência de Webhooks"
+sidebarTitle: "Referência"
+description: "Endpoints para criar e gerenciar webhooks outbound — receba notificações em tempo real dos eventos do seu workspace"
+---
+
+## Conceito
+
+Os **Webhooks** da Timely.ai são notificações HTTP `POST` enviadas automaticamente para a URL que você configurar sempre que um evento relevante acontece no workspace — uma mensagem recebida, uma conversa fechada, um contato criado, um canal desconectado, entre outros. Em vez de consultar a API periodicamente para verificar se algo mudou, você recebe o dado assim que o evento ocorre.
+
+Cada webhook tem um **secret** gerado no momento da criação, usado para assinar as entregas com HMAC-SHA256 no header `X-Timely-Signature`. Isso garante que apenas a Timely.ai pode enviar eventos para o seu endpoint.
+
+Para entender como validar a assinatura e implementar um receptor de webhooks, consulte a [visão geral de webhooks](/webhooks/overview).
+
+## Ciclo de vida de um Webhook
+
+```
+criar webhook (URL + eventos + secret gerado)
+    │
+    ▼
+active → Timely entrega eventos para a URL
+    │
+    ├── evento ocorre → entrega (success ou failure)
+    │       │
+    │       └── falha → retentativa com backoff exponencial
+    │
+    ├── testar → entrega de evento sintético
+    │
+    ├── consultar deliveries → histórico de entregas
+    │
+    └── deletar → para de receber eventos
+```
+
+Após 5 falhas consecutivas, o webhook é marcado como `failing` mas continua ativo. Novos eventos continuam sendo enfileirados — você recebe um alerta por email e pode agir antes de perder dados.
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único do webhook |
+| `url` | string | URL de destino das entregas (deve ser HTTPS) |
+| `events` | array | Lista de categorias de eventos subscritas |
+| `status` | enum | `active` \| `inactive` \| `failing` |
+| `description` | string | Descrição interna do propósito do webhook |
+| `secret` | string | Secret HMAC — exibido apenas na criação (write-once) |
+| `created_at` | string | ISO 8601 de criação |
+| `last_delivery_at` | string | ISO 8601 da última tentativa de entrega |
+| `success_rate` | number | Taxa de sucesso das últimas 100 entregas (0–1) |
+
+## Campos de uma Delivery
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID da entrega |
+| `webhook_id` | string (UUID) | Webhook que gerou a entrega |
+| `event_type` | string | Tipo do evento entregue |
+| `status` | enum | `success` \| `failed` \| `pending` |
+| `http_status` | number | Código HTTP retornado pelo seu servidor |
+| `attempt` | number | Número da tentativa (1 = primeira) |
+| `response_time_ms` | number | Tempo de resposta em milissegundos |
+| `delivered_at` | string | ISO 8601 da tentativa |
+
+## Categorias de eventos disponíveis
+
+| Categoria | Eventos |
+|-----------|---------|
+| `conversation.*` | `created`, `closed`, `reopened`, `assigned` |
+| `message.*` | `received`, `sent`, `delivered`, `read`, `failed` |
+| `contact.*` | `created`, `updated`, `deleted` |
+| `agent.*` | `handoff_started`, `handoff_completed`, `transferred` |
+| `channel.*` | `connected`, `disconnected`, `error` |
+| `credit.*` | `low`, `depleted` |
+| `plan.*` | `changed` |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Visão geral de webhooks" icon="bell" href="/webhooks/overview">
+    Entenda como validar assinaturas e implementar um receptor.
+  </Card>
+  <Card title="Primeira requisição" href="/start/quickstart-api">
+    Se você ainda não fez sua primeira chamada, comece por aqui.
+  </Card>
+</CardGroup>

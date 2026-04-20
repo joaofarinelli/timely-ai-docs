@@ -1,0 +1,85 @@
+---
+title: "Google Calendar"
+description: "Conecte sua conta Google e mantenha a agenda do agente em sincronização bidirecional automática com o Google Calendar."
+---
+
+A integração com o Google Calendar mantém os agendamentos feitos pelo agente refletidos na sua agenda pessoal ou de equipe — e bloqueia automaticamente os horários que já estão ocupados no Google, evitando conflitos de dupla agenda.
+
+## Como funciona
+
+Quando a integração está ativa:
+
+- Agendamentos criados pelo agente aparecem como eventos no Google Calendar
+- Eventos já existentes no Google Calendar bloqueiam aquele horário na agenda do agente
+- Cancelamentos e reagendamentos feitos pelo agente atualizam o evento correspondente no Google
+- O fuso horário da conta Google é respeitado na criação dos eventos
+
+## Conectando sua conta Google
+
+<Steps>
+  <Step title="Acesse as configurações do agente">
+    Abra o agente desejado e vá em **Agendamento → Calendários conectados**.
+  </Step>
+  <Step title="Inicie a conexão OAuth">
+    Clique em **Conectar Google Calendar**. Uma janela de autorização do Google será aberta.
+  </Step>
+  <Step title="Autorize os escopos">
+    Selecione a conta Google e conceda as permissões solicitadas. A Timely.ai solicita acesso para:
+    - Leitura e escrita de eventos (`calendar.events`)
+    - Leitura da lista de calendários (`calendar`)
+    - Informações básicas do perfil (`userinfo.email`, `userinfo.profile`)
+  </Step>
+  <Step title="Escolha o calendário">
+    Após autorizar, selecione qual calendário da conta Google será sincronizado. Você pode escolher o calendário principal ou um calendário secundário dedicado a agendamentos da Timely.ai.
+  </Step>
+</Steps>
+
+Após concluir, o status da conexão aparece como **Conectado** com o e-mail da conta Google associada.
+
+## Callback de autorização
+
+O fluxo OAuth redireciona de volta para `https://app.timelyai.com.br/calendar-callback` após a autorização. Essa página finaliza a troca de tokens automaticamente — você não precisa fazer nada além de aguardar o redirecionamento.
+
+Se o redirecionamento falhar, verifique:
+- Popups não estão bloqueados no navegador
+- Você está logado na conta correta da Timely.ai durante o fluxo
+
+## Sincronização de disponibilidade
+
+A integração verifica conflitos consultando o Google Calendar antes de confirmar qualquer agendamento. Isso garante que:
+
+- Reuniões pessoais, compromissos de viagem e bloqueios manuais no Google Calendar são respeitados
+- O agente nunca agenda em cima de um evento existente
+- Feriados adicionados ao Google Calendar também bloqueiam a disponibilidade
+
+<Warning>
+  A verificação de conflitos ocorre em tempo real durante o agendamento. Se você criar um evento no Google Calendar logo após uma conversa ter sido iniciada, pode haver uma janela de alguns segundos de dessincronia. O sistema sempre confirma a disponibilidade no momento final da criação do agendamento.
+</Warning>
+
+## Eventos criados no Google
+
+Cada agendamento feito pelo agente cria um evento no Google Calendar com:
+
+- Título com o nome do serviço e do cliente
+- Data, horário e duração configurados no calendário
+- Descrição com notas e contexto da conversa (quando disponível)
+- Convidado com o e-mail do cliente (se fornecido)
+
+Se o Google Meet estiver ativo, o link da reunião é gerado automaticamente e incluído no evento. Veja mais em [Google Meet](/guides/scheduling/google-meet).
+
+## Desconectando a conta
+
+Para desconectar, vá em **Agendamento → Calendários conectados** e clique em **Desconectar**. Os agendamentos já criados no Google Calendar não são excluídos — apenas a sincronização futura é interrompida.
+
+<Note>
+  Cada agente pode ter uma conta Google diferente conectada. Isso é útil quando cada membro da equipe gerencia sua própria agenda.
+</Note>
+
+## Solução de problemas
+
+| Sintoma | Causa provável | Ação |
+|---|---|---|
+| Agendamentos não aparecem no Google | Token expirado | Reconecte a conta pelo mesmo fluxo OAuth |
+| Erro "acesso negado" no fluxo | Escopo revogado pela conta Google | Acesse [myaccount.google.com/permissions](https://myaccount.google.com/permissions) e revogue o app, depois reconecte |
+| Calendário errado selecionado | Seleção inicial incorreta | Desconecte e reconecte escolhendo o calendário correto |
+| Fusos horários desalinhados | Fuso do calendário Timely diferente do Google | Verifique e padronize o fuso em **Configurações do calendário** |

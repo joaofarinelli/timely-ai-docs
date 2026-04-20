@@ -1,0 +1,93 @@
+---
+title: "Capacidades do agente"
+description: "Quais funcionalidades você pode habilitar por agente na Timely: voz, ferramentas externas, agendamento, transferência para humanos e base de conhecimento."
+---
+
+## Visão geral
+
+Capacidades são funcionalidades opcionais que você ativa por agente. Por padrão, um agente recém-criado só processa texto. À medida que você habilita capacidades, ele ganha acesso a recursos adicionais — desde responder por voz até executar ações em ferramentas externas como Google Calendar ou Sheets.
+
+Cada capacidade tem pré-requisitos de configuração e pode aumentar o consumo de créditos por conversa. Habilite apenas o que o agente realmente precisa: capacidades desnecessárias aumentam custo e complexidade sem benefício.
+
+## Capacidades disponíveis
+
+### Voz
+
+Permite que o agente processe e responda mensagens de áudio. Quando habilitada, o agente transcreve mensagens de voz recebidas, processa o conteúdo e pode enviar respostas em texto ou, se configurado, em áudio sintetizado.
+
+**Pré-requisito:** Canal compatível com voz configurado (WhatsApp suporta nativamente).
+
+**Quando usar:** Atendimentos onde os clientes preferem mandar áudio, como negócios com público que usa muito WhatsApp em contextos de mobilidade.
+
+### Ferramentas externas (Composio)
+
+Permite que o agente execute ações em aplicativos externos integrados via Composio — como criar eventos no Google Calendar, ler dados de uma planilha do Google Sheets, enviar mensagens no Slack ou consultar registros no HubSpot.
+
+**Pré-requisito:** Integração Composio configurada e pelo menos um aplicativo conectado ao agente. Veja o guia de [ferramentas Composio](/guides/tools/composio).
+
+**Quando usar:** Agentes que precisam ir além da conversa e realizar ações concretas — agendar reuniões, registrar leads em CRM, enviar notificações para a equipe.
+
+### Agendamento
+
+Habilita capacidades nativas de agendamento da Timely — o agente pode verificar disponibilidade e propor horários com base na agenda configurada no módulo de scheduling.
+
+**Pré-requisito:** Agenda configurada no módulo de Agendamento da Timely.
+
+**Quando usar:** Clínicas, consultórios, escritórios de serviços e qualquer negócio que precise marcar compromissos diretamente no chat.
+
+### Transferência para humanos
+
+Permite que o agente transfira uma conversa para um atendente humano com base em regras definidas — por solicitação do cliente, por limite de iterações sem resolução ou por detecção de frustração.
+
+**Pré-requisito:** Pelo menos um membro da equipe com perfil de atendente no workspace. Consulte as [regras de transferência](/guides/agents/transfer-rules) para a configuração completa.
+
+**Quando usar:** Qualquer agente que não deve resolver 100% dos casos sozinho — o que é a maioria. Transferência bem configurada é a diferença entre um agente que frustra e um que delega com inteligência.
+
+### Base de conhecimento
+
+Permite que o agente consulte documentos, FAQs e fontes de dados adicionados ao módulo de treinamento. Isso expande o conhecimento do agente além do que está no prompt, usando recuperação semântica (RAG) para trazer os trechos mais relevantes para cada pergunta.
+
+**Pré-requisito:** Pelo menos um documento ou fonte indexada na base de conhecimento do agente. Veja o guia de [treinamento](/guides/agents/training).
+
+**Quando usar:** Agentes que precisam responder com informações específicas da empresa — catálogos de produtos, políticas internas, manuais técnicos, contratos.
+
+## Como configurar
+
+<Steps>
+  <Step title="Acesse as configurações do agente">
+    Clique no agente na lista e navegue até a aba **Capacidades**.
+  </Step>
+
+  <Step title="Habilite a capacidade desejada">
+    Cada capacidade tem um toggle. Ative o toggle da capacidade que você quer habilitar.
+  </Step>
+
+  <Step title="Configure os pré-requisitos">
+    Se a capacidade exigir configuração adicional (como conectar uma integração ou criar uma agenda), um link de configuração aparecerá logo abaixo do toggle.
+  </Step>
+
+  <Step title="Salve e teste">
+    Salve as configurações e use o Chat interno para verificar se a capacidade está funcionando como esperado antes de ativar no canal de produção.
+  </Step>
+</Steps>
+
+## Boas práticas
+
+<Tip>
+Habilite capacidades de forma incremental. Ative uma, teste exaustivamente, depois ative a próxima. Múltiplas capacidades novas ao mesmo tempo dificultam identificar a causa de um comportamento inesperado.
+</Tip>
+
+- A capacidade de ferramentas externas (Composio) aumenta o effort de processamento porque o agente precisa decidir quando e como chamar cada ferramenta. Ajuste o effort do agente para Detalhado ou Máximo se perceber que ele está usando as ferramentas de forma inconsistente.
+- Transferência para humanos deve sempre ter uma condição de gatilho clara no prompt — evite deixar o agente "adivinhar" quando transferir.
+- Base de conhecimento funciona melhor com documentos bem estruturados e atualizados. Um documento desatualizado vai gerar respostas incorretas com alta confiança.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Ferramentas Composio" href="/guides/tools/composio">
+    Configure integrações com Google Calendar, Sheets, Slack e outros aplicativos.
+  </Card>
+  <Card title="Prompts condicionais" href="/guides/agents/settings/conditional-prompts">
+    Personalize o comportamento do agente com base em variáveis da conversa.
+  </Card>
+</CardGroup>

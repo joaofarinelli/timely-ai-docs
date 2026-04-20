@@ -1,0 +1,75 @@
+---
+title: "Temperatura"
+description: "Como o parâmetro de temperatura afeta as respostas do agente, o trade-off entre criatividade e determinismo, e recomendações por caso de uso."
+---
+
+## Visão geral
+
+A temperatura é um parâmetro numérico entre 0,00 e 1,00 que controla o quanto o modelo de linguagem varia suas respostas. Em termos técnicos, ela modifica a distribuição de probabilidade das próximas palavras: valores baixos tornam escolhas de alta probabilidade muito mais prováveis (respostas previsíveis), enquanto valores altos distribuem a probabilidade de forma mais uniforme (respostas variadas).
+
+Na prática, você não precisa pensar em probabilidades. A regra simples é: **quanto mais baixa a temperatura, mais consistente e previsível o agente; quanto mais alta, mais criativo e variado**. Para atendimento ao cliente, consistência quase sempre vence criatividade. Para conteúdo, campanhas ou interações que precisam de variedade, valores mais altos fazem sentido.
+
+A Timely usa uma escala de rótulos para facilitar a escolha:
+
+| Faixa | Rótulo | Comportamento |
+|-------|--------|---------------|
+| 0,00 – 0,15 | Metódico | Respostas altamente consistentes, quase idênticas para a mesma pergunta |
+| 0,16 – 0,35 | Conservador | Ligeira variação na formulação, mantendo conteúdo estável |
+| 0,36 – 0,60 | Equilibrado | Variação moderada, bom para uso geral |
+| 0,61 – 0,80 | Criativo | Respostas visivelmente diferentes em cada interação |
+| 0,81 – 1,00 | Muito criativo | Alta variação, pode surpreender positiva ou negativamente |
+
+## Como configurar
+
+<Steps>
+  <Step title="Acesse as configurações do agente">
+    Clique no agente na lista de agentes e vá para a aba de configurações de modelo.
+  </Step>
+
+  <Step title="Localize o controle de Temperatura">
+    O controle de temperatura é um slider horizontal com escala de 0,00 a 1,00, em incrementos de 0,05. O valor atual e o rótulo correspondente aparecem ao lado do slider.
+  </Step>
+
+  <Step title="Ajuste o valor">
+    Arraste o slider para o valor desejado. O rótulo atualiza em tempo real para indicar em qual faixa você está.
+  </Step>
+
+  <Step title="Verifique a compatibilidade com o modelo">
+    Alguns modelos de raciocínio (como GPT-5.1 e GPT-5.2 da OpenAI) desabilitam a temperatura automaticamente — o slider fica cinza com um aviso explicativo. Nesses casos, o comportamento de variação é controlado internamente pelo modelo.
+  </Step>
+
+  <Step title="Salve e teste no Chat interno">
+    Após ajustar, salve e faça a mesma pergunta ao agente várias vezes via Chat interno para observar o grau de variação nas respostas.
+  </Step>
+</Steps>
+
+## Exemplos / Casos de uso
+
+**Suporte técnico (temperatura 0,10 – 0,20):** O agente precisa dar a mesma instrução correta toda vez que um cliente perguntar como resetar a senha. Variação aqui é indesejada — baixa temperatura garante respostas consistentes e confiáveis.
+
+**Qualificação de leads (temperatura 0,25 – 0,40):** O agente faz perguntas de descoberta e precisa soar natural, não robótico. Uma temperatura levemente conservadora mantém as perguntas corretas mas com formulações ligeiramente diferentes, tornando a conversa menos mecânica.
+
+**Copywriting assistido (temperatura 0,65 – 0,80):** Um agente interno que ajuda a equipe a rascunhar e-mails de marketing se beneficia de temperatura mais alta — cada geração produz variações criativas para o redator escolher.
+
+**Agendador de consultas (temperatura 0,05 – 0,15):** O agente confirma horários, especialidades e procedimentos. Qualquer variação em informações de saúde ou horários pode gerar confusão. Temperatura metódica é essencial.
+
+## Boas práticas
+
+<Tip>
+Comece sempre pelo valor mais baixo que pareça razoável para o caso de uso, e aumente apenas se os testes mostrarem respostas excessivamente mecânicas. É muito mais fácil corrigir um agente monótono do que um agente inconsistente.
+</Tip>
+
+- Não confunda temperatura alta com qualidade maior — para a maioria dos casos de suporte, temperatura entre 0,20 e 0,40 produz os melhores resultados.
+- Se o modelo que você selecionou desabilitar a temperatura, não troque de modelo só por isso. Modelos de raciocínio têm bom controle interno de consistência.
+- Use o Chat interno para fazer a mesma pergunta 5 vezes seguidas após qualquer mudança de temperatura — isso revela rapidamente o grau de variação real.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Effort" href="/guides/agents/settings/effort">
+    Entenda como o nível de raciocínio afeta a profundidade e o custo das respostas.
+  </Card>
+  <Card title="Seleção de modelo" href="/guides/agents/settings/overview">
+    Veja quais modelos suportam temperatura e como escolher o modelo certo.
+  </Card>
+</CardGroup>

@@ -1,0 +1,113 @@
+---
+title: BI Dashboard
+description: Análise avançada de uso de tokens, custos por modelo, alertas de orçamento, detecção de anomalias, forecast e benchmark por setor.
+---
+
+O BI Dashboard é a camada de inteligência financeira e operacional da Timely.ai. Ele transforma dados de uso de LLM em insights acionáveis — desde o custo por conversa até previsões de consumo para os próximos 30 dias.
+
+## Acessando o BI Dashboard
+
+No menu lateral, clique em **Analytics** e selecione a aba **BI Dashboard**.
+
+<Frame>
+  <img src="/images/bi-dashboard.png" alt="BI Dashboard com gráficos de uso de tokens e alertas de orçamento" />
+</Frame>
+
+## Token Usage
+
+O painel de uso de tokens mostra o consumo total de tokens de entrada e saída por período, desagregado por agente e por modelo LLM.
+
+<AccordionGroup>
+  <Accordion title="Tendências de uso">
+    Gráfico de área com a evolução diária do consumo de tokens nas últimas semanas. Use essa visão para identificar picos anormais e correlacioná-los com eventos específicos (campanhas, novos canais, etc.).
+  </Accordion>
+  <Accordion title="Model Breakdown">
+    Gráfico de pizza e tabela detalhada mostrando a distribuição de tokens por modelo (ex.: GPT-4o, Claude 3.5, Llama 3). Inclui custo estimado por modelo com base nas taxas de preço atuais de cada provedor.
+  </Accordion>
+  <Accordion title="Custo por agente">
+    Ranking de agentes ordenado por custo total no período. Útil para identificar agentes que consomem mais do que o esperado e revisar suas configurações de contexto e instrução.
+  </Accordion>
+</AccordionGroup>
+
+## Budget Alerts
+
+Configure limites de orçamento para receber alertas antes de ultrapassar seu budget mensal.
+
+<Steps>
+  <Step title="Acesse as configurações de orçamento">
+    Clique no botão **Configurar orçamento** no card de Budget Progress do BI Dashboard.
+  </Step>
+  <Step title="Defina o limite mensal">
+    Informe o valor máximo em tokens ou em custo estimado (USD) que você quer usar por mês.
+  </Step>
+  <Step title="Configure os thresholds de alerta">
+    Defina em que percentual do orçamento você quer ser alertado. O padrão é 80% (aviso) e 95% (crítico).
+  </Step>
+  <Step title="Salve e ative">
+    Salve as configurações. Os alertas aparecem no BI Dashboard e podem ser configurados para enviar notificações por e-mail.
+  </Step>
+</Steps>
+
+O card **Budget Progress** exibe uma barra de progresso em tempo real mostrando quanto do orçamento já foi consumido no mês corrente.
+
+## Anomaly Detection
+
+O sistema de detecção de anomalias monitora padrões de consumo e sinaliza automaticamente quando detecta desvios significativos em relação ao histórico da conta.
+
+Tipos de anomalias detectadas:
+
+- Pico súbito de tokens em um único agente
+- Aumento incomum de conversas em horário atípico
+- Custo por conversa muito acima da média histórica
+- Queda brusca na taxa de resolução combinada com aumento de tokens
+
+Cada anomalia detectada aparece no card **Anomalias** com descrição do desvio, horário do evento e link para investigar as conversas relacionadas.
+
+<Warning>
+  Anomalias não são necessariamente problemas — podem refletir um pico legítimo de demanda. Use o contexto histórico disponível no card para interpretar cada sinalização antes de agir.
+</Warning>
+
+## Token Forecast
+
+O forecast projeta o consumo dos próximos 30 dias com base nas tendências recentes. O gráfico mostra:
+
+- Linha de consumo histórico (sólida)
+- Projeção central (tracejada)
+- Intervalo de confiança (área sombreada)
+
+Se a projeção indicar extrapolação do orçamento antes do fim do mês, um alerta proativo é exibido com sugestões de otimização (reduzir tamanho de contexto, revisar agentes de alto custo, etc.).
+
+## Industry Benchmark
+
+Compare o desempenho da sua operação com médias do seu setor. O benchmark é calculado com base em dados anonimizados de clientes no mesmo segmento de indústria configurado em [Configurações da Empresa](/guides/settings/company).
+
+Métricas comparadas:
+
+| Métrica | Sua conta | Média do setor |
+|---|---|---|
+| Custo por conversa | calculado | referência |
+| Tokens por mensagem | calculado | referência |
+| Taxa de resolução | calculado | referência |
+| Tempo médio de resposta | calculado | referência |
+
+<Info>
+  O benchmark exige que o setor da empresa esteja configurado em **Configurações > Empresa > Setor**. Sem essa informação, a comparação não é exibida.
+</Info>
+
+## Cost Recommendations
+
+Com base nos dados de uso, o BI Dashboard gera recomendações automáticas de redução de custo, como:
+
+- Migrar agentes de baixo volume para modelos mais econômicos
+- Reduzir o contexto de conversas com histórico longo
+- Desativar agentes sem uso nos últimos 30 dias
+
+Cada recomendação inclui estimativa de economia mensal em tokens e custo.
+
+## Exportação
+
+Os dados do BI Dashboard podem ser exportados em CSV ou XLSX. Clique no botão **Exportar relatório** no canto superior direito do painel. Veja mais opções em [Exportação de Relatórios](/guides/analytics/reports-export).
+
+## Permissões necessárias
+
+Acesso exclusivo para **owner** e **manager**.

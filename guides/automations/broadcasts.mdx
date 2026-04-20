@@ -1,0 +1,92 @@
+---
+title: "Broadcasts"
+description: "Envie campanhas em massa via WhatsApp ou outros canais com o criador em stepper, o speed optimizer inteligente e métricas em tempo real."
+---
+
+Broadcasts permitem disparar mensagens em lote para listas segmentadas de contatos — seja para uma promoção, um aviso, uma cobrança ou qualquer comunicação em massa. A Timely.ai controla o ritmo de envio automaticamente para proteger a reputação do seu número.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-broadcasts-list.png" alt="Lista de campanhas de broadcast" />
+</Frame>
+
+## Criando uma campanha
+
+O criador de campanhas segue um stepper em etapas. Você avança para a próxima etapa somente após preencher as informações obrigatórias da atual.
+
+<Steps>
+  <Step title="Informacoes basicas">
+    Defina o nome da campanha, o canal de envio e o agente responsável pela conversa após o disparo.
+  </Step>
+  <Step title="Selecao de destinatarios">
+    Escolha os contatos manualmente, por tag, por segmento do CRM ou importe uma lista. O painel exibe o total de destinatários elegíveis em tempo real.
+  </Step>
+  <Step title="Conteudo da mensagem">
+    Escreva a mensagem ou selecione um template aprovado. Você pode usar variáveis dinâmicas (ex.: `{{nome}}`) que são substituídas individualmente para cada contato.
+  </Step>
+  <Step title="Metodo de envio">
+    Escolha entre envio imediato ou agendado. Para envio agendado, defina data e horário.
+  </Step>
+  <Step title="Revisao e orcamento">
+    Revise o resumo da campanha, o número final de destinatários e o crédito estimado. Confirme para criar a campanha.
+  </Step>
+</Steps>
+
+<Note>
+  Campanhas criadas ficam com status **draft**. Só serão enviadas após você clicar em **Iniciar** ou quando o horário agendado chegar.
+</Note>
+
+## Status do ciclo de vida
+
+| Status | Descrição |
+|---|---|
+| `draft` | Criada, aguardando ação do usuário |
+| `scheduled` | Agendada para disparo futuro |
+| `running` | Em processamento ativo |
+| `paused` | Pausada manualmente |
+| `completed` | Todos os envios processados |
+| `cancelled` | Cancelada pelo usuário |
+| `failed` | Encerrada com erro crítico |
+
+Você pode pausar e retomar uma campanha `running`, ou cancelar uma campanha `scheduled` ou `paused` a qualquer momento.
+
+## Speed Optimizer
+
+O Speed Optimizer analisa o histórico de envios das últimas 24 horas da sua conta e ajusta automaticamente o ritmo da campanha para maximizar a taxa de entrega.
+
+<CardGroup cols={3}>
+  <Card title="Taxa de falhas alta (>10%)" icon="triangle-exclamation">
+    Intervalo de 10–15 min entre mensagens. Máx. 4 por hora.
+  </Card>
+  <Card title="Taxa moderada (5–10%)" icon="circle-exclamation">
+    Intervalo de 5–10 min entre mensagens. Máx. 8 por hora.
+  </Card>
+  <Card title="Taxa baixa (<5%)" icon="circle-check">
+    Intervalo de 1–5 min. Até 20 por hora (10 em alto volume).
+  </Card>
+</CardGroup>
+
+Quando não há histórico, o sistema usa um ritmo conservador de 5 minutos entre mensagens e máximo de 12 por hora. O intervalo inclui uma variância de ±20% para parecer mais natural.
+
+<Tip>
+  O Speed Optimizer é ativado automaticamente. Não é necessário nenhuma configuração extra — mas você pode ver o reasoning atual no painel da campanha enquanto ela está em execução.
+</Tip>
+
+## Métricas de campanha
+
+Durante e após o envio, você acompanha as métricas diretamente na lista de campanhas:
+
+| Métrica | O que mede |
+|---|---|
+| **Total enviado** | Mensagens processadas pelo dispatcher |
+| **Entregues** | Confirmação de entrega no canal |
+| **Lidas** | Confirmação de leitura (quando disponível no canal) |
+| **Falhas** | Mensagens que não puderam ser entregues |
+| **Progresso (%)** | `entregues / total_destinatarios × 100` |
+
+<Warning>
+  Mensagens com status `failed` não são reenviadas automaticamente. Se a taxa de falhas for alta, pause a campanha, investigue o motivo (ex.: número inválido, limite da API do canal atingido) e retome somente após corrigir.
+</Warning>
+
+## Duplicando uma campanha
+
+Para reaproveitar uma campanha existente, clique em **Duplicar** no menu de ações da linha. A cópia é criada com status `draft` e você pode editar qualquer campo antes de iniciar.

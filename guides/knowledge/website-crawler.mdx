@@ -1,0 +1,94 @@
+---
+title: "Website Crawler"
+description: "Indexe páginas do seu site automaticamente — o crawler extrai o conteúdo, gera embeddings e mantém a base de conhecimento atualizada."
+---
+
+O Website Crawler permite que você adicione o conteúdo do seu site à Knowledge Base sem precisar copiar e colar manualmente. Basta informar a URL e configurar a profundidade de rastreamento. A Timely.ai usa o [Firecrawl](https://www.firecrawl.dev) para extrair o conteúdo de cada página e depois processa os embeddings automaticamente.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-website-crawler.png" alt="Gerenciador de sites indexados" />
+</Frame>
+
+## Modos de rastreamento
+
+<Tabs>
+  <Tab title="Scrape (pagina unica)">
+    Extrai o conteúdo de **uma URL específica**. Use para páginas isoladas como uma FAQ, uma página de preços ou um artigo de blog específico.
+
+    Mais rápido — resultado disponível em segundos.
+  </Tab>
+  <Tab title="Crawl (site completo)">
+    Percorre o site a partir da URL raiz, seguindo links internos até o limite configurado. Use para indexar toda a documentação ou um blog inteiro.
+
+    Mais demorado — progresso visível em tempo real.
+  </Tab>
+</Tabs>
+
+## Indexando um site
+
+<Steps>
+  <Step title="Abra o Website Crawler">
+    No agente, acesse **Knowledge Base > Website Crawler**.
+  </Step>
+  <Step title="Informe a URL">
+    Cole a URL da página ou do site raiz. Inclua `https://`.
+  </Step>
+  <Step title="Escolha o modo">
+    Selecione **Scrape** para uma página única ou **Crawl** para rastreamento completo.
+  </Step>
+  <Step title="Configure os limites (apenas Crawl)">
+    Defina o número máximo de páginas (`limit`) e a profundidade máxima de navegação (`max_depth`).
+  </Step>
+  <Step title="Inicie o rastreamento">
+    Clique em **Iniciar**. Um job de rastreamento é criado e você acompanha o progresso em tempo real.
+  </Step>
+</Steps>
+
+## Parâmetros de configuração
+
+| Parâmetro | Modo | Descrição |
+|---|---|---|
+| `url` | Ambos | URL de entrada para o rastreamento |
+| `crawl_type` | Ambos | `scrape` ou `crawl` |
+| `limit` | Crawl | Número máximo de páginas a processar |
+| `max_depth` | Crawl | Profundidade máxima de links a seguir a partir da raiz |
+
+<Note>
+  O modo `crawl` segue apenas links internos do mesmo domínio. Links externos não são rastreados, preservando o escopo do conteúdo indexado.
+</Note>
+
+## Status do job de rastreamento
+
+| Status | Descrição |
+|---|---|
+| `started` | Job iniciado, aguardando resposta do Firecrawl |
+| `crawling` | Percorrendo páginas ativamente |
+| `processing_embeddings` | Gerando vetores para os chunks extraídos |
+| `completed` | Indexação concluída com sucesso |
+| `failed` | Erro durante o rastreamento ou processamento |
+
+O progresso é atualizado em tempo real no painel: `páginas rastreadas / total de páginas`.
+
+## Visualizando páginas indexadas
+
+Após a conclusão, cada página rastreada aparece como um item individual na lista. Para cada página você vê:
+
+- URL e título
+- Preview do conteúdo extraído
+- Número de chunks gerados
+- Score de qualidade (quando disponível)
+- Data de indexação
+
+Clique no ícone de visualização para ler o conteúdo completo extraído de cada página.
+
+## Qualidade do conteúdo extraído
+
+O Firecrawl extrai o texto principal da página descartando navegação, rodapé e scripts. Páginas com pouco conteúdo textual (ex.: páginas de login, páginas de erro) podem ter baixo score de qualidade e contribuem pouco para o agente.
+
+<Warning>
+  Sites com proteção anti-bot (CAPTCHA, Cloudflare com challenge) podem falhar no rastreamento. Nesse caso, use o modo `scrape` para URLs individuais com conteúdo estático ou adicione o conteúdo manualmente via documento ou Q&A.
+</Warning>
+
+<Tip>
+  Reindexe o site sempre que o conteúdo mudar significativamente. Delete o site da lista e adicione novamente para garantir que o agente use a versão mais atualizada — a Timely.ai não realiza re-crawl automático por enquanto.
+</Tip>

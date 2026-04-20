@@ -1,0 +1,147 @@
+---
+title: "Regras de transferência"
+description: "Configure condições em linguagem natural para transferir a conversa para outro agente ou para um atendente humano — handoff inteligente sem código."
+---
+
+Regras de transferência definem quando e para quem o agente deve passar o controle da conversa. Elas funcionam como instruções em linguagem natural que o modelo interpreta durante a conversa — não são palavras-chave fixas, mas condições semânticas flexíveis.
+
+## Visão geral
+
+Acesse a aba **Transferências** nas configurações do agente. Cada regra tem uma condição de disparo e um destino: outro agente de IA ou um atendente humano da equipe.
+
+<Frame caption="Lista de regras de transferência do agente">
+  <img src="/images/screenshots/placeholder-agent-transfer-rules.png" alt="Regras de transferência do agente" />
+</Frame>
+
+## Como as regras funcionam
+
+Quando o agente processa uma mensagem, as regras de transferência ativas são injetadas no contexto do prompt. O modelo analisa a conversa e, se identificar que uma condição foi atendida, executa a transferência automaticamente.
+
+A transferência é **inteligente**: o modelo não procura palavras exatas — ele entende a intenção. Uma regra como "quando o cliente demonstrar frustração com o atendimento" é ativada tanto por "estou com raiva" quanto por "isso é um absurdo" ou "quero cancelar tudo".
+
+## Tipos de destino
+
+<CardGroup cols={2}>
+  <Card title="Outro agente de IA" icon="bot">
+    A conversa é passada para um agente especializado. Útil para criar fluxos de atendimento com agentes especializados por tema (suporte, vendas, financeiro).
+  </Card>
+  <Card title="Atendente humano" icon="user">
+    A conversa é passada para um membro da equipe no inbox. O agente para de responder e o atendente assume o controle.
+  </Card>
+</CardGroup>
+
+## Criar uma regra de transferência
+
+<Steps>
+  <Step title="Clique em Nova regra">
+    Na aba **Transferências**, clique em **+ Nova regra**. O formulário de criação é exibido.
+  </Step>
+  <Step title="Escreva a condição">
+    O campo **Instrução** é onde você descreve em linguagem natural quando a transferência deve acontecer.
+
+    Exemplos de instruções eficazes:
+
+    ```
+    Transfira para o time financeiro quando o cliente perguntar sobre 
+    reembolso, estorno ou cobrança indevida.
+    ```
+
+    ```
+    Quando o cliente solicitar explicitamente falar com um humano 
+    ou atendente, realize a transferência imediatamente.
+    ```
+
+    ```
+    Se após 3 tentativas o agente não conseguir resolver o problema 
+    do cliente, transfira para o suporte técnico avançado.
+    ```
+  </Step>
+  <Step title="Selecione o tipo de destino">
+    Escolha entre **Agente de IA** ou **Humano**.
+
+    - **Agente de IA**: selecione qual agente do workspace deve receber a conversa.
+    - **Humano**: selecione qual membro da equipe deve receber a conversa no inbox.
+  </Step>
+  <Step title="Ative ou desative">
+    O toggle **Regra ativa** controla se a regra está sendo avaliada. Regras inativas ficam salvas mas não são injetadas no contexto do agente.
+  </Step>
+  <Step title="Salve">
+    Clique em **Criar regra**. A regra aparece na lista e entra em vigor imediatamente.
+  </Step>
+</Steps>
+
+## Gerenciar regras existentes
+
+Na lista de regras, cada card exibe:
+
+- O tipo de destino (badge "IA" ou "Humano")
+- Status ativo/inativo
+- O trecho da instrução (até 100 caracteres)
+- O nome do agente ou atendente de destino
+
+Pelo card você pode:
+
+| Ação | Como fazer |
+|---|---|
+| Ativar/desativar | Toggle no card, sem precisar abrir o formulário |
+| Editar | Clique no ícone de lápis |
+| Excluir | Clique no ícone de lixeira e confirme |
+
+## Handoff inteligente
+
+A transferência para humano não apenas passa o controle — ela também:
+
+1. **Notifica o atendente** no inbox com o contexto da conversa até aquele momento.
+2. **Preserva o histórico** — o atendente vê todas as mensagens trocadas com o agente.
+3. **Para o agente** — o agente não responde mais enquanto o humano está no controle.
+4. **Permite devolver para o agente** — o atendente pode encerrar o atendimento ou devolver para automação.
+
+## Limites e restrições
+
+<Note>
+Cada agente suporta no máximo **10 regras de transferência**. Ao atingir o limite, o botão de nova regra é desabilitado automaticamente.
+</Note>
+
+- O campo de instrução é obrigatório — uma regra sem instrução não pode ser salva.
+- Ao selecionar o tipo **Agente de IA**, você deve selecionar um agente de destino diferente do agente atual.
+- Ao selecionar o tipo **Humano**, você deve selecionar pelo menos um usuário da equipe com acesso ao workspace.
+- Regras excluídas não podem ser recuperadas — mas você pode recriar uma regra com o mesmo conteúdo.
+
+## Boas práticas
+
+<Tip>
+Escreva a instrução de transferência do ponto de vista do comportamento esperado, não de palavras-chave. "Quando o cliente demonstrar intenção de cancelamento" é mais robusto que "quando o cliente escrever 'cancelar'".
+</Tip>
+
+- Crie uma regra de fallback genérica para garantir que conversas que o agente não consegue resolver sempre chegam a um humano.
+- Ordene as regras do mais específico para o mais genérico — o modelo avalia todas as regras e usa o julgamento para escolher qual aplicar.
+- Desative regras temporariamente em vez de excluir — útil para testes ou períodos sem atendentes disponíveis.
+- Teste as regras no [Playground](/guides/agents/settings/internal-chat) simulando as situações descritas nas condições.
+
+## Casos de uso comuns
+
+<CardGroup cols={2}>
+  <Card title="Escalonamento por tema">
+    Transfira para agentes especializados: um agente de suporte técnico, um de vendas e um de financeiro — cada um com suas próprias regras e base de conhecimento.
+  </Card>
+  <Card title="Solicitação explícita">
+    Sempre honre quando o cliente pede explicitamente para falar com um humano. Mantenha essa regra sempre ativa.
+  </Card>
+  <Card title="Limite de tentativas">
+    Após N trocas sem resolução, transfira para suporte avançado. Ajuda a evitar loops frustrantes.
+  </Card>
+  <Card title="Horário comercial">
+    Combine com lógica de horário no prompt: durante o horário comercial, transfira para humano; fora do horário, registre o contato e avise sobre retorno.
+  </Card>
+</CardGroup>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Testar o agente" href="/guides/agents/settings/internal-chat">
+    Simule conversas no Playground para validar se as regras de transferência disparam corretamente.
+  </Card>
+  <Card title="Visão geral do agente" href="/guides/agents/overview">
+    Revise todos os blocos de configuração do agente para garantir que está pronto para publicação.
+  </Card>
+</CardGroup>

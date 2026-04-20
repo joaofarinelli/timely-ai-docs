@@ -1,0 +1,113 @@
+---
+title: "Contatos"
+description: "Gerencie sua base de contatos com campos customizados, timeline de atividades e busca avançada integrada ao CRM"
+---
+
+O módulo de Contatos é o núcleo do CRM da Timely.ai. Cada pessoa que já interagiu com qualquer um dos seus agentes vira um contato — com perfil completo, histórico de conversas, campos personalizáveis e linha do tempo de atividades.
+
+<img
+  src="/images/screenshots/placeholder-contacts-list.png"
+  alt="Lista de contatos com filtros e busca"
+  className="rounded-lg border"
+/>
+
+## Estrutura de um contato
+
+Todo contato na Timely tem os seguintes dados de base:
+
+| Campo | Descrição |
+|-------|-----------|
+| `nome_cliente` | Nome completo do contato |
+| `customer_phone` | Telefone (identificador principal no WhatsApp) |
+| `customer_email` | E-mail |
+| `customer_company` | Empresa do contato |
+| `position` | Cargo |
+| `gender` | Gênero (opcional) |
+| `birth_date` | Data de nascimento |
+| `state` / `city` | Localização geográfica |
+| `profile_picture_url` | Foto de perfil (sincronizada do canal quando disponível) |
+
+Além desses campos nativos, você pode adicionar quantos **campos customizados** precisar via Configurações.
+
+<Note>
+  Contatos são criados automaticamente quando um número de telefone ou e-mail novo interage com qualquer agente do workspace. O edge function `upsert-contact` garante que dados duplicados nunca criem contatos duplicados — ele faz merge inteligente por telefone ou e-mail.
+</Note>
+
+## Navegando pelos contatos
+
+<Tabs>
+  <Tab title="Lista">
+    A visão padrão exibe todos os contatos em tabela paginada, com colunas configuráveis. Clique em qualquer linha para abrir o perfil completo.
+  </Tab>
+  <Tab title="Busca">
+    A busca opera em tempo real sobre nome, telefone, e-mail e empresa. Use filtros avançados para combinar critérios — ex: todos os contatos de uma cidade específica com conversa aberta nos últimos 7 dias.
+  </Tab>
+  <Tab title="Filtros">
+    Filtre por canal de origem, agente que atendeu, tag da conversa, data de criação ou campos customizados. Múltiplos filtros combinam com lógica AND.
+  </Tab>
+</Tabs>
+
+## Perfil do contato
+
+Ao clicar em um contato, você vê o painel de perfil dividido em:
+
+<CardGroup cols={2}>
+  <Card title="Dados pessoais" icon="user">
+    Todos os campos nativos e customizados, editáveis em linha. Mudanças são salvas automaticamente.
+  </Card>
+  <Card title="Canais vinculados" icon="plug">
+    Badges dos canais pelos quais o contato já se comunicou: WhatsApp, Instagram, Widget. Cada badge mostra o identificador do canal.
+  </Card>
+  <Card title="Timeline de atividades" icon="timeline">
+    Histórico cronológico de conversas, interações com agentes, mudanças de status de lead, tags aplicadas e campos alterados.
+  </Card>
+  <Card title="Conversas recentes" icon="messages">
+    As últimas threads do contato com link direto para abrir na Inbox. Inclui o agente que atendeu e o status de cada conversa.
+  </Card>
+</CardGroup>
+
+## Editando um contato
+
+<Steps>
+  <Step title="Abra o perfil">
+    Clique no contato na lista para carregar o formulário de detalhes.
+  </Step>
+  <Step title="Edite os campos">
+    Clique em qualquer campo para editar. Os campos são inputs em linha — sem necessidade de entrar em modo de edição separado.
+  </Step>
+  <Step title="Salve">
+    Clique em **Salvar** no rodapé do formulário. Uma confirmação aparece no toast e o `updated_at` do contato é atualizado no banco.
+  </Step>
+</Steps>
+
+<Tip>
+  Agentes de IA também podem atualizar campos de contato automaticamente durante as conversas usando a ferramenta de atualização de contato. Configure no prompt do agente quais campos ele deve capturar e preencher.
+</Tip>
+
+## Campos customizados
+
+Para adicionar campos personalizados ao perfil:
+
+<Steps>
+  <Step title="Acesse Configurações → Contatos → Campos Customizados">
+    No menu de configurações do workspace.
+  </Step>
+  <Step title="Clique em '+ Novo Campo'">
+    Defina o nome, o tipo de dado (`text`, `number`, `date`, `boolean`, `select`) e se é obrigatório.
+  </Step>
+  <Step title="Configure o campo">
+    Para tipo `select`, adicione as opções disponíveis. Para `number`, defina os limites mínimo e máximo se necessário.
+  </Step>
+  <Step title="Ative">
+    O campo aparece imediatamente no formulário de todos os contatos do workspace e fica disponível para filtros e exportações.
+  </Step>
+</Steps>
+
+<Note>
+  Campos customizados também são acessíveis por agentes de IA via ferramentas de leitura e escrita de contato. Isso permite que o agente colete informações estruturadas durante a conversa e as salve automaticamente no perfil.
+</Note>
+
+## Importando e exportando
+
+- **Importar**: suba um CSV com cabeçalhos mapeáveis para os campos do sistema. O `upsert` por telefone ou e-mail evita duplicatas.
+- **Exportar**: exporte a lista filtrada atual para CSV ou JSON via o botão no canto superior da tabela. A exportação inclui campos customizados e dados de canais.

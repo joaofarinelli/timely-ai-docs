@@ -1,0 +1,115 @@
+---
+title: "Claude"
+description: "Use a documentação da Timely.ai no Claude Code e no Claude Desktop via CLAUDE.md, skills personalizadas e MCP context7."
+---
+
+O Claude tem duas formas principais de receber contexto externo: o arquivo `CLAUDE.md` (para Claude Code) e skills personalizadas (para Claude Desktop). Ambas se beneficiam do `llms.txt` da Timely.ai.
+
+## Claude Code
+
+### Injetar contexto via CLAUDE.md
+
+O Claude Code lê o arquivo `CLAUDE.md` na raiz do projeto antes de cada sessão. Adicione uma instrução para que o modelo consulte o `llms.txt` da Timely.ai:
+
+<Steps>
+  <Step title="Baixar o llms.txt">
+    Na raiz do seu projeto, execute:
+
+    ```bash
+    curl https://docs.timelyai.com.br/llms.txt -o timely-llms.txt
+    ```
+  </Step>
+  <Step title="Referenciar no CLAUDE.md">
+    Abra ou crie o arquivo `CLAUDE.md` e adicione:
+
+    ```markdown
+    ## Timely.ai API
+
+    Este projeto integra com a Timely.ai API. O arquivo `timely-llms.txt`
+    na raiz contém a documentação completa dos endpoints, autenticação,
+    webhooks e rate limits.
+
+    Sempre consulte esse arquivo antes de sugerir código que interaja
+    com a API da Timely.ai.
+    ```
+  </Step>
+  <Step title="Verificar carregamento">
+    Inicie uma sessão do Claude Code com `/init`. O modelo vai confirmar que leu o `CLAUDE.md` e terá o contexto da Timely.ai disponível durante toda a sessão.
+  </Step>
+</Steps>
+
+### Manter o arquivo atualizado
+
+Adicione um script ao seu projeto para atualizar o `llms.txt` quando necessário:
+
+```bash
+#!/bin/bash
+# scripts/update-timely-context.sh
+curl -sL https://docs.timelyai.com.br/llms.txt -o ./timely-llms.txt
+echo "Contexto Timely.ai atualizado."
+```
+
+## Claude Desktop — Skills Personalizadas
+
+Você pode criar uma skill que baixa o `llms.txt` e o injeta como contexto no system prompt antes de responder perguntas sobre a API.
+
+### Exemplo de skill
+
+Crie um arquivo de skill (formato `.md` ou conforme a versão do seu Claude Desktop):
+
+```markdown
+# Skill: Timely.ai Developer
+
+## Descrição
+Responde perguntas sobre a API da Timely.ai usando o contexto
+oficial da documentação.
+
+## Instruções
+1. Ao receber uma pergunta sobre a Timely.ai API, busque o contexto em:
+   https://docs.timelyai.com.br/llms.txt
+2. Use o conteúdo retornado para embasar sua resposta.
+3. Cite o endpoint exato, os parâmetros necessários e um exemplo de código.
+4. Se a pergunta envolver autenticação, sempre mencione o header x-api-key.
+
+## Contexto fixo
+Base URL da API: https://api.timelyai.com.br
+Documentação: https://docs.timelyai.com.br
+```
+
+## MCP com context7
+
+Se você usa o servidor MCP `context7` configurado no seu ambiente, pode buscar documentação da Timely.ai em tempo real durante uma sessão:
+
+```
+Use context7 para buscar a documentação da Timely.ai sobre
+criação de agentes e me mostre os campos obrigatórios.
+```
+
+<Note>
+A indexação da Timely.ai no context7 depende do servidor estar configurado com acesso à URL `https://docs.timelyai.com.br`. Se a busca retornar vazia, use o `llms.txt` diretamente como descrito acima.
+</Note>
+
+## Fluxo recomendado
+
+<AccordionGroup>
+  <Accordion title="Projeto novo com integração Timely.ai">
+    1. Baixe o `timely-llms.txt` com `curl`
+    2. Adicione a referência no `CLAUDE.md`
+    3. Faça commit do arquivo no repositório
+    4. Use `/init` para iniciar sessões com contexto carregado
+  </Accordion>
+  <Accordion title="Pergunta pontual sem projeto">
+    Abra o Claude Desktop, ative a skill **Timely.ai Developer** e faça sua pergunta diretamente. A skill busca o contexto sob demanda.
+  </Accordion>
+  <Accordion title="Debug de erro da API">
+    No Claude Code, cole o erro e o endpoint:
+
+    ```
+    Recebi 422 ao chamar POST /v1/contacts com o payload abaixo.
+    O que está errado?
+    { "name": "João", "phone": "47988001122" }
+    ```
+
+    Com o contexto do `CLAUDE.md` carregado, o Claude vai comparar com o schema esperado e apontar o problema.
+  </Accordion>
+</AccordionGroup>

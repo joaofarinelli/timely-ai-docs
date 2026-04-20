@@ -1,0 +1,121 @@
+---
+title: "Criando uma Base de Conhecimento"
+description: "Passo a passo para criar uma base de conhecimento na Timely.ai, configurar as opções iniciais e adicionar as primeiras fontes de conteúdo."
+---
+
+## Visão geral
+
+Uma **base de conhecimento** é o repositório de informações que o agente consulta em tempo real durante as conversas. Em vez de depender apenas do prompt de sistema, o agente recupera trechos relevantes da base antes de formular a resposta — uma arquitetura chamada RAG (Retrieval-Augmented Generation).
+
+Cada base é independente e pode conter múltiplos tipos de conteúdo: documentos, pares de pergunta e resposta (Q&A), páginas de site e transcrições de vídeos do YouTube. Uma mesma base pode ser conectada a diferentes agentes, e um agente pode usar múltiplas bases simultaneamente.
+
+Consulte [Visão Geral da Knowledge Base](/guides/knowledge/overview) para entender o pipeline RAG antes de criar a primeira base.
+
+## Pré-requisitos
+
+- Role `manager`, `trainer` ou `owner` no workspace (permissão `manage_agents`).
+- Um workspace ativo com ao menos um agente criado.
+
+## Como criar
+
+<Steps>
+  <Step title="Acesse a seção de Knowledge">
+    No menu lateral, clique em **Knowledge** (ou **Bases de Conhecimento**, dependendo do idioma da interface). A tela exibe todas as bases existentes no workspace.
+  </Step>
+  <Step title="Crie uma nova base">
+    Clique em **+ Nova base** no canto superior direito. Um formulário de criação será exibido.
+  </Step>
+  <Step title="Dê um nome à base">
+    Escolha um nome descritivo que identifique o propósito da base. Exemplos:
+
+    - "FAQ Produto Principal"
+    - "Políticas de Devolução"
+    - "Catálogo de Serviços 2025"
+
+    O nome é apenas interno — não aparece para os clientes finais.
+  </Step>
+  <Step title="Selecione o workspace (se aplicável)">
+    Se sua conta tem múltiplos workspaces, selecione a qual workspace esta base pertence. A base ficará disponível apenas para agentes desse workspace.
+  </Step>
+  <Step title="Confirme a criação">
+    Clique em **Criar base**. A base é criada vazia e você é redirecionado para a tela de gerenciamento dela, onde pode adicionar conteúdo.
+  </Step>
+</Steps>
+
+## Adicionando fontes de conteúdo
+
+Com a base criada, adicione as fontes de informação. Cada tipo tem suas próprias características:
+
+### Documentos (PDF, texto)
+
+Faça upload de arquivos PDF, TXT ou documentos de texto. O processador extrai o texto, divide em chunks de aproximadamente 4.000 caracteres com sobreposição de ~400 caracteres entre chunks consecutivos, e gera embeddings para cada chunk.
+
+Consulte o guia [Documentos](/guides/knowledge/documents) para detalhes sobre formatos aceitos, limites de tamanho e status de processamento.
+
+### Q&A (Perguntas e Respostas)
+
+Adicione pares de pergunta e resposta manualmente. São indexados instantaneamente — sem processamento assíncrono — e têm alta precisão porque você controla exatamente o que será recuperado.
+
+Consulte o guia [Q&A](/guides/knowledge/qa) para criar, editar e organizar perguntas e respostas.
+
+### Site (Web Crawler)
+
+Informe uma URL e o crawler percorre o site, extrai o conteúdo textual das páginas e indexa como documentos. Útil para manter a base sincronizada com a documentação pública do produto.
+
+Consulte o guia [Website Crawler](/guides/knowledge/website-crawler) para configurar domínios, profundidade de rastreamento e frequência de atualização.
+
+### YouTube
+
+Informe a URL de um vídeo do YouTube. O sistema baixa a transcrição automática (ou a legenda disponível), divide em chunks e indexa. Útil para bases de tutoriais em vídeo.
+
+Consulte o guia [YouTube](/guides/knowledge/youtube) para detalhes sobre idiomas suportados e limitações de transcrição.
+
+## Status de processamento
+
+Após adicionar uma fonte, o conteúdo passa por um pipeline de processamento assíncrono:
+
+| Status | Descrição |
+|--------|-----------|
+| **Processando** | O conteúdo está sendo extraído, dividido em chunks e vetorizado. |
+| **Indexado** | Processamento concluído — o agente já pode recuperar este conteúdo. |
+| **Erro** | Falha no processamento. Veja o detalhe do erro clicando no item. |
+
+O tempo de processamento varia com o tamanho do conteúdo: documentos pequenos ficam prontos em segundos; sites com muitas páginas podem levar alguns minutos.
+
+<Note>
+  Q&As manuais são indexados instantaneamente — não passam pelo pipeline assíncrono.
+</Note>
+
+## Conectando a base a um agente
+
+Com a base criada e o conteúdo indexado, conecte-a a um agente:
+
+1. Acesse o agente desejado e abra a aba **Treinamento** (ou **Knowledge**).
+2. Clique em **Adicionar base de conhecimento** e selecione a base criada.
+3. Configure os parâmetros de retrieval (top-k e threshold) conforme necessário.
+
+Consulte o guia [Conectando KB ao Agente](/guides/knowledge/linking-agent) para detalhes completos sobre parâmetros de busca.
+
+## Boas práticas
+
+- Comece com **Q&As** para os 20 tópicos mais frequentes. Eles são indexados na hora e têm alta precisão.
+- Use nomes descritivos para as bases. Quando um agente tem múltiplas bases conectadas, o nome ajuda a entender qual base foi usada na recuperação.
+- Evite duplicar conteúdo entre bases. Documentos idênticos em bases diferentes não aumentam a qualidade — apenas consomem cota de indexação.
+- Revise periodicamente os documentos com status de **Erro** — falhas de processamento silenciosas podem deixar lacunas no conhecimento do agente.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Conectar ao agente" href="/guides/knowledge/linking-agent">
+    Ative a base num agente e configure prioridade e retrieval.
+  </Card>
+  <Card title="Boas práticas" href="/guides/knowledge/best-practices">
+    Granularidade, evitar duplicatas, Q&A vs. documento e manutenção.
+  </Card>
+  <Card title="Visão geral" href="/guides/knowledge/overview">
+    Como funciona o pipeline RAG internamente.
+  </Card>
+  <Card title="Q&A" href="/guides/knowledge/qa">
+    Crie pares de pergunta e resposta indexados instantaneamente.
+  </Card>
+</CardGroup>

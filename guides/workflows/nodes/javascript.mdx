@@ -1,0 +1,302 @@
+---
+title: "Nó Código JavaScript"
+description: "Execute JavaScript customizado em runtime isolado para transformar, validar ou combinar dados dentro do workflow."
+---
+
+## O que faz
+
+O nó **Código JavaScript** executa um trecho de código JS em um ambiente isolado, sem acesso à rede ou ao sistema de arquivos. Use-o quando as transformações de dados ficam complexas demais para expressões `{{ }}` ou quando você precisa de lógica condicional, iteração ou manipulação de strings que os outros nós não cobrem nativamente.
+
+Casos de uso típicos:
+
+- Transformar a estrutura de um JSON retornado por uma API externa
+- Validar campos e lançar erros descritivos quando dados estão faltando
+- Calcular valores derivados (desconto, data de vencimento, hash)
+- Combinar dados de múltiplos nós anteriores em um único objeto
+- Formatar strings: CPF com máscara, datas localizadas, slugs de URL
+
+---
+
+## Entrada e saída
+
+**Variáveis disponíveis no escopo do código:**
+
+| Variável | Tipo | Descrição |
+|---|---|---|
+| `input` | `any` | Output do nó imediatamente anterior (`$json`) |
+| `trigger` | `object` | Payload completo do trigger (`body`, `headers`, `query`, `method`) |
+| `vars` | `object` | Variáveis do workflow definidas por nós Definir Variável |
+
+**Output:** o valor retornado via `return` é exposto como `$json` para os nós seguintes. Pode ser um objeto, array, string, número ou booleano.
+
+---
+
+## Configuração
+
+<Steps>
+  <Step title="Adicione o nó ao fluxo">
+    Na paleta de componentes, selecione **Ações > Código JavaScript** e arraste para o canvas.
+  </Step>
+  <Step title="Escreva o código no editor">
+    O editor aceita JavaScript moderno (ES2020+). Use `return` para definir o output do nó.
+
+    Template inicial gerado automaticamente:
+
+    ```javascript
+    // Acesse dados de entrada via 'input'
+    // Retorne o resultado com 'return'
+
+    const data = input;
+
+    const result = {
+      processed: true,
+      original:  data,
+      timestamp: new Date().toISOString()
+    };
+
+    return result;
+    ```
+  </Step>
+  <Step title="Referencie variáveis do fluxo">
+    Não use expressões `{{ }}` dentro do código JS — acesse os dados pelas variáveis globais:
+
+    ```javascript
+    // Correto
+    const nome = trigger.body.cliente.nome;
+    const plano = vars.plano_selecionado;
+
+    // Incorreto — {{ }} não são interpolados dentro do editor JS
+    const nome = "{{ $trigger.body.cliente.nome }}";
+    ```
+  </Step>
+  <Step title="Use console.log para debug">
+    `console.log()` está disponível e os logs aparecem no painel de execução do nó durante testes. Em produção, os logs são descartados.
+  </Step>
+  <Step title="Teste o nó">
+    Clique em **Testar** no painel do nó. O runtime executa o código com os dados fixados (pinned output) dos nós anteriores e exibe o resultado e a duração da execução.
+  </Step>
+</Steps>
+
+---
+
+## APIs disponíveis
+
+O runtime é isolado — não há acesso à rede, sistema de arquivos ou variáveis de ambiente. As APIs JavaScript disponíveis são:
+
+| API | Disponível |
+|---|---|
+| `JSON.parse()` / `JSON.stringify()` | sim |
+| `Math.*` | sim |
+| `Date` | sim |
+| `RegExp` | sim |
+| `Array.*` / `Object.*` / `String.*` | sim |
+| `console.log()` | sim (apenas debug) |
+| `fetch()` / `XMLHttpRequest` | não |
+| `fs` / `path` / módulos Node.js | não |
+| `setTimeout` / `setInterval` | não |
+| `require()` / `import` | não |
+
+---
+
+## Exemplos
+
+### Transformar estrutura de resposta de API
+
+A API externa retorna um formato diferente do que os nós seguintes esperam.
+
+<CodeGroup>
+```json Entrada (input — output do nó HTTP anterior)
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "customer_id":    "C-4821",
+      "full_name":      "Ana Lima",
+      "contact_email":  "ana@empresa.com",
+      "is_premium":     true,
+      "created_at":     "2025-01-15T10:30:00Z"
+    }
+  }
+}
+```
+
+```javascript Código
+const raw = input.body.data;
+
+return {
+  id:         raw.customer_id,
+  nome:       raw.full_name,
+  email:      raw.contact_email,
+  premium:    raw.is_premium,
+  membro_desde: new Date(raw.created_at).toLocaleDateString('pt-BR')
+};
+```
+
+```json Saída do nó ($json)
+{
+  "id":           "C-4821",
+  "nome":         "Ana Lima",
+  "email":        "ana@empresa.com",
+  "premium":      true,
+  "membro_desde": "15/01/2025"
+}
+```
+</CodeGroup>
+
+---
+
+### Formatar e validar CPF
+
+<CodeGroup>
+```javascript Código
+const cpfRaw = trigger.body.cpf || '';
+const numeros = cpfRaw.replace(/\D/g, '');
+
+if (numeros.length !== 11) {
+  return { valido: false, cpf: null, erro: 'CPF deve ter 11 dígitos' };
+}
+
+const cpfFormatado = numeros.replace(
+  /(\d{3})(\d{3})(\d{3})(\d{2})/,
+  '$1.$2.$3-$4'
+);
+
+return { valido: true, cpf: cpfFormatado, erro: null };
+```
+
+```json Saída — CPF válido
+{ "valido": true, "cpf": "123.456.789-09", "erro": null }
+```
+
+```json Saída — CPF inválido
+{ "valido": false, "cpf": null, "erro": "CPF deve ter 11 dígitos" }
+```
+</CodeGroup>
+
+O nó Condição seguinte verifica `{{ $json.valido }}` e roteia para o caminho de erro quando `false`.
+
+---
+
+### Calcular data de vencimento
+
+<CodeGroup>
+```javascript Código
+const diasParaVencer = vars.prazo_dias || 30;
+const hoje = new Date();
+hoje.setDate(hoje.getDate() + Number(diasParaVencer));
+
+return {
+  vencimento_iso: hoje.toISOString().split('T')[0],
+  vencimento_br:  hoje.toLocaleDateString('pt-BR'),
+  dias_restantes: Number(diasParaVencer)
+};
+```
+
+```json Saída
+{
+  "vencimento_iso": "2026-05-19",
+  "vencimento_br":  "19/05/2026",
+  "dias_restantes": 30
+}
+```
+</CodeGroup>
+
+---
+
+### Combinar dados de múltiplos nós
+
+Quando você precisa montar um objeto com campos vindos de nós diferentes (HTTP, LLM e trigger), use o nó JavaScript como ponto de consolidação antes do envio.
+
+```javascript
+// Dados do trigger
+const cliente = trigger.body.cliente;
+
+// Output do nó HTTP (salvo em variável via nó Definir Variável)
+const pedido = vars.dados_pedido;
+
+// Output do nó LLM (output do nó anterior)
+const classificacao = input.result;
+
+return {
+  cliente_nome:   cliente.nome,
+  cliente_email:  cliente.email,
+  pedido_id:      pedido.id,
+  pedido_valor:   pedido.valor,
+  intencao:       classificacao.intencao,
+  prioridade:     classificacao.confianca > 0.8 ? 'alta' : 'normal',
+  gerado_em:      new Date().toISOString()
+};
+```
+
+---
+
+### Filtrar e ordenar array
+
+<CodeGroup>
+```javascript Código
+const itens = input.body.itens || [];
+
+const ativos = itens
+  .filter(item => item.ativo === true)
+  .sort((a, b) => b.valor - a.valor)
+  .slice(0, 5);
+
+return {
+  total_recebidos: itens.length,
+  total_ativos:    ativos.length,
+  top5:            ativos
+};
+```
+
+```json Saída
+{
+  "total_recebidos": 42,
+  "total_ativos":    18,
+  "top5": [
+    { "id": "P-01", "nome": "Produto A", "valor": 499.90, "ativo": true },
+    { "id": "P-07", "nome": "Produto B", "valor": 399.00, "ativo": true }
+  ]
+}
+```
+</CodeGroup>
+
+---
+
+## Tratamento de erros
+
+Se o código lançar uma exceção não capturada, o nó marca a execução como falha e o erro aparece nos logs da execução. Para tratar erros de forma controlada, use `try/catch`:
+
+```javascript
+try {
+  const dados = JSON.parse(trigger.body.payload_raw);
+  return { sucesso: true, dados };
+} catch (err) {
+  return { sucesso: false, erro: err.message, dados: null };
+}
+```
+
+---
+
+## Limites
+
+| Parâmetro | Valor |
+|---|---|
+| Timeout de execução | 10 segundos |
+| Acesso à rede | Não permitido |
+| Acesso ao sistema de arquivos | Não permitido |
+| `require()` / módulos externos | Não suportado |
+| Tamanho máximo do script | Sem limite documentado |
+| Tamanho máximo do output | 10 MB |
+
+<Warning>
+  Loops infinitos ou operações síncronas muito pesadas causam timeout após 10 segundos. Prefira processamento de arrays com `Array.map()` e `Array.filter()` em vez de loops `while` sem condição de saída clara.
+</Warning>
+
+---
+
+## Próximos passos
+
+- [Nó Variáveis](/guides/workflows/nodes/variables) — armazenar o output do código para uso em múltiplos nós
+- [Nó LLM](/guides/workflows/nodes/llm) — usar IA antes do JavaScript para extrair dados não estruturados
+- [Nó HTTP Request](/guides/workflows/nodes/http) — enviar o objeto construído pelo JavaScript para uma API externa
+- [Visão geral dos nós](/guides/workflows/nodes/overview) — ver todos os tipos de nó disponíveis

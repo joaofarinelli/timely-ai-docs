@@ -1,0 +1,98 @@
+---
+title: "O que é MCP"
+description: "Entenda o Model Context Protocol (MCP) — o padrão aberto da Anthropic para conectar agentes de IA a servidores de ferramentas externos — e por que ele existe."
+---
+
+## Visão geral
+
+**MCP (Model Context Protocol)** é um protocolo aberto criado pela Anthropic que padroniza como agentes de IA se comunicam com servidores de ferramentas externos. Em vez de cada plataforma inventar sua própria forma de integrar ferramentas, o MCP define um contrato comum: um agente (cliente MCP) sabe como falar com qualquer servidor que implemente o protocolo, independente do que esse servidor oferece.
+
+Na prática, o MCP funciona como uma interface universal. Você pode ter um servidor MCP que expõe consultas ao seu banco de dados interno, outro que acessa um sistema de ERP legado e um terceiro que controla uma automação interna — e o agente se conecta a todos da mesma forma.
+
+## Por que o MCP existe
+
+Antes do MCP, cada plataforma de IA definia seu próprio formato para tool calling. Isso criava um problema de fragmentação: desenvolver uma integração para o Claude era diferente de desenvolver para outro modelo. Os servidores de ferramentas precisavam ser reescritos para cada plataforma.
+
+O MCP resolve isso com um protocolo único. Um servidor MCP desenvolvido uma vez funciona com qualquer cliente que implemente o protocolo — seja o agente da Timely.ai, o Claude Desktop, editores de código com suporte a IA, ou qualquer outro sistema compatível.
+
+Isso abre um ecossistema: servidores MCP públicos desenvolvidos pela comunidade funcionam diretamente com o seu agente, sem nenhuma adaptação.
+
+## Como o MCP funciona
+
+A arquitetura do MCP tem dois componentes principais:
+
+### Cliente MCP (o agente)
+
+O agente da Timely.ai atua como **cliente MCP**. Ele mantém uma sessão com cada servidor MCP configurado, descobre as ferramentas disponíveis e as registra no contexto do modelo. Quando o LLM decide acionar uma ferramenta do servidor MCP, o cliente executa a chamada, recebe o resultado e o injeta no contexto antes da próxima iteração.
+
+### Servidor MCP (o seu sistema)
+
+O **servidor MCP** é um processo que você (ou um terceiro) opera. Ele implementa o protocolo MCP e expõe um conjunto de ferramentas — cada ferramenta tem nome, descrição e esquema de parâmetros. O servidor recebe chamadas do agente, executa a lógica correspondente (consulta ao banco, chamada a uma API interna, etc.) e retorna o resultado.
+
+A comunicação entre cliente e servidor usa **SSE (Server-Sent Events)** ou HTTP, o que torna os servidores MCP compatíveis com qualquer linguagem e infraestrutura.
+
+```
+Agente Timely.ai (cliente MCP)
+         │
+         │  SSE / HTTP
+         ▼
+Servidor MCP (seu sistema)
+  ├── ferramenta: consultar_estoque
+  ├── ferramenta: registrar_pedido
+  └── ferramenta: buscar_cliente
+```
+
+## MCP vs. REST/webhook: qual a diferença?
+
+O MCP não substitui REST ou webhooks — ele serve a um propósito diferente:
+
+| | REST / Webhook | MCP |
+|---|---|---|
+| **Quem aciona** | Você define explicitamente quando chamar | O agente decide autonomamente com base no contexto |
+| **Descoberta de capacidades** | Documentação humana (OpenAPI, README) | Protocolo machine-readable — o agente descobre as ferramentas automaticamente |
+| **Uso por IA** | Requer mapeamento manual para tool calling | Projetado nativamente para agentes de IA |
+| **Sessão** | Stateless por padrão | Suporta sessão com estado entre chamadas |
+| **Ideal para** | Integrações determinísticas, webhooks de eventos | Ferramentas que o agente escolhe autonomamente |
+
+REST e webhooks continuam sendo a escolha certa para fluxos fixos e determinísticos. O MCP entra quando você quer que o agente decida, em tempo de execução, qual ferramenta usar e com quais parâmetros.
+
+## O ecossistema MCP
+
+Por ser um padrão aberto, o MCP tem um ecossistema crescente de servidores públicos — gerenciadores de arquivos, browsers, ferramentas de busca, clientes de banco de dados, SDKs de plataformas populares. Qualquer servidor desse ecossistema pode ser conectado ao agente da Timely.ai sem modificação.
+
+<Tip>
+Você pode consultar o repositório oficial de servidores MCP da comunidade para descobrir servidores prontos para usar. Veja a [referência de MCP Servers](/api-reference/mcp-servers/referencia) para a lista de servidores testados com a Timely.ai.
+</Tip>
+
+## Casos de uso do MCP na Timely.ai
+
+- **APIs internas**: exponha endpoints de sistemas que não têm suporte nativo a OAuth ou que a Composio não cobre.
+- **Bancos de dados proprietários**: um servidor MCP com queries específicas ao seu PostgreSQL, MySQL ou qualquer outro banco.
+- **Sistemas legados**: integre ERPs, sistemas on-premise ou aplicações internas sem precisar expor uma API REST pública.
+- **Ferramentas da comunidade**: use diretamente servidores MCP públicos — um servidor de busca na web, um gerenciador de arquivos, um cliente de e-mail.
+- **Orquestração**: um servidor MCP que agrega múltiplas APIs e expõe uma interface simplificada ao agente.
+
+## Boas práticas
+
+- **Documente bem cada ferramenta no servidor**: a descrição da ferramenta é o que o agente usa para decidir quando acioná-la. Descrições vagas ou técnicas em excesso degradam a qualidade do tool calling.
+- **Exponha ferramentas granulares**: prefira várias ferramentas com propósitos específicos a uma ferramenta genérica com muitos parâmetros opcionais.
+- **Valide os parâmetros no servidor**: o agente pode passar valores inesperados — o servidor precisa tratar erros com mensagens claras para que o agente possa se recuperar.
+- **Prefira respostas estruturadas**: retorne JSON com campos nomeados, não texto livre — facilita que o agente interprete e formate a resposta ao usuário.
+- **Monitore o servidor**: erros e timeouts no servidor MCP interrompem o fluxo do agente. Implemente logs e alertas no servidor desde o início.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Conectar um servidor MCP" href="/guides/mcps/connecting">
+    Passo a passo para adicionar e configurar um servidor MCP no agente.
+  </Card>
+  <Card title="Ferramentas via MCP" href="/guides/tools/mcp">
+    Como gerenciar as ferramentas MCP dentro da configuração do agente.
+  </Card>
+  <Card title="Referência da API MCP" href="/api-reference/mcp-servers/referencia">
+    Endpoints para gerenciar servidores MCP via API.
+  </Card>
+  <Card title="Visão geral das ferramentas" href="/guides/tools/overview">
+    Compare todos os tipos de ferramentas disponíveis na Timely.ai.
+  </Card>
+</CardGroup>

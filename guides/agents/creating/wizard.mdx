@@ -1,0 +1,75 @@
+---
+title: "Criando um agente com o assistente conversacional"
+description: "Como usar o fluxo guiado da Timely para criar um agente via conversa: o assistente faz as perguntas certas e gera o prompt automaticamente."
+---
+
+## Visão geral
+
+O assistente conversacional da Timely conduz você por um diálogo estruturado que coleta tudo que é necessário para montar um agente completo — objetivo, público, tom de voz, horário de funcionamento e regras de comportamento. Ao final, ele gera o prompt do sistema automaticamente e cria o agente com as configurações derivadas das suas respostas.
+
+Essa rota é ideal para quem está criando o primeiro agente ou para casos de uso novos onde você ainda está estruturando o que o agente deve fazer. O processo leva em torno de 5 a 10 minutos e produz um prompt de nível profissional sem exigir conhecimento de prompt engineering.
+
+## Como configurar
+
+<Steps>
+  <Step title="Abra o painel de Agentes e clique em Novo agente">
+    No menu lateral, acesse **Agentes**. Clique em **+ Novo agente** no canto superior direito.
+  </Step>
+
+  <Step title="Selecione 'Criar com o Time'">
+    No diálogo de escolha, clique no botão **Criar com o Time** (marcado como beta). Uma interface de chat vai abrir com o assistente já pronto para começar.
+  </Step>
+
+  <Step title="Responda as perguntas da fase de descoberta">
+    O assistente começa perguntando sobre o objetivo principal do agente. Seja específico: em vez de "atendimento ao cliente", diga "responder dúvidas sobre planos de assinatura e ajudar na troca de senha". Quanto mais contexto você der, melhor fica o prompt gerado.
+  </Step>
+
+  <Step title="Defina o negócio e o público-alvo">
+    O assistente vai perguntar sobre a empresa, setor e perfil dos usuários finais. Essas informações alimentam o contexto de negócio no prompt, permitindo que o agente use a linguagem e o tom certos para o seu público.
+  </Step>
+
+  <Step title="Escolha a personalidade e o tom de voz">
+    Nessa fase você define se o agente deve ser formal ou descontraído, técnico ou simplificado, proativo ou reativo. O assistente usa essas escolhas para moldar as instruções de estilo no prompt.
+  </Step>
+
+  <Step title="Configure horários e restrições (opcional)">
+    O assistente pergunta sobre horário de funcionamento, fuso horário e quaisquer limitações de atuação (temas que o agente não deve abordar, ações que ele não pode tomar sem aprovação humana, etc.).
+  </Step>
+
+  <Step title="Revise o progresso e confirme">
+    Uma barra de progresso mostra em qual fase o diálogo está (descoberta → negócio → personalidade → conhecimento → regras → validação). Quando chegar a 100%, o assistente confirma a criação e o agente é gerado automaticamente.
+  </Step>
+
+  <Step title="Revise e ajuste o prompt gerado">
+    Após a criação, acesse as configurações do agente e revise o prompt. Use o **Time AI** (editor de prompt com IA) para refinar pontos específicos sem precisar reescrever tudo.
+  </Step>
+</Steps>
+
+## Exemplos / Casos de uso
+
+**E-commerce de moda:** O assistente pergunta sobre o segmento, você responde "moda feminina, jovem adulto, ticket médio R$ 200". O agente gerado já recebe instruções de tom descontraído, conhecimento sobre política de trocas e devolução, e regra de nunca citar preços sem verificar o catálogo atual.
+
+**Clínica de saúde:** Você informa que é uma clínica odontológica com atendimento de segunda a sexta, 8h às 18h. O assistente gera prompt com horários de funcionamento estruturados, instrução de encaminhar emergências para o número direto e guardrail explícito contra orientações clínicas.
+
+**SaaS B2B:** Ao descrever um produto de gestão financeira para PMEs, o assistente estrutura o prompt com linguagem técnica moderada, foco em qualificação de leads e instrução de transferir para vendas quando o lead demonstrar interesse em plano corporativo.
+
+## Boas práticas
+
+<Tip>
+Forneça respostas completas em cada fase do diálogo — mensagens curtas como "sim" ou "pode ser" geram prompts genéricos. Quanto mais contexto você der ao assistente, mais preciso e útil será o agente criado.
+</Tip>
+
+- Se uma resposta gerada pelo assistente não refletir exatamente o que você quis dizer, reescreva com mais detalhes na mesma mensagem — o assistente mantém o contexto da conversa.
+- Use o Chat interno para testar o agente logo após a criação, antes de publicar em qualquer canal.
+- O prompt gerado é apenas o ponto de partida. Planeje revisar e iterar com base nos primeiros atendimentos reais.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Criar agente manualmente" href="/guides/agents/creating/from-scratch">
+    Prefere controle direto? Veja como criar um agente sem passar pelo fluxo conversacional.
+  </Card>
+  <Card title="Configurações do agente" href="/guides/agents/settings/overview">
+    Explore todas as opções de configuração disponíveis após a criação.
+  </Card>
+</CardGroup>

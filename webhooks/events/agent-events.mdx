@@ -1,0 +1,158 @@
+---
+title: "Eventos de agente"
+description: "Disparados durante transições de controle entre agente de IA e atendente humano, e em transferências entre atendentes"
+---
+
+Esses eventos cobrem os momentos de transição do fluxo de atendimento — quando o agente de IA percebe que precisa de um humano, quando o humano assume de fato, e quando a conversa é transferida entre atendentes. Use-os para rastrear o tempo de handoff, medir qualidade da triagem da IA e monitorar filas de atendimento.
+
+## Lista de eventos
+
+| Evento | Quando dispara |
+|--------|----------------|
+| `agent.handoff_started` | O agente de IA sinaliza que quer passar o controle para um humano |
+| `agent.handoff_completed` | Um atendente humano assume a conversa efetivamente |
+| `agent.transferred` | A conversa é transferida de um atendente para outro |
+
+---
+
+## `agent.handoff_started`
+
+### Quando dispara
+
+O agente de IA detecta que a situação requer intervenção humana — pode ser por regra de transferência configurada (ex: cliente pedindo falar com humano, palavra-chave detectada, número de tentativas de resolução esgotadas) ou por decisão autônoma do modelo.
+
+Nesse momento, a conversa entra em fila de espera para um atendente, mas o agente ainda está no controle.
+
+### Payload
+
+```json
+{
+  "event": "agent.handoff_started",
+  "event_id": "evt_01HX6A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T14:45:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "agent_id": "agt_101",
+    "handoff_reason": "user_requested",
+    "handoff_note": "Cliente pediu explicitamente para falar com atendente",
+    "queue_id": "queue_sales",
+    "started_at": "2026-04-19T14:45:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `agent_id` | string | ID do agente de IA que iniciou o handoff |
+| `handoff_reason` | enum | `user_requested`, `rule_triggered`, `max_attempts`, `sentiment_negative`, `autonomous` |
+| `handoff_note` | string \| null | Contexto gerado pelo agente sobre o motivo |
+| `queue_id` | string \| null | ID da fila de atendimento onde a conversa foi enfileirada |
+| `started_at` | string | Timestamp ISO 8601 do início do handoff |
+
+### Exemplo de uso
+
+<Note>
+  Use `handoff_started` com `handoff_reason` para medir o volume de handoffs por motivo. Um alto número de `autonomous` pode indicar que o agente não está treinado o suficiente para determinado tema.
+</Note>
+
+---
+
+## `agent.handoff_completed`
+
+### Quando dispara
+
+Um atendente humano aceita (ou é atribuído a) uma conversa que estava em handoff. A partir desse momento, o agente de IA para de responder automaticamente e o atendente está no controle.
+
+### Payload
+
+```json
+{
+  "event": "agent.handoff_completed",
+  "event_id": "evt_01HX6B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-19T14:47:30Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "agent_id": "agt_101",
+    "attendant_id": "usr_321",
+    "handoff_wait_seconds": 150,
+    "handoff_note": "Cliente pediu explicitamente para falar com atendente",
+    "completed_at": "2026-04-19T14:47:30Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `agent_id` | string | ID do agente de IA que iniciou o handoff |
+| `attendant_id` | string | ID do atendente humano que assumiu |
+| `handoff_wait_seconds` | integer | Tempo em segundos entre `handoff_started` e `handoff_completed` |
+| `handoff_note` | string \| null | Contexto passado pelo agente para o atendente |
+| `completed_at` | string | Timestamp ISO 8601 da conclusão do handoff |
+
+### Exemplo de uso
+
+<Tip>
+  Calcule o SLA de handoff com `handoff_wait_seconds`. Se esse valor estiver alto nos horários de pico, considere expandir a equipe ou ajustar as regras de roteamento de fila.
+</Tip>
+
+---
+
+## `agent.transferred`
+
+### Quando dispara
+
+Uma conversa que já está com um atendente humano é transferida para outro atendente. Pode ser uma transferência manual (o próprio atendente escolhe passar) ou automática por regra de departamento.
+
+### Payload
+
+```json
+{
+  "event": "agent.transferred",
+  "event_id": "evt_01HX6C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T15:05:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "from_attendant_id": "usr_321",
+    "to_attendant_id": "usr_654",
+    "transfer_reason": "manual",
+    "transfer_note": "Encaminhando para o time financeiro",
+    "transferred_at": "2026-04-19T15:05:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `from_attendant_id` | string | ID do atendente que transferiu |
+| `to_attendant_id` | string | ID do atendente que recebeu |
+| `transfer_reason` | enum | `manual`, `rule`, `api` |
+| `transfer_note` | string \| null | Observação do atendente sobre o motivo da transferência |
+| `transferred_at` | string | Timestamp ISO 8601 da transferência |
+
+### Exemplo de uso
+
+<Note>
+  Rastreie `agent.transferred` para identificar gargalos. Se um mesmo atendente sempre transfere para o mesmo colega, pode ser que a fila de roteamento precise ser ajustada para já direcionar esses contatos corretamente desde o início.
+</Note>
+
+<Warning>
+  Transferências entre agente de IA e humano geram `handoff_started` + `handoff_completed`. Transferências de humano para humano geram apenas `agent.transferred`. Não confunda os dois fluxos ao montar relatórios.
+</Warning>

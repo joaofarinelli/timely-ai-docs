@@ -1,0 +1,66 @@
+---
+title: "Referência de Chats"
+sidebarTitle: "Referência"
+description: "Endpoints para operar em chats ativos — enviar mensagens como humano, gerenciar handoff e encerrar atendimentos"
+---
+
+## Conceito
+
+**Chats** é o grupo de endpoints focado nas operações de atendimento humano em tempo real — o que acontece quando um agente humano assume uma conversa que estava sendo gerenciada pela IA. Enquanto o grupo Conversations oferece uma visão completa do histórico (leitura, busca, análise), o grupo Chats é orientado à ação: enviar mensagens em nome de um atendente, iniciar e encerrar o modo humano, e apagar mensagens de chats ativos.
+
+A diferença prática: use **Conversations** para acessar e analisar dados históricos; use **Chats** quando você está construindo uma interface de atendimento humano em tempo real — como um inbox customizado, um painel de suporte ou uma integração com um sistema de help desk.
+
+## Handoff: como funciona
+
+Quando um atendente humano precisa assumir uma conversa da IA:
+
+```
+1. POST /v1/chats/{id}/start-human
+   → status da conversa muda para "human"
+   → agente IA para de responder automaticamente
+   → webhook "agent.handoff_started" é disparado
+
+2. Atendente responde via POST /v1/chats/{id}/messages
+   → mensagem aparece para o cliente pelo canal original
+
+3. POST /v1/chats/{id}/stop-human
+   → status volta para "open"
+   → agente IA retoma o controle
+   → webhook "agent.handoff_completed" é disparado
+```
+
+## Campos principais de um Chat
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID do chat (mesmo que o conversation_id) |
+| `status` | enum | `open` \| `human` \| `closed` |
+| `assigned_to` | string (UUID) | ID do atendente humano ativo |
+| `human_started_at` | string | ISO 8601 de início do handoff |
+| `channel_id` | string (UUID) | Canal pelo qual as mensagens são enviadas |
+| `contact_id` | string (UUID) | Contato sendo atendido |
+
+## Campos de uma mensagem de chat
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID da mensagem |
+| `conversation_id` | string (UUID) | Conversa à qual pertence |
+| `content` | string | Conteúdo textual |
+| `type` | enum | `text` \| `image` \| `audio` \| `video` \| `document` |
+| `sender_type` | enum | `agent` (IA) \| `human` \| `contact` |
+| `sender_id` | string (UUID) | ID do remetente humano ou agente |
+| `status` | enum | `sent` \| `delivered` \| `read` \| `failed` |
+| `created_at` | string | ISO 8601 de envio |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

@@ -1,0 +1,231 @@
+---
+title: "Telegram Bot API"
+description: "Formato dos updates do Telegram recebidos pelo bot — mensagens, edições, callbacks e outros tipos de evento"
+---
+
+O Telegram usa um modelo chamado **Updates** para notificar bots sobre qualquer interação: mensagens recebidas, edições, cliques em botões inline, entradas em grupos e muito mais. Quando você conecta um bot Telegram na Timely.ai, a plataforma configura automaticamente um webhook na Telegram Bot API para receber esses updates e transformá-los nos eventos do workspace.
+
+Esta página documenta o formato bruto dos updates — útil para depuração ou integrações diretas com a API do Telegram.
+
+## Como o webhook é registrado
+
+A Timely.ai chama o método `setWebhook` da Bot API apontando para seus servidores:
+
+```
+POST https://api.telegram.org/bot{TOKEN}/setWebhook
+{
+  "url": "https://webhooks.timelyai.com.br/telegram/{CHANNEL_ID}",
+  "allowed_updates": ["message", "edited_message", "callback_query", "my_chat_member"]
+}
+```
+
+Para verificar a configuração atual do webhook do seu bot, use:
+
+```bash
+curl https://api.telegram.org/bot{SEU_TOKEN}/getWebhookInfo
+```
+
+<Info>
+  Se você gerencia o bot diretamente (sem a Timely como intermediário), nunca configure dois webhooks no mesmo token — o Telegram entrega cada update para apenas um endpoint.
+</Info>
+
+## Estrutura base de um Update
+
+Todo update do Telegram tem um `update_id` único e crescente, mais exatamente um campo com o tipo do evento:
+
+```json
+{
+  "update_id": 123456789,
+  "message": { ... }
+}
+```
+
+Os campos possíveis no nível raiz são: `message`, `edited_message`, `channel_post`, `edited_channel_post`, `inline_query`, `callback_query`, `my_chat_member`, `chat_member`, entre outros.
+
+## Payload: message
+
+O tipo mais comum — uma nova mensagem enviada ao bot.
+
+```json
+{
+  "update_id": 123456789,
+  "message": {
+    "message_id": 42,
+    "from": {
+      "id": 987654321,
+      "is_bot": false,
+      "first_name": "Ana",
+      "last_name": "Souza",
+      "username": "anasouza",
+      "language_code": "pt-br"
+    },
+    "chat": {
+      "id": 987654321,
+      "first_name": "Ana",
+      "last_name": "Souza",
+      "username": "anasouza",
+      "type": "private"
+    },
+    "date": 1713456789,
+    "text": "Quero cancelar minha assinatura",
+    "entities": [
+      {
+        "offset": 0,
+        "length": 6,
+        "type": "bold"
+      }
+    ]
+  }
+}
+```
+
+### Mensagem com mídia
+
+```json
+{
+  "update_id": 123456790,
+  "message": {
+    "message_id": 43,
+    "from": { "id": 987654321, "first_name": "Ana", "is_bot": false },
+    "chat": { "id": 987654321, "type": "private" },
+    "date": 1713456850,
+    "photo": [
+      {
+        "file_id": "AgACAgIAAxkBAAIBK2...",
+        "file_unique_id": "AQADrN8xG...",
+        "width": 320,
+        "height": 240,
+        "file_size": 12345
+      },
+      {
+        "file_id": "AgACAgIAAxkBAAIBLG...",
+        "file_unique_id": "AQADrN8xH...",
+        "width": 1280,
+        "height": 960,
+        "file_size": 89012
+      }
+    ],
+    "caption": "Segue a nota fiscal"
+  }
+}
+```
+
+O Telegram envia múltiplos tamanhos da imagem no array `photo`. Use sempre o último elemento (maior resolução). Para baixar: `GET https://api.telegram.org/bot{TOKEN}/getFile?file_id={FILE_ID}` e depois `https://api.telegram.org/file/bot{TOKEN}/{file_path}`.
+
+## Payload: edited_message
+
+Enviado quando o usuário edita uma mensagem já enviada. Contém os mesmos campos de `message` mais o campo `edit_date`.
+
+```json
+{
+  "update_id": 123456791,
+  "edited_message": {
+    "message_id": 42,
+    "from": { "id": 987654321, "first_name": "Ana", "is_bot": false },
+    "chat": { "id": 987654321, "type": "private" },
+    "date": 1713456789,
+    "edit_date": 1713456900,
+    "text": "Quero pausar minha assinatura (editado)"
+  }
+}
+```
+
+<Note>
+  A Timely.ai trata `edited_message` como uma atualização da mensagem original. O histórico de edições não é armazenado — apenas o conteúdo mais recente é exibido na conversa.
+</Note>
+
+## Payload: callback_query
+
+Disparado quando o usuário clica em um botão inline de um teclado. Muito usado para fluxos de menu interativo.
+
+```json
+{
+  "update_id": 123456792,
+  "callback_query": {
+    "id": "4382bfdwdsb323b2d9",
+    "from": {
+      "id": 987654321,
+      "is_bot": false,
+      "first_name": "Ana",
+      "username": "anasouza"
+    },
+    "message": {
+      "message_id": 45,
+      "from": { "id": 111111111, "is_bot": true, "first_name": "Timely Bot" },
+      "chat": { "id": 987654321, "type": "private" },
+      "date": 1713456950,
+      "text": "Como posso te ajudar?",
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            { "text": "Suporte", "callback_data": "menu_suporte" },
+            { "text": "Financeiro", "callback_data": "menu_financeiro" }
+          ]
+        ]
+      }
+    },
+    "chat_instance": "-1234567890",
+    "data": "menu_suporte"
+  }
+}
+```
+
+Após receber um `callback_query`, você deve responder com `answerCallbackQuery` para remover o indicador de carregamento no cliente:
+
+```bash
+POST https://api.telegram.org/bot{TOKEN}/answerCallbackQuery
+{
+  "callback_query_id": "4382bfdwdsb323b2d9",
+  "text": "Abrindo menu de suporte..."
+}
+```
+
+## Tipos de chat
+
+| `chat.type` | Descrição |
+|-------------|-----------|
+| `private` | Conversa direta com o bot |
+| `group` | Grupo comum |
+| `supergroup` | Supergrupo (grupos com mais recursos) |
+| `channel` | Canal do Telegram |
+
+## Campos principais do Update
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `update_id` | integer | ID único crescente do update |
+| `message.message_id` | integer | ID da mensagem no chat |
+| `message.from.id` | integer | ID do usuário no Telegram |
+| `message.chat.id` | integer | ID do chat (negativo em grupos) |
+| `message.date` | integer | Unix timestamp em segundos |
+| `message.text` | string | Conteúdo textual da mensagem |
+| `message.entities` | array | Formatações e entidades especiais (links, comandos, etc.) |
+| `callback_query.data` | string | Payload do botão clicado |
+| `edited_message.edit_date` | integer | Timestamp da edição |
+
+## Idempotência por update_id
+
+O Telegram garante entrega pelo menos uma vez. Em caso de falha de rede, o mesmo update pode ser reenviado. Use o `update_id` para deduplicação:
+
+```typescript
+const processed = new Set<number>();
+
+function handleUpdate(update: TelegramUpdate) {
+  if (processed.has(update.update_id)) return; // duplicata
+  processed.add(update.update_id);
+  // processa...
+}
+```
+
+Em produção, persista os IDs processados em Redis ou banco — não em memória.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Webhooks da plataforma" icon="bell" href="/webhooks/overview">
+    Eventos normalizados que a Timely.ai dispara para o seu servidor.
+  </Card>
+  <Card title="Canais — API Reference" icon="plug" href="/api-reference/channels/referencia">
+    Gerencie canais Telegram via API.
+  </Card>
+</CardGroup>

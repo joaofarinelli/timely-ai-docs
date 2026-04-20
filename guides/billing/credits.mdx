@@ -1,0 +1,94 @@
+---
+title: "Créditos (Coins)"
+description: "Entenda como funciona o sistema de Coins da Timely.ai — o que consome créditos, como recarregar e como acompanhar o saldo."
+---
+
+Coins são a moeda interna da Timely.ai. Cada plano inclui uma cota mensal de créditos, e ações realizadas pelos agentes consomem dessa cota. Quando os créditos do plano se esgotam, você pode comprar pacotes extras sem precisar trocar de plano.
+
+## Cota mensal por plano
+
+| Plano | Créditos inclusos/mês |
+|---|---|
+| Starter | 1.500 |
+| Professional | 7.500 |
+| Enterprise | 50.000 |
+
+Os créditos são renovados automaticamente a cada ciclo de cobrança. O saldo não acumulado do mês anterior não é transferido para o próximo período.
+
+## O que consome créditos
+
+O consumo é calculado por ação realizada pelo agente. O custo exato depende do modelo de LLM configurado e do volume de tokens processados.
+
+| Tipo de ação | Créditos consumidos (aprox.) |
+|---|---|
+| Mensagem processada por LLM (modelo padrão) | 1–3 por resposta |
+| Mensagem com modelo avançado (ex: GPT-4o, Claude 3.5) | 3–10 por resposta |
+| Síntese de voz / TTS (texto para áudio) | 1–5 por bloco de texto |
+| Voice clone — geração de áudio | 5–15 por clipe |
+| Chamada de tool Composio (ex: Google Calendar, Notion) | 1–3 por execução |
+| Execução de agendamento via agente | 2–5 por agendamento |
+| Disparo inteligente com IA | 1–3 por mensagem enviada |
+
+<Note>
+  O consumo por LLM é calculado com base nos tokens de entrada e saída. Modelos maiores têm custo por token mais alto, o que eleva o total de créditos debitados por interação. O sistema arredonda para cima (ceil) — uma resposta que custe 1,2 créditos debita 2.
+</Note>
+
+## Como o saldo é calculado
+
+O saldo disponível é a soma de dois pools independentes:
+
+- **Créditos do plano**: renovados mensalmente conforme o ciclo de cobrança
+- **Créditos extras**: comprados à parte e sem data de validade (não expiram)
+
+O sistema debita primeiro os créditos do plano. Quando esses se esgotam, consome os créditos extras. Caso ambos estejam zerados, os agentes param de processar novas mensagens até a recarga ou renovação.
+
+## Recarregando créditos
+
+Para comprar créditos extras:
+
+<Steps>
+  <Step title="Acesse Billing → Créditos">
+    Na página de Billing, localize o card de **Saldo de Créditos** e clique em **Comprar créditos**.
+  </Step>
+  <Step title="Escolha o pacote">
+    Selecione a quantidade de Coins desejada. O valor em reais é exibido antes de confirmar.
+  </Step>
+  <Step title="Checkout via Stripe">
+    Você é redirecionado para uma sessão de pagamento segura do Stripe. O cartão já cadastrado é usado automaticamente se disponível, ou você pode informar um novo.
+  </Step>
+  <Step title="Créditos adicionados">
+    Após a confirmação do pagamento, os créditos são adicionados ao saldo imediatamente — sem esperar o fechamento do ciclo.
+  </Step>
+</Steps>
+
+## Alertas de saldo baixo
+
+A Timely.ai envia notificações automáticas quando o saldo de créditos atinge os seguintes limiares:
+
+| Limiar | Alerta enviado |
+|---|---|
+| 20% do saldo restante | Aviso de saldo baixo |
+| 10% do saldo restante | Alerta de atenção |
+| 5% do saldo restante | Alerta urgente |
+| 0% (esgotado) | Notificação de bloqueio |
+
+Os alertas chegam por e-mail e como notificação dentro da plataforma. Quando o saldo chega a zero, os agentes ficam sem processar mensagens LLM até a recarga — canais de entrada continuam funcionando, mas o agente não responde.
+
+## Acompanhando o consumo
+
+Na página de **Billing**, o card de saldo exibe:
+
+- Total disponível (créditos do plano + extras)
+- Percentual consumido no período atual
+- Separação entre créditos do plano e créditos extras
+- Data de renovação do próximo ciclo
+
+Para ver o histórico detalhado de transações e deduções, acesse a aba **Histórico de cobranças**.
+
+## Contas parceiras
+
+Empresas com plano parceiro têm créditos ilimitados e não são impactadas pelos limites de consumo mensal. O consumo total ainda é registrado para fins de auditoria, mas não bloqueia o funcionamento dos agentes.
+
+<Tip>
+  Se o consumo mensal dos seus agentes supera consistentemente o limite do plano atual, considere fazer upgrade antes de precisar recarregar — os créditos inclusos no plano Professional ou Enterprise geralmente saem mais baratos do que pacotes de recarga frequentes.
+</Tip>

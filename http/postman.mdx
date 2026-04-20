@@ -1,0 +1,105 @@
+---
+title: "Postman"
+description: "Importe a collection da Timely.ai no Postman, configure o environment e execute seu primeiro request em menos de 5 minutos."
+---
+
+O Postman é a ferramenta de requisições HTTP mais usada em times de desenvolvimento. A collection da Timely.ai cobre todos os endpoints da API com exemplos de payload e tratamento de resposta prontos para uso.
+
+## Download da collection
+
+Baixe o arquivo JSON da collection:
+
+<Card title="timely-ai.postman_collection.json" icon="download" href="/http/collections/timely-ai.postman_collection.json">
+  Collection completa com todos os endpoints agrupados por recurso.
+</Card>
+
+## Importar no Postman
+
+<Steps>
+  <Step title="Abrir o Postman">
+    Inicie o Postman. Se não tiver instalado, baixe em [postman.com/downloads](https://www.postman.com/downloads/).
+  </Step>
+  <Step title="Importar o arquivo">
+    Clique em **Import** no canto superior esquerdo. Arraste o arquivo `timely-ai.postman_collection.json` para a área de drop, ou clique em **Select Files** e selecione o arquivo.
+
+    A collection **Timely.ai API** vai aparecer na barra lateral em **Collections**.
+  </Step>
+  <Step title="Criar o environment">
+    Clique no ícone de olho no canto superior direito (ou vá em **Environments → + New Environment**) e crie um environment chamado **Timely.ai - Production** com as variáveis:
+
+    | Variable | Initial Value | Current Value |
+    |---|---|---|
+    | `base_url` | `https://api.timelyai.com.br` | `https://api.timelyai.com.br` |
+    | `api_key` | *(deixe vazio)* | `sua-chave-de-api-aqui` |
+
+    Salve o environment e selecione-o no dropdown do topo da tela.
+  </Step>
+  <Step title="Executar o primeiro request">
+    Na collection, abra **System → GET /v1/health**. Clique em **Send**. Você deve receber:
+
+    ```json
+    {
+      "status": "ok",
+      "version": "1.0.0"
+    }
+    ```
+
+    Se o retorno for `200 OK`, sua configuração está correta.
+  </Step>
+</Steps>
+
+## Pre-request script para autenticação automática
+
+A collection já inclui o header `x-api-key` configurado via variável `{{api_key}}`. Se quiser centralizar ainda mais e garantir que toda request sempre carregue o header correto, adicione este script na aba **Pre-request Script** da collection raiz:
+
+```javascript
+// Pre-request script — nível da collection
+const apiKey = pm.environment.get("api_key");
+
+if (!apiKey) {
+  throw new Error("Variável 'api_key' não configurada no environment.");
+}
+
+pm.request.headers.add({
+  key: "x-api-key",
+  value: apiKey,
+});
+```
+
+Com esse script no nível da collection, todas as requests filhas herdam o header automaticamente, mesmo que você crie novos requests manualmente.
+
+## Estrutura da collection
+
+```
+Timely.ai API
+├── System
+│   ├── GET  /v1/health
+│   └── GET  /v1/me
+├── Agents
+│   ├── GET  /v1/agents
+│   ├── POST /v1/agents
+│   └── ...
+├── Contacts
+├── Conversations
+├── Channels
+├── Webhooks
+└── MCP Servers
+```
+
+## Como atualizar a collection
+
+Quando a API evoluir com novos endpoints ou campos, baixe o arquivo JSON atualizado de `/http/collections/timely-ai.postman_collection.json` e importe novamente. O Postman perguntará se deseja **substituir** ou **criar uma cópia**. Escolha **Substituir** para manter o histórico de execuções.
+
+<Tip>
+Use a funcionalidade **Fork** do Postman se quiser manter suas customizações e ainda receber atualizações da collection original. Assim você faz merge das mudanças sem perder seus ajustes.
+</Tip>
+
+## Executar a collection completa (smoke test)
+
+Para rodar todos os requests em sequência, use o **Collection Runner**:
+
+1. Clique com o botão direito na collection e selecione **Run collection**
+2. Selecione o environment **Timely.ai - Production**
+3. Clique em **Run Timely.ai API**
+
+O runner exibe o resultado de cada request e marca em vermelho os que retornaram erro. Útil para verificar a saúde da integração após atualizações.

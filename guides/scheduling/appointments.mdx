@@ -1,0 +1,116 @@
+---
+title: "Agendamentos via chat"
+description: "Entenda como o agente agenda, reagenda e cancela compromissos diretamente na conversa com o cliente."
+---
+
+O agente da Timely.ai consegue gerenciar o ciclo completo de agendamentos sem intervenção humana: consulta disponibilidade, confirma com o cliente, cria o agendamento, envia lembretes e processa reagendamentos ou cancelamentos quando solicitados.
+
+## Fluxo de agendamento
+
+Quando o cliente manifesta intenção de agendar (por texto ou após a coleta de dados pelo agente), o seguinte processo ocorre automaticamente:
+
+<Steps>
+  <Step title="Identificação da intenção">
+    O agente detecta que o cliente quer marcar um horário com base na conversa. Você pode reforçar esse comportamento no prompt do agente com instruções como "quando o cliente pedir para agendar, colete nome, data preferida e e-mail".
+  </Step>
+  <Step title="Coleta de dados">
+    O agente solicita as informações necessárias: nome do cliente, data desejada, horário preferido e e-mail ou telefone para confirmação. Os campos obrigatórios são nome, data e horário de início.
+  </Step>
+  <Step title="Verificação de disponibilidade">
+    O sistema consulta o calendário configurado para o agente e retorna os horários disponíveis. Se o horário solicitado estiver ocupado, o agente sugere alternativas automaticamente.
+  </Step>
+  <Step title="Confirmação e criação">
+    Após o cliente confirmar o horário, o agente chama a edge function `agent-schedule-appointment` internamente. O agendamento é criado com status `confirmed` e o cliente recebe a confirmação via chat.
+  </Step>
+  <Step title="Notificações">
+    Lembretes automáticos são enviados antes do horário agendado com base nas configurações de `appointment-reminders`.
+  </Step>
+</Steps>
+
+## Dados coletados no agendamento
+
+| Campo | Obrigatório | Descrição |
+|---|---|---|
+| `customerName` | Sim | Nome completo do cliente |
+| `appointmentDate` | Sim | Data no formato YYYY-MM-DD |
+| `startTime` | Sim | Horário de início (HH:MM) |
+| `customerEmail` | Não | E-mail para confirmação e convite do Google Calendar |
+| `customerPhone` | Não | Telefone do cliente |
+| `notes` | Não | Observações da conversa |
+| `locationType` | Não | `online`, `physical` ou `both` |
+
+## Reagendamento
+
+O cliente pode solicitar a alteração de um agendamento a qualquer momento durante uma conversa. O agente identifica o pedido, localiza o agendamento existente e executa a atualização:
+
+```
+Cliente: Preciso mudar nossa reunião de amanhã para sexta às 15h.
+Agente:  Claro! Encontrei seu agendamento de quinta-feira às 10h.
+         Sexta às 15h está disponível. Confirmo a mudança?
+Cliente: Sim, pode confirmar.
+Agente:  Feito! Seu agendamento foi reagendado para sexta-feira, 25/04, às 15:00.
+         Você receberá uma confirmação por e-mail.
+```
+
+O reagendamento atualiza:
+- O registro de `appointments` no banco de dados
+- O evento correspondente no Google Calendar (quando conectado)
+- Um novo link do Google Meet, se aplicável
+
+<Note>
+  O agente identifica o agendamento do cliente pelo contexto da conversa ou pelo telefone/e-mail associado. Se houver múltiplos agendamentos ativos, o agente pergunta qual deseja alterar.
+</Note>
+
+## Cancelamento
+
+Para cancelar, o cliente simplesmente informa o pedido ao agente:
+
+```
+Cliente: Preciso cancelar meu agendamento de sexta.
+Agente:  Entendido. Vou cancelar sua reunião de sexta-feira às 15:00.
+         Tem certeza que deseja cancelar?
+Cliente: Sim.
+Agente:  Agendamento cancelado. Se quiser remarcar em outro momento,
+         é só me avisar!
+```
+
+O cancelamento:
+- Atualiza o status do agendamento para `cancelled`
+- Remove ou cancela o evento no Google Calendar
+- Invalida o link do Google Meet associado
+
+## Lembretes automáticos
+
+A Timely.ai envia lembretes automáticos para o cliente antes do horário agendado. As configurações padrão são:
+
+- **24 horas antes**: mensagem de lembrete com detalhes do agendamento
+- **1 hora antes**: lembrete final com o link do Meet (quando aplicável)
+
+Os lembretes são enviados pelo mesmo canal onde a conversa ocorreu — WhatsApp, Instagram ou widget.
+
+## Localização do agendamento
+
+Você pode configurar o tipo de local no calendário:
+
+| Tipo | Comportamento |
+|---|---|
+| `online` | O agente menciona que o atendimento será online e inclui o link Meet |
+| `physical` | O agente informa o endereço físico configurado no calendário |
+| `both` | O agente pergunta ao cliente a preferência durante a conversa |
+
+## Visualizando agendamentos
+
+Todos os agendamentos ficam registrados na seção **Agendamentos** do painel da Timely.ai. Você pode filtrar por agente, calendário, data e status (`confirmed`, `cancelled`, `completed`, `no_show`).
+
+## Boas práticas no prompt
+
+Para que o agente gerencie agendamentos de forma fluida, inclua instruções como:
+
+- Defina explicitamente quando o agente deve oferecer agendamento (ex: "após qualquer demonstração de interesse em atendimento presencial")
+- Liste quais dados coletar antes de verificar disponibilidade
+- Instrua o agente a confirmar o horário com o cliente antes de criar o agendamento
+- Oriente o agente a perguntar se o cliente prefere atendimento online ou presencial, se aplicável
+
+<Tip>
+  Combine o módulo de agendamento com o **Tyme CRM** para registrar automaticamente o agendamento como uma oportunidade no pipeline de vendas — disponível nos planos Professional e Enterprise.
+</Tip>

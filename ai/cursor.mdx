@@ -1,0 +1,84 @@
+---
+title: "Cursor"
+description: "Configure a documentação da Timely.ai no Cursor para usar @Timely.ai em qualquer prompt e obter respostas precisas sobre a API."
+---
+
+O Cursor tem suporte nativo a fontes de documentação externas via **@Docs**. Quando você adiciona a Timely.ai como Docs, o editor indexa as páginas e torna o conteúdo disponível como contexto nas janelas de chat e Composer.
+
+## Adicionar como Docs
+
+<Steps>
+  <Step title="Abrir as configurações">
+    No Cursor, pressione `Cmd + ,` (macOS) ou `Ctrl + ,` (Windows/Linux) para abrir as **Settings**.
+  </Step>
+  <Step title="Navegar até Features → Docs">
+    Na barra lateral das configurações, clique em **Features**. Role até a seção **Docs**.
+  </Step>
+  <Step title="Adicionar a URL">
+    Clique em **+ Add** e cole a URL:
+
+    ```
+    https://docs.timelyai.com.br
+    ```
+
+    O Cursor vai indexar o site automaticamente. O processo leva alguns segundos.
+  </Step>
+  <Step title="Confirmar a indexação">
+    Após a indexação, a entrada **Timely.ai** vai aparecer na lista de Docs disponíveis. Você pode clicar para ver o status e forçar uma reindexação se necessário.
+  </Step>
+</Steps>
+
+## Usar nos prompts
+
+Depois de indexada, mencione `@Timely.ai` em qualquer prompt do Chat ou Composer:
+
+```
+@Timely.ai Como eu autentico na API e faço minha primeira chamada para GET /v1/me?
+```
+
+```
+@Timely.ai Quais são os campos obrigatórios para criar um agente via POST /v1/agents?
+```
+
+```
+@Timely.ai Me mostre a estrutura do evento conversation.created do webhook.
+```
+
+O Cursor busca os trechos relevantes da documentação e os injeta no contexto antes de enviar para o modelo.
+
+## Dicas de uso
+
+<AccordionGroup>
+  <Accordion title="Combine com @codebase">
+    Use `@Timely.ai` junto com `@codebase` para que o modelo veja tanto a documentação da API quanto o código do seu projeto:
+
+    ```
+    @Timely.ai @codebase Refatore o arquivo src/services/timely.ts
+    para usar o endpoint correto de criação de contatos.
+    ```
+  </Accordion>
+  <Accordion title="Perguntas sobre erros HTTP">
+    Cole o erro diretamente no prompt:
+
+    ```
+    @Timely.ai Recebi este erro ao chamar POST /v1/agents:
+    { "error": "rate_limit_exceeded", "retry_after": 30 }
+    O que isso significa e como tratar no meu código?
+    ```
+  </Accordion>
+  <Accordion title="Gerar código de integração">
+    ```
+    @Timely.ai Gere uma função TypeScript que usa fetch para
+    enviar uma mensagem via POST /v1/conversations/{id}/messages
+    com retry automático em caso de 429.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Alternativa: MCP Server
+
+<Note>
+Suporte via MCP Server para Cursor está em desenvolvimento. Quando disponível, você poderá adicionar o servidor MCP da Timely.ai nas configurações do Cursor e obter busca semântica em tempo real, sem necessidade de reindexação periódica.
+</Note>
+
+Por enquanto, a abordagem via @Docs cobre a maioria dos casos de uso. Se o contexto retornado parecer desatualizado, force uma reindexação clicando no ícone de refresh ao lado da entrada **Timely.ai** nas configurações.

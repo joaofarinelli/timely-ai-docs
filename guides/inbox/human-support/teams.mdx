@@ -1,0 +1,133 @@
+---
+title: "Times de Atendimento"
+description: "Crie times, adicione membros, defina canais atendidos e configure a distribuição automática de conversas entre atendentes."
+---
+
+## Visão geral
+
+**Times** são grupos de atendentes responsáveis por um conjunto específico de conversas. Eles funcionam como filas nomeadas: quando uma conversa é escalada para atendimento humano, ela pode ser direcionada a um time específico em vez de um indivíduo — e a plataforma cuida de distribuir entre os membros disponíveis.
+
+Usar times traz duas vantagens principais: **visibilidade coletiva** (qualquer membro do time vê as conversas não atribuídas) e **distribuição automática** (ninguém fica sobrecarregado enquanto outros ficam ociosos).
+
+## Como configurar
+
+### Criando um time
+
+<Steps>
+  <Step title="Acesse Configurações">
+    No menu lateral, clique em **Configurações** e selecione a seção **Times**.
+  </Step>
+  <Step title="Crie um novo time">
+    Clique em **Novo time**. Preencha o nome (ex.: "Suporte Técnico", "Vendas Brasil") e uma descrição opcional para ajudar os membros a entenderem o escopo do time.
+  </Step>
+  <Step title="Defina os canais atendidos">
+    Selecione quais canais este time atende: WhatsApp, Instagram, Widget, Telegram ou Slack. Conversas originadas nesses canais poderão ser roteadas para este time. Um mesmo canal pode ser atendido por múltiplos times.
+  </Step>
+  <Step title="Configure o modo de distribuição">
+    Escolha como as conversas chegam para os membros:
+
+    - **Round-robin** — distribui em rodízio sequencial. O próximo ticket vai para o membro que ficou mais tempo sem receber.
+    - **Menor carga** — direciona o ticket para o membro com menos conversas abertas no momento.
+    - **Manual** — tickets chegam sem atribuição; qualquer membro do time pode assumir.
+  </Step>
+  <Step title="Salve e adicione membros">
+    Clique em **Criar time**. Na tela do time criado, clique em **Adicionar membros** e selecione os atendentes que farão parte do time.
+  </Step>
+</Steps>
+
+### Adicionando membros
+
+Membros de um time precisam ter role `attendant`, `trainer` ou `manager` no workspace. Para adicionar:
+
+1. Abra o time em **Configurações → Times**.
+2. Clique em **Adicionar membros**.
+3. Pesquise pelo nome ou e-mail do membro e confirme.
+
+Um mesmo membro pode pertencer a múltiplos times simultaneamente. Ele receberá conversas de todos os times que participa, respeitando o modo de distribuição de cada um.
+
+Para remover um membro, clique no ícone de remoção ao lado do nome dele na lista de membros do time. Conversas já atribuídas a ele não são reatribuídas automaticamente — é necessário transferir manualmente se necessário.
+
+## Modos de distribuição em detalhe
+
+### Round-robin
+
+O sistema mantém um ponteiro rotativo na lista de membros do time. Quando chega um novo ticket:
+
+1. O próximo membro na fila recebe a conversa.
+2. O ponteiro avança para o membro seguinte.
+3. Quando chega ao final da lista, volta ao início.
+
+Membros offline ou em pausa não são pulados automaticamente na versão atual — a conversa é atribuída ao membro mesmo que ele não esteja ativo. Para evitar isso, remova temporariamente o membro do time ou configure o modo **Menor carga**.
+
+### Menor carga
+
+A cada novo ticket, o sistema conta quantas conversas **abertas e em andamento** cada membro tem atualmente. O ticket vai para quem tem menos. Em caso de empate, o sistema escolhe o membro que recebeu o ticket mais antigo.
+
+### Manual
+
+Os tickets chegam sem atribuição (campo "Atribuído a" fica vazio). Qualquer membro do time pode clicar em **Assumir** na Inbox para pegar a conversa. Esse modo é útil quando a equipe prefere triagem visual antes de assumir o caso.
+
+## Canais e roteamento
+
+Ao definir os canais de um time, você está dizendo: "quando uma conversa deste canal for escalada para atendimento humano sem time específico, ela pode ir para este time."
+
+Na prática, o roteamento funciona assim:
+
+- Se o atendente ou a automação especifica um **time de destino** ao escalar, a conversa vai direto para aquele time.
+- Se nenhum time for especificado, a conversa aparece na fila "Não atribuída" da Inbox e qualquer manager pode atribuir manualmente.
+
+<Tip>
+  Para garantir que conversas de WhatsApp de clientes VIP sempre cheguem para o time de Sucesso do Cliente, instrua o agente de IA no prompt de sistema a usar a ação de transferência com o ID do time correto quando identificar um cliente da lista premium.
+</Tip>
+
+## SLA por time
+
+Cada time pode ter um SLA configurado independentemente:
+
+- **Tempo de primeira resposta** — quanto tempo (em minutos) um ticket pode ficar sem resposta humana antes de acionar um alerta.
+- **Tempo de resolução** — prazo total para encerrar o ticket.
+
+Quando um ticket ultrapassa o SLA configurado, ele aparece destacado em laranja ou vermelho na fila do time, dependendo da gravidade. Managers recebem notificação por e-mail se o alerta de SLA estiver ativado nas configurações de notificação.
+
+## Visibilidade das conversas por time
+
+Membros de um time enxergam na Inbox:
+
+- Todas as conversas atribuídas a eles pessoalmente.
+- Todas as conversas não atribuídas do time (visíveis na aba correspondente).
+- Conversas de outros membros do time se o manager concedeu essa visibilidade nas configurações do time.
+
+Managers e owners veem todas as conversas de todos os times.
+
+## Exemplos de uso
+
+| Time | Canal | Modo | Uso típico |
+|------|-------|------|------------|
+| Suporte Nível 1 | WhatsApp, Widget | Round-robin | Triagem geral de dúvidas |
+| Vendas | WhatsApp, Instagram | Menor carga | Atendimento consultivo de leads |
+| Financeiro | Todos | Manual | Casos sensíveis que exigem revisão antes de assumir |
+| Técnico | Widget, Slack | Menor carga | Suporte técnico onde carga varia muito |
+
+## Boas práticas
+
+- Crie times por **departamento ou especialidade**, não por canal. Um mesmo time pode atender múltiplos canais, mas um mesmo canal raramente deve ser atendido por times com escopos idênticos.
+- Prefira **Menor carga** para times com volume imprevisível — evita que um atendente fique com dezenas de tickets enquanto outros têm poucos.
+- Mantenha o número de membros por time razoável (5 a 15). Times muito grandes perdem a coesão; times muito pequenos ficam sobrecarregados em picos.
+- Revise o painel de SLA mensalmente e ajuste os tempos conforme a capacidade real do time.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Roles na Inbox" href="/guides/inbox/human-support/roles">
+    Permissões detalhadas de cada role no contexto de times e atendimento.
+  </Card>
+  <Card title="Tickets" href="/guides/inbox/human-support/tickets">
+    Como abrir, atribuir e encerrar tickets de atendimento humano.
+  </Card>
+  <Card title="Inbox" href="/guides/inbox/overview">
+    Visão geral da fila de conversas e filtros disponíveis.
+  </Card>
+  <Card title="Permissões gerais" href="/guides/team/permissions">
+    Matriz completa de permissões do workspace.
+  </Card>
+</CardGroup>

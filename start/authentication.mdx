@@ -1,0 +1,134 @@
+---
+title: "Autenticação"
+description: "Como usar API keys, escopos de permissão e rotação de credenciais"
+---
+
+A autenticação na API da Timely.ai é feita via **API key** enviada em todas as requisições no header `x-api-key`. Não há OAuth, não há sessões — só a chave.
+
+## Enviando a chave
+
+```http
+GET /v1/agents HTTP/1.1
+Host: api.timelyai.com.br
+x-api-key: tly_live_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Em variáveis de ambiente, sempre armazene a chave como `TIMELY_API_KEY` e referencie via `process.env` (Node), `os.environ` (Python) ou `os.Getenv` (Go). Nunca hardcode.
+
+## Criando uma API key
+
+1. Acesse [app.timelyai.com.br](https://app.timelyai.com.br)
+2. Vá em **Configurações → API Keys → Nova chave**
+3. Dê um nome que identifique o uso (ex: `crm-integracao`, `n8n-automacoes`)
+4. Selecione os escopos necessários (princípio do menor privilégio)
+5. Copie a chave — ela aparece **uma única vez**
+
+<Warning>
+  Se perder a chave, não é possível recuperá-la. Você precisará revogar e criar uma nova. Planeje o rollout antes de revogar chaves em produção.
+</Warning>
+
+## Escopos disponíveis
+
+Cada API key tem um conjunto de escopos que define o que ela pode fazer. Conceda apenas o que o serviço precisa.
+
+<AccordionGroup>
+  <Accordion title="Agentes">
+    | Escopo | Permissão |
+    |---|---|
+    | `agents:read` | Listar e visualizar agentes |
+    | `agents:write` | Criar, editar e excluir agentes |
+  </Accordion>
+
+  <Accordion title="Conversas e mensagens">
+    | Escopo | Permissão |
+    |---|---|
+    | `conversations:read` | Listar e ler conversas |
+    | `conversations:write` | Criar, atualizar e encerrar conversas |
+    | `messages:send` | Enviar mensagens via agente |
+    | `chats:manage` | Gerenciar threads de chat, incluindo histórico |
+  </Accordion>
+
+  <Accordion title="Contatos">
+    | Escopo | Permissão |
+    |---|---|
+    | `contacts:read` | Listar e buscar contatos |
+    | `contacts:write` | Criar, editar e excluir contatos |
+    | `custom-fields:manage` | Gerenciar campos customizados do CRM |
+  </Accordion>
+
+  <Accordion title="Canais">
+    | Escopo | Permissão |
+    |---|---|
+    | `channels:read` | Listar canais conectados |
+    | `channels:write` | Configurar e desconectar canais |
+  </Accordion>
+
+  <Accordion title="Treinamento">
+    | Escopo | Permissão |
+    |---|---|
+    | `training:read` | Visualizar base de conhecimento |
+    | `training:write` | Adicionar e remover documentos do treinamento |
+  </Accordion>
+
+  <Accordion title="Workspaces e time">
+    | Escopo | Permissão |
+    |---|---|
+    | `workspaces:read` | Visualizar workspaces |
+    | `workspaces:write` | Criar e configurar workspaces |
+  </Accordion>
+
+  <Accordion title="Automação">
+    | Escopo | Permissão |
+    |---|---|
+    | `webhooks:manage` | Criar, listar e excluir endpoints de webhook |
+    | `followups:manage` | Gerenciar regras de follow-up automático |
+  </Accordion>
+
+  <Accordion title="Agendamentos">
+    | Escopo | Permissão |
+    |---|---|
+    | `appointments:read` | Visualizar agendamentos |
+    | `appointments:write` | Criar e cancelar agendamentos |
+  </Accordion>
+
+  <Accordion title="Infraestrutura">
+    | Escopo | Permissão |
+    |---|---|
+    | `mcp-servers:manage` | Registrar e remover MCP servers externos |
+  </Accordion>
+</AccordionGroup>
+
+## Boas práticas de segurança
+
+**Use uma chave por serviço.** Se um serviço for comprometido, você revoga só a chave dele sem afetar o restante.
+
+**Escopos mínimos.** Um job que só lê conversas não precisa de `agents:write`. Quanto menor o escopo, menor o raio de impacto de um vazamento.
+
+**Rotação periódica.** Troque as chaves a cada 90 dias ou sempre que um membro do time que tinha acesso às credenciais sair.
+
+**Monitore o uso.** Em **Configurações → API Keys**, você vê o volume de requisições por chave. Picos inesperados podem indicar uso não autorizado.
+
+## Rotacionando uma chave
+
+<Steps>
+  <Step title="Crie a nova chave">
+    Em **Configurações → API Keys → Nova chave**, crie a substituta com os mesmos escopos da chave atual.
+  </Step>
+  <Step title="Atualize os serviços">
+    Atualize a variável de ambiente em todos os serviços que usam a chave antiga. Faça o deploy ou reinicie os serviços.
+  </Step>
+  <Step title="Revogue a chave antiga">
+    Após confirmar que os serviços estão operacionais com a nova chave, clique em **Revogar** na chave antiga. A revogação é imediata — qualquer requisição com a chave antiga retorna `401`.
+  </Step>
+</Steps>
+
+## Erros comuns de autenticação
+
+| Status | Causa | Solução |
+|---|---|---|
+| `401 Unauthorized` | Chave ausente, inválida ou revogada | Verifique o header `x-api-key` |
+| `403 Forbidden` | Chave válida, mas sem o escopo necessário | Adicione o escopo faltante na chave |
+
+<Note>
+  API keys são isoladas por workspace. Uma chave criada no workspace "Suporte" não acessa dados do workspace "Vendas".
+</Note>

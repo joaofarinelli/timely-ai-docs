@@ -1,199 +1,130 @@
 ---
 title: "Bem-vindo à Timely.ai"
-description: "Aqui você encontra tudo o que precisa para criar agentes de IA, integrar via API e automatizar seu atendimento ao cliente e vendas."
+sidebarTitle: "Bem-vindo"
+description: "Plataforma de agentes de IA para atendimento, vendas e automação multicanal"
 mode: "custom"
 ---
 
 <div style={{
   position: "relative",
+  width: "100%",
+  minHeight: "260px",
   overflow: "hidden",
-  background: "linear-gradient(135deg, #0a0f1a 0%, #0d1525 40%, #111d30 100%)",
-  padding: "80px 24px",
-  textAlign: "center",
-  marginBottom: "48px"
+  background: "radial-gradient(ellipse at top left, #1e40af 0%, #2563EB 45%, #4f46e5 100%)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "72px 32px",
+  textAlign: "center"
 }}>
-  <svg style={{ position: "absolute", bottom: 0, right: 0, width: "500px", height: "300px", opacity: 0.3 }} viewBox="0 0 500 300" fill="none">
-    <circle cx="420" cy="320" r="200" fill="#2563EB" opacity="0.15" />
-    <circle cx="350" cy="350" r="180" fill="#1e40af" opacity="0.12" />
-    <circle cx="480" cy="280" r="120" fill="#3b82f6" opacity="0.1" />
-  </svg>
-  <div style={{ position: "relative", zIndex: 1, maxWidth: "700px", margin: "0 auto" }}>
-    <h1 style={{ color: "#ffffff", fontSize: "2.5rem", fontWeight: 700, marginBottom: "16px", lineHeight: 1.2 }}>
-      Bem-vindo à Timely.ai
+  <div style={{ position: "relative", zIndex: 1, maxWidth: "640px" }}>
+    <h1 style={{ fontSize: "32px", fontWeight: 700, color: "white", lineHeight: 1.15, margin: 0 }}>
+      Bem-vindo à API da Timely.ai
     </h1>
-    <p style={{ color: "#a1a1aa", fontSize: "1.05rem", lineHeight: 1.6, margin: 0 }}>
-      Aqui você encontra tudo o que precisa para criar agentes de IA,
-      integrar via API e automatizar seu atendimento ao cliente e vendas.
+    <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.85)", lineHeight: 1.55, marginTop: "14px", marginBottom: 0 }}>
+      Crie agentes de IA, conecte WhatsApp, Instagram e outros canais, integre via API REST e automatize atendimento e vendas — tudo em uma plataforma.
     </p>
   </div>
 </div>
 
-<div style={{ 
-  padding: "60px 20px",
-  maxWidth: "1100px",
-  margin: "0 auto"
-}}>
-  <div style={{ 
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: "24px",
-    marginBottom: "32px"
-  }}>
-    <Card icon="rocket" title="Fazer sua primeira requisição" href="/pages/start/quickstart">
-      Aprenda como fazer sua primeira chamada à API e começar a processar pagamentos.
+<div style={{ maxWidth: "960px", margin: "0 auto", padding: "48px 24px" }}>
+
+## O que você pode fazer
+
+<CardGroup cols={3}>
+  <Card title="Agentes de IA" icon="robot" href="/guides/agents/overview">
+    Configure personalidade, modelo e ferramentas.
+  </Card>
+  <Card title="WhatsApp oficial" icon="whatsapp" href="/guides/channels/types/whatsapp-waba">
+    Conecte via embedded signup da Meta.
+  </Card>
+  <Card title="Knowledge Base" icon="books" href="/guides/knowledge/overview">
+    RAG nativo com PDFs, sites e vídeos.
+  </Card>
+  <Card title="Agendamentos" icon="calendar" href="/guides/scheduling/calendars">
+    O agente marca reuniões pelo chat.
+  </Card>
+  <Card title="Broadcasts" icon="bullhorn" href="/guides/automations/broadcasts">
+    Campanhas em massa com speed optimizer.
+  </Card>
+  <Card title="Workflows" icon="diagram-project" href="/guides/workflows/overview">
+    Editor visual com triggers e ações.
+  </Card>
+  <Card title="Integrações Composio" icon="plug" href="/guides/tools/composio">
+    29 apps prontos via OAuth gerenciado.
+  </Card>
+</CardGroup>
+
+## Primeiros passos
+
+<CardGroup cols={3}>
+  <Card title="Quickstart produto" icon="rocket" href="/start/quickstart-product">
+    Primeiro agente em 10 minutos.
+  </Card>
+  <Card title="Quickstart API" icon="terminal" href="/start/quickstart-api">
+    Primeira requisição em 5 minutos.
+  </Card>
+  <Card title="Autenticação" icon="key" href="/start/authentication">
+    Gerar, rotacionar e escopar API keys.
+  </Card>
+  <Card title="Webhooks" icon="bolt" href="/start/webhooks-intro">
+    Eventos em tempo real com HMAC.
+  </Card>
+  <Card title="Produção" icon="circle-check" href="/start/production">
+    Checklist para subir com segurança.
+  </Card>
+</CardGroup>
+
+<Accordion title="Mais recursos" icon="circle-plus">
+  <CardGroup cols={3}>
+    <Card title="Rate limits" icon="gauge" href="/start/rate-limits">
+      Limites e paginação.
     </Card>
-
-    <Card icon="money-bill" title="Checkout" href="/pages/payment/create">
-      Uso nosso checkout para receber on Pix e Cartão de Crédito.
+    <Card title="Widget web" icon="globe" href="/guides/channels/types/widget">
+      Chat embeddable com voz.
     </Card>
-
-    <Card icon="key" title="Chaves de API" href="/pages/authentication">
-      Consulte como gerar e gerenciar suas credenciais com segurança. 
+    <Card title="Inbox" icon="inbox" href="/guides/inbox/chat-history">
+      Atendimento humano + takeover.
     </Card>
-
-    <Card icon="terminal" title="Ambiente de testes" href="/pages/devmode">
-      Entenda como funciona o ambiente de desenvolvimento e como você pode testar sua integração.
+    <Card title="CRM" icon="address-book" href="/guides/crm/contacts">
+      Contatos, pipeline e datagrids.
     </Card>
-
-    <Card icon="credit-card" title="Criar uma assinatura" href="/pages/subscriptions/create">
-      Aprenda a Criar um Checkout de Assinatura.
+    <Card title="Squads" icon="users-gear" href="/guides/squads/overview">
+      Roteamento entre múltiplos agentes.
     </Card>
-
-    <Card icon="money-bill-transfer" title="Realizar saques" href="/pages/payouts/create">
-      Veja como realizar saques de forma segura pela API.
+    <Card title="Time AI" icon="sparkles" href="/guides/time-ai/overview">
+      Copilot interno da equipe.
     </Card>
-
-    <Card icon="tag" title="Criar cupons" href="/pages/coupons/create">
-      Aprenda a criar cupons e aplicá-los em suas transações.
+    <Card title="Workers" icon="robot-astromech" href="/guides/workers/overview">
+      Tarefas assíncronas longas.
     </Card>
-
-    <Card icon="shopping-basket" title="Criar produtos" href="/pages/products/create">
-      Aprenda a criar e organizar produtos dentro do seu sistema via API.
+    <Card title="MCP servers" icon="plug-circle-plus" href="/api-reference/mcp-servers/referencia">
+      Conecte tools externas via MCP.
     </Card>
-
-    <Card icon="users" title="Criar clientes" href="/pages/client/create">
-      Aprenda como criar clientes via API da AbacatePay.
+    <Card title="HTTP collections" icon="file-code" href="/http/overview">
+      Postman e Bruno prontos.
     </Card>
-
-    <div id="card-11" style={{ display: "none" }}>
-      <Card icon="boxes-stacked" title="SDKs" href="/pages/sdks/sdks">
-        Veja os SDKs disponíveis para a AbacatePay.
-      </Card>
-    </div>
-
-    <div id="card-12" style={{ display: "none" }}>
-      <Card icon="bell" title="Configurar webhooks" href="/pages/webhooks">
-        Aprenda a receber notificações de eventos em tempo real.
-      </Card>
-    </div>
-
-    <div id="card-14" style={{ display: "none" }}>
-      <Card icon="coins" title="Produção" href="/pages/production">
-        Como realizar vendas reais na AbacatePay.
-      </Card>
-    </div>
-
-    <div id="card-15" style={{ display: "none" }}>
-      <Card icon="codepen" title="Ecossistema" href="/pages/ecosystem">
-        Explore o nosso Ecossistema e descubra coisas novas.
-      </Card>
-    </div>
-
-    <div id="card-16" style={{ display: "none" }}>
-      <Card icon="scroll" title="ChangeLog" href="/pages/changelog/index">
-        Veja as últimas alterações na API da AbacatePay.
-      </Card>
-    </div>
-
-    <div id="card-17" style={{ display: "none" }}>
-      <Card icon="terminal" title="CLI" href="/pages/cli">
-        Veja o que temos de melhor com a nossa CLI oficial.
-      </Card>
-    </div>
-
-    <div id="card-18" style={{ display: "none" }}>
-      <Card icon="route" title="HTTP" href="/pages/http">
-        Crie requisições HTTP fácilmente com as nossas collections e arquivos HTTP.
-      </Card>
-    </div>
-
-    <div id="card-19" style={{ display: "none" }}>
-      <Card icon="command" title="AI" href="/pages/ai">
-        Integre com as nossas ferramentes de IA facilmente, sem magia.
-      </Card>
-    </div>
-
-  </div>
-  
-  <div style={{ textAlign: "center", marginTop: "32px" }}>
-    <button
-      id="load-more-btn"
-      onClick={() => {
-        const cards = ['card-11', 'card-12', 'card-13', 'card-14', 'card-15', 'card-16', 'card-17', 'card-18', 'card-19'];
-        const btn = document.getElementById('load-more-btn');
-        const firstCard = document.getElementById('card-11');
-        const isHidden = firstCard && firstCard.style.display === 'none';
-        
-        cards.forEach(id => {
-          const card = document.getElementById(id);
-          if (card) {
-            card.style.display = isHidden ? 'block' : 'none';
-          }
-        });
-        
-        if (btn) {
-          btn.textContent = isHidden ? 'Mostrar menos' : 'Carregar mais';
-        }
-      }}
-      style={{
-        padding: "12px 32px",
-        fontSize: "16px",
-        fontWeight: "500",
-        color: "#ffffff",
-        backgroundColor: "#2563EB",
-        border: "none",
-        borderRadius: "75rem",
-        cursor: "pointer",
-        transition: "background-color 0.2s"
-      }}
-      onMouseOver={(e) => e.target.style.backgroundColor = "#1d4ed8"}
-      onMouseOut={(e) => e.target.style.backgroundColor = "#2563EB"}
-    >
-      Carregar mais
-    </button>
-  </div>
-</div>
-
-<div style={{ 
-  padding: "60px 20px",
-  maxWidth: "1100px",
-  margin: "0 auto"
-}}>
-  <h2 style={{ 
-    fontSize: "28px", 
-    fontWeight: "600", 
-    marginBottom: "32px",
-    color: "#fff"
-  }}>
-    Saiba mais sobre a AbacatePay
-  </h2>
-
-  <div style={{ 
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: "24px"
-  }}>
-
-    <Card icon="graduation-cap" title=" AbacatePay Academy" href="https://chat.abacatepay.com/academy">
-      Acesse o AbacatePay Academy para aprender a usar a API da AbacatePay.
+    <Card title="AI skills" icon="wand-magic-sparkles" href="/ai/overview">
+      Cursor, Claude e VS Code.
     </Card>
-
-    <Card icon="book-open-cover" title=" Glossário" href="/pages/glossario">
-      Consulte o glossário de termos técnicos e conceitos da AbacatePay.
+    <Card title="Changelog" icon="clock-rotate-left" href="/changelog">
+      Histórico de releases.
     </Card>
+  </CardGroup>
+</Accordion>
 
-    <Card icon="headset" title=" Suporte" href="https://www.abacatepay.com/">
-      Entre em contato com o suporte da AbacatePay para ajuda com sua integração.
-    </Card>
-  </div>
+## Saiba mais sobre a Timely.ai
+
+<CardGroup cols={3}>
+  <Card title="Glossário" icon="book-open" href="/start/glossario">
+    Termos técnicos da plataforma.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Referência REST completa.
+  </Card>
+  <Card title="Suporte" icon="headset" href="mailto:contato@timelyai.com.br">
+    Fale com nosso time.
+  </Card>
+</CardGroup>
+
 </div>

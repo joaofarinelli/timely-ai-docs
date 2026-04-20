@@ -1,0 +1,111 @@
+---
+title: "Atendimento Humano — Visão Geral"
+description: "Modelo completo de atendimento humano na Timely.ai: takeover, tickets, times e roles. Entenda como os agentes de IA e os atendentes humanos coexistem."
+---
+
+## Visão geral
+
+A Timely.ai foi projetada para um modelo híbrido: o agente de IA lida com a maior parte das interações de forma autônoma, e os atendentes humanos entram quando necessário — seja por complexidade, por política da empresa ou por solicitação do cliente.
+
+Esse modelo funciona em dois modos complementares:
+
+- **Takeover** — intervenção pontual e temporária. O humano assume a conversa, responde o que precisa e devolve o controle para a IA.
+- **Tickets** — transferência formal para uma fila de atendimento humano. A IA sai de cena e a conversa fica sob responsabilidade de um atendente ou time até o encerramento.
+
+Ambos os modos ficam registrados na Inbox com status visível, e todo o histórico é preservado independentemente de quem está respondendo.
+
+## Fluxo completo de atendimento
+
+```
+Cliente envia mensagem
+        │
+        ▼
+  Agente IA responde
+        │
+   ┌────┴────┐
+   │         │
+Takeover  Escalada para ticket
+   │         │
+Humano     Atribuição ao time / atendente
+responde        │
+   │       Atendente resolve
+   │             │
+Devolve IA   Encerra ticket
+```
+
+O fluxo de escalada pode ser acionado de três formas:
+
+1. **Manualmente pelo atendente** — na Inbox, qualquer membro com acesso a conversas pode acionar o takeover ou abrir um ticket.
+2. **Manualmente pelo agente IA** — o agente pode ser instruído no prompt de sistema a escalar quando reconhecer situações específicas (ex.: reclamação grave, solicitação de reembolso).
+3. **Por palavras-chave ou condição** — configurável nas regras de automação do workspace.
+
+## Takeover
+
+O Takeover pausa temporariamente o agente de IA numa conversa específica. Durante a pausa:
+
+- Nenhuma mensagem do agente é enviada ao contato.
+- O atendente responde diretamente.
+- Um timer regressivo aparece no cabeçalho da conversa.
+- Ao expirar (ou ao encerrar manualmente), a IA assume o controle novamente.
+
+Consulte o guia completo em [Takeover — Humano Assume a Conversa](/guides/inbox/human-support/takeover).
+
+## Tickets
+
+Tickets representam conversas formalmente transferidas para atendimento humano, sem retorno automático para a IA. Eles são organizados em filas associadas a [times](/guides/inbox/human-support/teams).
+
+Cada ticket tem:
+
+- **Status**: Aberto, Em andamento, Aguardando resposta, Encerrado
+- **Prioridade**: Baixa, Normal, Alta, Urgente
+- **Atribuição**: ao time ou a um atendente específico
+- **SLA**: tempo alvo de primeira resposta e resolução, configurado por time
+
+Consulte o guia completo em [Tickets](/guides/inbox/human-support/tickets).
+
+## Times
+
+Times agrupam atendentes e definem quais canais eles atendem. A distribuição de tickets entre membros de um time pode ser automática (round-robin ou menor carga) ou manual.
+
+Consulte o guia completo em [Times](/guides/inbox/human-support/teams).
+
+## Roles
+
+Cada membro do workspace tem uma role que determina o que ele pode fazer na Inbox. As roles relevantes para atendimento humano são `attendant`, `trainer` e `manager`.
+
+Consulte o guia completo em [Roles na Inbox](/guides/inbox/human-support/roles).
+
+## Visibilidade e auditoria
+
+Toda ação de atendimento humano — pausas, transferências, encerramento de tickets — é registrada com timestamp, ID do usuário e motivo. Esse histórico fica acessível em:
+
+- **Inbox** — painel de detalhes de cada conversa (aba "Histórico")
+- **Analytics** — relatórios de SLA, volume de tickets por time e tempo médio de resolução
+
+<Tip>
+  Para equipes que estão começando com atendimento humano, recomendamos ativar o Takeover antes de configurar o sistema de tickets. O Takeover tem setup zero e já resolve a maioria dos casos de intervenção pontual.
+</Tip>
+
+## Boas práticas
+
+- Defina claramente quando o agente deve escalar. Instrua a IA no prompt de sistema com critérios objetivos — ex.: "Se o cliente mencionar cancelamento de contrato, transfira para o time de retenção."
+- Use times separados para departamentos diferentes (Vendas, Suporte, Financeiro). Isso facilita filtros na Inbox e relatórios segmentados.
+- Configure SLAs realistas por time e monitore o painel de Analytics semanalmente para identificar gargalos.
+- Atendentes com role `attendant` não têm acesso a relatórios nem a configurações. Certifique-se de que managers revisem os painéis regularmente.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Takeover" href="/guides/inbox/human-support/takeover">
+    Como pausar o agente e assumir uma conversa diretamente.
+  </Card>
+  <Card title="Tickets" href="/guides/inbox/human-support/tickets">
+    Fluxo completo de abertura, atribuição e encerramento de tickets.
+  </Card>
+  <Card title="Times" href="/guides/inbox/human-support/teams">
+    Crie times e configure a distribuição automática de conversas.
+  </Card>
+  <Card title="Roles" href="/guides/inbox/human-support/roles">
+    Permissões detalhadas por role no atendimento humano.
+  </Card>
+</CardGroup>

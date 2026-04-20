@@ -1,0 +1,137 @@
+---
+title: "Configurações — Visão Geral"
+description: "Mapa completo da seção de Configurações da Timely.ai: perfil, empresa, provedores de LLM, uso, assinatura, chaves de API e integrações."
+---
+
+## Visão geral
+
+A seção **Configurações** centraliza todas as opções de personalização e administração do workspace. O acesso a cada subseção varia conforme a role do usuário — algumas configurações são restritas a owners e managers, enquanto outras são acessíveis a qualquer membro.
+
+Para acessar as configurações, clique em **Configurações** no menu lateral. A tela exibe as subseções disponíveis para a sua role.
+
+## Subseções disponíveis
+
+### Perfil
+
+Configurações pessoais do usuário logado. Disponível para qualquer role.
+
+- Nome, cargo, setor de atuação e foto de avatar
+- Alteração de senha
+- Preferências de notificação
+
+Consulte: [Perfil do Usuário](/guides/settings/profile)
+
+### Empresa
+
+Informações gerais do workspace. Disponível para `manager` e `owner`.
+
+- Nome da empresa e logotipo
+- Fuso horário padrão do workspace
+- Idioma padrão da interface
+- Dados de contato da empresa
+
+Consulte: [Configurações da Empresa](/guides/settings/company)
+
+### Provedores de LLM
+
+Configuração das chaves de API dos provedores de modelos de linguagem. Disponível para `manager` e `owner`.
+
+- OpenAI (GPT-4o, GPT-4.1, GPT-4o mini e outros)
+- Anthropic (Claude Sonnet, Claude Haiku)
+- Google (Gemini Pro, Gemini Flash)
+- Groq, Mistral e outros provedores suportados
+
+Cada agente pode usar um provedor e modelo diferente. As chaves inseridas aqui ficam disponíveis para todos os agentes do workspace.
+
+Consulte: [Provedores de LLM](/guides/settings/providers)
+
+### Uso
+
+Dashboard de consumo do workspace com dados em tempo real e histórico por período. Disponível para `manager` e `owner`.
+
+- Mensagens enviadas por canal
+- Tokens consumidos por provedor de LLM
+- Créditos utilizados vs. incluídos no plano
+- Gráficos de pico de uso por hora e dia
+
+Consulte: [Dashboard de Uso](/guides/settings/usage)
+
+### Assinatura
+
+Gerenciamento do plano ativo, ciclo de faturamento e método de pagamento. Disponível apenas para `owner`.
+
+- Plano atual e recursos incluídos
+- Upgrade ou downgrade de plano
+- Ciclo mensal ou anual
+- Método de pagamento cadastrado
+- Histórico de faturas e recibos
+- Cancelamento da assinatura
+
+Consulte: [Gerenciar Assinatura](/guides/settings/subscriptions)
+
+### Chaves de API
+
+Geração e gerenciamento de chaves de API para integrações externas. Disponível para `manager` e `owner`.
+
+- Criar novas chaves com escopo configurável
+- Revogar chaves existentes
+- Histórico de uso por chave
+- Rotação de chaves sem downtime
+
+Consulte: [Chaves de API](/guides/team/api-keys)
+
+### Integrações
+
+Conexões com plataformas externas via Composio. Disponível para `manager` e `owner`.
+
+- Google Calendar, Google Sheets, Google Meet
+- Slack, Gmail, Notion
+- HubSpot, Stripe
+- LinkedIn, Twitter/X, Meta Ads
+- GitHub e outras integrações de desenvolvimento
+
+As integrações são autorizadas por OAuth ou por API key da plataforma externa e ficam disponíveis como ferramentas para os agentes do workspace.
+
+## Acesso por role
+
+| Subseção | owner | manager | trainer | attendant | member |
+|----------|:-----:|:-------:|:-------:|:---------:|:------:|
+| Perfil | Sim | Sim | Sim | Sim | Sim |
+| Empresa | Sim | Sim | — | — | — |
+| Provedores LLM | Sim | Sim | — | — | — |
+| Uso | Sim | Sim | — | — | — |
+| Assinatura | Sim | — | — | — | — |
+| Chaves de API | Sim | Sim | — | — | — |
+| Integrações | Sim | Sim | — | — | — |
+
+<Note>
+  Membros com role `trainer` podem ver configurações de agentes na seção de Agentes, mas não têm acesso às subseções administrativas de Configurações listadas acima (exceto Perfil).
+</Note>
+
+## Navegação entre subseções
+
+No menu lateral de Configurações, cada subseção aparece como um item de lista. Clique no item correspondente para navegar. A subseção ativa fica destacada. Em telas menores, o menu lateral pode ser acessado via botão de menu hambúrguer no topo da página.
+
+## Boas práticas
+
+- Revise as configurações de **Provedores de LLM** após trocar de plano — algumas chaves podem precisar de atualização se o crédito de API mudar.
+- Monitore o **Dashboard de Uso** no mínimo mensalmente para antecipar a necessidade de upgrade antes de ultrapassar os limites do plano.
+- Gere **chaves de API** separadas para cada integração externa. Se uma integração for comprometida, você pode revogar apenas a chave correspondente sem afetar as demais.
+- Mantenha pelo menos dois membros com role `owner` para evitar perda de acesso às configurações de assinatura em caso de saída de um colaborador.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Dashboard de Uso" href="/guides/settings/usage">
+    Monitore o consumo de mensagens, tokens e créditos do workspace.
+  </Card>
+  <Card title="Assinatura" href="/guides/settings/subscriptions">
+    Gerencie plano, método de pagamento e histórico de faturas.
+  </Card>
+  <Card title="Provedores LLM" href="/guides/settings/providers">
+    Configure chaves de API dos provedores de modelos de linguagem.
+  </Card>
+  <Card title="Chaves de API" href="/guides/team/api-keys">
+    Gere e gerencie chaves para integrações externas.
+  </Card>
+</CardGroup>

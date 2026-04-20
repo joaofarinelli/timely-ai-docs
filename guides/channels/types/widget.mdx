@@ -1,0 +1,176 @@
+---
+title: "Widget Web"
+description: "Adicione um chat embeddable ao seu site em menos de 5 minutos com um snippet JavaScript — com suporte a voz, personalização e múltiplos domínios"
+---
+
+O Widget Web é o canal mais rápido para colocar seu agente em produção. Basta copiar um snippet JavaScript e colá-lo no HTML do site — sem necessidade de conta Business, aprovação de terceiros ou configuração de webhook manual.
+
+## Pré-requisitos
+
+- Um **agente** criado e ativo na Timely.ai
+- Um site com **HTTPS habilitado** (SSL obrigatório para voz)
+- Acesso ao HTML do site para inserir o snippet (ou acesso ao CMS/gerenciador de tags)
+
+<Note>
+  O widget funciona em qualquer site estático, WordPress, Webflow, Wix, Shopify, ou framework JavaScript. Se você usa Google Tag Manager, pode inserir o snippet como tag HTML personalizada.
+</Note>
+
+## Passo a passo de conexão
+
+<Steps>
+  <Step title="Crie uma integração Widget">
+    No menu lateral, acesse **Canais → Adicionar canal** e selecione **Widget Web**. Dê um nome à integração (ex: "Site Principal") e escolha o agente que vai atender.
+  </Step>
+
+  <Step title="Personalize a aparência">
+    Configure as opções visuais:
+
+    - **Cor primária** — cor do header e do botão de envio
+    - **Cor de destaque** — cor dos elementos interativos
+    - **Posição** — `bottom-right` (padrão) ou `bottom-left`
+    - **Mensagem de boas-vindas** — texto exibido quando o widget abre pela primeira vez
+    - **Nome do assistente** — como o agente se apresenta no chat
+    - **Avatar** — URL de imagem ou upload direto
+    - **Tema** — `auto` (segue preferência do sistema), `light` ou `dark`
+
+    <Frame>
+      ![Painel de personalização do widget](/images/screenshots/placeholder-widget-customization.png)
+    </Frame>
+  </Step>
+
+  <Step title="Copie o snippet">
+    Após salvar, a Timely.ai gera seu snippet personalizado com o `agent-id` da sua integração:
+
+    ```html
+    <script src="https://widget.timelyai.com.br/embed.js"
+            data-agent-id="agent_abc123"
+            data-theme="auto"
+            async></script>
+    ```
+
+    Cole esse código antes de `</body>` em todas as páginas onde quer exibir o chat.
+  </Step>
+
+  <Step title="(Opcional) Configure domínios permitidos">
+    Para restringir em quais domínios o widget pode ser carregado, acesse **Configurações do Widget → Domínios** e adicione seus domínios. Ex: `meusite.com.br`, `loja.meusite.com.br`.
+
+    <Warning>
+      Se você não configurar domínios permitidos, o widget aceita requisições de qualquer origem. Recomendamos restringir em produção.
+    </Warning>
+  </Step>
+
+  <Step title="Teste no site">
+    Acesse seu site e abra o widget. O agente deve responder dentro de 1–2 segundos. Se quiser testar sem publicar no site, use a **pré-visualização ao vivo** no dashboard da Timely.ai.
+  </Step>
+</Steps>
+
+## Recursos suportados
+
+### Atributos de configuração do snippet
+
+| Atributo | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `data-agent-id` | string | — | ID da integração (obrigatório) |
+| `data-theme` | `auto` \| `light` \| `dark` | `auto` | Tema visual |
+| `data-position` | `bottom-right` \| `bottom-left` | `bottom-right` | Posição do botão flutuante |
+| `data-primary-color` | hex | `#3b82f6` | Cor principal do widget |
+| `data-accent-color` | hex | `#8b5cf6` | Cor de destaque |
+| `data-greeting` | string | definido no dashboard | Mensagem de boas-vindas (URL-encoded) |
+| `data-assistant-name` | string | definido no dashboard | Nome do assistente |
+| `data-show-branding` | `true` \| `false` | `true` | Exibe "Powered by Timely.ai" |
+
+<Tip>
+  Atributos definidos no snippet sobrescrevem as configurações do dashboard. Útil quando você tem múltiplas versões do widget em páginas diferentes.
+</Tip>
+
+### Tipos de mídia
+
+| Tipo | Receber (cliente) | Enviar (agente) |
+|---|---|---|
+| Texto | Sim | Sim (com Markdown) |
+| Imagem (JPG, PNG) | Sim | Sim |
+| Arquivo (PDF, DOCX) | Sim | Sim |
+| Áudio | Sim | Sim |
+
+### Voz (voice call)
+
+O widget suporta conversas por voz quando o agente está configurado com um **modelo de voz**. O cliente clica no ícone de microfone e fala diretamente com o agente. Requisitos:
+
+- Site com HTTPS (obrigatório para acesso ao microfone)
+- Agente configurado com voz em **Agentes → [agente] → Voz**
+- Navegador compatível (Chrome, Edge, Firefox, Safari 15+)
+
+<Note>
+  A funcionalidade de voz requer o plano Pro ou superior. Em planos gratuitos, o ícone de microfone não aparece.
+</Note>
+
+### Sessões e histórico
+
+O widget usa `sessionStorage` para manter a conversa ativa enquanto a aba do navegador estiver aberta. Cada aba gera um `sessionId` único. Ao fechar e reabrir a aba, uma nova sessão começa — o histórico anterior fica armazenado na Timely.ai e pode ser acessado pelo atendente no Inbox.
+
+## Webhook de recebimento
+
+Mensagens do widget chegam via:
+
+```
+POST https://[SEU-SUPABASE].supabase.co/functions/v1/widget-chat
+```
+
+O endpoint é chamado pelo script `embed.js` diretamente do navegador do visitante. Não é necessário configurar webhook — a comunicação é gerenciada automaticamente. Para detalhes sobre o payload, veja [Webhooks externos → Widget](/webhooks/overview).
+
+## Modo embeddable (iframe)
+
+Além do botão flutuante, o widget pode ser embutido diretamente em uma `<div>` da página:
+
+```html
+<!-- Container onde o widget vai renderizar -->
+<div id="timely-widget" style="width: 100%; height: 600px;"></div>
+
+<script src="https://widget.timelyai.com.br/embed.js"
+        data-agent-id="agent_abc123"
+        data-target="#timely-widget"
+        data-embedded="true"
+        async></script>
+```
+
+Com `data-embedded="true"`, o widget ocupa o container inteiro em vez de mostrar o botão flutuante.
+
+## Limites e boas práticas
+
+- **Cache do script** — o `embed.js` tem cache de 5 minutos (`Cache-Control: public, max-age=300`). Mudanças de configuração levam até 5 minutos para refletir.
+- **Múltiplos widgets** — não carregue dois snippets com `data-agent-id` diferentes na mesma página. Use um único widget por página.
+- **Performance** — o atributo `async` garante que o carregamento do widget não bloqueie o resto da página. Não remova esse atributo.
+- **CSP (Content Security Policy)** — se seu site usa CSP, adicione `https://widget.timelyai.com.br` às diretivas `script-src` e `connect-src`.
+- **LGPD** — se você coleta dados identificáveis via widget, mencione isso na sua política de privacidade. O widget não define cookies de terceiros — usa apenas `sessionStorage`.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Widget não aparece no site">
+    Verifique no console do navegador (F12) se há erros ao carregar `embed.js`. Causas comuns: domínio não está na lista de domínios permitidos, bloqueador de anúncios interferindo, ou o atributo `data-agent-id` está vazio ou incorreto.
+  </Accordion>
+
+  <Accordion title="Microfone não funciona">
+    O acesso ao microfone exige HTTPS. Em `http://`, o navegador bloqueia a API de áudio. Certifique-se de que seu site tem certificado SSL válido. Se o site usa HTTPS mas o botão não aparece, verifique se o agente tem voz configurada e se você está no plano correto.
+  </Accordion>
+
+  <Accordion title="Widget aparece mas o agente não responde">
+    O `data-agent-id` precisa corresponder a uma integração Widget ativa com um agente vinculado. Acesse **Canais** no dashboard e confirme que a integração está com status **Ativo**. Verifique também o console do navegador para erros de rede.
+  </Accordion>
+
+  <Accordion title="Cor ou tema não está sendo aplicado">
+    Atributos no snippet sobrescrevem o dashboard, mas lembre-se do cache de 5 minutos. Limpe o cache do navegador ou adicione `?v=2` ao final da URL do `embed.js` para forçar recarregamento durante testes.
+  </Accordion>
+
+  <Accordion title="Histórico de conversa some ao recarregar a página">
+    Esse comportamento é esperado — o widget usa `sessionStorage`, que é limpo quando a aba fecha ou a página recarrega. O histórico completo fica disponível para o atendente no **Inbox → Conversas** da Timely.ai.
+  </Accordion>
+
+  <Accordion title="Erro de CSP no console do navegador">
+    Adicione as seguintes origens à sua Content Security Policy:
+    ```
+    script-src: https://widget.timelyai.com.br
+    connect-src: https://widget.timelyai.com.br https://[SEU-SUPABASE].supabase.co
+    ```
+  </Accordion>
+</AccordionGroup>

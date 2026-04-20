@@ -1,0 +1,60 @@
+---
+title: "Referência de Agents"
+sidebarTitle: "Referência"
+description: "Endpoints para criar, configurar e gerenciar agentes de IA no seu workspace"
+---
+
+## Conceito
+
+Um **Agent** é o núcleo da Timely.ai — é a entidade de IA que recebe mensagens dos seus clientes, processa o contexto da conversa e responde de forma autônoma com base no comportamento, na base de conhecimento (Trainings) e nos canais conectados a ele. Cada agente tem identidade própria (nome, personalidade, idioma), regras de comportamento configuráveis e pode ser conectado a múltiplos canais simultaneamente (WhatsApp, Instagram, Telegram, widget de site).
+
+Você pode ter múltiplos agentes no mesmo workspace, cada um especializado em uma área diferente — suporte, vendas, financeiro — com bases de conhecimento e configurações independentes.
+
+## Ciclo de vida
+
+```
+criar (inactive)
+    │
+    ▼
+configurar (settings, trainings, channels)
+    │
+    ▼
+ativar → active ──────────────────────────────┐
+    │                                          │
+    │   recebe mensagens → processa → responde │
+    │                                          │
+    ▼                                          │
+desativar → inactive ◄─────────────────────────┘
+    │
+    ▼
+deletar (soft delete — dados preservados)
+```
+
+Um agente `inactive` não processa novas mensagens, mas seu histórico de conversas e configurações são mantidos. O soft delete garante que dados históricos não sejam perdidos acidentalmente.
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único do agente |
+| `name` | string | Nome do agente exibido para o cliente |
+| `status` | enum | `active` \| `inactive` |
+| `description` | string | Descrição interna do propósito do agente |
+| `language` | string | Idioma principal (ex.: `pt-BR`) |
+| `model` | string | Modelo de LLM usado (ex.: `gpt-4o`) |
+| `system_prompt` | string | Prompt de sistema base do comportamento |
+| `created_at` | string | ISO 8601 de criação |
+| `updated_at` | string | ISO 8601 da última atualização |
+| `credits_remaining` | number | Créditos disponíveis para o agente |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

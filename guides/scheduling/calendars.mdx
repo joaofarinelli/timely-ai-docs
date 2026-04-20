@@ -1,0 +1,81 @@
+---
+title: "Calendários de atendimento"
+description: "Configure horários de funcionamento, duração de sessões, fusos horários e múltiplos calendários por agente."
+---
+
+Cada agente da Timely.ai pode ter um ou mais calendários de atendimento. Um calendário define quando o agente aceita agendamentos, por quanto tempo cada sessão dura e em qual fuso horário os horários são exibidos para o cliente.
+
+## Criando um calendário
+
+Acesse **Configurações do Agente → Agendamento** e clique em **Novo calendário**. Você precisa informar:
+
+- **Nome** — identificação interna (ex: "Consulta Inicial", "Suporte Técnico")
+- **Fuso horário** — o fuso em que os horários serão gerenciados. Use o fuso da sua empresa ou do cliente, dependendo do modelo de atendimento
+- **Duração padrão da sessão** — tempo reservado por agendamento (ex: 30 min, 1 h)
+
+Após salvar, o calendário aparece na lista e pode ser configurado em detalhes.
+
+## Horários de funcionamento
+
+O editor de horários permite definir quais dias e quais faixas de horário estão disponíveis para agendamento.
+
+<Steps>
+  <Step title="Ative o dia">
+    Ligue o toggle ao lado do dia da semana (Segunda, Terça…).
+  </Step>
+  <Step title="Defina os intervalos">
+    Informe o horário de início e fim. Você pode adicionar múltiplos intervalos no mesmo dia para criar pausas — por exemplo, 09:00–12:00 e 13:30–18:00.
+  </Step>
+  <Step title="Repita para os demais dias">
+    Cada dia tem configuração independente. Dias desligados ficam completamente bloqueados para novos agendamentos.
+  </Step>
+</Steps>
+
+<Note>
+  Se você ativar a opção **Sempre disponível**, o calendário ignorará os horários configurados e aceitará agendamentos a qualquer hora. Use com cautela — normalmente só faz sentido para chatbots assíncronos.
+</Note>
+
+## Duração e intervalos entre sessões
+
+A **duração padrão** é usada automaticamente quando o agente agenda via chat (sem o cliente escolher manualmente). O campo aceita o formato `HH:MM` — por exemplo, `01:00` para uma hora.
+
+Se quiser deixar um tempo de respiro entre atendimentos, configure uma margem nos campos de **buffer antes** e **buffer depois** da sessão. Assim o agente nunca agenda duas reuniões consecutivas sem folga.
+
+## Fusos horários
+
+A Timely.ai armazena todos os horários em UTC internamente e converte para o fuso do calendário na exibição. Isso significa que:
+
+- O agente vê os horários no fuso configurado no calendário
+- O Google Calendar (quando conectado) sincroniza corretamente com o fuso da conta Google
+- Clientes em fusos diferentes são exibidos no fuso local deles se você usar o widget público de agendamento
+
+<Tip>
+  Se sua equipe atende clientes internacionais, crie calendários separados por região e associe o agente correto a cada um.
+</Tip>
+
+## Múltiplos calendários
+
+Um agente pode ter mais de um calendário ativo. Casos de uso comuns:
+
+| Cenário | Configuração sugerida |
+|---|---|
+| Produtos com durações diferentes | Um calendário por tipo de serviço |
+| Atendimento em países diferentes | Um calendário por fuso horário |
+| Equipe com turnos distintos | Um calendário por turno, agente diferente em cada |
+
+Quando o agente possui múltiplos calendários, ele seleciona qual usar com base nas instruções do seu prompt ou pergunta ao cliente durante a conversa.
+
+### Calendário exclusivo
+
+Você pode marcar um calendário como **exclusivo do agente**. Isso impede que outros agentes da mesma empresa reutilizem o mesmo calendário — útil quando você quer garantir que a agenda de um especialista específico não seja compartilhada.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Google Calendar" icon="google" href="/guides/scheduling/google-calendar">
+    Conecte para sincronização bidirecional automática.
+  </Card>
+  <Card title="Agendamentos via chat" icon="calendar-check" href="/guides/scheduling/appointments">
+    Veja como o agente agenda, reagenda e cancela diretamente na conversa.
+  </Card>
+</CardGroup>

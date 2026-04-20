@@ -1,0 +1,87 @@
+---
+title: "Documentos"
+description: "Faça upload de PDFs e arquivos de texto para a Knowledge Base e acompanhe o processamento com extração, chunking e geração de embeddings."
+---
+
+A fonte de conhecimento mais comum é o documento — manuais, contratos, políticas, catálogos de produto ou qualquer arquivo que você já tenha pronto. A Timely.ai extrai o texto, fragmenta em chunks e gera os embeddings automaticamente após o upload.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-documents-list.png" alt="Lista de documentos da Knowledge Base" />
+</Frame>
+
+## Fazendo upload de documentos
+
+<Steps>
+  <Step title="Acesse a Knowledge Base do agente">
+    Abra o agente desejado e clique na aba **Knowledge Base**, depois selecione **Documentos**.
+  </Step>
+  <Step title="Clique em Adicionar documento">
+    Clique no botão de upload ou arraste o arquivo diretamente para a área indicada.
+  </Step>
+  <Step title="Aguarde o processamento">
+    O arquivo é enviado para o Supabase Storage e o job `knowledge-process-document` é disparado automaticamente. O status do documento muda de `processing` para `ready` quando concluído.
+  </Step>
+  <Step title="Verifique o resultado">
+    Clique no ícone de visualização para conferir o texto extraído, o resumo gerado automaticamente e as palavras-chave identificadas.
+  </Step>
+</Steps>
+
+## Formatos e limites
+
+| Parâmetro | Valor |
+|---|---|
+| Formatos aceitos | PDF, TXT |
+| Tamanho máximo por arquivo | Definido pelo plano da conta |
+| Tamanho alvo de cada chunk | ~4.000 caracteres (~1.000 tokens) |
+| Sobreposição entre chunks | ~400 caracteres (~100 tokens) |
+| Lote máximo de embeddings | 100 chunks por requisição à OpenAI |
+| Caracteres máximos para metadados | 8.000 caracteres do conteúdo |
+
+<Note>
+  Durante o processamento, o documento fica com status `processing` e ainda não aparece nas buscas semânticas. Aguarde o status mudar para `ready` antes de testar o agente.
+</Note>
+
+## O que acontece durante o processamento
+
+O pipeline interno executa as seguintes etapas:
+
+1. **Leitura do arquivo**: o conteúdo é lido do Supabase Storage.
+2. **Extração de texto**: para PDFs, o texto é extraído página por página.
+3. **Chunking inteligente**: o texto é dividido priorizando quebras de parágrafo (`\n\n`). Parágrafos muito grandes são subdivididos por frases (`". "`). Se ainda muito grande, divisão forçada por caractere.
+4. **Geração de metadados**: nome (até 80 caracteres), descrição (até 250 caracteres) e palavras-chave são gerados pelo LLM a partir dos primeiros 8.000 caracteres.
+5. **Embeddings**: cada chunk é enviado à API de embeddings da OpenAI em lotes de até 100.
+6. **Armazenamento**: chunks e vetores são salvos na tabela `knowledge_chunks`.
+
+## Gerenciando documentos
+
+| Ação | Descrição |
+|---|---|
+| **Visualizar** | Abre o conteúdo extraído e metadados do documento |
+| **Baixar** | Faz download do arquivo original do Storage |
+| **Desativar** | Remove o documento das buscas sem deletar o arquivo |
+| **Deletar** | Remove o documento, todos os chunks e o arquivo do Storage |
+
+<Warning>
+  A exclusão de um documento é irreversível. Todos os chunks e embeddings associados são deletados permanentemente. Faça download do arquivo original antes de deletar se precisar mantê-lo.
+</Warning>
+
+## Boas práticas para documentos
+
+<CardGroup cols={2}>
+  <Card title="Prefira texto selecionavel" icon="file-lines">
+    PDFs escaneados como imagem não têm texto extraível. Use PDFs com texto nativo ou converta antes do upload.
+  </Card>
+  <Card title="Divida documentos grandes" icon="scissors">
+    Documentos com centenas de páginas geram muitos chunks. Dividir por seção melhora a precisão da busca semântica.
+  </Card>
+  <Card title="Mantenha o conteudo atualizado" icon="arrows-rotate">
+    Delete documentos desatualizados e faça upload da versão nova. O agente pode recuperar informações antigas se o documento antigo ainda estiver ativo.
+  </Card>
+  <Card title="Nomeie os arquivos com clareza" icon="tag">
+    O nome do arquivo e os metadados gerados são usados nos resultados de busca. Um nome descritivo melhora a rastreabilidade.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Após indexar um documento novo, use a busca semântica integrada na Knowledge Base para testar se as perguntas relevantes retornam os trechos corretos antes de ativar o agente em produção.
+</Tip>

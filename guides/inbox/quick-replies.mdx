@@ -1,0 +1,104 @@
+---
+title: "Respostas Rápidas"
+description: "Crie templates de resposta com atalhos de texto, variáveis dinâmicas e suporte a mídia para acelerar o atendimento"
+---
+
+Respostas Rápidas são templates salvos que os atendentes disparam com um atalho de `/` durante o chat. Em vez de redigir as mesmas mensagens repetidamente, você cria uma biblioteca de textos, imagens e documentos que ficam disponíveis com dois toques de teclado.
+
+<img
+  src="/images/screenshots/placeholder-quick-replies-list.png"
+  alt="Lista de respostas rápidas com autocomplete ativo"
+  className="rounded-lg border"
+/>
+
+## Tipos de resposta rápida
+
+<CardGroup cols={2}>
+  <Card title="Texto" icon="align-left">
+    Mensagem de texto simples, com ou sem variáveis. O tipo mais comum — ideal para saudações, confirmações e respostas padrão.
+  </Card>
+  <Card title="Imagem" icon="image">
+    Envia uma imagem salva no Storage. Útil para catálogos, prints de tutorial ou banners promocionais.
+  </Card>
+  <Card title="Vídeo" icon="film">
+    Vídeo MP4 ou WebM. Limite de tamanho definido pelo canal de destino (WhatsApp: 16 MB).
+  </Card>
+  <Card title="Documento" icon="file">
+    PDF, Word, Excel e outros formatos. O nome original do arquivo é preservado no envio.
+  </Card>
+</CardGroup>
+
+## Criando uma resposta rápida
+
+<Steps>
+  <Step title="Abra o gerenciador">
+    No menu lateral, vá em **Configurações → Respostas Rápidas** ou acesse pela Inbox clicando no ícone de raio no campo de resposta.
+  </Step>
+  <Step title="Clique em '+ Nova Resposta'">
+    O formulário de criação abre com os campos: **atalho**, **tipo**, **conteúdo** e **visibilidade**.
+  </Step>
+  <Step title="Defina o atalho">
+    O atalho é o texto que você digita após `/`. Ele é normalizado automaticamente: letras minúsculas, sem espaços (espaços viram `-`). Ex: `saudacao-inicial` → `/saudacao-inicial`.
+  </Step>
+  <Step title="Escreva o conteúdo">
+    Para texto, escreva a mensagem. Para mídia, faça upload do arquivo ou cole a URL. O arquivo é armazenado no bucket `media-files` do Supabase Storage.
+  </Step>
+  <Step title="Escolha a visibilidade">
+    - **workspace** — disponível para todos os atendentes do workspace
+    - **private** — visível apenas para você
+  </Step>
+  <Step title="Salve">
+    Clique em **Criar**. A resposta já aparece no autocomplete da Inbox na próxima vez que você digitar `/`.
+  </Step>
+</Steps>
+
+## Usando no chat com autocomplete
+
+Ao digitar `/` no campo de resposta da Inbox, o autocomplete é ativado automaticamente. Ele filtra as respostas rápidas conforme você digita o atalho.
+
+<Tabs>
+  <Tab title="Teclado">
+    - `↑` / `↓` — navegar entre os resultados
+    - `Enter` — selecionar e inserir a resposta
+    - `Esc` — fechar o autocomplete
+  </Tab>
+  <Tab title="Mouse">
+    Clique diretamente no item desejado na lista de autocomplete. A resposta é inserida imediatamente no campo de texto ou enviada diretamente (para mídia).
+  </Tab>
+</Tabs>
+
+<Note>
+  O atalho é normalizado antes de buscar: `/Saudação Inicial` e `/saudacao-inicial` encontram o mesmo template. A busca é case-insensitive via `ilike` no banco.
+</Note>
+
+## Variáveis dinâmicas
+
+Respostas de texto suportam variáveis que são substituídas no momento do envio:
+
+| Variável | Valor substituído |
+|----------|-----------------|
+| `{{nome}}` | Nome do contato da conversa |
+| `{{empresa}}` | Empresa do contato |
+| `{{agente}}` | Nome do atendente que está enviando |
+| `{{data}}` | Data atual no formato `dd/mm/aaaa` |
+
+Exemplo de template com variável:
+
+```
+Olá, {{nome}}! Recebemos sua mensagem e vamos te retornar em breve. Atenciosamente, {{agente}}.
+```
+
+<Tip>
+  Combine variáveis com mensagens de follow-up para um toque pessoal sem esforço manual. Atendentes que usam respostas rápidas com variáveis reduzem o tempo médio de resposta em até 60%.
+</Tip>
+
+## Gerenciando a biblioteca
+
+- **Editar**: clique nos três pontos ao lado da resposta e selecione **Editar**. O atalho pode ser alterado sem afetar outras respostas.
+- **Excluir**: remove permanentemente. Atalhos excluídos podem ser reutilizados por outras respostas.
+- **Filtrar por tipo**: use os filtros no topo da lista para ver apenas imagens, documentos ou textos.
+- **Visibilidade**: respostas `private` aparecem com um cadeado. Outros atendentes não as veem.
+
+<Note>
+  Somente **owner**, **manager** e o próprio criador podem editar ou excluir uma resposta rápida. Atendentes com role `attendant` podem criar respostas privadas mas não editar as de workspace criadas por outros.
+</Note>

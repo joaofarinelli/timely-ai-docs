@@ -1,0 +1,74 @@
+---
+title: "Effort (nível de raciocínio)"
+description: "Como o parâmetro effort controla a profundidade de raciocínio do agente, o impacto no custo e na latência, e quando usar cada nível."
+---
+
+## Visão geral
+
+O effort define quantos passos de raciocínio o agente pode usar para formular uma resposta. Na Timely, ele é controlado por um slider de 10 a 100 passos, dividido em quatro níveis: Rápido (até 20), Equilibrado (até 40), Detalhado (até 70) e Máximo (até 100).
+
+Pense no effort como a quantidade de tempo que o agente "pensa" antes de responder. Com effort baixo, ele responde quase imediatamente com base nos padrões mais óbvios do prompt. Com effort alto, ele analisa a pergunta com mais camadas de raciocínio, considerando nuances, contraexemplos e implicações antes de formular a resposta.
+
+O trade-off é direto: **mais effort = respostas mais elaboradas + maior latência + maior consumo de créditos**. Para conversas de suporte simples, effort rápido é suficiente e economicamente eficiente. Para análises complexas, decisões críticas ou respostas que precisam de lógica encadeada, effort detalhado ou máximo vale o custo.
+
+| Faixa de passos | Rótulo | Quando usar |
+|-----------------|--------|-------------|
+| 10 – 20 | Rápido | Perguntas simples, FAQs, saudações, confirmações |
+| 21 – 40 | Equilibrado | Suporte geral, qualificação de leads, agendamentos |
+| 41 – 70 | Detalhado | Análises técnicas, diagnósticos, respostas longas |
+| 71 – 100 | Máximo | Casos complexos, raciocínio multi-etapa, decisões críticas |
+
+## Como configurar
+
+<Steps>
+  <Step title="Acesse as configurações de modelo do agente">
+    Clique no agente na lista e vá para a aba de configurações de modelo.
+  </Step>
+
+  <Step title="Localize o slider de Effort">
+    O slider de effort fica abaixo do de temperatura. Ele vai de 10 a 100 em incrementos de 5. O rótulo do nível atual aparece ao lado do valor numérico.
+  </Step>
+
+  <Step title="Escolha o nível adequado para o caso de uso">
+    Selecione o valor com base na complexidade típica das perguntas que o agente vai receber, não no caso mais difícil possível. Para a maioria dos casos de suporte, o nível Equilibrado (20–40) é o ponto de partida correto.
+  </Step>
+
+  <Step title="Considere o impacto no custo">
+    Effort mais alto consome mais créditos por mensagem, além do crédito base do modelo. Monitore o consumo de créditos no painel após ajustar o effort para validar se o ganho de qualidade justifica o custo adicional.
+  </Step>
+
+  <Step title="Salve e teste casos reais">
+    Use o Chat interno com perguntas representativas do seu caso de uso. Avalie se as respostas no nível escolhido são satisfatórias antes de aumentar o effort.
+  </Step>
+</Steps>
+
+## Exemplos / Casos de uso
+
+**Bot de FAQ de e-commerce (Rápido, 10–15 passos):** Perguntas como "qual o prazo de entrega?" ou "como rastrear meu pedido?" não exigem raciocínio elaborado. Effort baixo garante respostas instantâneas sem custo desnecessário.
+
+**Suporte técnico de software (Equilibrado, 30–40 passos):** O agente precisa diagnosticar problemas que podem ter múltiplas causas. Um effort equilibrado permite que ele considere as causas mais prováveis antes de sugerir a solução.
+
+**Assistente de análise financeira interno (Detalhado, 60–70 passos):** Um agente que ajuda a equipe a interpretar relatórios financeiros ou identificar anomalias precisa de raciocínio encadeado para apresentar conclusões bem fundamentadas.
+
+**Agente de triagem clínica (Máximo, 80–100 passos):** Em contextos onde a precisão é crítica e o custo de um erro é alto, effort máximo garante que o agente considere todos os aspectos antes de recomendar o próximo passo ao paciente.
+
+## Boas práticas
+
+<Tip>
+Não use effort máximo como padrão "porque é o melhor". O nível correto é o mínimo que entrega qualidade suficiente para o caso de uso — acima disso você está pagando por raciocínio que não se converte em respostas melhores para o usuário.
+</Tip>
+
+- Comece com Equilibrado para qualquer agente novo. Ajuste para cima apenas se os testes mostrarem respostas rasas ou incorretas em perguntas complexas.
+- Effort máximo em modelos de raciocínio avançados (como Claude Opus 4.6 ou GPT-5.1) pode aumentar a latência da resposta em vários segundos — avalie se isso é aceitável para o canal de atendimento.
+- Se você perceber que o agente está "sobre-pensando" respostas simples (respondendo de forma longa e excessivamente elaborada para perguntas diretas), reduza o effort.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Temperatura" href="/guides/agents/settings/temperature">
+    Entenda como temperatura e effort interagem para definir o comportamento geral do agente.
+  </Card>
+  <Card title="Capacidades" href="/guides/agents/settings/capacities">
+    Habilite ferramentas e funcionalidades extras para expandir o que o agente pode fazer.
+  </Card>
+</CardGroup>

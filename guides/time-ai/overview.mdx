@@ -1,0 +1,82 @@
+---
+title: Time AI
+description: Copilot interno da Timely.ai para criar agentes, configurar fluxos e executar ações na plataforma usando linguagem natural.
+---
+
+Time AI é o assistente inteligente embutido na plataforma. Pense nele como um ChatGPT interno que conhece a fundo a Timely.ai: você descreve o que precisa e ele cria agentes, configura squads, gera relatórios e sugere próximos passos — tudo por texto.
+
+## Acessando o Time AI
+
+Clique no ícone do Time AI no menu lateral (ícone de faísca) ou use o atalho de teclado `Ctrl+K` / `Cmd+K` em qualquer página da plataforma. Uma janela de chat abre sobre a interface atual.
+
+<Frame>
+  <img src="/images/time-ai-chat.png" alt="Interface do Time AI com campo de entrada e mensagens" />
+</Frame>
+
+## Modos de operação
+
+O Time AI opera em dois modos que você pode alternar no seletor acima do campo de entrada:
+
+<AccordionGroup>
+  <Accordion title="Modo Chat (padrão)">
+    Conversa direta com o copilot. Você faz perguntas, pede análises ou solicita ações pontuais. O Time AI usa o histórico da sessão para manter contexto entre mensagens.
+
+    **Exemplos de uso:**
+    - "Crie um agente de suporte técnico para SaaS com tom formal"
+    - "Mostre as métricas de atendimento da última semana"
+    - "Qual agente teve mais conversas hoje?"
+  </Accordion>
+  <Accordion title="Modo Workflow">
+    Para tarefas que envolvem múltiplas etapas, o Time AI exibe um indicador de progresso com cada fase da execução. Você acompanha em tempo real o que está sendo feito: planejamento, execução, validação e entrega.
+
+    **Exemplos de uso:**
+    - "Crie um squad com agentes de vendas e pós-venda e conecte ao meu WhatsApp"
+    - "Analise todas as conversas desta semana e gere um relatório de satisfação"
+  </Accordion>
+</AccordionGroup>
+
+## Autocomplete inteligente
+
+Enquanto você digita, o Time AI sugere completações contextuais com base no seu histórico de uso e nas entidades existentes na sua conta (agentes, squads, canais). As sugestões aparecem em cinza após o cursor — pressione `Tab` para aceitar ou continue digitando para ignorar.
+
+## Menções com `@`
+
+Use `@` para referenciar entidades diretamente na sua mensagem:
+
+- `@nome-do-agente` — para operações em um agente específico
+- `@nome-do-squad` — para ações em um squad
+- Um menu de busca abre automaticamente ao digitar `@`
+
+## Anexos e imagens
+
+Clique no ícone de clipe ou arraste arquivos para o campo de entrada para enviar imagens e documentos. O Time AI processa o conteúdo visual e textual de forma combinada, permitindo perguntas como "O que está errado nessa captura de tela?" ou "Extraia os dados desta tabela".
+
+## Sugestões rápidas
+
+Na tela inicial do Time AI (sem sessão ativa), chips de sugestão aparecem com ações comuns para o seu perfil de uso. Clique em qualquer chip para iniciar a conversa com aquele contexto pré-carregado.
+
+## Histórico de sessões
+
+<Steps>
+  <Step title="Acesse o histórico">
+    Clique no ícone de relógio no canto superior direito do Time AI para ver todas as sessões anteriores.
+  </Step>
+  <Step title="Retome uma sessão">
+    Clique em qualquer sessão da lista para reabri-la com o contexto completo. O Time AI continua de onde parou.
+  </Step>
+  <Step title="Nova sessão">
+    Use o botão de lápis (novo chat) para iniciar uma sessão limpa sem histórico anterior.
+  </Step>
+</Steps>
+
+## Reações e feedback
+
+Em cada resposta do Time AI você pode usar os botões de polegar para cima ou para baixo para indicar se a resposta foi útil. Esse feedback é usado para melhorar as sugestões futuras na sua conta.
+
+<Info>
+  O Time AI não executa ações destrutivas (deletar agentes, encerrar conversas em produção) sem pedir confirmação explícita. Operações críticas sempre exibem um diálogo de confirmação antes de prosseguir.
+</Info>
+
+## Fontes e busca web
+
+Quando o Time AI realiza pesquisas externas para complementar uma resposta, ele exibe as fontes consultadas logo abaixo da mensagem. Clique em qualquer fonte para abrir o link original.

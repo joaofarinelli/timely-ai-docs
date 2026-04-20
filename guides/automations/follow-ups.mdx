@@ -1,0 +1,92 @@
+---
+title: "Follow-ups Automáticos"
+description: "Configure regras de acompanhamento automático por tempo ou condição e monitore cada execução pelo painel de Automation Runs."
+---
+
+Follow-ups automáticos permitem que seus agentes retomem conversas paradas sem intervenção manual. Você define quando e como a retomada acontece — seja após um intervalo de tempo, seja quando um evento específico ocorre — e a plataforma cuida do resto.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-follow-ups-list.png" alt="Lista de automacoes de follow-up" />
+</Frame>
+
+## Como funciona
+
+Cada automação de follow-up é composta por três partes: o **trigger** (o que inicia), a **condição** (filtro opcional para refinar quando agir) e as **ações** (o que executar). O engine de automação (`automation-engine`) avalia as regras continuamente e despacha execuções via `automation-dispatcher`.
+
+<Note>
+  Automações ficam em status **draft** até você ativá-las explicitamente. Somente automações com status **active** são avaliadas pelo scheduler.
+</Note>
+
+## Tipos de trigger disponíveis
+
+| Tipo | Quando dispara |
+|---|---|
+| `cron` | Em um horário ou intervalo recorrente (expressão cron) |
+| `event` | Quando um evento interno ocorre (ex.: conversa sem resposta, contato criado) |
+| `webhook` | Quando um payload HTTP externo chega no endpoint da automação |
+
+## Criando uma automação de follow-up
+
+<Steps>
+  <Step title="Acesse Automacoes">
+    No menu lateral, clique em **Automações**. Em seguida, clique em **Nova Automação**.
+  </Step>
+  <Step title="Defina nome e descricao">
+    Escolha um nome claro para identificar a regra (ex.: "Follow-up 24h sem resposta WhatsApp").
+  </Step>
+  <Step title="Escolha o tipo de trigger">
+    Selecione `cron`, `event` ou `webhook` e preencha a configuração correspondente. Para follow-ups baseados em tempo, use `cron` com o intervalo desejado.
+  </Step>
+  <Step title="Adicione condicoes (opcional)">
+    Filtre quais conversas ou contatos devem receber o follow-up — por canal, tag, status ou campo customizado.
+  </Step>
+  <Step title="Configure as acoes">
+    Adicione as ações em sequência: enviar mensagem, atualizar campo do contato, chamar um agente, disparar webhook, etc.
+  </Step>
+  <Step title="Ative a automacao">
+    Altere o status para **active** e salve. A automação entra em avaliação imediata.
+  </Step>
+</Steps>
+
+## Controle de falhas e retentativas
+
+A Timely.ai implementa um mecanismo automático de retry com backoff configurável.
+
+| Parâmetro | Descrição |
+|---|---|
+| `max_retries` | Número máximo de tentativas em caso de falha |
+| `retry_delay_seconds` | Intervalo entre retentativas |
+| `max_consecutive_failures` | Limite de falhas consecutivas antes de pausar automaticamente |
+| `rate_limit_per_hour` | Máximo de execuções por hora (anti-spam) |
+| `rate_limit_per_day` | Máximo de execuções por dia |
+
+Quando `consecutive_failures` atinge `max_consecutive_failures`, a automação é pausada automaticamente e seu status muda para `error`. Você recebe um alerta e pode revisar os logs antes de reativar.
+
+<Warning>
+  Automações com status `error` precisam ser investigadas antes de reativar. Consulte os Automation Runs para identificar o passo que falhou.
+</Warning>
+
+## Monitorando execuções (Automation Runs)
+
+Cada disparo gera um **Automation Run** com registro completo da execução.
+
+<CardGroup cols={2}>
+  <Card title="Status do run" icon="circle-dot">
+    `pending`, `running`, `completed`, `failed`, `cancelled`
+  </Card>
+  <Card title="Log por passo" icon="list-tree">
+    Input, output, duração e erros de cada ação individualmente.
+  </Card>
+  <Card title="Creditos consumidos" icon="coins">
+    Cada run registra o custo em créditos para controle de uso.
+  </Card>
+  <Card title="Idempotencia" icon="shield-check">
+    Runs com a mesma `idempotency_key` não são executados duas vezes.
+  </Card>
+</CardGroup>
+
+Para acessar os runs, abra a automação desejada e clique em **Ver execuções**. Você pode filtrar por status e carregar mais registros com paginação de 50 por página.
+
+<Tip>
+  Defina `rate_limit_per_day` para evitar que uma automação de follow-up envie mensagens em excesso para o mesmo contato em um único dia — especialmente importante para canais como WhatsApp, que têm limites impostos pela Meta.
+</Tip>

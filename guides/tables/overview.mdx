@@ -1,0 +1,117 @@
+---
+title: "Datagrids — Tabelas Personalizadas"
+description: "Crie tabelas estruturadas tipo planilha que seus agentes de IA podem ler e escrever durante as conversas"
+---
+
+Datagrids são tabelas personalizadas que você cria para armazenar qualquer tipo de dado estruturado — catálogo de produtos, lista de imóveis, preços por plano, agenda de profissionais, estoque. O diferencial é que os agentes de IA podem consultar e atualizar essas tabelas em tempo real durante as conversas, sem precisar de integração externa.
+
+<img
+  src="/images/screenshots/placeholder-datagrid-editor.png"
+  alt="Editor de datagrid com linhas e colunas editáveis"
+  className="rounded-lg border"
+/>
+
+## Casos de uso comuns
+
+<CardGroup cols={2}>
+  <Card title="Catálogo de produtos" icon="box">
+    Nome, descrição, preço, disponibilidade. O agente consulta ao responder perguntas de clientes sobre produtos.
+  </Card>
+  <Card title="Agenda de profissionais" icon="calendar">
+    Nome, especialidade, horários disponíveis. O agente lê para oferecer opções de agendamento.
+  </Card>
+  <Card title="Tabela de preços" icon="tag">
+    Planos, valores, limites. O agente consulta para responder perguntas de vendas sem precisar de atualização do prompt.
+  </Card>
+  <Card title="Registro de clientes VIP" icon="star">
+    Lista de contatos com condições especiais. O agente verifica se o contato está na lista para aplicar regras diferentes.
+  </Card>
+</CardGroup>
+
+## Criando um datagrid
+
+<Steps>
+  <Step title="Acesse CRM → Datagrids">
+    No menu lateral, vá em **CRM → Datagrids**.
+  </Step>
+  <Step title="Clique em 'Criar nova tabela'">
+    O botão fica no subheader da página.
+  </Step>
+  <Step title="Defina nome e descrição">
+    Escolha um nome claro que o agente vai usar para referenciar a tabela. A descrição ajuda a equipe a entender o propósito da tabela.
+  </Step>
+  <Step title="Adicione colunas">
+    Clique em **+ Coluna** e defina para cada uma: nome, tipo de dado e se é obrigatória.
+  </Step>
+  <Step title="Salve e abra o editor">
+    A tabela é criada e você é redirecionado ao editor de grid para começar a preencher as linhas.
+  </Step>
+</Steps>
+
+## Tipos de coluna
+
+<Tabs>
+  <Tab title="Texto">
+    `text` — string livre. Ideal para nomes, descrições, observações. Sem limite de caracteres no banco.
+  </Tab>
+  <Tab title="Número">
+    `number` — inteiro ou decimal. Ideal para preços, quantidades, scores. Validação automática no editor.
+  </Tab>
+  <Tab title="Data">
+    `date` — data no formato ISO 8601. O editor exibe um date picker nativo.
+  </Tab>
+  <Tab title="Booleano">
+    `boolean` — verdadeiro ou falso. Renderizado como checkbox no grid.
+  </Tab>
+  <Tab title="Select">
+    `select` — lista de opções predefinidas. Ideal para status, categorias, níveis.
+  </Tab>
+</Tabs>
+
+## Editando dados no grid
+
+O editor de datagrid funciona como uma planilha:
+
+- **Clicar em uma célula** abre o editor inline com o tipo correspondente
+- **Tab** avança para a próxima célula à direita
+- **Enter** confirma a edição e passa para a célula abaixo
+- **Arrastar linhas** pelo ícone de grip à esquerda reordena as linhas
+- **Checkbox de seleção** permite selecionar múltiplas linhas para exclusão em lote
+- **+ Linha** no rodapé adiciona uma nova linha vazia
+
+<Note>
+  Todas as edições são salvas individualmente por célula via o hook `useUpdateDatagridValue`. Não existe um botão de salvar global — cada alteração persiste imediatamente no banco.
+</Note>
+
+## Agentes lendo e escrevendo datagrids
+
+Para conectar um datagrid a um agente:
+
+<Steps>
+  <Step title="Abra o agente no modo de edição">
+    Vá em **Agentes → [nome do agente] → Ferramentas**.
+  </Step>
+  <Step title="Adicione a ferramenta de Datagrid">
+    Selecione **Datagrid** na lista de ferramentas disponíveis e escolha qual tabela o agente pode acessar.
+  </Step>
+  <Step title="Configure permissões">
+    Defina se o agente pode apenas **ler** ou também **escrever** (inserir/atualizar linhas). Comece com somente leitura para validar o comportamento.
+  </Step>
+  <Step title="Instrua no prompt">
+    No prompt do agente, descreva quando e como ele deve usar a tabela. Ex: "Consulte o datagrid `catalogo-produtos` quando o cliente perguntar sobre disponibilidade ou preço."
+  </Step>
+</Steps>
+
+<Tip>
+  Nomeie as colunas em linguagem natural — ex: `preco_reais` ao invés de `price`. O agente usa os nomes das colunas para entender o que cada campo representa, sem necessidade de mapeamento adicional.
+</Tip>
+
+## Busca e filtros no editor
+
+A barra de busca no topo do editor filtra linhas em tempo real por qualquer coluna de texto. Ideal para encontrar registros rapidamente em tabelas com centenas de linhas.
+
+Para tabelas grandes, use **+ Filtro** para criar condições compostas — ex: mostrar apenas linhas onde `disponivel = true` e `preco_reais < 500`.
+
+<Note>
+  Datagrids são escopados por workspace. Um agente só acessa as tabelas do workspace ao qual pertence. Se você precisa compartilhar dados entre workspaces, use a API REST com sua chave de API.
+</Note>

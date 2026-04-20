@@ -1,0 +1,101 @@
+---
+title: "Fila de Handover"
+description: "Gerencie a fila de transferência inteligente para humanos, com priorização automática por score de urgência e regras configuráveis"
+---
+
+Quando o agente de IA detecta que uma conversa precisa de atenção humana, ela entra na **fila de handover**. Diferente do Takeover manual, o handover é disparado automaticamente por regras baseadas em palavras-chave, sentimento, complexidade ou urgência da mensagem — e cria um card priorizado na fila para que os atendentes certos atendam primeiro.
+
+<img
+  src="/images/screenshots/placeholder-handover-queue.png"
+  alt="Fila de handover com cards de prioridade"
+  className="rounded-lg border"
+/>
+
+## Como a fila funciona
+
+Cada item da fila (`handover_queue`) contém:
+
+- **priority_score** — pontuação de 0 a 1 calculada pelo motor de regras
+- **urgency_level** — `low`, `medium`, `high` ou `critical`
+- **estimated_wait_time** — estimativa de espera em minutos
+- **context_summary** — resumo automático do histórico da conversa
+- **tags** — etiquetas inferidas pelo sistema (ex: `"reclamação"`, `"cancelamento"`, `"cobrança"`)
+- **status** — `waiting` (aguardando) ou `assigned` (atendente vinculado)
+
+A fila é ordenada por `priority_score` decrescente. Conversas críticas ficam no topo.
+
+<Note>
+  O sistema de handover inteligente original (`intelligent-handover`) foi migrado para tool calls do LLM via `transfer_conversation`. A fila ainda opera normalmente — apenas o motor de análise mudou de um edge function dedicado para uma ferramenta nativa do agente.
+</Note>
+
+## Regras de transferência
+
+As regras são configuradas por empresa em **Configurações → Handover → Regras**. Cada regra tem:
+
+<CardGroup cols={2}>
+  <Card title="Palavras-chave" icon="tag">
+    Dispara quando a mensagem contém termos específicos. Ex: `"cancelar"`, `"falar com humano"`, `"gerente"`. Suporta regex e correspondência parcial.
+  </Card>
+  <Card title="Sentimento" icon="face-frown">
+    Detecta frustração ou insatisfação no tom da mensagem via análise de linguagem. Configurável por limiar de sensibilidade.
+  </Card>
+  <Card title="Complexidade" icon="puzzle-piece">
+    Transfere quando o agente não conseguiu resolver após N tentativas ou quando o assunto excede a base de conhecimento.
+  </Card>
+  <Card title="Urgência" icon="triangle-exclamation">
+    Identifica contextos de emergência ou situações de alto impacto (ex: transações financeiras, reclamações jurídicas).
+  </Card>
+</CardGroup>
+
+Cada regra tem um **peso** (weight) e um **threshold**. O `priority_score` final é a soma ponderada das regras disparadas. Quando o score atinge o threshold configurado, a conversa entra na fila.
+
+## Aceitando um handover
+
+<Steps>
+  <Step title="Abra a fila">
+    Vá em **Inbox → Fila de Handover**. Os cards aparecem ordenados por prioridade.
+  </Step>
+  <Step title="Leia o contexto">
+    Cada card exibe o nome do contato, canal, tags, tempo de espera estimado e o resumo automático da conversa gerado pelo agente.
+  </Step>
+  <Step title="Clique em 'Aceitar'">
+    O status do item muda para `assigned`, a conversa passa para o modo `ai_mode: manual` e você assume o atendimento direto.
+  </Step>
+  <Step title="Atenda e finalize">
+    Quando terminar, encerre o atendimento pela Inbox. O item sai da fila e o histórico é mantido para auditoria.
+  </Step>
+</Steps>
+
+<Tip>
+  Use as **tags** para filtrar a fila por assunto antes de aceitar. Se sua equipe tem especialistas por tipo de demanda (financeiro, técnico, comercial), configure tags por regra para facilitar o roteamento.
+</Tip>
+
+## Configurando as regras
+
+<Steps>
+  <Step title="Acesse Configurações → Handover">
+    No menu lateral, vá em **Configurações → Atendimento → Regras de Handover**.
+  </Step>
+  <Step title="Crie uma nova regra">
+    Clique em **+ Nova Regra**, defina o nome, o tipo (`keyword`, `sentiment`, `complexity`, `urgency`) e as condições.
+  </Step>
+  <Step title="Ajuste o peso e o threshold">
+    O **peso** define quanto essa regra contribui para o score final. O **threshold** define o score mínimo para a conversa entrar na fila.
+  </Step>
+  <Step title="Ative a regra">
+    Toggle para **Ativo**. A regra começa a operar imediatamente para novas mensagens.
+  </Step>
+</Steps>
+
+## Níveis de urgência e cores
+
+| Urgência | Cor | Quando usar |
+|----------|-----|-------------|
+| `low` | Cinza | Dúvidas simples, curiosidade |
+| `medium` | Amarelo | Reclamações moderadas, segundas tentativas |
+| `high` | Laranja | Frustração clara, ameaça de cancelamento |
+| `critical` | Vermelho | Emergência, risco legal ou financeiro |
+
+<Note>
+  Conversas com urgência `critical` geram uma notificação push para todos os atendentes online do workspace, independente da aba que estiverem visualizando.
+</Note>

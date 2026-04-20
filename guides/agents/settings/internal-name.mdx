@@ -1,0 +1,59 @@
+---
+title: "Nome interno do agente"
+description: "O que é o nome interno, como ele difere do nome exibido ao usuário final e como escolher um nome que ajuda na gestão do workspace."
+---
+
+## Visão geral
+
+O nome interno é o identificador do agente dentro da plataforma Timely. Ele aparece na lista de agentes, nos logs de conversas, nos relatórios de performance e no seletor de agentes ao configurar squads e regras de transferência. Esse nome nunca é exibido para o usuário final — o que o contato vê depende da configuração do canal (WhatsApp Business, widget, Instagram) ou do prompt do agente.
+
+A distinção é importante: você pode ter um agente chamado internamente de "Suporte L1 - WhatsApp BR" enquanto ele se apresenta para o cliente como "Oi, sou a Ana da equipe Timely". O nome interno serve para você e sua equipe; o nome de apresentação vive no prompt.
+
+## Como configurar
+
+<Steps>
+  <Step title="Acesse as configurações do agente">
+    Na lista de agentes, clique no agente que deseja editar. A aba **Configurações gerais** já estará ativa por padrão.
+  </Step>
+
+  <Step title="Localize o campo Nome">
+    O campo **Nome** é o primeiro da página. Ele aceita até 100 caracteres.
+  </Step>
+
+  <Step title="Digite o nome interno">
+    Escreva um nome que descreva a função e o contexto do agente. Inclua informações como canal, idioma ou segmento se você tiver múltiplos agentes com funções similares.
+  </Step>
+
+  <Step title="Salve as alterações">
+    Clique em **Salvar**. A mudança é imediata — o novo nome aparece na lista e em todos os locais da UI que referenciam esse agente.
+  </Step>
+</Steps>
+
+## Exemplos / Casos de uso
+
+**Ambiente com múltiplos canais:** Você tem o mesmo agente de suporte replicado para WhatsApp e para o widget do site. Os nomes internos "Suporte - WhatsApp" e "Suporte - Widget" permitem distinguir rapidamente nas análises qual canal está gerando mais conversas e qual tem menor taxa de resolução.
+
+**Times multirregionais:** Uma empresa com operações no Brasil e no México usa "Suporte BR - PT" e "Suporte MX - ES" como nomes internos. Ambos os agentes têm prompts em idiomas diferentes, mas a equipe identifica qual é qual sem precisar abrir as configurações.
+
+**Hierarquia de squads:** Em um squad hierárquico, o nome interno do agente gerenciador poderia ser "Triagem Principal" enquanto os especialistas se chamam "Especialista Financeiro" e "Especialista Técnico" — deixando clara a estrutura no painel de squads.
+
+## Boas práticas
+
+<Tip>
+Adote uma convenção de nomenclatura antes de criar o segundo agente. Uma estrutura como "[Função] - [Canal/Segmento] - [Idioma]" escala bem para workspaces com muitos agentes.
+</Tip>
+
+- Evite nomes genéricos como "Agente 1" ou "Novo agente" — eles causam confusão quando você precisa configurar regras de transferência ou analisar relatórios.
+- O nome interno não precisa ser o nome de apresentação. Use o prompt para definir como o agente se apresenta ao cliente.
+- Se o agente faz parte de um squad, inclua o nome do squad no nome interno para facilitar a rastreabilidade.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Role do agente" href="/guides/agents/settings/role">
+    Defina a função e a persona do agente para moldar seu tom e escopo de atuação.
+  </Card>
+  <Card title="Visão geral das configurações" href="/guides/agents/settings/overview">
+    Veja todas as opções disponíveis em um só lugar.
+  </Card>
+</CardGroup>

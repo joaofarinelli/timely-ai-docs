@@ -1,0 +1,243 @@
+---
+title: "Eventos de billing"
+description: "Disparados quando créditos estão acabando, quando o plano muda ou quando o período de trial está próximo do fim"
+---
+
+Esses eventos permitem que você monitore a situação financeira do workspace de forma proativa — receba alertas antes de ficarem sem créditos, seja notificado de mudanças de plano e acompanhe o ciclo de trial sem precisar acessar o dashboard manualmente.
+
+## Lista de eventos
+
+| Evento | Quando dispara |
+|--------|----------------|
+| `credit.low` | O saldo de créditos cai abaixo do limite de alerta configurado |
+| `credit.depleted` | Os créditos chegam a zero — o workspace fica sem capacidade de processar mensagens |
+| `plan.changed` | O plano do workspace é alterado (upgrade, downgrade ou cancelamento) |
+| `trial.expiring` | O período de trial está a 3 dias do fim |
+| `trial.expired` | O trial encerrou sem conversão para plano pago |
+
+---
+
+## `credit.low`
+
+### Quando dispara
+
+O saldo de créditos do workspace cai abaixo do threshold de alerta configurado em **Configurações → Billing**. Por padrão, o alerta é acionado quando restam menos de 20% dos créditos do ciclo atual.
+
+### Payload
+
+```json
+{
+  "event": "credit.low",
+  "event_id": "evt_01HX9A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T18:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "credits_remaining": 1850,
+    "credits_total": 10000,
+    "credits_used": 8150,
+    "usage_percentage": 81.5,
+    "alert_threshold_percentage": 80,
+    "estimated_depletion_at": "2026-04-21T12:00:00Z",
+    "billing_period_end": "2026-04-30T23:59:59Z",
+    "plan_id": "plan_pro",
+    "plan_name": "Pro"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `credits_remaining` | integer | Créditos ainda disponíveis |
+| `credits_total` | integer | Total de créditos do ciclo |
+| `credits_used` | integer | Créditos consumidos até agora |
+| `usage_percentage` | number | Percentual de uso (0–100) |
+| `alert_threshold_percentage` | number | Threshold configurado que gerou o alerta |
+| `estimated_depletion_at` | string \| null | Estimativa de quando os créditos vão zerar, baseada no consumo médio |
+| `billing_period_end` | string | Data de fim do ciclo de billing atual |
+| `plan_id` | string | ID do plano atual |
+
+### Exemplo de uso
+
+<Note>
+  Use `credit.low` para acionar um alerta automático no Slack ou WhatsApp do gestor financeiro antes que o serviço seja interrompido. O campo `estimated_depletion_at` ajuda a priorizar a urgência.
+</Note>
+
+---
+
+## `credit.depleted`
+
+### Quando dispara
+
+O saldo de créditos chega a zero. Quando isso acontece, o workspace entra em modo restrito: o agente de IA para de responder mensagens novas até que créditos sejam adicionados ou o ciclo de billing renove.
+
+### Payload
+
+```json
+{
+  "event": "credit.depleted",
+  "event_id": "evt_01HX9B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-21T14:35:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "credits_remaining": 0,
+    "credits_total": 10000,
+    "credits_used": 10000,
+    "billing_period_end": "2026-04-30T23:59:59Z",
+    "plan_id": "plan_pro",
+    "plan_name": "Pro",
+    "service_status": "restricted",
+    "depleted_at": "2026-04-21T14:35:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `credits_remaining` | integer | Sempre `0` nesse evento |
+| `service_status` | enum | `restricted` — o agente de IA está pausado |
+| `depleted_at` | string | Timestamp ISO 8601 do esgotamento |
+
+### Exemplo de uso
+
+<Warning>
+  `credit.depleted` é crítico. Quando disparado, o agente de IA para de responder — contatos podem ficar sem atendimento. Configure uma automação que adicione créditos automaticamente ou notifique imediatamente o responsável pelo billing.
+</Warning>
+
+---
+
+## `plan.changed`
+
+### Quando dispara
+
+O plano do workspace é alterado: upgrade para um plano superior, downgrade para um plano menor, migração entre planos do mesmo nível ou cancelamento de assinatura. Inclui o plano anterior e o novo.
+
+### Payload
+
+```json
+{
+  "event": "plan.changed",
+  "event_id": "evt_01HX9C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T11:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "previous_plan_id": "plan_starter",
+    "previous_plan_name": "Starter",
+    "new_plan_id": "plan_pro",
+    "new_plan_name": "Pro",
+    "change_type": "upgrade",
+    "effective_at": "2026-04-19T11:00:00Z",
+    "billing_period_end": "2026-05-19T23:59:59Z",
+    "changed_by": "usr_321"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `previous_plan_id` | string | ID do plano anterior |
+| `previous_plan_name` | string | Nome do plano anterior |
+| `new_plan_id` | string | ID do novo plano |
+| `new_plan_name` | string | Nome do novo plano |
+| `change_type` | enum | `upgrade`, `downgrade`, `canceled`, `reactivated` |
+| `effective_at` | string | Quando a mudança entrou em vigor |
+| `changed_by` | string \| null | ID do usuário que realizou a mudança |
+
+### Exemplo de uso
+
+<Note>
+  Use `plan.changed` com `change_type: "canceled"` para acionar um fluxo de retenção — envie uma mensagem de acompanhamento ou ofereça suporte antes que o cliente encerre definitivamente o uso da plataforma.
+</Note>
+
+---
+
+## `trial.expiring`
+
+### Quando dispara
+
+O período de trial do workspace está a 3 dias do vencimento e ainda não houve conversão para plano pago. Esse evento é disparado uma única vez por ciclo de trial.
+
+### Payload
+
+```json
+{
+  "event": "trial.expiring",
+  "event_id": "evt_01HX9D7Q5SJUW8ZCFQWA3ZFH",
+  "timestamp": "2026-04-17T09:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "trial_end_at": "2026-04-20T23:59:59Z",
+    "days_remaining": 3,
+    "plan_id": "plan_trial",
+    "conversations_used": 142,
+    "messages_used": 1834,
+    "contacts_total": 87,
+    "upgrade_url": "https://app.timelyai.com.br/billing/upgrade"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `trial_end_at` | string | Data/hora de expiração do trial |
+| `days_remaining` | integer | Dias restantes até o fim do trial |
+| `conversations_used` | integer | Total de conversas abertas durante o trial |
+| `messages_used` | integer | Total de mensagens trocadas durante o trial |
+| `contacts_total` | integer | Total de contatos no workspace |
+| `upgrade_url` | string | Link direto para a página de upgrade |
+
+---
+
+## `trial.expired`
+
+### Quando dispara
+
+O período de trial terminou sem que o workspace tenha assinado um plano pago. Após essa data, o workspace entra em modo somente leitura — nenhum agente de IA responde e novos canais não podem ser conectados.
+
+### Payload
+
+```json
+{
+  "event": "trial.expired",
+  "event_id": "evt_01HX9E9R6TKXV9ADGRXB4AGI",
+  "timestamp": "2026-04-21T00:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "trial_end_at": "2026-04-20T23:59:59Z",
+    "plan_id": "plan_trial",
+    "service_status": "read_only",
+    "conversations_used": 198,
+    "messages_used": 2540,
+    "contacts_total": 115,
+    "upgrade_url": "https://app.timelyai.com.br/billing/upgrade",
+    "expired_at": "2026-04-21T00:00:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `service_status` | enum | `read_only` — o workspace está bloqueado para operações |
+| `conversations_used` | integer | Total de conversas abertas durante o trial |
+| `messages_used` | integer | Total de mensagens durante o trial |
+| `expired_at` | string | Timestamp ISO 8601 da expiração |
+| `upgrade_url` | string | Link direto para a página de upgrade |
+
+### Exemplo de uso
+
+<Tip>
+  Se você é um parceiro ou revendedor da Timely.ai e gerencia múltiplos workspaces, use `trial.expiring` e `trial.expired` para automatizar follow-ups de conversão. Os campos `conversations_used` e `messages_used` mostram o engajamento do cliente durante o trial — ótimos dados para personalizar a abordagem.
+</Tip>
+
+<Info>
+  Eventos de billing são enviados apenas para webhooks que têm os eventos `credit.*`, `plan.*` ou `trial.*` na lista de subscrição. Certifique de incluir essas categorias ao criar o webhook se quiser receber essas notificações.
+</Info>

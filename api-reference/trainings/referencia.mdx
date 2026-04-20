@@ -1,0 +1,66 @@
+---
+title: "Referência de Trainings"
+sidebarTitle: "Referência"
+description: "Endpoints para gerenciar a base de conhecimento dos agentes — documentos, FAQs e conteúdo de treinamento"
+---
+
+## Conceito
+
+**Trainings** são a base de conhecimento que alimenta os agentes da Timely.ai. Enquanto o `system_prompt` define o comportamento e a personalidade do agente, os Trainings fornecem o conteúdo factual que ele usa para responder: políticas da empresa, catálogo de produtos, perguntas frequentes, manuais de suporte, scripts de vendas e qualquer outro material que o agente precise consultar durante uma conversa.
+
+Cada Training é associado a um ou mais agentes e é indexado de forma que o agente possa fazer buscas semânticas no momento em que precisa de uma informação específica — sem precisar carregar todo o conteúdo no contexto a cada mensagem.
+
+## Tipos de conteúdo suportados
+
+Você pode adicionar trainings de diferentes formatos:
+
+- **Texto livre** — qualquer conteúdo estruturado ou não (perguntas e respostas, políticas, instruções)
+- **Arquivo** — PDF, DOCX, TXT, MD carregados via upload
+- **URL** — a Timely faz o crawl e indexa o conteúdo da página
+
+## Ciclo de vida
+
+```
+criar training (processing)
+    │
+    ▼
+indexação semântica
+    │
+    ▼
+ready → agente consulta durante conversas
+    │
+    ▼
+atualizar conteúdo → reprocessamento
+    │
+    ▼
+deletar (remove da base de conhecimento do agente)
+```
+
+O status `processing` indica que o conteúdo está sendo vetorizado. Após virar `ready`, o agente já consegue consultá-lo nas próximas conversas.
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único do training |
+| `agent_id` | string (UUID) | Agente ao qual pertence |
+| `title` | string | Título descritivo do conteúdo |
+| `type` | enum | `text` \| `file` \| `url` |
+| `content` | string | Conteúdo textual (para type `text`) |
+| `file_url` | string | URL do arquivo indexado |
+| `source_url` | string | URL de origem (para type `url`) |
+| `status` | enum | `processing` \| `ready` \| `error` |
+| `created_at` | string | ISO 8601 de criação |
+| `updated_at` | string | ISO 8601 da última atualização |
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

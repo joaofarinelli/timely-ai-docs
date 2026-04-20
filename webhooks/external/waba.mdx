@@ -1,0 +1,223 @@
+---
+title: "WhatsApp Business API (Meta)"
+description: "Formato bruto dos webhooks da WhatsApp Business API — como configurar, validar e processar payloads de mensagens e status"
+---
+
+A **WhatsApp Business API (WABA)** da Meta envia eventos diretamente para um endpoint que você registra no Facebook App. Quando você conecta um número WhatsApp na Timely.ai, nossa plataforma recebe esses eventos, os processa e os transforma nos [webhooks internos](/webhooks/overview) do workspace. Esta página documenta o formato bruto que a Meta envia — útil para depuração, integrações diretas ou quando você precisa entender o que chega antes de qualquer transformação.
+
+## Configurar o webhook no Facebook App
+
+<Steps>
+  <Step title="Acesse o App Dashboard da Meta">
+    Vá para [developers.facebook.com](https://developers.facebook.com) → seu App → **WhatsApp** → **Configurações** → **Webhook**.
+  </Step>
+  <Step title="Informe a URL de callback">
+    Cole a URL do endpoint que vai receber os eventos. Em produção, use sempre HTTPS com certificado válido.
+
+    Se você estiver testando localmente, use ngrok ou Hookdeck para expor seu servidor:
+
+    ```bash
+    ngrok http 3000
+    # Forwarding: https://abc123.ngrok.io -> localhost:3000
+    ```
+  </Step>
+  <Step title="Defina o Verify Token">
+    Escolha uma string aleatória e segura (ex.: `meu_token_secreto_123`). A Meta faz um `GET` no seu endpoint na hora da configuração com os parâmetros `hub.mode`, `hub.verify_token` e `hub.challenge`. Seu servidor deve responder com o valor de `hub.challenge` se o token bater.
+
+    ```typescript Node.js
+    app.get("/webhook/whatsapp", (req, res) => {
+      const mode = req.query["hub.mode"];
+      const token = req.query["hub.verify_token"];
+      const challenge = req.query["hub.challenge"];
+
+      if (mode === "subscribe" && token === process.env.VERIFY_TOKEN) {
+        res.status(200).send(challenge);
+      } else {
+        res.sendStatus(403);
+      }
+    });
+    ```
+  </Step>
+  <Step title="Selecione os campos">
+    Ative pelo menos **messages** para receber mensagens e status. Outros campos úteis: `message_template_status_update`, `phone_number_quality_update`.
+  </Step>
+</Steps>
+
+## Diferença entre webhook da Meta e webhook da Timely
+
+| Aspecto | Webhook Meta (bruto) | Webhook Timely (plataforma) |
+|---------|---------------------|-----------------------------|
+| Fonte | Meta → seu servidor | Timely → seu servidor |
+| Autenticação | `X-Hub-Signature-256` com App Secret | `X-Timely-Signature` com seu secret |
+| Formato | Envelope Meta com `entry[].changes[]` | Payload normalizado por tipo de evento |
+| Contato resolvido | Não — só o `wa_id` | Sim — inclui `contact_id` da Timely |
+| Transformação | Nenhuma — dado bruto da Meta | Enriquecido com contexto do workspace |
+
+Se você usa a Timely como intermediário (o caso padrão), não precisa registrar um webhook na Meta — a Timely faz isso por você. Esta documentação serve para casos em que você conecta a WABA diretamente ou precisa depurar o fluxo completo.
+
+## Validação da assinatura
+
+A Meta assina cada requisição com o **App Secret** do seu Facebook App usando HMAC-SHA256. O header enviado é `X-Hub-Signature-256`.
+
+```typescript Node.js
+import crypto from "crypto";
+
+const APP_SECRET = process.env.META_APP_SECRET!;
+
+function verifyMetaSignature(rawBody: Buffer, signature: string): boolean {
+  const expected = "sha256=" + crypto
+    .createHmac("sha256", APP_SECRET)
+    .update(rawBody)
+    .digest("hex");
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+app.post("/webhook/whatsapp", (req, res) => {
+  const sig = req.headers["x-hub-signature-256"] as string;
+  if (!verifyMetaSignature(req.rawBody, sig)) {
+    return res.sendStatus(401);
+  }
+  // processa o evento...
+  res.sendStatus(200);
+});
+```
+
+<Warning>
+  Nunca processe um webhook da Meta sem validar `X-Hub-Signature-256`. O App Secret fica no painel do seu Facebook App — nunca o exponha em código-fonte ou logs.
+</Warning>
+
+## Payload: mensagem de texto recebida
+
+```json
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "WABA_ID",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "5511999990000",
+              "phone_number_id": "PHONE_NUMBER_ID"
+            },
+            "contacts": [
+              {
+                "profile": { "name": "João Silva" },
+                "wa_id": "5511988887777"
+              }
+            ],
+            "messages": [
+              {
+                "from": "5511988887777",
+                "id": "wamid.HBgLNTUxMTk4ODg4Nzc3FQIAERgSMjRBOTQ5MzJBMTIzNDU2Nzg5AA==",
+                "timestamp": "1713456789",
+                "text": { "body": "Olá, quero saber sobre os planos." },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Payload: status de mensagem enviada
+
+Os status chegam quando a mensagem muda de estado: `sent` → `delivered` → `read`.
+
+```json
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "WABA_ID",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "5511999990000",
+              "phone_number_id": "PHONE_NUMBER_ID"
+            },
+            "statuses": [
+              {
+                "id": "wamid.HBgLNTUxMTk4ODg4Nzc3FQIAERgSMjRBOTQ5MzJBMTIzNDU2Nzg5AA==",
+                "status": "delivered",
+                "timestamp": "1713456800",
+                "recipient_id": "5511988887777",
+                "conversation": {
+                  "id": "CONVERSATION_ID",
+                  "expiration_timestamp": "1713543200",
+                  "origin": { "type": "user_initiated" }
+                },
+                "pricing": {
+                  "billable": true,
+                  "pricing_model": "CBP",
+                  "category": "user_initiated"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Payload: mensagem de mídia (imagem, áudio, documento)
+
+```json
+{
+  "messages": [
+    {
+      "from": "5511988887777",
+      "id": "wamid.EXEMPLO",
+      "timestamp": "1713456900",
+      "type": "image",
+      "image": {
+        "caption": "Segue o comprovante",
+        "mime_type": "image/jpeg",
+        "sha256": "abc123...",
+        "id": "MEDIA_ID"
+      }
+    }
+  ]
+}
+```
+
+Para baixar a mídia, faça `GET https://graph.facebook.com/v19.0/{MEDIA_ID}` com seu token de acesso. A Timely.ai faz esse download automaticamente e armazena a URL pública no campo `media_url` da mensagem normalizada.
+
+## Campos importantes do payload
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `entry[].id` | string | ID da WhatsApp Business Account |
+| `changes[].value.metadata.phone_number_id` | string | ID do número de telefone na Meta |
+| `messages[].from` | string | Número do remetente (formato internacional sem `+`) |
+| `messages[].id` | string | ID único da mensagem (`wamid.*`) |
+| `messages[].timestamp` | string | Unix timestamp em segundos |
+| `messages[].type` | string | `text`, `image`, `audio`, `video`, `document`, `location`, `interactive`, `button` |
+| `statuses[].status` | string | `sent`, `delivered`, `read`, `failed` |
+| `statuses[].pricing.category` | string | Categoria de cobrança da conversa |
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Webhooks da plataforma" icon="bell" href="/webhooks/overview">
+    Entenda os webhooks outbound normalizados da Timely.ai.
+  </Card>
+  <Card title="Canais — API Reference" icon="plug" href="/api-reference/channels/referencia">
+    Gerencie canais WhatsApp via API.
+  </Card>
+</CardGroup>

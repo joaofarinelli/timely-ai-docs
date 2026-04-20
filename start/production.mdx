@@ -1,0 +1,135 @@
+---
+title: "Checklist de produção"
+description: "Tudo que você precisa revisar antes de abrir para clientes reais"
+---
+
+Antes de apontar tráfego real para sua integração, percorra este checklist. Cada item representa uma classe de problema que já vimos em deploys — melhor resolver antes do que correr atrás depois.
+
+## Autenticação e segredos
+
+<AccordionGroup>
+  <Accordion title="API keys em variáveis de ambiente">
+    Nenhuma chave hardcoded no código. Verifique com:
+
+    ```bash
+    git grep "tly_live_" --  # deve retornar vazio
+    ```
+
+    Use um gerenciador de secrets (Doppler, AWS Secrets Manager, HashiCorp Vault, Vercel env vars) em vez de `.env` comitado.
+  </Accordion>
+
+  <Accordion title="Escopos mínimos por serviço">
+    Revise cada API key e remova escopos desnecessários. Um serviço que só envia mensagens não precisa de `agents:write` nem `contacts:write`.
+  </Accordion>
+
+  <Accordion title="Webhook secret configurado e validado">
+    Confirme que o handler valida o header `X-Timely-Signature` antes de processar qualquer evento. Teste com um payload adulterado — deve retornar `401`.
+  </Accordion>
+
+  <Accordion title="Rotação de credenciais planejada">
+    Defina uma data de rotação (sugestão: a cada 90 dias) e documente o procedimento interno. Veja o passo a passo em [Autenticação → Rotacionando uma chave](/start/authentication).
+  </Accordion>
+</AccordionGroup>
+
+## API e integração
+
+<AccordionGroup>
+  <Accordion title="URL de produção e API key corretas">
+    Confirme que o código aponta para `https://api.timelyai.com.br/v1` e que a `x-api-key` é do workspace de produção — não de um workspace de testes. Em CI/CD, use variáveis de ambiente distintas por stage.
+  </Accordion>
+
+  <Accordion title="Retry com backoff implementado">
+    Toda chamada à API tem lógica de retry que respeita o header `Retry-After` ao receber `429`. Sem isso, picos de carga podem causar cascata de erros.
+  </Accordion>
+
+  <Accordion title="Paginação implementada para listagens">
+    Se você busca listas (conversas, contatos, agentes), o código itera sobre todas as páginas usando `meta.total_pages`. Buscar só a página 1 pode omitir registros.
+  </Accordion>
+
+  <Accordion title="Timeouts configurados nas requisições HTTP">
+    Configure timeout de no mínimo 15 segundos para chamadas à API. Requisições sem timeout travam workers indefinidamente em caso de lentidão de rede.
+  </Accordion>
+</AccordionGroup>
+
+## Webhooks
+
+<AccordionGroup>
+  <Accordion title="Endpoint acessível publicamente">
+    Confirme que a URL de webhook é acessível pela internet (não é `localhost`). Teste com:
+
+    ```bash
+    curl -X POST https://seusite.com.br/webhook/timely \
+      -H "Content-Type: application/json" \
+      -d '{"test": true}'
+    ```
+  </Accordion>
+
+  <Accordion title="Resposta 2xx em menos de 10 segundos">
+    O handler responde imediatamente e processa o evento de forma assíncrona (fila, worker). Processamentos síncronos que passam de 10 segundos causam retentativas desnecessárias.
+  </Accordion>
+
+  <Accordion title="Idempotência implementada">
+    O handler usa `X-Timely-Event-Id` para deduplicar eventos entregues mais de uma vez durante retentativas.
+  </Accordion>
+
+  <Accordion title="Log de falhas configurado">
+    Eventos de webhook com falha ficam disponíveis no dashboard em **Configurações → Webhooks → [endpoint] → Log de eventos**. Configure um alerta interno se a taxa de falha subir acima de 1%.
+  </Accordion>
+</AccordionGroup>
+
+## Agentes e canais
+
+<AccordionGroup>
+  <Accordion title="Agente testado com cenários reais">
+    Rode o test chat com pelo menos 20 variações de perguntas que seus clientes fariam. Inclua perguntas fora do escopo — verifique se o agente responde com educação e sem alucinar.
+  </Accordion>
+
+  <Accordion title="Handoff para humano configurado">
+    Defina a regra de handoff (palavra-chave, intenção, número de turnos sem resolução). Confirme que um atendente humano recebe a notificação corretamente.
+  </Accordion>
+
+  <Accordion title="Canal ativo e testado end-to-end">
+    Envie uma mensagem de um número real para o canal de produção e acompanhe o fluxo completo: recebimento → processamento pelo agente → resposta → log de conversa no CRM.
+  </Accordion>
+
+  <Accordion title="Templates de WhatsApp aprovados">
+    Se você usa envio proativo (fora da janela de 24h), os templates precisam estar aprovados pela Meta antes do go-live. Aprovação pode levar de 24h a 7 dias.
+  </Accordion>
+</AccordionGroup>
+
+## Monitoramento e alertas
+
+<AccordionGroup>
+  <Accordion title="Dashboard de conversas monitorado">
+    Defina quem da equipe monitora o dashboard durante as primeiras 48h após o go-live. Identifique problemas antes que virem reclamação de cliente.
+  </Accordion>
+
+  <Accordion title="Alerta de créditos baixos configurado">
+    Em **Configurações → Billing → Alertas**, ative a notificação de saldo baixo. Créditos zerados pausam o envio de mensagens.
+  </Accordion>
+
+  <Accordion title="Contato de suporte salvo">
+    Guarde **contato@timelyai.com.br** na sua lista de contatos de incidente. Em casos críticos, mencione "URGENTE" no assunto.
+  </Accordion>
+</AccordionGroup>
+
+## Resumo visual
+
+<CardGroup cols={2}>
+  <Card title="Segredos" >
+    API keys em variáveis de ambiente, escopos mínimos, webhook secret validado, rotacao planejada.
+  </Card>
+  <Card title="API">
+    URL de producao correta, retry com backoff, paginacao completa, timeouts configurados.
+  </Card>
+  <Card title="Webhooks">
+    Endpoint publico, resposta rapida, idempotencia, log de falhas monitorado.
+  </Card>
+  <Card title="Agentes e canais">
+    Testes com cenarios reais, handoff configurado, canal testado end-to-end, templates aprovados.
+  </Card>
+</CardGroup>
+
+<Note>
+  Passou em tudo? Va em frente. Qualquer duvida de ultima hora, estamos em **contato@timelyai.com.br**.
+</Note>

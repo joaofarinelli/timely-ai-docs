@@ -1,0 +1,75 @@
+---
+title: "HTTP Collections"
+description: "Teste e explore a Timely.ai API com collections prontas para Postman e Bruno — sem escrever código, compartilháveis com o time."
+---
+
+## O que são collections
+
+Uma **collection** é um conjunto de requisições HTTP pré-configuradas e organizadas por recurso. Em vez de montar cada request do zero — URL, método, headers, body — você importa o arquivo e já tem todos os endpoints da Timely.ai prontos para executar.
+
+Collections são úteis para:
+
+<CardGroup cols={2}>
+  <Card title="Testes rápidos" icon="bolt">
+    Valide um endpoint em segundos, sem precisar escrever código de integração ainda.
+  </Card>
+  <Card title="Debug de produção" icon="bug">
+    Reproduza uma chamada com os parâmetros exatos para isolar erros da API.
+  </Card>
+  <Card title="Documentação viva" icon="book">
+    Compartilhe com o time um arquivo que descreve e executa todos os endpoints.
+  </Card>
+  <Card title="Testes de smoke" icon="circle-check">
+    Rode a collection após cada deploy para verificar se os endpoints críticos continuam respondendo.
+  </Card>
+</CardGroup>
+
+## Opções disponíveis
+
+Oferecemos duas collections com cobertura idêntica dos endpoints. Escolha a ferramenta que já faz parte do seu fluxo:
+
+<CardGroup cols={2}>
+  <Card title="Postman" icon="server" href="/http/postman">
+    Ferramenta cloud gratuita, popular em times. Interface visual, histórico de execuções, suporte a environments e pre-request scripts.
+  </Card>
+  <Card title="Bruno" icon="leaf" href="/http/bruno">
+    Alternativa open-source e git-friendly. Arquivos `.bru` são texto puro — você versiona as requests junto com o código do projeto.
+  </Card>
+</CardGroup>
+
+## Requisitos antes de começar
+
+Antes de importar qualquer collection, você precisa de:
+
+<Steps>
+  <Step title="API Key">
+    Acesse o dashboard da Timely.ai em **Configurações → API Keys** e gere uma chave. Copie e guarde em lugar seguro — ela não é exibida novamente.
+  </Step>
+  <Step title="Workspace configurado">
+    Confirme que seu workspace está ativo e que a chave de API pertence ao workspace correto. Todos os endpoints são escopados por workspace.
+  </Step>
+  <Step title="Ferramenta instalada">
+    Baixe o [Postman](https://www.postman.com/downloads/) ou o [Bruno](https://www.usebruno.com/downloads) conforme sua preferência.
+  </Step>
+</Steps>
+
+## Download das collections
+
+| Ferramenta | Arquivo | Formato |
+|---|---|---|
+| Postman | [timely-ai.postman_collection.json](/http/collections/timely-ai.postman_collection.json) | JSON |
+| Bruno | [timely-ai.bruno.zip](/http/collections/timely-ai.bruno.zip) | ZIP com arquivos .bru |
+
+<Warning>
+As collections são atualizadas junto com a API. Se você notar endpoints faltando ou com parâmetros diferentes, baixe a versão mais recente do arquivo.
+</Warning>
+
+## Autenticação nas collections
+
+Todos os endpoints da Timely.ai usam autenticação via header:
+
+```
+x-api-key: SUA_CHAVE_AQUI
+```
+
+Ambas as collections já incluem esse header configurado via variável de ambiente. Você só precisa preencher o valor da variável `api_key` no environment. Os guias de cada ferramenta mostram exatamente como fazer isso.

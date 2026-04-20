@@ -1,0 +1,204 @@
+---
+title: "Eventos de conversa"
+description: "Disparados quando conversas são criadas, atribuídas, encerradas ou reabertas no workspace"
+---
+
+Esses eventos cobrem o ciclo de vida completo de uma conversa — desde a abertura até o encerramento, passando por atribuições e reabertura. Use-os para manter seu CRM sincronizado, acionar SLAs ou gerar relatórios de atendimento.
+
+## Lista de eventos
+
+| Evento | Quando dispara |
+|--------|----------------|
+| `conversation.created` | Uma nova conversa é iniciada por um contato ou criada manualmente |
+| `conversation.assigned` | A conversa é atribuída a um atendente ou agente de IA |
+| `conversation.closed` | A conversa é marcada como encerrada |
+| `conversation.reopened` | Uma conversa encerrada volta ao status aberto |
+
+---
+
+## `conversation.created`
+
+### Quando dispara
+
+Uma nova conversa começa — seja porque um contato enviou a primeira mensagem, seja porque um atendente ou automação criou a conversa manualmente via API.
+
+### Payload
+
+```json
+{
+  "event": "conversation.created",
+  "event_id": "evt_01HX3B2K8MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T14:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "status": "open",
+    "assigned_to": null,
+    "assigned_type": null,
+    "tags": [],
+    "created_at": "2026-04-19T14:30:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `conversation_id` | string | ID único da conversa |
+| `contact_id` | string | ID do contato que iniciou |
+| `channel_id` | string | ID do canal por onde a conversa chegou |
+| `channel_type` | enum | `whatsapp`, `instagram`, `widget`, `telegram`, `slack` |
+| `status` | enum | `open`, `closed` |
+| `assigned_to` | string \| null | ID do atendente ou agente atribuído |
+| `assigned_type` | enum \| null | `agent` (IA) ou `attendant` (humano) |
+| `tags` | array | Tags aplicadas na conversa |
+
+### Exemplo de uso
+
+<Note>
+  Use `conversation.created` para registrar novas conversas no seu CRM ou disparar uma notificação para o time de vendas quando um lead novo entrar.
+</Note>
+
+---
+
+## `conversation.assigned`
+
+### Quando dispara
+
+A conversa é atribuída (ou reatribuída) a um atendente humano ou a um agente de IA. Isso inclui atribuições automáticas via regras de roteamento e atribuições manuais pelo inbox.
+
+### Payload
+
+```json
+{
+  "event": "conversation.assigned",
+  "event_id": "evt_01HX3C5N2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-19T14:31:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "assigned_to": "usr_321",
+    "assigned_type": "attendant",
+    "previous_assigned_to": null,
+    "previous_assigned_type": null,
+    "assigned_at": "2026-04-19T14:31:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `assigned_to` | string | ID do atendente ou agente que recebeu |
+| `assigned_type` | enum | `agent` \| `attendant` |
+| `previous_assigned_to` | string \| null | Quem estava responsável antes, se houver |
+| `previous_assigned_type` | enum \| null | Tipo do responsável anterior |
+| `assigned_at` | string | Timestamp ISO 8601 da atribuição |
+
+### Exemplo de uso
+
+<Note>
+  Use para calcular tempo médio de primeira resposta (FRT) — registre o `assigned_at` e compare com o timestamp da primeira mensagem do atendente.
+</Note>
+
+---
+
+## `conversation.closed`
+
+### Quando dispara
+
+A conversa é marcada como encerrada, seja pelo atendente manualmente, por uma automação de tempo limite de inatividade ou via API.
+
+### Payload
+
+```json
+{
+  "event": "conversation.closed",
+  "event_id": "evt_01HX3D7P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T16:45:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "closed_by": "usr_321",
+    "closed_by_type": "attendant",
+    "resolution": "resolved",
+    "duration_seconds": 8700,
+    "message_count": 24,
+    "closed_at": "2026-04-19T16:45:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `closed_by` | string | ID de quem encerrou |
+| `closed_by_type` | enum | `attendant`, `agent`, `automation`, `api` |
+| `resolution` | enum | `resolved`, `unresolved`, `spam` |
+| `duration_seconds` | integer | Duração total da conversa em segundos |
+| `message_count` | integer | Total de mensagens trocadas |
+| `closed_at` | string | Timestamp ISO 8601 do encerramento |
+
+### Exemplo de uso
+
+<Note>
+  Use `conversation.closed` com `duration_seconds` e `resolution` para alimentar dashboards de qualidade de atendimento e calcular CSAT automaticamente.
+</Note>
+
+---
+
+## `conversation.reopened`
+
+### Quando dispara
+
+Uma conversa que estava fechada volta ao status `open`. Isso acontece quando um contato envia nova mensagem numa conversa encerrada ou quando um atendente reabre manualmente.
+
+### Payload
+
+```json
+{
+  "event": "conversation.reopened",
+  "event_id": "evt_01HX3E9Q5SJUW8ZCFQWA3ZFH",
+  "timestamp": "2026-04-20T09:10:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "reopened_by": null,
+    "reopened_reason": "new_message",
+    "reopened_at": "2026-04-20T09:10:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `reopened_by` | string \| null | ID de quem reopenou (null se foi por nova mensagem) |
+| `reopened_reason` | enum | `new_message`, `manual`, `api` |
+| `reopened_at` | string | Timestamp ISO 8601 da reabertura |
+
+### Exemplo de uso
+
+<Note>
+  Monitore `conversation.reopened` com `reopened_reason: "new_message"` para identificar padrões de contatos que retornam — pode indicar resolução insatisfatória na primeira vez.
+</Note>
+
+<Warning>
+  Sempre use o `event_id` para garantir idempotência. Em caso de retentativa, o mesmo evento pode ser entregue mais de uma vez com o mesmo `event_id`.
+</Warning>

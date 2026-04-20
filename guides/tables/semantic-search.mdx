@@ -1,0 +1,137 @@
+---
+title: "Busca Semântica em Tabelas"
+description: "Como ativar a indexação semântica em colunas de texto, fazer queries por linguagem natural via agente ou API e interpretar os resultados de relevância."
+---
+
+## Visão geral
+
+A **busca semântica** em tabelas permite que o agente encontre linhas com base no significado da consulta, não em correspondência exata de texto. Em vez de procurar "tênis Nike Air Max", o agente pode receber a pergunta "tem algum tênis para corrida?" e localizar as linhas relevantes porque os embeddings capturam a similaridade semântica entre a consulta e os valores indexados.
+
+Internamente, o sistema usa o modelo `text-embedding-3-small` (1536 dimensões) para vetorizar os valores de colunas habilitadas para busca semântica. As queries são executadas via RPC `search_datagrid_rows_semantic` no banco de dados.
+
+## Como funciona
+
+Quando a busca semântica está ativa em uma coluna:
+
+1. Cada valor inserido ou atualizado nessa coluna é enviado para a API de embeddings da OpenAI.
+2. O vetor resultante (1536 números) é armazenado junto ao valor.
+3. Quando o agente faz uma busca, a consulta também é vetorizada.
+4. O banco executa uma busca por similaridade coseno entre o vetor da consulta e os vetores armazenados.
+5. As linhas com maior similaridade são retornadas em ordem decrescente de relevância.
+
+Esse processo é diferente da busca por similaridade de texto simples (`similarity_search`), que usa comparação de strings sem vetorização.
+
+## Ativando a busca semântica
+
+A busca semântica é configurada ao nível da coluna, durante a criação ou edição de uma coluna do tipo `String`.
+
+<Steps>
+  <Step title="Crie ou edite uma coluna String">
+    Na tela da tabela, clique em **+ Adicionar coluna** ou no ícone de edição de uma coluna existente. O tipo precisa ser `String` — colunas `Number` e `Boolean` não suportam busca semântica.
+  </Step>
+  <Step title="Ative o toggle de busca semântica">
+    No formulário da coluna, localize a opção **Habilitar busca semântica** e ative o toggle. Uma dica explica: "Permite que agentes de IA pesquisem nesta coluna usando linguagem natural, não apenas correspondência exata."
+  </Step>
+  <Step title="Salve a coluna">
+    Clique em **Adicionar** (ou **Salvar alterações** se estiver editando). A partir desse momento, novos valores inseridos nesta coluna serão automaticamente vetorizados.
+  </Step>
+  <Step title="Re-indexe valores existentes (se necessário)">
+    Se a coluna já tinha dados antes de ativar a busca semântica, os valores existentes precisam ser re-indexados. Na tela da tabela, use a opção **Re-indexar coluna** para disparar a vetorização em lote dos valores existentes.
+  </Step>
+</Steps>
+
+<Note>
+  O tipo da coluna não pode ser alterado após a criação. Se você precisa de busca semântica em uma coluna que foi criada como `Number` ou `Boolean`, será necessário criar uma nova coluna do tipo `String` e migrar os dados.
+</Note>
+
+## Tipos de busca disponíveis
+
+O executor de ferramentas (`datagrid-tool-exec`) expõe dois tipos de busca:
+
+### semantic_search
+
+Converte a query em embedding e executa busca por similaridade coseno. Retorna linhas ordenadas por relevância semântica.
+
+```json
+{
+  "action": "semantic_search",
+  "datagrid_id": "<id>",
+  "company_id": "<id>",
+  "query": "produtos para cabelo seco",
+  "limit": 10
+}
+```
+
+O `limit` padrão é 10 e o máximo é 100. O sistema pesquisa apenas em colunas com busca semântica ativada.
+
+### similarity_search
+
+Executa busca por similaridade de texto (texto aproximado), sem vetorização. Mais rápido e sem custo de API, mas menos capaz para variações de linguagem.
+
+```json
+{
+  "action": "similarity_search",
+  "datagrid_id": "<id>",
+  "company_id": "<id>",
+  "query": "Nike Air Max",
+  "limit": 5
+}
+```
+
+Use `similarity_search` para identificadores, SKUs e termos técnicos onde a correspondência exata é mais útil que a semântica.
+
+## Interpretando resultados de relevância
+
+Os resultados retornam com um campo de **similaridade** (score entre 0 e 1) indicando o quão próximo semanticamente cada linha está da consulta:
+
+| Score | Interpretação |
+|-------|--------------|
+| 0.90 – 1.00 | Muito alta — conteúdo muito próximo da consulta |
+| 0.75 – 0.89 | Alta — conteúdo claramente relacionado |
+| 0.60 – 0.74 | Moderada — conteúdo tangencialmente relacionado |
+| Abaixo de 0.60 | Baixa — provavelmente irrelevante |
+
+O agente recebe todos os resultados acima do threshold configurado na ferramenta e decide quais usar com base no contexto da conversa.
+
+## Casos de uso típicos
+
+### Catálogo de produtos
+
+Ative a busca semântica na coluna `descricao`. O agente consegue responder "tem algo para presentear minha mãe?" encontrando produtos categorizados como "presente", "feminino", "perfume" e similares — sem que o usuário use as palavras exatas.
+
+### Base de serviços
+
+Ative na coluna `nome_servico` e na coluna `descricao_servico`. O agente encontra "corte de cabelo masculino" quando o usuário pergunta "tem corte para homem?".
+
+### FAQ de suporte
+
+Ative na coluna `pergunta` de uma tabela de perguntas frequentes. O agente encontra a resposta correta mesmo quando o usuário usa linguagem diferente da pergunta cadastrada.
+
+### Agenda de eventos
+
+Ative na coluna `descricao_evento`. O usuário pode buscar "eventos de música" e encontrar shows, festivais e saraus cadastrados com terminologias variadas.
+
+## Boas práticas
+
+- **Não ative em colunas de identificadores** — CPF, código de pedido, ID interno. Para esses campos, use busca exata ou `similarity_search`.
+- **Conteúdo rico melhora os resultados** — descrições vagas como "produto X" têm baixa discriminação semântica. Quanto mais detalhada a descrição na coluna, melhores os resultados de busca.
+- **Evite valores numéricos em colunas String com busca semântica** — "R$ 49,90" armazenado como string tem pouco valor semântico. Prefira ter um campo `Number` separado para preço.
+- **Teste com perguntas reais** — use o chat de preview do agente e verifique se as buscas retornam o que você esperaria. Ajuste as descrições das linhas se os resultados estiverem imprecisos.
+- **Limite o número de colunas com busca semântica** — cada inserção em uma coluna semântica faz uma chamada à API de embeddings. Para tabelas com alto volume de inserções, ative a busca semântica apenas nas colunas onde ela realmente agrega valor.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Criando tabelas" href="/guides/tables/creating">
+    Como criar tabelas, colunas e configurar tipos de dado.
+  </Card>
+  <Card title="Integrando com agentes" href="/guides/tables/integrating-agents">
+    Configure o agente para usar tabelas com busca semântica durante as conversas.
+  </Card>
+  <Card title="Visão geral" href="/guides/tables/overview">
+    Arquitetura e modelo de dados das tabelas na Timely.ai.
+  </Card>
+  <Card title="Knowledge Base" href="/guides/knowledge/overview">
+    Entenda como a busca semântica funciona também em bases de conhecimento.
+  </Card>
+</CardGroup>

@@ -1,0 +1,86 @@
+---
+title: "Email Marketing"
+description: "Envie campanhas de email, sequências de lifecycle e o weekly digest automaticamente com a Timely.ai integrada ao Brevo."
+---
+
+O módulo de Email Marketing da Timely.ai cobre três cenários distintos: **campanhas manuais** para comunicação pontual, **lifecycle emails** para onboarding e engajamento automático, e o **weekly digest** com um resumo semanal de atividades. Todos os envios passam pelo Brevo (anteriormente Sendinblue).
+
+<Frame>
+  <img src="/images/screenshots/placeholder-email-marketing-dashboard.png" alt="Dashboard de email marketing" />
+</Frame>
+
+## Campanhas de email
+
+Campanhas são disparos únicos — como anúncios de produto, newsletters ou comunicados. Você seleciona um template, define a lista de destinatários e agenda ou envia imediatamente.
+
+<Steps>
+  <Step title="Acesse Email Marketing">
+    No menu lateral, vá até **Automações > Email Marketing**.
+  </Step>
+  <Step title="Crie uma nova campanha">
+    Clique em **Nova Campanha**. Preencha assunto, nome do remetente e endereço de resposta.
+  </Step>
+  <Step title="Escolha o template">
+    Selecione um template existente ou escreva o conteúdo diretamente. Variáveis no formato `{{nome}}` são substituídas para cada destinatário.
+  </Step>
+  <Step title="Defina a lista">
+    Importe contatos por CSV, selecione segmentos do CRM ou escolha manualmente.
+  </Step>
+  <Step title="Envie ou agende">
+    Dispare imediatamente ou programe para uma data e horário específicos.
+  </Step>
+</Steps>
+
+## Lifecycle emails
+
+Lifecycle emails são disparados automaticamente pelo `lifecycle-email-processor` com base em marcos da jornada do usuário. O `email-scheduler` roda via cron (recomendado: a cada hora) e identifica usuários elegíveis.
+
+| Email | Quando é enviado | Condição |
+|---|---|---|
+| **Boas-vindas** | Logo após o cadastro | Usuário criou conta |
+| **Onboarding D+1** | 24h após o cadastro | Usuário ainda não completou o onboarding |
+| **Marco de ativação** | Quando o usuário atinge um marco configurado | Configurável por conta |
+
+<Note>
+  Cada lifecycle email é enviado no máximo uma vez por usuário. O sistema verifica na tabela `email_logs` se aquele `template_slug` já foi enviado antes de disparar novamente.
+</Note>
+
+## Weekly Digest
+
+O `lifecycle-weekly-digest` gera e envia um resumo semanal automaticamente. O digest inclui:
+
+- Conversas atendidas na semana
+- Métricas de desempenho dos agentes
+- Destaques de novos contatos e leads
+- Comparativo com a semana anterior
+
+O envio ocorre toda segunda-feira pela manhã (horário de Brasília) para usuários que não optaram por sair.
+
+## Preferências e opt-out
+
+Os usuários podem gerenciar suas preferências de email acessando o centro de preferências via link no rodapé de cada email. A Timely.ai respeita opt-outs de forma imediata — usuários que cancelaram a inscrição não recebem mais nenhum email de marketing.
+
+<Warning>
+  Emails transacionais (ex.: redefinição de senha, confirmação de conta) são sempre enviados independentemente das preferências de marketing.
+</Warning>
+
+## Métricas de performance
+
+<CardGroup cols={2}>
+  <Card title="Taxa de abertura" icon="envelope-open">
+    Porcentagem de destinatários que abriram o email.
+  </Card>
+  <Card title="Taxa de clique" icon="arrow-pointer">
+    Porcentagem que clicou em pelo menos um link.
+  </Card>
+  <Card title="Taxa de rejeicao" icon="ban">
+    Emails que não puderam ser entregues (bounce).
+  </Card>
+  <Card title="Cancelamentos" icon="user-minus">
+    Usuários que fizeram opt-out após receber o email.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Configure um domínio de envio autenticado (SPF, DKIM, DMARC) no Brevo para maximizar a entregabilidade. Emails enviados por domínios não autenticados têm maior chance de cair no spam.
+</Tip>

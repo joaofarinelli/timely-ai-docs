@@ -1,0 +1,179 @@
+---
+title: "Slack"
+description: "Integração bidirecional com Slack — o agente responde a @mentions, DMs e slash commands diretamente nos seus canais"
+---
+
+O canal Slack conecta seu agente à sua workspace do Slack. Diferente dos canais de atendimento ao cliente, o Slack é voltado para **equipes internas** — automatize triagem de chamados, responda perguntas frequentes de colaboradores ou integre o agente a fluxos de trabalho existentes.
+
+## Pré-requisitos
+
+- Uma **Slack App** criada em [api.slack.com/apps](https://api.slack.com/apps) com os scopes corretos, **ou** usar a instalação guiada da Timely.ai que cria a app automaticamente
+- Papel de **administrador do workspace Slack** (ou aprovação de um admin para instalar o app)
+- **HTTPS** configurado no seu domínio para receber eventos do Slack
+- Um **agente** criado e ativo na Timely.ai
+
+<Note>
+  A integração Slack da Timely.ai usa OAuth 2.0 com CSRF protection via HMAC-SHA256 no parâmetro `state`. Nenhuma credencial é armazenada em texto plano.
+</Note>
+
+## Passo a passo de conexão
+
+<Steps>
+  <Step title="Acesse Canais no dashboard">
+    No menu lateral, acesse **Canais → Adicionar canal** e selecione **Slack**.
+  </Step>
+
+  <Step title="Inicie o fluxo OAuth">
+    Clique em **Conectar com Slack**. Você será redirecionado para a página de autorização do Slack. Selecione o **workspace** onde quer instalar o agente.
+
+    <Frame>
+      ![Tela de autorização OAuth do Slack](/images/screenshots/placeholder-slack-oauth.png)
+    </Frame>
+
+    <Tip>
+      Se você gerencia múltiplos workspaces Slack, confirme que o workspace correto está selecionado no menu superior direito da tela de autorização.
+    </Tip>
+  </Step>
+
+  <Step title="Autorize os scopes">
+    A Timely.ai solicita os seguintes scopes de bot:
+
+    <Tabs>
+      <Tab title="Leitura">
+        `app_mentions:read`, `channels:history`, `channels:read`, `groups:history`, `groups:read`, `im:history`, `im:read`, `mpim:history`, `mpim:read`, `users:read`, `users:read.email`, `reactions:read`
+      </Tab>
+      <Tab title="Escrita">
+        `chat:write`, `chat:write.customize`, `files:write`, `im:write`, `reactions:write`
+      </Tab>
+      <Tab title="Administração">
+        `channels:join`, `commands`
+      </Tab>
+    </Tabs>
+
+    Clique em **Permitir** para concluir a autorização. O Slack redireciona de volta para a Timely.ai.
+  </Step>
+
+  <Step title="Configure os canais monitorados">
+    Após a instalação, acesse **Canais → [sua integração Slack] → Configurar canais**. Para cada canal do Slack que o agente deve monitorar:
+
+    1. Selecione o canal na lista (busca pela API do Slack em tempo real)
+    2. Escolha o **modo de resposta**:
+       - `mention_only` — responde apenas quando @mencionado
+       - `all_messages` — responde a todas as mensagens
+       - `dm_only` — responde apenas em DMs diretas com o bot
+    3. Ative o toggle do canal
+
+    <Frame>
+      ![Configuração de canais Slack](/images/screenshots/placeholder-slack-channel-config.png)
+    </Frame>
+  </Step>
+
+  <Step title="Adicione o bot aos canais">
+    No Slack, adicione o bot aos canais que você configurou. Dentro do canal, digite:
+
+    ```
+    /invite @nome-do-seu-bot
+    ```
+
+    Sem esse passo, o bot não recebe as mensagens mesmo com os scopes corretos.
+  </Step>
+
+  <Step title="Teste a integração">
+    No Slack, envie uma mensagem num canal onde o bot está presente. Se o modo for `mention_only`, use `@nome-do-bot` seguido da sua pergunta. O agente deve responder em thread ou no canal conforme configurado.
+  </Step>
+</Steps>
+
+## Recursos suportados
+
+### Tipos de mídia
+
+| Tipo | Receber | Enviar |
+|---|---|---|
+| Texto (com Markdown Slack) | Sim | Sim |
+| Imagem | Sim | Sim |
+| Arquivo (PDF, DOCX, etc.) | Sim | Sim |
+| Block Kit (mensagens ricas) | — | Sim |
+| Reactions (emoji) | Sim | Sim |
+
+### Modos de resposta
+
+| Modo | Comportamento |
+|---|---|
+| `mention_only` | Bot responde apenas quando `@mencionado` diretamente |
+| `all_messages` | Bot processa todas as mensagens do canal |
+| `dm_only` | Bot responde apenas em Direct Messages |
+
+### Slash commands
+
+Com o scope `commands`, o bot registra automaticamente o slash command `/timely`. Usuários podem usar:
+
+```
+/timely qual é o status do pedido #12345?
+```
+
+O agente responde em modo efêmero (visível apenas para o usuário que enviou o comando) por padrão. Esse comportamento pode ser ajustado nas configurações do agente.
+
+### Respostas em thread
+
+Por padrão, o agente responde em **thread** para manter o canal organizado. Para responder no canal principal, ajuste a configuração em **Canais → [integração Slack] → Preferências de resposta**.
+
+## Webhook de recebimento
+
+Eventos do Slack (mensagens, @mentions, reactions) chegam via:
+
+```
+POST https://[SEU-SUPABASE].supabase.co/functions/v1/slack-events
+```
+
+Slash commands chegam via:
+
+```
+POST https://[SEU-SUPABASE].supabase.co/functions/v1/slack-commands
+```
+
+O Slack exige que o endpoint responda em **3 segundos**. A Timely.ai usa processamento assíncrono para garantir essa janela. Para detalhes sobre o payload e eventos suportados, veja [Webhooks externos → Slack](/guides/channels/types/slack).
+
+### Verificação de assinatura
+
+Todas as requisições do Slack incluem o header `X-Slack-Signature`. A Timely.ai verifica a assinatura usando o `SLACK_SIGNING_SECRET` antes de processar qualquer evento.
+
+## Limites e boas práticas
+
+- **1 instalação por workspace** — cada workspace Slack suporta uma instalação ativa. Para múltiplos agentes, use o modo de resposta `mention_only` e @mencione o agente correto.
+- **Rate limit do Slack** — tier 3 da Slack API permite 50+ requisições/minuto. Em canais com muito tráfego, o bot pode ser throttled temporariamente.
+- **Renovação de token** — tokens OAuth do Slack não expiram, mas são invalidados se o app for desinstalado ou os scopes alterados. Reconecte o canal se o bot parar de responder.
+- **Canais privados** — o bot precisa ser convidado explicitamente para canais privados. O convite não é automático mesmo após a instalação OAuth.
+- **Modo `all_messages` com cuidado** — em canais muito ativos, esse modo pode gerar alto volume de chamadas ao LLM. Monitore o consumo em **Analytics → Uso por canal**.
+- **Tokens criptografados** — a Timely.ai armazena o bot token criptografado. Nunca exponha o token nos logs ou em variáveis de ambiente do frontend.
+
+<Tip>
+  Para equipes de suporte interno, use o modo `dm_only` combinado com um fluxo de escalada: o agente resolve questões simples e faz handoff para um atendente humano quando necessário.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Bot instalado mas não aparece nos canais">
+    Após a instalação OAuth, o bot precisa ser convidado manualmente para cada canal. Use `/invite @nome-do-bot` dentro do canal desejado. Em canais privados, apenas administradores do canal podem fazer o convite.
+  </Accordion>
+
+  <Accordion title="Bot não responde a @mentions">
+    Verifique se o canal está habilitado em **Canais → [integração Slack] → Configurar canais** e se o modo de resposta é `mention_only`. Confirme também que o bot está no canal (mensagem de sistema "Bot entrou no canal" deve aparecer no histórico).
+  </Accordion>
+
+  <Accordion title="Erro de assinatura inválida nos eventos">
+    O `SLACK_SIGNING_SECRET` configurado na Timely.ai não corresponde ao Signing Secret da sua Slack App. Acesse [api.slack.com/apps](https://api.slack.com/apps) → sua app → **Informações básicas → Credenciais do app** e copie o Signing Secret correto.
+  </Accordion>
+
+  <Accordion title="Slash command /timely não aparece no Slack">
+    Slack commands ficam disponíveis após alguns minutos da instalação. Se após 10 minutos o comando não aparecer, reinstale o app no workspace: desconecte o canal na Timely.ai e reconecte via OAuth.
+  </Accordion>
+
+  <Accordion title="Bot responde no canal em vez de em thread">
+    Acesse **Canais → [integração Slack] → Preferências de resposta** e ative **Responder em thread**. Essa configuração afeta apenas mensagens novas — conversas existentes mantêm o comportamento anterior.
+  </Accordion>
+
+  <Accordion title="Integração funcionava e parou de responder">
+    Verifique se o app Slack foi desinstalado do workspace ou se os scopes foram alterados por um admin. Acesse **Canais → [integração Slack]** e verifique o status. Se estiver **inativo**, reconecte via OAuth para gerar um novo token.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,172 @@
+---
+title: "Eventos de contato"
+description: "Disparados quando contatos são criados, atualizados ou removidos do workspace"
+---
+
+Esses eventos mantêm seu banco de dados ou CRM externo em sincronia com a base de contatos da Timely.ai. Toda vez que um contato novo entra, um dado é atualizado ou um contato é deletado, você recebe um evento.
+
+## Lista de eventos
+
+| Evento | Quando dispara |
+|--------|----------------|
+| `contact.created` | Um novo contato é adicionado ao workspace |
+| `contact.updated` | Dados de um contato existente são modificados |
+| `contact.deleted` | Um contato é removido permanentemente |
+
+---
+
+## `contact.created`
+
+### Quando dispara
+
+Um novo contato é adicionado ao workspace — seja porque um número desconhecido enviou a primeira mensagem num canal, seja porque um atendente criou manualmente, seja via API.
+
+### Payload
+
+```json
+{
+  "event": "contact.created",
+  "event_id": "evt_01HX5A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T14:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "contact_id": "cont_456",
+    "name": "Ana Costa",
+    "phone": "+5547991234567",
+    "email": "ana.costa@exemplo.com.br",
+    "avatar_url": null,
+    "source": "whatsapp",
+    "tags": [],
+    "custom_fields": {},
+    "assigned_to": null,
+    "created_at": "2026-04-19T14:30:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `contact_id` | string | ID único do contato no workspace |
+| `name` | string \| null | Nome do contato |
+| `phone` | string \| null | Telefone no formato E.164 |
+| `email` | string \| null | E-mail do contato |
+| `avatar_url` | string \| null | URL do avatar (quando disponível via canal) |
+| `source` | enum | Canal de origem: `whatsapp`, `instagram`, `widget`, `telegram`, `api`, `manual` |
+| `tags` | array | Lista de tags aplicadas |
+| `custom_fields` | object | Campos personalizados no formato `{ "chave": "valor" }` |
+| `assigned_to` | string \| null | ID do atendente responsável |
+
+### Exemplo de uso
+
+<Note>
+  Use `contact.created` com `source` para identificar de qual canal vêm mais contatos novos. Combine com `contact_id` para criar o registro no seu CRM antes de qualquer interação.
+</Note>
+
+---
+
+## `contact.updated`
+
+### Quando dispara
+
+Qualquer campo de um contato existente é modificado — nome, e-mail, telefone, tags, campos personalizados ou atendente responsável. O payload inclui tanto os valores novos quanto os anteriores.
+
+### Payload
+
+```json
+{
+  "event": "contact.updated",
+  "event_id": "evt_01HX5B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-19T15:10:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "contact_id": "cont_456",
+    "changes": {
+      "name": {
+        "before": "Ana Costa",
+        "after": "Ana Costa Ribeiro"
+      },
+      "tags": {
+        "before": [],
+        "after": ["cliente-vip", "pagamento-pendente"]
+      },
+      "custom_fields": {
+        "before": {},
+        "after": {
+          "plano": "pro",
+          "data_contrato": "2026-04-19"
+        }
+      }
+    },
+    "updated_by": "usr_321",
+    "updated_by_type": "attendant",
+    "updated_at": "2026-04-19T15:10:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `changes` | object | Dicionário de campos alterados, cada um com `before` e `after` |
+| `updated_by` | string \| null | ID de quem fez a alteração |
+| `updated_by_type` | enum | `attendant`, `agent`, `api`, `automation` |
+| `updated_at` | string | Timestamp ISO 8601 da atualização |
+
+### Exemplo de uso
+
+<Note>
+  Use o objeto `changes` para atualizar apenas os campos que realmente mudaram no seu sistema externo — evita sobrescrever dados que você pode ter enriquecido localmente.
+</Note>
+
+<Tip>
+  Para sincronização bidirecional, registre o `updated_by_type` e ignore atualizações onde `updated_by_type` seja `api` quando você mesmo disparou — evita loops de sincronização.
+</Tip>
+
+---
+
+## `contact.deleted`
+
+### Quando dispara
+
+Um contato é removido permanentemente do workspace. A exclusão pode ser feita manualmente por um atendente com permissão ou via API. Contatos deletados não podem ser recuperados.
+
+### Payload
+
+```json
+{
+  "event": "contact.deleted",
+  "event_id": "evt_01HX5C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T16:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "contact_id": "cont_456",
+    "name": "Ana Costa Ribeiro",
+    "phone": "+5547991234567",
+    "email": "ana.costa@exemplo.com.br",
+    "deleted_by": "usr_321",
+    "deleted_by_type": "attendant",
+    "deleted_at": "2026-04-19T16:00:00Z"
+  }
+}
+```
+
+### Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `contact_id` | string | ID do contato deletado |
+| `name` | string \| null | Nome do contato no momento da exclusão |
+| `phone` | string \| null | Telefone do contato (para referência de auditoria) |
+| `email` | string \| null | E-mail do contato (para referência de auditoria) |
+| `deleted_by` | string | ID de quem executou a exclusão |
+| `deleted_by_type` | enum | `attendant`, `api` |
+| `deleted_at` | string | Timestamp ISO 8601 da exclusão |
+
+### Exemplo de uso
+
+<Warning>
+  Use `contact.deleted` para garantir conformidade com LGPD no seu CRM — remova ou anonimize os dados do contato nos seus sistemas assim que receber esse evento. O `contact_id` não existirá mais na API após a exclusão.
+</Warning>

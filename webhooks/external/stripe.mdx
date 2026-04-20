@@ -1,0 +1,234 @@
+---
+title: "Stripe"
+description: "Eventos Stripe consumidos pela Timely.ai — como pagamentos e assinaturas são processados e refletidos no seu workspace"
+---
+
+A Timely.ai usa o **Stripe** como plataforma de pagamentos para cobranças de plano, créditos e add-ons. Quando um evento relevante acontece na sua conta Stripe (uma assinatura é criada, uma fatura é paga, um pagamento falha), o Stripe envia um webhook para os servidores da Timely, que atualiza o status do workspace e pode disparar [eventos internos](/webhooks/overview) para o seu servidor.
+
+Esta página documenta os eventos Stripe que a Timely consome, o formato dos payloads e como você pode usar isso nas suas automações.
+
+## Como a Timely recebe eventos do Stripe
+
+```
+Stripe → POST para servidores Timely.ai
+         → Timely processa o evento
+         → Atualiza status do workspace (créditos, plano, billing)
+         → Dispara webhook interno para seu servidor (se configurado)
+```
+
+Você não precisa configurar nada no Stripe — a Timely gerencia o endpoint de webhook diretamente. O que você pode fazer é **assinar os webhooks internos da Timely** para eventos de billing (como `credit.depleted` ou `plan.changed`) e reagir nas suas automações.
+
+## Eventos consumidos
+
+### `checkout.session.completed`
+
+Disparado quando um cliente finaliza uma sessão de checkout com sucesso. A Timely usa esse evento para:
+
+- Ativar o plano comprado no workspace
+- Adicionar créditos adquiridos
+- Enviar email de boas-vindas ou upgrade
+
+```json
+{
+  "id": "evt_1NabcXYZ",
+  "object": "event",
+  "type": "checkout.session.completed",
+  "created": 1713456789,
+  "data": {
+    "object": {
+      "id": "cs_test_a1b2c3d4e5",
+      "object": "checkout.session",
+      "mode": "subscription",
+      "payment_status": "paid",
+      "status": "complete",
+      "customer": "cus_ABC123",
+      "subscription": "sub_DEF456",
+      "metadata": {
+        "workspace_id": "uuid-do-workspace",
+        "plan": "pro",
+        "credits": "5000"
+      },
+      "amount_total": 19700,
+      "currency": "brl"
+    }
+  }
+}
+```
+
+O campo `metadata.workspace_id` é inserido pela Timely na criação da sessão para correlacionar o pagamento com o workspace correto.
+
+### `invoice.paid`
+
+Disparado em toda fatura paga com sucesso — tanto na primeira cobrança quanto nas renovações mensais/anuais.
+
+```json
+{
+  "id": "evt_1NabcXYZ2",
+  "object": "event",
+  "type": "invoice.paid",
+  "created": 1713543200,
+  "data": {
+    "object": {
+      "id": "in_1NabcXYZ2",
+      "object": "invoice",
+      "customer": "cus_ABC123",
+      "subscription": "sub_DEF456",
+      "status": "paid",
+      "amount_paid": 19700,
+      "currency": "brl",
+      "period_start": 1713456789,
+      "period_end": 1716048789,
+      "lines": {
+        "data": [
+          {
+            "description": "Timely Pro — Maio 2026",
+            "amount": 19700,
+            "period": {
+              "start": 1713456789,
+              "end": 1716048789
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Ao receber `invoice.paid`, a Timely renova o período de acesso do workspace e recarrega os créditos mensais do plano.
+
+### `invoice.payment_failed`
+
+Disparado quando uma tentativa de cobrança falha (cartão recusado, saldo insuficiente, etc.).
+
+```json
+{
+  "id": "evt_1NabcXYZ3",
+  "object": "event",
+  "type": "invoice.payment_failed",
+  "created": 1713543400,
+  "data": {
+    "object": {
+      "id": "in_1NabcXYZ3",
+      "object": "invoice",
+      "customer": "cus_ABC123",
+      "subscription": "sub_DEF456",
+      "status": "open",
+      "attempt_count": 2,
+      "next_payment_attempt": 1713629800,
+      "last_finalization_error": null,
+      "payment_intent": {
+        "last_payment_error": {
+          "code": "card_declined",
+          "decline_code": "insufficient_funds",
+          "message": "Your card has insufficient funds."
+        }
+      }
+    }
+  }
+}
+```
+
+Após falha de pagamento, a Timely entra em período de graça (geralmente 3 dias) e envia notificações para o owner do workspace.
+
+### `customer.subscription.updated`
+
+Disparado em qualquer mudança na assinatura: upgrade, downgrade, cancelamento agendado, mudança de período de cobrança.
+
+```json
+{
+  "id": "evt_1NabcXYZ4",
+  "object": "event",
+  "type": "customer.subscription.updated",
+  "created": 1713543600,
+  "data": {
+    "object": {
+      "id": "sub_DEF456",
+      "object": "subscription",
+      "customer": "cus_ABC123",
+      "status": "active",
+      "cancel_at_period_end": true,
+      "current_period_start": 1713456789,
+      "current_period_end": 1716048789,
+      "items": {
+        "data": [
+          {
+            "price": {
+              "id": "price_1NabcXYZ5",
+              "nickname": "Timely Pro Mensal",
+              "unit_amount": 19700,
+              "currency": "brl",
+              "recurring": { "interval": "month" }
+            }
+          }
+        ]
+      }
+    },
+    "previous_attributes": {
+      "cancel_at_period_end": false
+    }
+  }
+}
+```
+
+O campo `previous_attributes` contém apenas os campos que mudaram — use-o para identificar exatamente o que foi alterado.
+
+### `customer.subscription.deleted`
+
+Disparado quando a assinatura é efetivamente encerrada (não agendada — efetivamente cancelada).
+
+```json
+{
+  "id": "evt_1NabcXYZ6",
+  "object": "event",
+  "type": "customer.subscription.deleted",
+  "created": 1716048800,
+  "data": {
+    "object": {
+      "id": "sub_DEF456",
+      "object": "subscription",
+      "customer": "cus_ABC123",
+      "status": "canceled",
+      "ended_at": 1716048789
+    }
+  }
+}
+```
+
+Ao receber esse evento, a Timely move o workspace para o plano gratuito (se disponível) ou suspende o acesso.
+
+## Mapeamento de eventos Stripe para eventos Timely
+
+| Evento Stripe | Ação na Timely | Webhook interno Timely |
+|--------------|----------------|------------------------|
+| `checkout.session.completed` | Ativa plano, adiciona créditos | `plan.changed` |
+| `invoice.paid` | Renova período, recarrega créditos | — |
+| `invoice.payment_failed` | Inicia período de graça | `credit.low` (se créditos baixos) |
+| `customer.subscription.updated` | Atualiza limites do plano | `plan.changed` |
+| `customer.subscription.deleted` | Suspende ou downgrade | `plan.changed` |
+
+## Campos de segurança e idempotência
+
+Todos os eventos Stripe incluem:
+
+| Campo | Descrição |
+|-------|-----------|
+| `id` | ID único do evento (`evt_*`) — use para deduplicação |
+| `created` | Unix timestamp de criação |
+| `livemode` | `true` em produção, `false` em modo teste |
+| `type` | Tipo do evento |
+
+<Warning>
+  Em ambientes de teste, o campo `livemode` é `false`. A Timely processa separadamente eventos de teste e produção do Stripe. Nunca misture as API keys de teste e produção.
+</Warning>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Eventos de billing" icon="credit-card" href="/webhooks/events/billing-events">
+    Webhooks internos da Timely para eventos de crédito e plano.
+  </Card>
+  <Card title="Webhooks — API Reference" icon="bell" href="/api-reference/webhooks/referencia">
+    Configure endpoints para receber eventos do seu workspace.
+  </Card>
+</CardGroup>

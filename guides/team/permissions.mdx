@@ -1,0 +1,84 @@
+---
+title: Permissões
+description: Matriz completa de permissões por role e como o sistema de controle de acesso funciona na Timely.ai.
+---
+
+O controle de acesso da Timely.ai é baseado em roles (RBAC). Cada membro tem uma role atribuída que define exatamente o que ele pode ver e fazer dentro da plataforma. As permissões são aplicadas tanto na interface quanto nas chamadas de API.
+
+## Matriz de permissões
+
+A tabela abaixo mostra todas as permissões disponíveis e quais roles as possuem:
+
+| Permissão | owner | manager | trainer | attendant | member |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **manage_billing** — Acessa e edita planos e pagamentos | ✅ | — | — | — | — |
+| **manage_company** — Edita dados da empresa e configurações gerais | ✅ | ✅ | — | — | — |
+| **manage_agents** — Cria, edita e deleta agentes e squads | ✅ | ✅ | ✅ | — | — |
+| **access_conversations** — Visualiza e interage com conversas de atendimento | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **invite_users** — Convida novos membros e gerencia o time | ✅ | ✅ | — | — | — |
+| **view_reports** — Acessa dashboards de analytics e exportações | ✅ | ✅ | — | — | — |
+| **manage_team** — Altera roles, desativa e remove membros | ✅ | ✅ | — | — | — |
+
+<Info>
+  O **owner** tem acesso irrestrito a todas as funcionalidades por definição, independente da matriz. As demais roles seguem exatamente o mapeamento acima.
+</Info>
+
+## Como as permissões são verificadas
+
+A cada ação executada na interface, a plataforma consulta o hook `useRoleAccess` que mantém a role do usuário em memória após o login. A verificação acontece em dois níveis:
+
+1. **Interface** — botões, menus e páginas são exibidos ou ocultados conforme a role do usuário. Um attendant não vê a opção de "Convidar membro" no menu.
+2. **Backend (RLS)** — todas as tabelas do banco de dados têm Row Level Security ativado. Mesmo que alguém tente acessar dados via API diretamente, as políticas de banco bloqueiam o acesso não autorizado.
+
+## Detalhamento por role
+
+<AccordionGroup>
+  <Accordion title="owner">
+    Role atribuída automaticamente ao criador da conta. Tem acesso a tudo: billing, configurações de empresa, agentes, time, workspaces, API keys, analytics e conversas. Só pode haver um owner por empresa. A transferência de ownership é feita pelo suporte.
+  </Accordion>
+  <Accordion title="manager">
+    Role operacional de alto nível. Pode gerenciar tudo exceto billing. Ideal para gerentes de operação e líderes de time que precisam de autonomia sem acesso às informações financeiras.
+  </Accordion>
+  <Accordion title="trainer">
+    Focado em configurar e treinar agentes. Pode criar, editar e deletar agentes e squads, visualizar conversas para análise de qualidade, mas não gerencia membros nem vê relatórios de analytics.
+  </Accordion>
+  <Accordion title="attendant">
+    Destinado a atendentes humanos. Tem acesso apenas às conversas para fazer atendimento manual quando necessário. Não vê configurações, agentes ou analytics.
+  </Accordion>
+  <Accordion title="member">
+    Acesso mínimo para visualização de conversas. Útil para observadores, stakeholders ou integrantes que precisam acompanhar o atendimento sem interagir com configurações.
+  </Accordion>
+</AccordionGroup>
+
+## Mudando a role de um membro
+
+Apenas **owner** e **manager** podem alterar a role de outros membros.
+
+<Steps>
+  <Step title="Acesse Configurações > Time">
+    No menu lateral, clique em **Configurações** e selecione a aba **Time**.
+  </Step>
+  <Step title="Encontre o membro">
+    Localize o membro na lista de membros ativos.
+  </Step>
+  <Step title="Altere a role">
+    Clique no seletor de role ao lado do nome do membro e escolha a nova role.
+  </Step>
+  <Step title="Confirme">
+    A mudança é aplicada imediatamente. O membro afetado verá a interface atualizada na próxima vez que carregar a página.
+  </Step>
+</Steps>
+
+<Warning>
+  Não é possível alterar a role de um **owner** para outra role diretamente na interface. Essa operação requer intervenção do suporte para garantir que a conta não fique sem um owner responsável.
+</Warning>
+
+## Contexto multi-workspace
+
+Em contas com múltiplos workspaces, a role de um membro pode variar por workspace. Um usuário pode ser **manager** no workspace principal e **trainer** em outro workspace. As permissões são sempre verificadas no contexto do workspace ativo.
+
+Veja mais em [Workspaces](/guides/team/workspaces).
+
+## Permissões via API
+
+Ao usar a API da Timely.ai com uma API key, as permissões do endpoint são determinadas pelos escopos configurados na chave, não pela role do usuário que a criou. Veja [API Keys](/guides/team/api-keys) para detalhes sobre escopos disponíveis.

@@ -1,0 +1,63 @@
+---
+title: "Referência de Custom Fields"
+sidebarTitle: "Referência"
+description: "Endpoints para criar e gerenciar campos personalizados no CRM — adapte o perfil dos contatos às necessidades do seu negócio"
+---
+
+## Conceito
+
+**Custom Fields** permitem que você adicione campos extras ao perfil dos contatos no CRM da Timely.ai, além dos campos padrão como nome, email e telefone. São úteis quando você precisa armazenar informações específicas do seu negócio — número de pedido, plano contratado, segmento de cliente, data da última compra, CPF, nome da empresa, entre outros.
+
+Os campos são definidos no nível do workspace e se aplicam a todos os contatos. Cada campo tem um tipo de dado (texto, número, data, booleano, seleção) e pode ser marcado como obrigatório ou opcional. Os valores dos campos de cada contato são acessados via `contact.custom_fields` na API de Contacts.
+
+## Tipos de campo disponíveis
+
+| Tipo | Valor em `type` | Exemplo de uso |
+|------|----------------|---------------|
+| Texto livre | `text` | Observações, número de protocolo |
+| Número | `number` | Valor do contrato, quantidade de pedidos |
+| Data | `date` | Data de aniversário, vencimento |
+| Booleano | `boolean` | VIP, inadimplente, newsletter |
+| Seleção única | `select` | Segmento, plano, status |
+| Seleção múltipla | `multiselect` | Interesses, produtos contratados |
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único do campo |
+| `name` | string | Nome do campo (exibido na UI) |
+| `key` | string | Chave de acesso via API (snake_case) |
+| `type` | enum | Tipo do dado do campo |
+| `required` | boolean | Se o campo é obrigatório |
+| `options` | array | Opções disponíveis para `select` e `multiselect` |
+| `default_value` | any | Valor padrão para novos contatos |
+| `created_at` | string | ISO 8601 de criação |
+
+## Como usar em conjunto com Contacts
+
+Ao criar ou atualizar um contato, passe os valores dos campos personalizados no objeto `custom_fields` usando a `key` de cada campo:
+
+```json
+{
+  "name": "Lucas Ferreira",
+  "email": "lucas@empresa.com.br",
+  "custom_fields": {
+    "plano": "pro",
+    "numero_cliente": "CLT-00123",
+    "vip": true
+  }
+}
+```
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

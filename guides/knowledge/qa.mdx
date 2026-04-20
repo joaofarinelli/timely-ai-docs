@@ -1,0 +1,89 @@
+---
+title: "Perguntas e Respostas (Q&A)"
+description: "Crie pares de pergunta e resposta manuais para garantir que o agente sempre responda com precisão nos tópicos mais críticos."
+---
+
+Q&As manuais são a forma mais direta de ensinar algo ao seu agente. Diferente de documentos que precisam de interpretação, um par de Q&A define exatamente a pergunta esperada e a resposta correta — sem ambiguidade. São ideais para dúvidas frequentes, políticas de atendimento e informações que mudam com frequência.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-qa-manager.png" alt="Gerenciador de Q&As" />
+</Frame>
+
+## Quando usar Q&A em vez de documentos
+
+| Situação | Recomendação |
+|---|---|
+| Perguntas frequentes com resposta fixa | Q&A |
+| Políticas e regras curtas | Q&A |
+| Manuais extensos e técnicos | Documento |
+| Conteúdo do site da empresa | Website Crawler |
+| Informação que muda semanalmente | Q&A (fácil de editar) |
+
+<Tip>
+  Q&As são indexados instantaneamente — assim que você salva, o par já está disponível nas buscas semânticas. Documentos e sites exigem processamento assíncrono.
+</Tip>
+
+## Criando um par Q&A
+
+<Steps>
+  <Step title="Abra o gerenciador de Q&A">
+    No agente, acesse a aba **Knowledge Base** e clique em **Perguntas e Respostas**.
+  </Step>
+  <Step title="Clique em Novo Q&A">
+    O formulário de criação será exibido em um modal.
+  </Step>
+  <Step title="Preencha a pergunta">
+    Escreva a pergunta como o usuário provavelmente a faria. Quanto mais natural, melhor a recuperação semântica.
+  </Step>
+  <Step title="Escreva a resposta">
+    Forneça a resposta completa e precisa. Seja direto — o agente usará esse texto como base para a resposta final.
+  </Step>
+  <Step title="Adicione categoria e tags (opcional)">
+    Categorias e tags ajudam a organizar a base e facilitam buscas no gerenciador. Não afetam a busca semântica do agente.
+  </Step>
+  <Step title="Salve">
+    Clique em **Salvar**. O par é vetorizado e fica disponível imediatamente.
+  </Step>
+</Steps>
+
+## Estrutura de um Q&A
+
+| Campo | Obrigatório | Descrição |
+|---|---|---|
+| `question` | Sim | A pergunta exatamente como o usuário perguntaria |
+| `answer` | Sim | A resposta completa e correta |
+| `category` | Não | Agrupamento temático (ex.: "Pagamentos", "Suporte") |
+| `tags` | Não | Lista de palavras-chave para filtragem no gerenciador |
+
+## Editando e excluindo Q&As
+
+Para **editar**, clique no ícone de lápis ao lado do par. O modal de edição é idêntico ao de criação. Após salvar, o vetor é regenerado automaticamente com o novo conteúdo.
+
+Para **excluir**, clique no ícone de lixeira. A exclusão é imediata e irreversível.
+
+<Warning>
+  Editar a pergunta de um Q&A muito genérico pode melhorar drasticamente a precisão da recuperação. Se o agente responder com um Q&A errado, revise a formulação da pergunta para ser mais específica.
+</Warning>
+
+## Organizando com categorias e tags
+
+Use categorias para separar temas distintos dentro de uma mesma base:
+
+- **Financeiro**: formas de pagamento, parcelamento, reembolso
+- **Suporte técnico**: problemas de acesso, erros comuns
+- **Produto**: funcionalidades, limitações, integrações
+
+Tags permitem filtrar Q&As no gerenciador sem precisar buscar por texto. Exemplo: tag `urgente` para marcar respostas que precisam de revisão frequente.
+
+## Busca e filtragem no gerenciador
+
+O campo de busca no topo do gerenciador filtra Q&As por:
+
+- Texto da pergunta
+- Texto da resposta
+- Nome da categoria
+- Qualquer tag
+
+<Note>
+  A busca do gerenciador é uma busca textual simples (não semântica) para ajudar na administração da base. A busca semântica que o agente usa em produção funciona de forma independente.
+</Note>

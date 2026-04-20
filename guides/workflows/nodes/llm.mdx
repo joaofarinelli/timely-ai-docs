@@ -1,0 +1,231 @@
+---
+title: "Nó LLM (Transformação IA)"
+description: "Use um modelo de linguagem diretamente no workflow para reescrever, classificar, resumir ou extrair dados estruturados de textos."
+---
+
+## O que faz
+
+O nó **Transformação IA** invoca um modelo de linguagem (LLM) sem nenhuma persona de agente — é uma chamada direta ao modelo com um prompt que você define. Ideal para operações de processamento de texto que seriam difíceis de fazer com lógica pura, mas que não precisam da conversa completa de um agente.
+
+Casos de uso principais:
+
+- **Sumarização** — condensar o texto de um e-mail, ticket ou mensagem longa
+- **Extração de entidades** — retirar nome, CNPJ, valor, data de um texto não estruturado
+- **Classificação** — categorizar intenção, sentimento ou departamento responsável
+- **Normalização** — padronizar formatos de data, telefone ou endereço
+- **Geração estruturada** — produzir JSON a partir de texto livre
+
+---
+
+## Entrada e saída
+
+**Entrada:**
+
+| Campo | Descrição |
+|---|---|
+| `input_field` | Expressão `{{ }}` que aponta para o texto a ser processado |
+| `prompt` | Instrução para o modelo — pode conter templates `{{ }}` |
+| `model` | Qual modelo usar |
+| `output_format` | `text` ou `json` |
+| `json_schema` | Schema esperado quando `output_format` é `json` (opcional) |
+| `temperature` | Criatividade da resposta — 0.0 (preciso) a 1.0 (criativo) |
+| `max_tokens` | Limite máximo de tokens na resposta (100 a 4 000) |
+
+**Output exposto para nós seguintes:**
+
+Quando `output_format` é `text`:
+
+```json
+{
+  "result": "Texto gerado pelo modelo aqui."
+}
+```
+
+Quando `output_format` é `json`:
+
+```json
+{
+  "result": {
+    "nome":      "Ana Lima",
+    "email":     "ana@empresa.com",
+    "interesse": "plano enterprise"
+  }
+}
+```
+
+Acesse via `{{ $json.result }}` ou `{{ $json.result.campo }}`.
+
+---
+
+## Modelos suportados
+
+A seleção de modelo no nó reflete os provedores configurados no workspace. Os modelos disponíveis por padrão são:
+
+| Modelo | Identificador | Perfil |
+|---|---|---|
+| GPT-4o Mini | `gpt-4o-mini` | Rápido e econômico — ideal para classificação e extração simples |
+| GPT-4o | `gpt-4o` | Alta capacidade — recomendado para extração complexa e geração estruturada |
+| Claude 3 Haiku | `claude-3-haiku` | Rápido e eficiente — bom para sumarização e formatação |
+| Claude 3 Sonnet | `claude-3-sonnet` | Balanceado — ideal para raciocínio e extração de múltiplas entidades |
+
+Para adicionar ou alterar provedores disponíveis, acesse [Configurações > Provedores](/guides/settings/providers).
+
+---
+
+## Configuração
+
+<Steps>
+  <Step title="Defina o Campo de Entrada">
+    Informe qual dado do workflow será enviado ao modelo. Exemplos:
+
+    ```
+    {{ $trigger.body.mensagem }}
+    {{ $json.body.descricao }}
+    {{ $vars.texto_bruto }}
+    ```
+  </Step>
+  <Step title="Escreva o Prompt">
+    O prompt é a instrução para o modelo. Seja específico sobre o que quer como saída. Use templates para incluir dados dinâmicos:
+
+    ```
+    Extraia as seguintes informações do texto abaixo e retorne como JSON:
+    - nome completo
+    - e-mail
+    - telefone (formato internacional)
+    - motivo do contato
+
+    Texto: {{ $trigger.body.mensagem }}
+    ```
+  </Step>
+  <Step title="Escolha o Modelo e o Formato">
+    Selecione o modelo conforme a complexidade da tarefa. Para tarefas simples (classificação com 3-4 categorias), prefira modelos rápidos. Para extração de múltiplas entidades ou geração de JSON complexo, use modelos mais capazes.
+  </Step>
+  <Step title="Configure o Schema JSON (opcional)">
+    Quando `output_format` é `json`, você pode fornecer um schema para orientar o modelo. Isso aumenta a consistência da saída:
+
+    ```json
+    {
+      "nome":    "string",
+      "email":   "string",
+      "telefone":"string",
+      "motivo":  "string"
+    }
+    ```
+  </Step>
+  <Step title="Ajuste Temperatura e Max Tokens">
+    - **Temperatura 0.0 a 0.3** — para classificação e extração (respostas consistentes e determinísticas)
+    - **Temperatura 0.5 a 0.7** — para sumarização e reescrita (alguma variação aceitável)
+    - **Temperatura 0.8 a 1.0** — para geração criativa (máxima variação)
+
+    Defina `max_tokens` com folga suficiente para o output esperado — respostas truncadas geram JSON inválido.
+  </Step>
+</Steps>
+
+---
+
+## Exemplos
+
+### Extrair entidades de formulário de contato
+
+<CodeGroup>
+```text Prompt configurado
+Você receberá o texto de um formulário de contato. Extraia as informações abaixo e retorne como JSON válido, sem texto adicional.
+
+Campos esperados:
+- nome (string)
+- empresa (string ou null)
+- email (string)
+- telefone (string, formato E.164 sem espaços)
+- assunto (string)
+
+Texto:
+{{ $trigger.body.mensagem }}
+```
+
+```json Entrada (trigger.body.mensagem)
+"Olá, meu nome é Carlos Menezes da Empresa XYZ Ltda. Quero saber mais sobre os planos da Timely. Pode me ligar no (11) 98877-6655 ou me escrever no carlos@xyz.com.br. Abraços"
+```
+
+```json Saída do nó (json.result)
+{
+  "nome":     "Carlos Menezes",
+  "empresa":  "XYZ Ltda",
+  "email":    "carlos@xyz.com.br",
+  "telefone": "+5511988776655",
+  "assunto":  "informações sobre planos"
+}
+```
+</CodeGroup>
+
+---
+
+### Classificar sentimento de mensagem
+
+<CodeGroup>
+```text Prompt configurado
+Classifique o sentimento da mensagem abaixo em uma das categorias: positivo, neutro ou negativo.
+Retorne apenas o JSON: {"sentimento": "<categoria>", "confianca": <0.0 a 1.0>}
+
+Mensagem: {{ $vars.ultima_mensagem }}
+```
+
+```json Saída do nó
+{
+  "sentimento": "negativo",
+  "confianca":  0.91
+}
+```
+</CodeGroup>
+
+O nó Condição seguinte pode verificar `{{ $json.result.sentimento }}` e rotear para uma fila de atendimento prioritário quando negativo.
+
+---
+
+### Resumir ticket de suporte
+
+<CodeGroup>
+```text Prompt configurado
+Você é um assistente de triagem de suporte. Resuma o ticket abaixo em até 3 linhas, destacando: o problema relatado, o sistema afetado e a urgência percebida.
+
+Ticket: {{ $json.body.descricao }}
+```
+
+```json Saída do nó (output_format: text)
+{
+  "result": "Cliente relata falha de login no app mobile desde ontem. Sistema afetado: autenticação iOS. Urgência: alta — cliente não consegue acessar a conta."
+}
+```
+</CodeGroup>
+
+---
+
+## Boas práticas
+
+- **Seja específico no prompt** — modelos respondem melhor a instruções claras e com exemplos do formato esperado.
+- **Defina o schema quando usar JSON** — reduz alucinações de estrutura e evita falhas nos nós seguintes que consomem o output.
+- **Use temperatura baixa para extração** — valores entre 0.0 e 0.2 produzem resultados mais consistentes.
+- **Valide o output com um nó Condição** — verifique se `{{ $json.result }}` não está vazio antes de prosseguir.
+
+---
+
+## Limites
+
+| Parâmetro | Valor |
+|---|---|
+| Max tokens configurável | 100 a 4 000 |
+| Temperatura configurável | 0.0 a 1.0 |
+| Timeout de execução | 30 segundos |
+| Modelos disponíveis | Conforme provedores configurados no workspace |
+
+<Note>
+  O consumo de tokens é cobrado pelo provedor de IA configurado no workspace. Monitore o uso em [Configurações > Provedores](/guides/settings/providers) para evitar surpresas na fatura.
+</Note>
+
+---
+
+## Próximos passos
+
+- [Configurações de Provedores](/guides/settings/providers) — adicionar ou trocar os modelos disponíveis
+- [Nó JavaScript](/guides/workflows/nodes/javascript) — pós-processar o JSON extraído pelo LLM com lógica customizada
+- [Nó Variáveis](/guides/workflows/nodes/variables) — armazenar o resultado do LLM para uso em múltiplos nós
+- [Visão geral dos nós](/guides/workflows/nodes/overview) — ver todos os tipos de nó disponíveis

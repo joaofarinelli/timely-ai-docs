@@ -1,0 +1,186 @@
+---
+title: "Primeira requisição"
+description: "Gere sua API key e faça sua primeira chamada à API da Timely.ai em menos de 5 minutos"
+---
+
+Pegue o café. Você vai gerar uma chave, confirmar que a API está viva, listar seus agentes e enviar uma mensagem — tudo em sequência, tudo com exemplos prontos para copiar.
+
+<Steps>
+  <Step title="Gere sua API key">
+    Acesse o [Dashboard](https://app.timelyai.com.br) → **Configurações → API Keys → Nova chave**.
+
+    1. Dê um nome descritivo (ex: `backend-producao`, `n8n-integracao`)
+    2. Selecione os escopos necessários — para este quickstart, marque `agents:read`, `conversations:write` e `messages:send`
+    3. Clique em **Criar**
+    4. Copie a chave imediatamente. Ela só aparece uma vez.
+
+    <Warning>
+      Nunca exponha a API key no frontend ou em repositórios públicos. Use variáveis de ambiente em todo lugar.
+    </Warning>
+
+    Nos exemplos abaixo, substitua `SUA_CHAVE` pela chave gerada.
+  </Step>
+
+  <Step title="Teste o health check">
+    Confirme que a API está respondendo e que sua chave é válida:
+
+    <CodeGroup>
+    ```bash cURL
+    curl https://api.timelyai.com.br/v1/health \
+      -H "x-api-key: SUA_CHAVE"
+    ```
+    ```js Node.js
+    const res = await fetch("https://api.timelyai.com.br/v1/health", {
+      headers: { "x-api-key": process.env.TIMELY_KEY }
+    });
+    console.log(await res.json());
+    ```
+    ```python Python
+    import httpx, os
+
+    r = httpx.get(
+        "https://api.timelyai.com.br/v1/health",
+        headers={"x-api-key": os.environ["TIMELY_KEY"]}
+    )
+    print(r.json())
+    ```
+    </CodeGroup>
+
+    Resposta esperada:
+
+    ```json
+    {
+      "data": {
+        "status": "ok",
+        "version": "1.0.0",
+        "timestamp": "2026-04-19T12:00:00Z"
+      }
+    }
+    ```
+
+    Se receber `401`, a chave está inválida ou expirada. Verifique em **Configurações → API Keys**.
+  </Step>
+
+  <Step title="Liste seus agentes">
+    Agora busque os agentes configurados no seu workspace:
+
+    <CodeGroup>
+    ```bash cURL
+    curl "https://api.timelyai.com.br/v1/agents?page=1&per_page=10" \
+      -H "x-api-key: SUA_CHAVE"
+    ```
+    ```js Node.js
+    const res = await fetch(
+      "https://api.timelyai.com.br/v1/agents?page=1&per_page=10",
+      { headers: { "x-api-key": process.env.TIMELY_KEY } }
+    );
+    const { data, meta } = await res.json();
+    console.log(`Total de agentes: ${meta.total}`);
+    data.forEach(agent => console.log(agent.id, agent.name));
+    ```
+    ```python Python
+    import httpx, os
+
+    r = httpx.get(
+        "https://api.timelyai.com.br/v1/agents",
+        params={"page": 1, "per_page": 10},
+        headers={"x-api-key": os.environ["TIMELY_KEY"]}
+    )
+    body = r.json()
+    for agent in body["data"]:
+        print(agent["id"], agent["name"])
+    ```
+    </CodeGroup>
+
+    Guarde o `id` do agente que vai usar no próximo passo.
+  </Step>
+
+  <Step title="Envie uma mensagem via agente">
+    Com o `agent_id` em mãos, envie uma mensagem para um contato. A API cria a conversa automaticamente se não existir.
+
+    <CodeGroup>
+    ```bash cURL
+    curl -X POST https://api.timelyai.com.br/v1/messages/send \
+      -H "x-api-key: SUA_CHAVE" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "agent_id": "AGENT_ID",
+        "contact": {
+          "phone": "+5511999998888",
+          "name": "João Teste"
+        },
+        "message": "Olá! Como posso te ajudar hoje?",
+        "channel": "whatsapp"
+      }'
+    ```
+    ```js Node.js
+    const res = await fetch("https://api.timelyai.com.br/v1/messages/send", {
+      method: "POST",
+      headers: {
+        "x-api-key": process.env.TIMELY_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        agent_id: "AGENT_ID",
+        contact: { phone: "+5511999998888", name: "João Teste" },
+        message: "Olá! Como posso te ajudar hoje?",
+        channel: "whatsapp"
+      })
+    });
+    console.log(await res.json());
+    ```
+    ```python Python
+    import httpx, os
+
+    r = httpx.post(
+        "https://api.timelyai.com.br/v1/messages/send",
+        headers={
+            "x-api-key": os.environ["TIMELY_KEY"],
+            "Content-Type": "application/json"
+        },
+        json={
+            "agent_id": "AGENT_ID",
+            "contact": {"phone": "+5511999998888", "name": "João Teste"},
+            "message": "Olá! Como posso te ajudar hoje?",
+            "channel": "whatsapp"
+        }
+    )
+    print(r.json())
+    ```
+    </CodeGroup>
+
+    Resposta de sucesso (`201 Created`):
+
+    ```json
+    {
+      "data": {
+        "message_id": "msg_abc123",
+        "conversation_id": "conv_xyz456",
+        "status": "queued",
+        "created_at": "2026-04-19T12:05:00Z"
+      }
+    }
+    ```
+
+    <Info>
+      O campo `status: "queued"` indica que a mensagem foi aceita e está em fila de envio. Use webhooks para acompanhar a entrega em tempo real.
+    </Info>
+  </Step>
+</Steps>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Autenticação e escopos" href="/start/authentication">
+    Entenda todos os escopos disponíveis e boas práticas de segurança.
+  </Card>
+  <Card title="Webhooks" href="/start/webhooks-intro">
+    Receba eventos em tempo real: mensagens, conversas encerradas, handoffs.
+  </Card>
+  <Card title="Rate limits e erros" href="/start/rate-limits">
+    Limites por minuto, paginação e todos os códigos de erro da API.
+  </Card>
+  <Card title="Referência completa da API" href="/api-reference/introduction">
+    Todos os endpoints com playground interativo.
+  </Card>
+</CardGroup>

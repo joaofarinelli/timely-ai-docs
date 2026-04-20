@@ -1,0 +1,123 @@
+---
+title: "Glossário"
+description: "Termos técnicos da plataforma Timely.ai explicados de forma simples"
+---
+
+Referência rápida dos principais conceitos da Timely.ai. Use o ⌘K para buscar um termo específico.
+
+## Plataforma e organização
+
+**Empresa (Company)**
+Unidade de cobrança e isolamento de dados. Toda conta na Timely pertence a uma única empresa. Dados nunca vazam entre empresas — cada uma tem seu próprio banco lógico, via Row Level Security no Supabase.
+
+**Workspace**
+Subdivisão de uma empresa. Uma empresa pode ter múltiplos workspaces (ex: "Vendas", "Suporte", "SDR"). Agentes, canais e conversas pertencem a um workspace específico. Usuários podem ter papéis diferentes em workspaces diferentes.
+
+**Role**
+Papel de um usuário dentro de um workspace. Hierarquia: `owner` > `manager` > `trainer` > `attendant` > `member`. A matriz completa de permissões está em [Time e Permissões → Permissões](/guides/team/permissions).
+
+**Squad**
+Agrupamento de múltiplos agentes com modo de operação configurável. Permite roteamento automático, handoff entre agentes e analytics agregadas. Ideal para dividir por especialidade (ex: vendas/suporte/financeiro).
+
+## Agentes e IA
+
+**Agente (Agent)**
+Assistente de IA configurável com personalidade, modelo de linguagem, ferramentas, base de conhecimento e voz. Um agente responde em um ou mais canais.
+
+**Modelo / LLM Provider**
+O motor de linguagem do agente. Suportamos OpenAI, Anthropic, Groq e provedores customizados via credenciais próprias no workspace.
+
+**Prompt**
+Instrução base que define como o agente se comporta. Timely tem editor visual, histórico de versões, melhoria automática e suporte a **prompts condicionais** (mudam conforme variáveis da conversa).
+
+**Treinamento (Training)**
+Conteúdo que vira a base de conhecimento do agente: documentos, Q&A, texto, sites indexados e vídeos do YouTube. Passam pelo pipeline **RAG**.
+
+**RAG (Retrieval-Augmented Generation)**
+Técnica em que o agente busca trechos relevantes da base de conhecimento antes de responder, reduzindo alucinação. Timely indexa conteúdo via embeddings e faz busca semântica.
+
+**Handoff**
+Transferência de uma conversa do agente de IA para um atendente humano (ou entre agentes). Pode ser disparada por regra (ex: palavra-chave, intenção, complexidade) ou manualmente.
+
+**Takeover**
+Pausa temporária do agente de IA para que um humano assuma a conversa. Diferente do handoff definitivo — o agente pode voltar a responder quando o humano sinaliza.
+
+## Canais
+
+**Canal (Channel)**
+Meio pelo qual o agente conversa com o contato. Suportados: WhatsApp oficial (WABA), Instagram, Widget web, Telegram, Slack.
+
+**WABA**
+WhatsApp Business API — integração oficial da Meta com suporte a templates aprovados, webhooks e maior limite de envio. Configurada via **embedded signup** no dashboard.
+
+**Widget**
+Chat embeddable no seu site. Gera um snippet JavaScript para colar na página. Suporta chamadas de voz, customização de aparência e múltiplos agentes.
+
+**Template (Template Message)**
+Mensagem pré-aprovada pelo WhatsApp que pode ser enviada fora da janela de 24h. Obrigatório para re-engajamento ou notificações proativas.
+
+## Conversas e CRM
+
+**Conversa (Conversation)**
+Thread de mensagens entre um contato e um ou mais agentes/atendentes em um canal. Tem status (aberta, em atendimento, aguardando, encerrada), tags, assignment e histórico.
+
+**Contato (Contact)**
+Pessoa do outro lado da conversa. Identificada por telefone, email ou ID externo. Pode ter campos customizados, timeline de atividades e health score.
+
+**Lead / Pipeline**
+Contato em processo de venda, posicionado em um estágio do funil (Kanban). Workflow automatiza transições entre estágios.
+
+**Datagrid**
+Tabela personalizada tipo planilha para armazenar informações estruturadas (ex: catálogo de imóveis, lista de produtos). Agentes podem ler e escrever em datagrids via ferramentas.
+
+## API e integrações
+
+**API Key**
+Credencial para autenticar chamadas REST à API. Enviada no header `x-api-key`. Pode ter escopo limitado e ser rotacionada a qualquer momento.
+
+**Webhook**
+HTTP POST que a Timely envia para sua URL quando um evento acontece (mensagem recebida, conversa encerrada, etc.). Assinado com **HMAC-SHA256** no header `X-Timely-Signature`.
+
+**MCP Server (Model Context Protocol)**
+Servidor externo que expõe ferramentas para o agente via protocolo MCP. Permite plugar qualquer capacidade customizada no agente.
+
+**Composio**
+Plataforma de integrações gerenciadas. A Timely usa a Composio para conectar 29 apps (Notion, Google Sheets, HubSpot, Stripe, Slack, GitHub, etc.) com OAuth gerenciado.
+
+## Automação
+
+**Workflow**
+Fluxo visual drag-and-drop com triggers, condições e ações. Similar ao n8n/Make mas nativo da Timely. Executa em reação a eventos (nova mensagem, lead criado, etc.).
+
+**Follow-up**
+Regra que envia mensagem automática após um tempo ou condição (ex: "24h sem resposta → enviar lembrete"). Gerenciado via API e dashboard.
+
+**Broadcast**
+Disparo de mensagem para múltiplos contatos (campanha em massa). Respeita limites do canal e tem **speed optimizer** para maximizar entrega sem bloqueio.
+
+## Billing e créditos
+
+**Plano**
+Assinatura mensal/anual (Basic, Standard, Enterprise) que define limites de agentes, mensagens, canais e recursos.
+
+**Créditos (Coins)**
+Moeda interna consumida por ações variáveis (mensagens extras, TTS, tools). Recarregáveis via Stripe. Alertas automáticos de saldo baixo.
+
+**Trial**
+Período de teste inicial sem cobrança. Expira automaticamente — cheque `check-trial-status` ou o widget no dashboard.
+
+## Voz e mídia
+
+**TTS (Text-to-Speech)**
+Síntese de voz do agente. Suporta Cartesia, ElevenLabs e Fish Audio como provedores.
+
+**Voice Clone**
+Voz sintética customizada treinada a partir de amostras de áudio enviadas pelo usuário.
+
+## Copilot interno
+
+**Time AI**
+Copilot interno da Timely.ai estilo ChatGPT para a equipe: executa ações na plataforma, responde perguntas sobre o negócio, dispara automações via linguagem natural.
+
+**Worker**
+Sessão assíncrona persistente de um agente rodando uma task longa (análises, pesquisa, processamentos). Diferente do chat ao vivo — tem histórico próprio e suporta mídia.

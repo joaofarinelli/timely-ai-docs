@@ -1,0 +1,146 @@
+---
+title: "Voz"
+description: "Configure síntese de voz para o agente com Cartesia, ElevenLabs ou Fish Audio — incluindo clonagem de voz personalizada."
+---
+
+A funcionalidade de voz permite que o agente converta suas respostas em áudio usando Text-to-Speech (TTS). Isso é especialmente útil para integrações com telefonia, assistentes de voz e canais que suportam mensagens de áudio.
+
+## Visão geral
+
+A configuração de voz fica na aba **Voz** nas configurações do agente. Você escolhe uma voz do catálogo ou cria uma voz clonada a partir de uma amostra de áudio da sua equipe.
+
+<Frame caption="Aba de voz com catálogo de vozes e opção de clonagem">
+  <img src="/images/screenshots/placeholder-agent-voice.png" alt="Configuração de voz do agente" />
+</Frame>
+
+<Note>
+A funcionalidade de voz está disponível apenas em planos que incluem **AI Audio**. Se seu plano não incluir esse recurso, a aba exibirá uma opção de upgrade.
+</Note>
+
+## Provedores de TTS
+
+A Timely.ai integra com três provedores de síntese de voz de alta qualidade:
+
+<CardGroup cols={3}>
+  <Card title="Cartesia" icon="waveform">
+    Vozes ultra-realistas com latência muito baixa. Recomendado para atendimento em tempo real onde a naturalidade e a velocidade de resposta são críticas.
+  </Card>
+  <Card title="ElevenLabs" icon="mic">
+    Referência em qualidade de clonagem de voz e expressividade. Ideal para agentes que precisam de voz altamente personalizada e emotiva.
+  </Card>
+  <Card title="Fish Audio" icon="headphones">
+    Provedor de alta performance com bom suporte a múltiplos idiomas, incluindo português brasileiro com boa prosódia.
+  </Card>
+</CardGroup>
+
+O catálogo de vozes disponíveis na plataforma inclui opções de ambos os gêneros e diferentes características de tom e sotaque.
+
+## Configurar uma voz
+
+<Steps>
+  <Step title="Abra a aba Voz">
+    Acesse as configurações do agente e clique na aba **Voz**.
+  </Step>
+  <Step title="Clique em Adicionar voz">
+    O painel de configuração de voz abre com três campos: seletor de voz, instruções e velocidade.
+  </Step>
+  <Step title="Selecione a voz">
+    No seletor, você verá duas seções:
+
+    - **Catálogo** — vozes pré-definidas pelos provedores, identificadas por nome e gênero (ex.: "Aria – Feminina").
+    - **Minhas Vozes** — vozes clonadas que você criou (aparecem com o badge "clonada").
+  </Step>
+  <Step title="Ajuste as instruções (opcional)">
+    O campo de instruções permite descrever o tom que você espera da voz. Exemplos:
+
+    - "Fale de forma calma e empática, como uma atendente de suporte experiente"
+    - "Tom enérgico e entusiasmado, como um apresentador de vendas"
+    - "Lento e articulado, para garantir que o cliente entenda cada detalhe"
+
+    Limite: 1.000 caracteres.
+  </Step>
+  <Step title="Defina a velocidade">
+    Use o slider para ajustar a velocidade de fala entre 0.5x (lenta) e 2.0x (rápida). O padrão é 1.0x.
+  </Step>
+  <Step title="Gere um preview">
+    Clique em **Gerar preview** para ouvir uma amostra da voz com as configurações atuais antes de salvar.
+  </Step>
+  <Step title="Salve">
+    Clique em **Adicionar voz**. A voz fica ativa para o agente imediatamente.
+  </Step>
+</Steps>
+
+## Clonagem de voz
+
+Você pode criar uma voz personalizada a partir de uma gravação de áudio — útil para manter a identidade sonora da sua marca ou usar a voz de um membro da equipe.
+
+<Warning>
+A clonagem de voz está disponível no plano **Enterprise** e tem um limite de clones por mês definido pelo seu plano. Verifique o limite em Configurações > Faturamento.
+</Warning>
+
+<Steps>
+  <Step title="Inicie a clonagem">
+    No seletor de voz do diálogo de configuração, clique em **+ Clonar minha voz** (última opção da lista). O dialog de clonagem abre.
+  </Step>
+  <Step title="Envie a amostra de áudio">
+    Faça upload de uma gravação de áudio da voz a ser clonada. Requisitos para melhor resultado:
+
+    - Duração mínima recomendada: 30 segundos
+    - Ambiente silencioso, sem ruído de fundo
+    - Voz clara e natural, como numa conversa normal
+    - Formatos aceitos: MP3, WAV, M4A
+  </Step>
+  <Step title="Nomeie o clone">
+    Dê um nome para identificar a voz clonada (ex.: "Voz da Maria - Suporte").
+  </Step>
+  <Step title="Aguarde o processamento">
+    A clonagem é processada em alguns segundos. Ao concluir, a voz clonada aparece na seção **Minhas Vozes** do seletor.
+  </Step>
+</Steps>
+
+## Gerenciar vozes
+
+Na tabela da aba Voz, cada preset exibe:
+
+| Campo | Descrição |
+|---|---|
+| Nome | Nome da voz selecionada |
+| Instruções | Resumo das instruções de tom |
+| Velocidade | Fator de velocidade configurado (ex.: 1.2x) |
+
+Pelo menu de ações (ícone `...`) você pode **editar**, **ouvir preview** ou **remover** a voz configurada.
+
+## Casos de uso comuns
+
+<CardGroup cols={2}>
+  <Card title="Atendimento telefônico">
+    Use uma voz feminina ou masculina neutra do catálogo com velocidade 1.0x. Instruções: "Tom profissional e paciente".
+  </Card>
+  <Card title="Assistente de marca">
+    Clone a voz de um porta-voz da empresa para manter consistência de identidade sonora em todos os pontos de contato.
+  </Card>
+  <Card title="Agente de vendas animado">
+    Selecione uma voz com característica mais expressiva e configure velocidade 1.1x. Instruções: "Entusiasmado, mas não agressivo".
+  </Card>
+  <Card title="Conteúdo educacional">
+    Velocidade 0.9x com instruções de "fala articulada e didática". Boa combinação com Gemini para conteúdo multimodal.
+  </Card>
+</CardGroup>
+
+## Limites e boas práticas
+
+- Cada agente suporta um preset de voz ativo por vez. Para trocar, edite ou remova o preset existente.
+- O preview usa um texto de exemplo genérico — ouça sempre com um trecho representativo do conteúdo real do agente.
+- Vozes clonadas são vinculadas ao workspace e podem ser usadas por múltiplos agentes.
+- A qualidade da clonagem depende diretamente da qualidade do áudio fornecido — gravações com muito ruído resultam em clones de baixa fidelidade.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Regras de transferência" href="/guides/agents/transfer-rules">
+    Configure quando e para quem o agente deve transferir a conversa.
+  </Card>
+  <Card title="Testar o agente" href="/guides/agents/settings/internal-chat">
+    Valide voz, tools e comportamento no Playground antes de publicar.
+  </Card>
+</CardGroup>

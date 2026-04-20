@@ -1,0 +1,167 @@
+---
+title: "Roles na Inbox"
+description: "Permissões de attendant, trainer e manager no atendimento humano — o que cada role pode fazer: assumir conversa, encerrar, transferir e muito mais."
+---
+
+## Visão geral
+
+O sistema de roles da Timely.ai define o que cada membro do workspace pode fazer dentro da Inbox. As roles são definidas no momento do convite e podem ser alteradas por owners e managers em [Configurações → Equipe](/guides/team/permissions).
+
+As roles relevantes para atendimento humano são cinco, em ordem crescente de acesso:
+
+| Role | Posição na hierarquia |
+|------|-----------------------|
+| `member` | Acesso mínimo — visualização de conversas atribuídas |
+| `attendant` | Atendente de linha de frente |
+| `trainer` | Treinador de agentes com acesso a conversas |
+| `manager` | Gestor com visibilidade total e configuração de times |
+| `owner` | Acesso irrestrito a todo o workspace |
+
+<Note>
+  A role `admin` existe no sistema mas não tem comportamento diferenciado na Inbox em relação ao `manager`. As permissões listadas abaixo refletem a matriz implementada em `useRoleAccess.ts`.
+</Note>
+
+## Matriz de permissões
+
+As permissões do workspace são definidas pela seguinte matriz:
+
+| Permissão | owner | manager | trainer | attendant | member |
+|-----------|:-----:|:-------:|:-------:|:---------:|:------:|
+| `manage_billing` | Sim | — | — | — | — |
+| `manage_company` | Sim | Sim | — | — | — |
+| `manage_agents` | Sim | Sim | Sim | — | — |
+| `access_conversations` | Sim | Sim | Sim | Sim | Sim |
+| `invite_users` | Sim | Sim | — | — | — |
+| `view_reports` | Sim | Sim | — | — | — |
+| `manage_team` | Sim | Sim | — | — | — |
+
+<Note>
+  Owners têm acesso total por definição — todas as permissões são concedidas automaticamente, independentemente da matriz. A checagem de permissões é sempre `role === 'owner' ? true : PERMISSION_MATRIX[permission].includes(role)`.
+</Note>
+
+## O que cada role pode fazer na Inbox
+
+### member
+
+O `member` tem `access_conversations` ativo, mas com visibilidade restrita:
+
+- Visualiza apenas conversas explicitamente atribuídas a ele.
+- Pode ler o histórico completo das conversas atribuídas.
+- **Não pode** assumir conversas de outros membros.
+- **Não pode** encerrar conversas.
+- **Não pode** transferir para outro atendente ou time.
+- **Não pode** acionar takeover nem abrir tickets.
+
+Esse role é adequado para membros que precisam acompanhar contexto de conversas sem poder agir nelas — por exemplo, um stakeholder externo que acompanha um caso específico.
+
+### attendant
+
+O `attendant` é o atendente de linha de frente. Tem `access_conversations` ativo e pode operar dentro das conversas que lhe são atribuídas ou não atribuídas do seu time:
+
+- Visualiza conversas atribuídas a ele e conversas não atribuídas do(s) time(s) que participa.
+- Pode **assumir** (auto-atribuição) conversas não atribuídas.
+- Pode **ativar takeover** para pausar a IA e responder diretamente.
+- Pode **encerrar** conversas atribuídas a ele.
+- Pode **transferir** a conversa para outro atendente ou time.
+- Pode adicionar **notas internas** e **tags** em conversas.
+- **Não pode** ver conversas de outros atendentes fora do seu time.
+- **Não pode** acessar relatórios nem configurações do workspace.
+- **Não pode** gerenciar agentes ou configurar canais.
+
+### trainer
+
+O `trainer` tem as mesmas capacidades de atendimento do `attendant`, com a adição da permissão `manage_agents`:
+
+- Tudo que o `attendant` pode fazer na Inbox.
+- Pode **visualizar todas as conversas** do workspace (não apenas do seu time) para fins de treinamento e auditoria de qualidade.
+- Pode **editar o prompt de sistema** dos agentes e adicionar/remover fontes de conhecimento.
+- **Não pode** gerenciar membros do time, times ou relatórios de SLA.
+- **Não pode** acessar configurações de faturamento ou empresa.
+
+Esse role é ideal para analistas de qualidade que revisam conversas e ajustam o comportamento dos agentes sem precisar de acesso administrativo.
+
+### manager
+
+O `manager` tem visibilidade e controle total sobre o atendimento humano:
+
+- Visualiza **todas as conversas** de todos os times e canais.
+- Pode realizar qualquer ação que `attendant` e `trainer` realizam.
+- Pode **criar, editar e excluir times** de atendimento.
+- Pode **atribuir conversas** a qualquer atendente ou time.
+- Pode **reatribuir** conversas já em andamento.
+- Pode **forçar encerramento** de qualquer conversa.
+- Tem acesso a **relatórios e analytics** de SLA, volume e qualidade.
+- Pode **convidar novos membros** e alterar roles de membros existentes.
+- Pode **gerenciar agentes** (criar, editar, desativar).
+- **Não pode** gerenciar faturamento nem configurações de cobrança.
+
+### owner
+
+O `owner` tem acesso irrestrito. Além de tudo que o `manager` pode fazer:
+
+- Gerencia **faturamento e assinatura** do workspace.
+- Pode **excluir o workspace** e dados permanentemente.
+- Pode **transferir a propriedade** do workspace para outro membro.
+- Tem acesso a **todas as chaves de API** e configurações de integrações.
+
+## Ações específicas da Inbox por role
+
+| Ação na Inbox | member | attendant | trainer | manager | owner |
+|---------------|:------:|:---------:|:-------:|:-------:|:-----:|
+| Ver conversas atribuídas a mim | Sim | Sim | Sim | Sim | Sim |
+| Ver conversas não atribuídas do time | — | Sim | Sim | Sim | Sim |
+| Ver todas as conversas do workspace | — | — | Sim | Sim | Sim |
+| Assumir (auto-atribuição) | — | Sim | Sim | Sim | Sim |
+| Transferir conversa | — | Sim | Sim | Sim | Sim |
+| Ativar takeover (pausar IA) | — | Sim | Sim | Sim | Sim |
+| Encerrar conversa | — | Sim | Sim | Sim | Sim |
+| Adicionar notas e tags | — | Sim | Sim | Sim | Sim |
+| Atribuir conversa a outro membro | — | — | — | Sim | Sim |
+| Forçar encerramento de conversa alheia | — | — | — | Sim | Sim |
+| Ver relatórios de SLA e volume | — | — | — | Sim | Sim |
+| Criar e editar times | — | — | — | Sim | Sim |
+| Convidar membros | — | — | — | Sim | Sim |
+
+## Alterando roles
+
+Apenas `owner` e `manager` podem alterar roles de membros. Para alterar:
+
+<Steps>
+  <Step title="Acesse Configurações → Equipe">
+    No menu lateral, clique em **Configurações** e selecione **Equipe** (ou **Membros**).
+  </Step>
+  <Step title="Localize o membro">
+    Use a busca para encontrar o membro pelo nome ou e-mail.
+  </Step>
+  <Step title="Altere a role">
+    Clique no seletor de role ao lado do nome e escolha a nova role. A alteração é aplicada imediatamente — o membro não precisa sair e entrar novamente.
+  </Step>
+</Steps>
+
+<Warning>
+  Rebaixar um `manager` para `attendant` revoga imediatamente o acesso a todas as conversas fora do seu time. Garanta que o membro tenha sido removido de responsabilidades administrativas antes de alterar a role.
+</Warning>
+
+## Boas práticas
+
+- Comece com a menor role necessária para a função do membro. É mais fácil elevar permissões do que revogar acesso após incidentes.
+- Use `trainer` para analistas de qualidade que precisam revisar conversas sem poder alterar configurações do workspace.
+- Tenha pelo menos dois `owner` por workspace para evitar perda de acesso em caso de saída de um colaborador.
+- Revise o quadro de membros e roles trimestralmente, especialmente após desligamentos ou mudanças de função na equipe.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Times" href="/guides/inbox/human-support/teams">
+    Como organizar atendentes em times e distribuir conversas automaticamente.
+  </Card>
+  <Card title="Permissões gerais" href="/guides/team/permissions">
+    Visão completa da matriz de permissões do workspace.
+  </Card>
+  <Card title="Convidar membros" href="/guides/team/permissions">
+    Como adicionar novos membros e definir suas roles no convite.
+  </Card>
+  <Card title="Inbox" href="/guides/inbox/overview">
+    Entenda a fila de conversas e como navegar pela interface.
+  </Card>
+</CardGroup>

@@ -1,0 +1,93 @@
+---
+title: "Google Meet"
+description: "Gere links de videochamada automaticamente a cada agendamento feito pelo agente."
+---
+
+Quando o Google Meet está habilitado, o agente cria um link de reunião único a cada novo agendamento e o compartilha com o cliente diretamente no chat. Não é necessário nenhuma ação manual — o link é gerado e enviado de forma automática.
+
+## Pré-requisito
+
+A geração automática de links Meet exige que o **Google Calendar** esteja conectado ao agente. O Meet usa a mesma conta Google autorizada pelo OAuth do calendário para criar os eventos com sala virtual.
+
+Se o Google Calendar ainda não está configurado, acesse [Google Calendar](/guides/scheduling/google-calendar) antes de continuar.
+
+## Habilitando o Google Meet
+
+Com o Google Calendar já conectado:
+
+<Steps>
+  <Step title="Abra as configurações do calendário">
+    No agente, vá em **Agendamento → Calendários** e selecione o calendário desejado.
+  </Step>
+  <Step title="Ative o Google Meet">
+    Ligue a opção **Gerar link de Google Meet automaticamente**. A partir desse momento, todos os novos agendamentos via esse calendário incluirão um link Meet.
+  </Step>
+</Steps>
+
+Nenhuma configuração adicional é necessária. O link é criado via API do Google Meet no momento em que o evento é inserido no Google Calendar.
+
+## Comportamento durante o agendamento
+
+Quando o agente confirma um agendamento com Meet habilitado:
+
+1. O evento é criado no Google Calendar com sala de reunião virtual
+2. O Google gera um link único no formato `meet.google.com/xxx-xxxx-xxx`
+3. O agente envia o link para o cliente na mesma mensagem de confirmação
+4. O link também fica registrado no evento do calendário e nos detalhes do agendamento na Timely.ai
+
+O cliente pode acessar o link pelo navegador sem precisar ter uma conta Google — reuniões abertas ao público funcionam sem login.
+
+## Coordenação entre Meet e Calendar
+
+Quando os dois apps estão ativos ao mesmo tempo, o agente segue este fluxo coordenado:
+
+<Steps>
+  <Step title="Cliente solicita reunião com data e hora">
+    O agente identifica a intenção de agendamento e extrai data, horário e tipo de reunião da conversa.
+  </Step>
+  <Step title="Verificação de disponibilidade">
+    O sistema consulta o Google Calendar para confirmar que o horário está livre.
+  </Step>
+  <Step title="Criação simultânea">
+    O evento é criado no Google Calendar com a sala Meet embutida — uma única operação, sem duas chamadas separadas.
+  </Step>
+  <Step title="Confirmação com link">
+    O agente responde ao cliente com a confirmação do agendamento e o link do Meet.
+  </Step>
+</Steps>
+
+<Tip>
+  Instrua o agente no prompt a mencionar explicitamente que a reunião será online e que o link será enviado. Isso reduz dúvidas do cliente sobre o formato do atendimento.
+</Tip>
+
+## Tools disponíveis
+
+A integração com Google Meet expõe as seguintes ferramentas para o agente quando conectado via Composio:
+
+| Tool | Descrição |
+|---|---|
+| `GOOGLEMEET_CREATE_MEET` | Cria uma nova sala de reunião |
+| `GOOGLEMEET_GET_MEET` | Consulta detalhes de uma reunião existente |
+| `GOOGLEMEET_LIST_CONFERENCE_RECORDS` | Lista registros de conferências anteriores |
+| `GOOGLEMEET_GET_TRANSCRIPTS_BY_CONFERENCE_RECORD_ID` | Recupera transcrições de uma reunião |
+| `GOOGLEMEET_GET_PARTICIPANT_SESSION` | Detalha sessão de um participante |
+| `GOOGLEMEET_LIST_PARTICIPANT_SESSIONS` | Lista sessões dos participantes |
+
+As tools de criação (`CREATE_MEET`) são usadas automaticamente pelo agente no fluxo de agendamento. As tools de consulta ficam disponíveis para fluxos mais avançados, como recuperar transcrições de reuniões anteriores.
+
+## Casos de uso avançados
+
+- **Reuniões de follow-up**: o agente pode criar uma reunião de acompanhamento ao final de uma conversa sem que o cliente precise preencher nenhum formulário
+- **Reagendamento com novo link**: ao reagendar, um novo link Meet é gerado automaticamente — o link antigo é invalidado
+- **Transcrições pós-reunião**: com acesso às transcrições via tool, o agente pode resumir o que foi discutido e registrar no CRM automaticamente
+
+## Perguntas frequentes
+
+**O cliente precisa de conta Google para entrar na reunião?**
+Não. O link do Google Meet funciona para qualquer pessoa com acesso ao link, sem necessidade de login.
+
+**O link expira?**
+Links de Meet criados via Google Calendar ficam ativos enquanto o evento existir. Após cancelar um agendamento, o link correspondente deixa de funcionar.
+
+**Posso usar Meet sem o Google Calendar?**
+Não. A criação automática de links Meet dentro da Timely.ai depende da conexão OAuth com o Google Calendar. Sem ela, o link não é gerado.

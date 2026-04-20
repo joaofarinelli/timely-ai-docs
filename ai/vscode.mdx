@@ -1,0 +1,129 @@
+---
+title: "VS Code"
+description: "Use a documentação da Timely.ai no VS Code com Continue.dev como context provider ou com comentários de contexto para GitHub Copilot."
+---
+
+O VS Code não tem suporte nativo a fontes de documentação externas como o Cursor, mas duas extensões cobrem esse caso de uso de formas diferentes: **Continue.dev** (acesso semântico à documentação) e **GitHub Copilot** (via comentários de contexto manuais).
+
+## Continue.dev
+
+O Continue.dev é uma extensão open-source que adiciona um chat de IA ao VS Code com suporte a context providers, incluindo `@docs`. Com ele, você indexa a documentação da Timely.ai e a menciona nos prompts da mesma forma que faria no Cursor.
+
+### Instalação
+
+<Steps>
+  <Step title="Instalar a extensão">
+    Abra o VS Code, vá para **Extensions** (`Cmd+Shift+X`) e busque por **Continue**. Instale a extensão oficial.
+  </Step>
+  <Step title="Abrir o config.json">
+    Após a instalação, clique no ícone do Continue na barra lateral. No painel, clique no ícone de engrenagem ou abra diretamente o arquivo:
+
+    ```
+    ~/.continue/config.json
+    ```
+  </Step>
+  <Step title="Adicionar a Timely.ai como docs">
+    No `config.json`, adicione a entrada dentro de `"docs"`:
+
+    ```json
+    {
+      "docs": [
+        {
+          "title": "Timely.ai",
+          "startUrl": "https://docs.timelyai.com.br",
+          "rootUrl": "https://docs.timelyai.com.br",
+          "maxDepth": 3
+        }
+      ]
+    }
+    ```
+
+    Salve o arquivo. O Continue vai iniciar a indexação automaticamente.
+  </Step>
+  <Step title="Usar nos prompts">
+    No painel do Continue, mencione `@docs` e selecione **Timely.ai**:
+
+    ```
+    @docs Como faço para criar um contato via API e associar a uma conversa?
+    ```
+  </Step>
+</Steps>
+
+### Config.json completo (exemplo mínimo)
+
+```json
+{
+  "models": [
+    {
+      "title": "Claude 3.5 Sonnet",
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022",
+      "apiKey": "sua-chave-anthropic"
+    }
+  ],
+  "docs": [
+    {
+      "title": "Timely.ai",
+      "startUrl": "https://docs.timelyai.com.br",
+      "rootUrl": "https://docs.timelyai.com.br",
+      "maxDepth": 3
+    }
+  ],
+  "contextProviders": [
+    { "name": "code" },
+    { "name": "docs" },
+    { "name": "diff" }
+  ]
+}
+```
+
+<Note>
+Substitua `"sua-chave-anthropic"` pela sua chave de API ou configure outro provedor de sua preferência. O Continue suporta OpenAI, Anthropic, Ollama e outros.
+</Note>
+
+## GitHub Copilot
+
+O GitHub Copilot não tem suporte nativo a context providers de URLs externas. Para dar contexto sobre a Timely.ai API, use comentários no topo dos arquivos onde você vai trabalhar com a integração.
+
+### Estratégia com comentários de contexto
+
+Adicione um bloco de comentário no topo do arquivo antes de pedir sugestões ao Copilot:
+
+```typescript
+/**
+ * Timely.ai API Integration
+ * Base URL: https://api.timelyai.com.br
+ * Auth: header x-api-key com sua chave de API
+ * Docs: https://docs.timelyai.com.br
+ *
+ * Endpoints usados neste arquivo:
+ * - GET  /v1/contacts         → lista contatos
+ * - POST /v1/contacts         → cria contato (name, phone obrigatórios)
+ * - POST /v1/conversations/{id}/messages → envia mensagem
+ *
+ * Rate limit: 60 req/min por workspace
+ * Paginação: parâmetros page e limit, resposta inclui meta.total
+ */
+```
+
+Com esse bloco presente, o Copilot gera sugestões mais alinhadas com a estrutura real da API.
+
+### Alternativa: usar o llms.txt como referência inline
+
+Para sessões mais longas, baixe o `llms.txt` e abra-o como um arquivo no editor. O Copilot considera arquivos abertos na janela como contexto adicional em algumas configurações.
+
+```bash
+curl https://docs.timelyai.com.br/llms.txt -o timely-llms.txt
+```
+
+Abra o arquivo no VS Code e mantenha-o em uma aba enquanto trabalha nos arquivos de integração.
+
+## Comparativo rápido
+
+| Recurso | Continue.dev | GitHub Copilot |
+|---|---|---|
+| Indexação automática de docs | Sim | Não |
+| Mencionar `@docs` no prompt | Sim | Não |
+| Sugestões inline no editor | Sim | Sim |
+| Custo | Gratuito | Assinatura GitHub |
+| Modelos suportados | Vários | OpenAI (via GitHub) |

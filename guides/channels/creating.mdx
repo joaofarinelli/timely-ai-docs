@@ -1,0 +1,105 @@
+---
+title: "Criando um Canal"
+description: "Fluxo geral para criar e ativar qualquer tipo de canal na Timely.ai — do acesso às configurações até a validação da conexão."
+---
+
+## Visão geral
+
+Um **canal** é a ponte entre o seu agente de IA e a plataforma onde o cliente está. Antes de o agente poder enviar ou receber mensagens, você precisa criar ao menos um canal e conectá-lo a uma conta ou número na plataforma correspondente.
+
+O fluxo de criação é similar para todos os tipos de canal, com variações na etapa de credenciais. Este guia cobre o processo geral — consulte o guia específico de cada tipo para detalhes de autenticação.
+
+## Pré-requisitos
+
+Antes de criar um canal, certifique-se de ter:
+
+- Um workspace ativo na Timely.ai com ao menos um agente configurado.
+- Role `manager` ou `owner` (apenas essas roles têm `manage_company` e acesso às configurações de canais).
+- Acesso às credenciais da plataforma de destino (token de API, conta Meta Business, token do BotFather etc.).
+
+## Como criar um canal
+
+<Steps>
+  <Step title="Abra as configurações do workspace">
+    No menu lateral, clique em **Configurações**. Em seguida, selecione a seção **Canais** (ou **Integrações → Canais**, dependendo do layout da sua conta).
+  </Step>
+  <Step title="Clique em Novo canal">
+    No canto superior direito da lista de canais, clique em **+ Novo canal** (ou **Adicionar canal**). Um modal de seleção de tipo será exibido.
+  </Step>
+  <Step title="Escolha o tipo de canal">
+    Selecione o tipo de canal que você quer criar:
+
+    - **WhatsApp WABA** — API oficial Meta via Embedded Signup
+    - **Instagram** — DMs do Instagram via OAuth Meta
+    - **Widget Web** — chat embeddable no seu site
+    - **Telegram** — bot via token do BotFather
+    - **Slack** — integração via OAuth para workspaces do Slack
+
+    Consulte [Canais — Visão geral](/guides/channels/overview) para comparar os tipos antes de escolher.
+  </Step>
+  <Step title="Complete as credenciais e autenticação">
+    Dependendo do tipo escolhido, você será guiado por um fluxo diferente:
+
+    **WhatsApp WABA / Instagram** — o Embedded Signup da Meta abre numa janela popup. Faça login na sua conta Business, selecione o número de telefone ou a conta do Instagram e autorize o acesso. As credenciais são geradas automaticamente.
+
+    **Widget Web** — nenhuma credencial externa é necessária. Um snippet de JavaScript é gerado ao final da criação. Copie e cole no `<head>` do seu site.
+
+    **Telegram** — insira o token do bot gerado pelo BotFather. O token tem o formato `123456789:AABBccDDeeffGGhhIIjj...`.
+
+    **Slack** — um fluxo OAuth abre numa janela separada. Faça login no workspace do Slack e autorize as permissões solicitadas.
+  </Step>
+  <Step title="Valide a conexão">
+    Após inserir as credenciais, clique em **Validar conexão** (ou **Testar**). A plataforma envia uma requisição de verificação à API correspondente. Se bem-sucedida, o status muda para **Conectado** com um indicador verde.
+
+    Se a validação falhar, revise as credenciais inseridas e certifique-se de que as permissões necessárias foram concedidas na plataforma de origem.
+  </Step>
+  <Step title="Nomeie e ative o canal">
+    Dê um nome interno ao canal (ex.: "WhatsApp Suporte BR", "Widget Site Principal"). Esse nome aparece nos filtros da Inbox e nos relatórios. Clique em **Salvar** para finalizar a criação.
+
+    O canal fica **ativo** automaticamente após a criação bem-sucedida. Para desativar temporariamente sem excluir, use o toggle de status na lista de canais.
+  </Step>
+  <Step title="Conecte ao agente">
+    Acesse a configuração do agente que deve atender este canal. Na aba **Canais** (ou **Conexões**) do agente, adicione o canal recém-criado. A partir daqui, o agente começa a processar mensagens recebidas neste canal.
+  </Step>
+</Steps>
+
+## Estados do canal
+
+| Estado | Descrição |
+|--------|-----------|
+| **Conectado** | Canal autenticado e recebendo mensagens normalmente. |
+| **Desconectado** | Credenciais inválidas ou expiradas — é necessário reconectar. |
+| **Pausado** | Canal ativo mas o agente não está processando mensagens. |
+| **Aguardando verificação** | Validação em andamento (típico para WhatsApp WABA). |
+
+Quando um canal fica **Desconectado**, um alerta aparece na Inbox e nos detalhes do agente. Reconecte o canal antes que a ausência de respostas impacte clientes.
+
+## Canais por agente
+
+Um agente pode estar conectado a múltiplos canais simultaneamente. As conversas de todos os canais aparecem centralizadas na Inbox, identificadas pelo ícone do canal de origem.
+
+Um mesmo canal pode ser compartilhado entre agentes? Não — cada canal é atribuído a exatamente um agente. Se você precisar que dois comportamentos diferentes atendam o mesmo canal (ex.: horário comercial vs. fora do horário), use automações para trocar o agente ativo conforme o contexto.
+
+## Guias por tipo de canal
+
+<CardGroup cols={2}>
+  <Card title="WhatsApp WABA" href="/guides/channels/types/whatsapp-waba">
+    API oficial Meta, templates HSM e Embedded Signup.
+  </Card>
+  <Card title="Instagram" href="/guides/channels/types/instagram">
+    DMs via OAuth Meta, requisitos de conta Business.
+  </Card>
+  <Card title="Widget Web" href="/guides/channels/types/widget">
+    Snippet JS, personalização visual e domínios autorizados.
+  </Card>
+  <Card title="Telegram" href="/guides/channels/types/telegram">
+    Token do BotFather e configurações do bot.
+  </Card>
+</CardGroup>
+
+## Boas práticas
+
+- Nomeie os canais com critério. Use nomes que identifiquem o propósito e o canal (ex.: "WhatsApp Vendas SP", "Widget Blog EN") — isso facilita muito os filtros na Inbox e os relatórios segmentados.
+- Monitore o status dos canais semanalmente. Credenciais do WhatsApp e do Instagram podem expirar — um canal desconectado que passa despercebido resulta em clientes sem resposta.
+- Para WhatsApp WABA em alta volumetria, verifique os limites de taxa da sua conta Business no Meta Business Manager antes de lançar campanhas proativas.
+- Antes de ativar um canal em produção, teste com um número ou conta de homologação (quando disponível) para garantir que o agente responde conforme esperado.

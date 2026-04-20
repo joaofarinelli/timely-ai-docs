@@ -1,0 +1,49 @@
+---
+title: "Referência de Contacts"
+sidebarTitle: "Referência"
+description: "Endpoints para criar, atualizar e gerenciar contatos no CRM da Timely.ai"
+---
+
+## Conceito
+
+**Contacts** são os registros de clientes no CRM integrado da Timely.ai. Toda conversa que chega por qualquer canal (WhatsApp, Instagram, Telegram, widget) é automaticamente associada a um contato — criado com base no identificador do canal (número de telefone, IGSID, chat_id do Telegram) ou vinculado a um contato existente por email ou telefone.
+
+Você também pode criar e atualizar contatos via API para sincronizar com seu CRM externo, plataformas de e-commerce, sistemas de cobrança ou qualquer outra fonte de dados. Os contatos suportam campos personalizados via [Custom Fields](/api-reference/custom-fields/referencia), o que permite adaptar o CRM às necessidades específicas do seu negócio.
+
+## Campos principais
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | string (UUID) | ID único do contato |
+| `name` | string | Nome completo |
+| `email` | string | Endereço de email |
+| `phone` | string | Telefone no formato E.164 (ex.: `+5511988887777`) |
+| `avatar_url` | string | URL do avatar do contato |
+| `tags` | array | Lista de tags para segmentação |
+| `custom_fields` | object | Valores dos campos personalizados |
+| `source` | string | Origem do contato (`whatsapp`, `instagram`, `api`, etc.) |
+| `created_at` | string | ISO 8601 de criação |
+| `updated_at` | string | ISO 8601 da última atualização |
+| `last_conversation_at` | string | ISO 8601 da última conversa |
+
+## Deduplicação automática
+
+A Timely tenta evitar contatos duplicados ao criar automaticamente durante uma conversa. A deduplicação usa a seguinte prioridade:
+
+1. Identificador do canal (phone para WhatsApp, IGSID para Instagram)
+2. Email (se disponível)
+3. Telefone normalizado (E.164)
+
+Ao criar via API, se já existir um contato com o mesmo `phone` ou `email`, a Timely retorna o contato existente em vez de criar um duplicado.
+
+## Endpoints disponíveis
+
+<Note>
+  Consulte a barra lateral à esquerda para a lista completa de endpoints deste grupo. Cada endpoint tem sua própria página com schema de request/response, exemplos em cURL/JS/Python e playground interativo.
+</Note>
+
+## Próximos passos
+
+<Card title="Primeira requisição" href="/start/quickstart-api">
+  Se você ainda não fez sua primeira chamada, comece por aqui.
+</Card>

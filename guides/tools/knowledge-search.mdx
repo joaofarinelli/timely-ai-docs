@@ -1,0 +1,97 @@
+---
+title: "Busca na base de conhecimento"
+description: "Permita que o agente consulte semanticamente documentos, sites, Q&As e textos do workspace ao responder — usando busca vetorial com RAG."
+---
+
+## Visão geral
+
+A ferramenta de **busca na base de conhecimento** (Knowledge Search) permite que o agente consulte automaticamente o conteúdo cadastrado na base de conhecimento do workspace durante uma conversa. Ao invés de depender apenas do que está no prompt, o agente passa a ter acesso dinâmico a documentos, sites rastreados, textos livres e pares de perguntas e respostas.
+
+Isso é o que chamamos de **RAG (Retrieval-Augmented Generation)**: antes de formular uma resposta, o agente busca os trechos mais relevantes da base de conhecimento e os incorpora como contexto adicional. O resultado é um agente que responde com precisão sobre o seu produto, políticas, preços ou qualquer informação que você tenha cadastrado — sem precisar colocar tudo isso manualmente no prompt.
+
+## Como funciona tecnicamente
+
+Quando o agente aciona a ferramenta de Knowledge Search, o processo é o seguinte:
+
+1. A pergunta ou intenção do usuário é convertida em um **embedding vetorial** usando o modelo `text-embedding-3-small` da OpenAI (1.536 dimensões).
+2. Esse embedding é comparado com os embeddings dos chunks de conteúdo já indexados na base de conhecimento.
+3. Os chunks com maior **similaridade semântica** são selecionados e retornados ao agente.
+4. O agente incorpora esses trechos no contexto antes de gerar a resposta.
+
+A busca é semântica — não é uma busca por palavras-chave. Isso significa que o agente encontra conteúdo relevante mesmo quando o usuário usa termos diferentes dos que estão nos documentos.
+
+## Como ativar
+
+<Steps>
+  <Step title="Acesse as capacidades do agente">
+    Abra o agente desejado e vá em [Capacidades](/guides/agents/settings/capacities) no menu de configurações.
+  </Step>
+  <Step title="Ative a busca na base de conhecimento">
+    Localize a opção **Busca na base de conhecimento** e ative o toggle. A ferramenta fica disponível imediatamente — o agente passa a usá-la sempre que avaliar que a pergunta do usuário pode ser respondida com conteúdo da base.
+  </Step>
+  <Step title="Verifique a base de conhecimento">
+    Certifique-se de que a base de conhecimento do workspace tem conteúdo indexado. Acesse [Base de conhecimento](/guides/knowledge/overview) para adicionar documentos, sites, textos ou Q&As.
+
+    Documentos recém-adicionados são processados e indexados em alguns minutos. Até que o processamento conclua, o conteúdo não estará disponível para busca.
+  </Step>
+  <Step title="Teste no Playground">
+    Use o Playground do agente para fazer perguntas sobre o conteúdo cadastrado. Verifique se o agente recupera as informações corretas e se incorpora bem as respostas.
+  </Step>
+</Steps>
+
+## Configuração de parâmetros
+
+Você pode ajustar o comportamento da busca diretamente nas configurações da ferramenta:
+
+### Top-k (número de resultados)
+
+O parâmetro **top-k** controla quantos trechos são retornados pela busca e incorporados ao contexto do agente. O valor padrão é **10**.
+
+- Valores mais altos (15–20) trazem mais contexto, mas aumentam o tamanho do prompt e o custo por resposta.
+- Valores mais baixos (3–5) são mais rápidos e baratos, mas podem perder trechos relevantes em bases de conhecimento grandes.
+
+Recomendamos começar com o padrão de 10 e ajustar com base no comportamento observado no Playground.
+
+### Limiar de similaridade
+
+O **limiar de similaridade** define o score mínimo que um chunk precisa atingir para ser incluído nos resultados. O valor padrão é **0.5** (em uma escala de 0 a 1).
+
+- Aumentar para 0.7 ou mais torna a busca mais conservadora — só retorna conteúdo muito próximo da pergunta.
+- Diminuir para 0.3 ou menos torna a busca mais ampla — útil quando a base de conhecimento usa terminologia diferente da usada pelos usuários.
+
+### Filtro por documentos específicos
+
+É possível configurar a ferramenta para buscar apenas em um subconjunto de documentos da base de conhecimento. Isso é útil quando você tem uma base grande e quer que o agente consulte apenas os documentos relevantes para o seu contexto de atendimento.
+
+## Casos de uso
+
+- **Atendimento ao cliente**: o agente responde dúvidas sobre produtos, políticas de devolução, prazos de entrega ou garantias consultando a documentação interna.
+- **Suporte técnico**: o agente recupera procedimentos, guias de configuração ou FAQs técnicos indexados na base.
+- **Vendas consultivas**: o agente acessa fichas de produtos, comparativos, tabelas de preços e argumentos de venda cadastrados como documentos.
+- **Onboarding**: novos colaboradores podem perguntar ao agente sobre processos, benefícios ou políticas da empresa, e ele responde com base na documentação cadastrada.
+- **Compliance e regulatório**: o agente consulta políticas internas antes de responder sobre temas sensíveis.
+
+## Boas práticas
+
+- **Estruture bem o conteúdo**: documentos bem estruturados (com títulos, seções e parágrafos claros) geram chunks mais precisos e melhoram a qualidade dos resultados.
+- **Use Q&As para perguntas frequentes**: o formato de pergunta e resposta é o mais eficiente para a busca — o agente encontra exatamente o que o usuário perguntou.
+- **Evite documentos muito longos sem estrutura**: textos corridos e extensos tendem a gerar chunks genéricos de baixa qualidade.
+- **Revise o conteúdo indexado periodicamente**: documentos desatualizados podem fazer o agente responder com informações incorretas.
+- **Combine com o prompt**: use o prompt do agente para orientar quando ele deve consultar a base e quando deve pedir mais informações ao usuário antes de buscar.
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Base de conhecimento" href="/guides/knowledge/overview">
+    Saiba como adicionar e gerenciar documentos, sites, textos e Q&As no workspace.
+  </Card>
+  <Card title="Ferramentas de Datagrid" href="/guides/tools/datagrid-tools">
+    Permita que o agente leia e escreva em tabelas customizadas da Timely.ai.
+  </Card>
+  <Card title="Visão geral das ferramentas" href="/guides/tools/overview">
+    Compare todos os tipos de ferramentas disponíveis na Timely.ai.
+  </Card>
+  <Card title="Capacidades do agente" href="/guides/agents/settings/capacities">
+    Configure todas as capacidades e comportamentos do agente.
+  </Card>
+</CardGroup>

@@ -1,0 +1,57 @@
+---
+title: "AI para Desenvolvedores"
+description: "Recursos para usar a documentação da Timely.ai dentro de IDEs com inteligência artificial — llms.txt, skills e context packs."
+---
+
+A tab **AI** reúne tudo que você precisa para integrar a documentação da Timely.ai diretamente no seu fluxo de desenvolvimento com IAs. Em vez de alternar entre o navegador e o editor, você injeta o contexto certo onde o modelo de linguagem já está rodando.
+
+## O que você encontra aqui
+
+<CardGroup cols={3}>
+  <Card title="llms.txt" icon="file-lines" href="/ai/llms-txt">
+    Arquivo de contexto completo (~75 KB) no padrão llmstxt.org. Tudo que um modelo precisa saber sobre a API da Timely.ai em um único arquivo de texto.
+  </Card>
+  <Card title="Cursor" icon="arrow-pointer" href="/ai/cursor">
+    Adicione a documentação como fonte `@Docs` no Cursor e mencione `@Timely.ai` em qualquer prompt para obter respostas precisas sobre a API.
+  </Card>
+  <Card title="Claude" icon="robot" href="/ai/claude">
+    Use o llms.txt em skills do Claude Desktop ou carregue o contexto no `CLAUDE.md` via Claude Code para sessões com contexto persistente.
+  </Card>
+</CardGroup>
+
+<Card title="VS Code" icon="code" href="/ai/vscode">
+  Configure o Continue.dev como context provider apontando para `https://docs.timelyai.com.br`, ou use comentários de contexto com GitHub Copilot.
+</Card>
+
+## Por que isso importa
+
+Modelos de linguagem têm data de corte de treinamento e não conhecem APIs privadas. Quando você trabalha com a Timely.ai, o modelo precisa saber:
+
+- Quais endpoints existem e quais parâmetros eles aceitam
+- Como autenticar com `x-api-key`
+- Os tipos de eventos de webhook e seus payloads
+- As regras de rate limiting e paginação
+
+O `llms.txt` entrega esse contexto de forma compacta. Os guias de cada editor mostram como injetá-lo no lugar certo.
+
+## Como o llms.txt é gerado
+
+O arquivo em `https://docs.timelyai.com.br/llms.txt` é gerado automaticamente a partir das páginas `.mdx` desta documentação. Sempre que uma página é atualizada, o arquivo reflete a mudança. Você pode baixar a versão mais recente com:
+
+```bash
+curl https://docs.timelyai.com.br/llms.txt -o timely-llms.txt
+```
+
+## Escolha seu editor
+
+<Tabs>
+  <Tab title="Cursor">
+    Vá para **Settings → Features → Docs → Add** e cole `https://docs.timelyai.com.br`. Depois use `@Timely.ai` nos prompts. [Ver guia completo →](/ai/cursor)
+  </Tab>
+  <Tab title="Claude">
+    No Claude Code, adicione o `llms.txt` ao `CLAUDE.md` ou crie uma skill que baixa o contexto sob demanda. [Ver guia completo →](/ai/claude)
+  </Tab>
+  <Tab title="VS Code">
+    Com Continue.dev, adicione a URL como context provider. Com GitHub Copilot, use comentários de contexto no topo dos arquivos. [Ver guia completo →](/ai/vscode)
+  </Tab>
+</Tabs>

@@ -1,0 +1,81 @@
+---
+title: Workers
+description: Sessões assíncronas para delegar tarefas longas a agentes e squads, como análises, pesquisas e processamentos em segundo plano.
+---
+
+Workers são sessões de trabalho assíncronas onde você delega tarefas demoradas a um agente ou squad e continua usando a plataforma normalmente enquanto o trabalho é processado. É diferente do chat de atendimento ao cliente: aqui, você está conversando diretamente com o agente como se fosse um colaborador interno.
+
+## Quando usar Workers
+
+<AccordionGroup>
+  <Accordion title="Análises longas">
+    Solicite ao agente que processe um grande volume de conversas, extraia padrões ou gere um relatório consolidado. O agente trabalha de forma autônoma e entrega o resultado quando termina.
+  </Accordion>
+  <Accordion title="Pesquisa e síntese">
+    Peça ao agente para pesquisar um tema, consolidar informações de múltiplas fontes e produzir um resumo estruturado. Útil para pesquisa de mercado, benchmarking e due diligence.
+  </Accordion>
+  <Accordion title="Geração de conteúdo em lote">
+    Delegue a criação de múltiplos textos, templates ou respostas de uma só vez. O agente processa a fila e entrega cada item conforme finaliza.
+  </Accordion>
+  <Accordion title="Tarefas com ferramentas externas">
+    Quando o agente precisa acessar integrações (Google Sheets, Notion, Slack, etc.), o processamento pode levar mais tempo. Workers garantem que a tarefa não seja interrompida por timeout.
+  </Accordion>
+</AccordionGroup>
+
+## Iniciando uma sessão
+
+<Steps>
+  <Step title="Acesse Workers no menu lateral">
+    Clique em **Workers** no menu. A tela é dividida em sidebar (lista de sessões) e área principal (chat ativo).
+  </Step>
+  <Step title="Crie uma nova sessão">
+    Clique em **Nova sessão**. Um diálogo abre com duas abas: **Agentes** e **Squads**.
+  </Step>
+  <Step title="Escolha o executor">
+    Selecione o agente ou squad que vai processar a tarefa. Cada opção mostra o modelo LLM associado e o avatar do agente. Para squads, o ícone reflete o avatar do primeiro agente ativo do grupo.
+  </Step>
+  <Step title="Descreva a tarefa">
+    Com a sessão aberta, escreva a tarefa no campo de chat. Seja específico: inclua contexto, formato esperado de saída e qualquer restrição relevante.
+  </Step>
+  <Step title="Acompanhe o progresso">
+    A sessão fica listada na sidebar com o status atual. Você pode navegar para outras partes da plataforma e voltar quando quiser verificar o andamento.
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/workers-chat.png" alt="Interface de Workers com sidebar de sessões e chat ativo" />
+</Frame>
+
+## Sidebar de sessões
+
+A sidebar à esquerda lista todas as sessões em ordem cronológica (mais recentes primeiro). Cada item mostra:
+
+- Nome do agente ou squad executor
+- Prévia da última mensagem
+- Horário da última atividade
+
+Clique em qualquer sessão para abri-la e ver o histórico completo da conversa.
+
+## Diferença entre Workers e Time AI
+
+| | Workers | Time AI |
+|---|---|---|
+| **Foco** | Tarefas assíncronas e longas | Ações rápidas na plataforma |
+| **Executor** | Agente ou squad da sua conta | Copilot interno da Timely.ai |
+| **Histórico** | Sessões separadas por executor | Sessões de chat unificadas |
+| **Ideal para** | Processamento, análise, geração em lote | Criação de agentes, consultas, configuração |
+
+## Enviando arquivos
+
+No campo de mensagem, você pode anexar imagens e documentos clicando no ícone de clipe. O agente processa os arquivos como parte do contexto da tarefa — útil para análise de planilhas, revisão de documentos ou extração de dados de imagens.
+
+<Info>
+  Workers usam o mesmo agente configurado na sua conta. Certifique-se de que o agente escolhido tem as ferramentas e integrações necessárias para a tarefa antes de iniciar a sessão.
+</Info>
+
+## Boas práticas
+
+- Escreva instruções claras e detalhadas na primeira mensagem da sessão para reduzir idas e vindas.
+- Se a tarefa envolver múltiplos arquivos, envie todos de uma vez na mesma mensagem.
+- Para tarefas recorrentes, salve o prompt como template no Time AI e cole na sessão do Worker conforme necessário.
+- Crie sessões separadas para tarefas distintas — não misture assuntos em uma mesma sessão para facilitar a consulta futura.
