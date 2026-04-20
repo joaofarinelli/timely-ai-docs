@@ -1,0 +1,34 @@
+---
+title: "Creating a Channel"
+description: "General flow for creating and activating any channel type in Timely.ai — configuration parameters, management, and troubleshooting."
+---
+
+A Channel connects an AI Agent to the messaging platform where the customer is. Before the Agent can process any message, you need to create at least one Channel and authenticate it. The creation flow is similar for all types, with variations in the credentials step.
+
+## General configuration parameters
+
+| Field | Description |
+|-------|-----------|
+| **Internal name** | Identifier for the Channel in Inbox filters and reports. Examples: "WhatsApp Support US", "Main Site Widget" |
+| **Channel type** | WhatsApp WABA, Instagram, Web Widget, Telegram, or Slack |
+| **Linked Agent** | The AI Agent that will process messages received on this Channel |
+| **Status** | Active (processing messages) or Paused (Channel connected but Agent suspended) |
+| **Credentials** | Token, App Secret, or OAuth data depending on the chosen channel type |
+
+## Channel management
+
+| Action | Description |
+|------|-----------|
+| **Pause** | Keeps saved credentials but suspends processing of new messages — useful for maintenance without needing to reconnect |
+| **Reconnect** | Restarts the authentication flow when credentials expire or are revoked on the source platform |
+| **Edit name** | Changes the internal name without interrupting the connection or affecting Conversation history |
+| **Delete** | Removes the Channel and permanently stops processing; existing Conversations remain in the history |
+| **Test connection** | Sends a verification request to the platform API and displays the response status |
+
+## Troubleshooting
+
+| Problem | Likely cause | Solution |
+|----------|---------------|---------|
+| Channel stays in "Awaiting verification" | Invalid token or insufficient permissions on the source platform | Review credentials and confirm that the required permissions were granted before saving |
+| Messages arrive but Agent does not respond | Agent is not linked to the Channel or is disabled | Go to **Agents → [agent] → Channels** and confirm the Channel appears as connected |
+| Channel disconnects automatically | Short-lived token expired (common with Instagram and WhatsApp WABA) | Generate a long-lived token in the platform manager and update the credentials in Timely.ai |

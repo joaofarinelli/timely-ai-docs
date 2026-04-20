@@ -1,0 +1,88 @@
+---
+title: "MCP Servers Reference"
+sidebarTitle: "Reference"
+description: "Endpoints to connect MCP servers to agents — expand AI action capabilities with external tools"
+---
+
+## Concept
+
+**MCP Servers** (Model Context Protocol) are external servers that expose tools and resources so that Timely.ai agents can perform real-world actions during a conversation. Instead of the agent simply responding with text, it can use MCP tools to query a database, create a calendar event, look up an order in e-commerce, send an email, or any other action the MCP server supports.
+
+The MCP protocol is an open standard — any compatible server can be connected to a Timely agent. You can use publicly available community servers or develop your own to integrate your company's internal systems.
+
+## How the Integration Works
+
+```
+customer sends message
+    │
+    ▼
+AI agent processes and decides to use a tool
+    │
+    ▼
+Timely.ai calls the MCP Server with the tool parameters
+    │
+    ▼
+MCP Server executes the action and returns the result
+    │
+    ▼
+agent incorporates the result into the response to the customer
+```
+
+## MCP Server Lifecycle
+
+```
+add server (URL + configuration)
+    │
+    ▼
+connect → Timely handshakes with the server
+    │
+    ▼
+list available tools
+    │
+    ▼
+activate specific tools on the agent
+    │
+    ├── sync tools (update list)
+    │
+    ├── deactivate specific tools
+    │
+    └── disconnect / delete
+```
+
+## Main Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique MCP Server ID in the workspace |
+| `agent_id` | string (UUID) | Agent it is connected to |
+| `name` | string | Descriptive server name |
+| `url` | string | MCP endpoint URL (SSE or HTTP) |
+| `transport` | enum | `sse` \| `http` |
+| `status` | enum | `connected` \| `disconnected` \| `error` |
+| `auth_type` | enum | `none` \| `bearer` \| `api_key` |
+| `auth_token` | string | Authentication token (write-only) |
+| `tools_count` | number | Number of tools available on the server |
+| `active_tools` | array | List of slugs of tools activated on the agent |
+| `created_at` | string | ISO 8601 timestamp when added to the workspace |
+
+## Tool Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `slug` | string | Unique tool identifier on the server |
+| `name` | string | Human-readable tool name |
+| `description` | string | What the tool does (used by the LLM to decide when to use it) |
+| `parameters` | object | JSON Schema of the tool parameters |
+| `active` | boolean | Whether the tool is activated for the agent |
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

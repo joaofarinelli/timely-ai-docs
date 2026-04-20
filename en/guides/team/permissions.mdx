@@ -1,0 +1,84 @@
+---
+title: Permissions
+description: Complete permissions matrix by role and how the access control system works in Timely.ai.
+---
+
+Timely.ai's access control is role-based (RBAC). Each member has an assigned role that defines exactly what they can see and do within the platform. Permissions are enforced both in the interface and in API calls.
+
+## Permissions matrix
+
+The table below shows all available permissions and which roles have them:
+
+| Permission | owner | manager | trainer | attendant | member |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **manage_billing** — Access and edit plans and payments | ✅ | — | — | — | — |
+| **manage_company** — Edit company data and general settings | ✅ | ✅ | — | — | — |
+| **manage_agents** — Create, edit, and delete agents and squads | ✅ | ✅ | ✅ | — | — |
+| **access_conversations** — View and interact with service conversations | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **invite_users** — Invite new members and manage the team | ✅ | ✅ | — | — | — |
+| **view_reports** — Access analytics dashboards and exports | ✅ | ✅ | — | — | — |
+| **manage_team** — Change roles, deactivate, and remove members | ✅ | ✅ | — | — | — |
+
+<Info>
+  The **owner** has unrestricted access to all features by definition, regardless of the matrix. All other roles follow exactly the mapping above.
+</Info>
+
+## How permissions are checked
+
+For every action performed in the interface, the platform queries the `useRoleAccess` hook, which keeps the user's role in memory after login. The check happens at two levels:
+
+1. **Interface** — buttons, menus, and pages are shown or hidden based on the user's role. An attendant does not see the "Invite member" option in the menu.
+2. **Backend (RLS)** — all database tables have Row Level Security enabled. Even if someone tries to access data directly via API, the database policies block unauthorized access.
+
+## Role breakdown
+
+<AccordionGroup>
+  <Accordion title="owner">
+    Role automatically assigned to the account creator. Has access to everything: billing, company settings, agents, team, workspaces, API keys, analytics, and conversations. There can only be one owner per company. Ownership transfer is handled by support.
+  </Accordion>
+  <Accordion title="manager">
+    High-level operational role. Can manage everything except billing. Ideal for operations managers and team leads who need autonomy without access to financial information.
+  </Accordion>
+  <Accordion title="trainer">
+    Focused on configuring and training agents. Can create, edit, and delete agents and squads, view conversations for quality analysis, but cannot manage members or view analytics reports.
+  </Accordion>
+  <Accordion title="attendant">
+    Intended for human agents. Has access only to conversations for manual support when needed. Cannot see settings, agents, or analytics.
+  </Accordion>
+  <Accordion title="member">
+    Minimum access for viewing conversations. Useful for observers, stakeholders, or team members who need to follow the service without interacting with settings.
+  </Accordion>
+</AccordionGroup>
+
+## Changing a member's role
+
+Only **owner** and **manager** can change the role of other members.
+
+<Steps>
+  <Step title="Go to Settings > Team">
+    In the sidebar, click **Settings** and select the **Team** tab.
+  </Step>
+  <Step title="Find the member">
+    Locate the member in the active members list.
+  </Step>
+  <Step title="Change the role">
+    Click the role selector next to the member's name and choose the new role.
+  </Step>
+  <Step title="Confirm">
+    The change is applied immediately. The affected member will see the updated interface the next time they load the page.
+  </Step>
+</Steps>
+
+<Warning>
+  It is not possible to change an **owner**'s role to another role directly in the interface. This operation requires support intervention to ensure the account does not end up without a responsible owner.
+</Warning>
+
+## Multi-workspace context
+
+In accounts with multiple workspaces, a member's role can vary by workspace. A user can be a **manager** in the main workspace and a **trainer** in another workspace. Permissions are always checked in the context of the active workspace.
+
+See more at [Workspaces](/en/guides/team/workspaces).
+
+## Permissions via API
+
+When using the Timely.ai API with an API key, endpoint permissions are determined by the scopes configured on the key, not by the role of the user who created it. See [API Keys](/en/guides/team/api-keys) for details on available scopes.

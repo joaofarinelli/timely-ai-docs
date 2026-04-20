@@ -1,0 +1,166 @@
+---
+title: "Providers"
+description: "Connect and manage API keys for AI model providers to use in workspace agents."
+---
+
+## Connect and manage your AI model providers
+
+By default, Timely.ai uses platform-managed credits to run language models. When you connect your own provider key, the workspace agents start using your credentials — taking advantage of your volume contracts and private rate limits. Configured providers are available to all agents in the workspace.
+
+## OpenAI (GPT-5.1, GPT-5.2, etc.)
+
+<Steps>
+  <Step title="Go to platform.openai.com/api-keys">
+    Log in to your OpenAI account and go to the API keys section.
+  </Step>
+  <Step title="Create a new key">
+    Click **Create new secret key**. Give it a descriptive name (e.g., "Timely.ai Production") to identify the source of the calls.
+  </Step>
+  <Step title="Copy the key">
+    Copy the key immediately — it will not be shown again after closing the modal.
+  </Step>
+  <Step title="Go to Settings > Providers in Timely.ai">
+    In the sidebar, click **Settings** and select the **Providers** subsection.
+  </Step>
+  <Step title="Click Add provider and select OpenAI">
+    Fill in the internal name, select the **OpenAI** type, and paste the key in the corresponding field.
+  </Step>
+  <Step title="Save and validate">
+    Click **Validate key** to confirm the credentials are working. With a positive validation, click **Save**.
+  </Step>
+</Steps>
+
+<Warning>
+  OpenAI keys start with `sk-`. Verify that the organization associated with the key has access to GPT-5.1 and GPT-5.2 models — new models require access approval in the OpenAI panel.
+</Warning>
+
+## Anthropic (Claude)
+
+<Steps>
+  <Step title="Go to console.anthropic.com/settings/keys">
+    Log in to your Anthropic account and go to the keys section.
+  </Step>
+  <Step title="Create a new API key">
+    Click **Create Key**. Set a name that identifies the use (e.g., "Timely Workspace").
+  </Step>
+  <Step title="Copy the key">
+    The key has the `sk-ant-` prefix. Copy it before closing the modal.
+  </Step>
+  <Step title="Go to Settings > Providers in Timely.ai">
+    Navigate to the **Providers** subsection in Settings.
+  </Step>
+  <Step title="Add the Anthropic provider">
+    Select the **Anthropic** type, name the provider, and paste the key.
+  </Step>
+  <Step title="Save and validate">
+    Click **Validate** and, with positive confirmation, click **Save**. Available models: Claude Haiku 4.5 (3 credits), Claude Sonnet 4.6 (4 credits), and Claude Opus 4.6 (20 credits).
+  </Step>
+</Steps>
+
+<Warning>
+  Make sure the Anthropic account has sufficient API balance. Keys from accounts without credits return error 429 even with a valid key.
+</Warning>
+
+## Google Gemini (Google AI Studio)
+
+<Steps>
+  <Step title="Go to aistudio.google.com/app/apikey">
+    Log in with your Google account and go to the Google AI Studio API keys section.
+  </Step>
+  <Step title="Create a key for the desired project">
+    Select the associated Google Cloud project and click **Create API key**.
+  </Step>
+  <Step title="Copy the key">
+    Google AI keys start with `AI`. Copy it before leaving the screen.
+  </Step>
+  <Step title="Go to Settings > Providers in Timely.ai">
+    Navigate to the **Providers** subsection.
+  </Step>
+  <Step title="Add the Google provider">
+    Select the **Google** type, name it, and paste the key.
+  </Step>
+  <Step title="Save and validate">
+    Validate and save. Available models: Gemini 2.5 Flash (2 credits), Gemini 2.5 Pro (4 credits), Gemini 3.0 Pro Preview (6 credits), and Gemini 3.1 Pro Preview (6 credits).
+  </Step>
+</Steps>
+
+## OpenRouter (Coming soon)
+
+<Steps>
+  <Step title="Go to openrouter.ai/keys">
+    Log in to your OpenRouter account and go to the API keys section.
+  </Step>
+  <Step title="Create a new key">
+    Click **Create Key** and give it a descriptive name.
+  </Step>
+  <Step title="Copy the key">
+    OpenRouter keys start with `sk-or-`. Copy it before closing the modal.
+  </Step>
+  <Step title="Go to Settings > Providers in Timely.ai">
+    Navigate to the **Providers** subsection.
+  </Step>
+  <Step title="Add the OpenRouter provider">
+    Select the **OpenRouter** type, name it, and paste the key.
+  </Step>
+  <Step title="Save and validate">
+    Validate and save. Model available via OpenRouter: Kimi K2.5 from Moonshot AI (1 credit per message — best cost-efficiency in the catalog).
+  </Step>
+</Steps>
+
+<Warning>
+  The OpenRouter integration is in gradual release. If the type does not yet appear in the provider selector, access has not yet been enabled for your workspace.
+</Warning>
+
+## How to configure the provider within Timely.ai
+
+After creating the key in the provider's panel, you have two ways to register it on the platform. Both have the same result — choose whichever is more convenient for your workflow.
+
+## Option 1: From the main workspace page
+
+<Steps>
+  <Step title="Go to Settings">
+    In the sidebar, click **Settings**.
+  </Step>
+  <Step title="Open the Providers subsection">
+    Select **Providers** from the list of available subsections.
+  </Step>
+  <Step title="Click Add provider">
+    The registration form is displayed on screen.
+  </Step>
+</Steps>
+
+## Option 2: From an agent's page
+
+<Steps>
+  <Step title="Go to the agent panel">
+    Open the desired agent in **AI Agents**.
+  </Step>
+  <Step title="Locate the provider and model selector">
+    In the agent settings section, click **LLM Provider**.
+  </Step>
+  <Step title="Select or add a provider">
+    If the desired provider is not listed, click **Add new provider** to open the same registration form.
+  </Step>
+</Steps>
+
+## Configure the provider
+
+With the form open — whether from the workspace page or the agent page — follow these steps:
+
+<Steps>
+  <Step title="Fill in the internal name">
+    Use a name that identifies the use (e.g., "OpenAI Production", "Anthropic Testing"). This name appears in agent selectors.
+  </Step>
+  <Step title="Select the provider type">
+    Choose from OpenAI, Anthropic, Google, or OpenRouter.
+  </Step>
+  <Step title="Paste the API key">
+    The field masks the characters after insertion for security.
+  </Step>
+  <Step title="Validate the key">
+    Click **Validate key**. The platform makes a test call to the provider and displays the result immediately — valid (green) or invalid (red with the provider's error message).
+  </Step>
+  <Step title="Save the provider">
+    With positive validation, click **Save**. The provider appears in the list with a status indicator and becomes available for selection in workspace agents.
+  </Step>
+</Steps>

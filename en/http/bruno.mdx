@@ -1,0 +1,166 @@
+---
+title: "Bruno"
+description: "Use the Timely.ai collection in Bruno — an open-source, git-friendly alternative to Postman with versionable .bru files."
+---
+
+[Bruno](https://www.usebruno.com) is an open-source HTTP client that stores requests as plain-text `.bru` files. This means you version your collection alongside your project code in Git, with no dependency on a cloud service or external account.
+
+## Why Bruno
+
+<CardGroup cols={2}>
+  <Card title="Git-friendly" icon="code-branch">
+    Each request is a `.bru` file — readable, diffable, and versionable like any other project file.
+  </Card>
+  <Card title="Open-source" icon="lock-open">
+    Open source, no data collection. Works 100% offline.
+  </Card>
+  <Card title="GUI + CLI" icon="terminal">
+    Graphical interface for manual use and CLI (`@usebruno/cli`) for running in CI/CD pipelines.
+  </Card>
+  <Card title="No forced sync" icon="cloud-slash">
+    There is no "Bruno account". You control where the files live.
+  </Card>
+</CardGroup>
+
+## Installation
+
+<Tabs>
+  <Tab title="GUI (Desktop)">
+    Download the installer for macOS, Windows, or Linux at [usebruno.com/downloads](https://www.usebruno.com/downloads).
+  </Tab>
+  <Tab title="CLI">
+    ```bash
+    npm install -g @usebruno/cli
+    ```
+
+    To verify the installation:
+
+    ```bash
+    bru --version
+    ```
+  </Tab>
+</Tabs>
+
+## Download the collection
+
+Download the ZIP file with the collection:
+
+<Card title="timely-ai.bruno.zip" icon="download" href="/http/collections/timely-ai.bruno.zip">
+  Complete collection with all endpoints in .bru format, ready to open in Bruno.
+</Card>
+
+## Import and open
+
+<Steps>
+  <Step title="Extract the ZIP">
+    Extract `timely-ai.bruno.zip` into a folder in your project (suggested: `./bruno/timely-ai/`).
+
+    The folder structure will be:
+
+    ```
+    timely-ai/
+    ├── environments/
+    │   └── production.bru
+    ├── system/
+    │   ├── health.bru
+    │   └── me.bru
+    ├── agents/
+    │   ├── list-agents.bru
+    │   ├── create-agent.bru
+    │   └── ...
+    ├── contacts/
+    ├── conversations/
+    ├── channels/
+    └── webhooks/
+    ```
+  </Step>
+  <Step title="Open in Bruno GUI">
+    In Bruno, click **Open Collection** and select the `timely-ai/` folder. The entire collection will appear in the sidebar.
+  </Step>
+  <Step title="Configure the environment">
+    Open the `environments/production.bru` file. It has the following structure:
+
+    ```
+    vars {
+      base_url: https://api.timelyai.com.br
+      api_key:
+    }
+    ```
+
+    Fill in the `api_key` value with your key. Since this file may contain sensitive data, add it to `.gitignore` or use Bruno's secret variables feature.
+  </Step>
+  <Step title="Select the environment">
+    In the upper-right corner of Bruno, select **production** from the environments dropdown.
+  </Step>
+</Steps>
+
+## Structure of a .bru file
+
+Each request is a plain text file. Example of `system/health.bru`:
+
+```
+meta {
+  name: Health Check
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/v1/health
+  body: none
+  auth: none
+}
+
+headers {
+  x-api-key: {{api_key}}
+  Content-Type: application/json
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq ok
+}
+```
+
+The `assert` block runs automatically after the response — if the status is not `200` or the `status` field is not `"ok"`, Bruno marks the test as failed.
+
+## First test
+
+Open `system/health.bru` and click **Run**. The expected response is:
+
+```json
+{
+  "status": "ok",
+  "version": "1.0.0"
+}
+```
+
+The asserts panel will show both checks in green if everything is correct.
+
+## Run the collection via CLI (CI/CD)
+
+```bash
+# Run all requests in the collection
+bru run ./bruno/timely-ai/ --env production
+
+# Run only a specific folder
+bru run ./bruno/timely-ai/system/ --env production
+
+# Output in JUnit format for CI
+bru run ./bruno/timely-ai/ --env production --reporter junit --output results.xml
+```
+
+<Tip>
+Add `bru run ./bruno/timely-ai/ --env production` as a step in your CI pipeline to run automatic smoke tests after each deploy.
+</Tip>
+
+## Version the collection
+
+With Bruno, versioning is straightforward:
+
+```bash
+git add bruno/timely-ai/
+git commit -m "feat: add Bruno collection for Timely.ai API"
+```
+
+Any team member can clone the repository and open the collection immediately, without importing external files or creating an account anywhere.

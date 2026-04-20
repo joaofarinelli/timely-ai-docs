@@ -1,0 +1,37 @@
+---
+title: "Chat History"
+description: "Access and inspect the complete message history of any Conversation to audit interactions and improve Agents."
+---
+
+Timely.ai's Chat History records every interaction — contact messages, AI Agent responses, internal Notes, and human support actions — in chronological order, preserved indefinitely in the Workspace.
+
+## Message inspection
+
+Opening a Conversation loads the complete history in the central column of the Inbox. Each entry displays the following parameters:
+
+| Parameter | Description |
+|-----------|-----------|
+| **Sender** | Contact (customer), active AI Agent, or responsible human attendant |
+| **Timestamp** | Exact date and time of sending, in the Workspace timezone |
+| **Channel** | Source channel icon (WhatsApp, Instagram, Widget, Telegram, Slack) |
+| **Content type** | Text, image, audio, video, document, or internal Note |
+| **Delivery status** | Sent, delivered, and read — available for channels that support receipts |
+| **Active Agent** | Badge indicating which AI Agent processed the message |
+
+<Note>
+  Internal Notes added by attendants appear in the history with a different visual highlight from messages sent to the contact. They are not visible to the customer.
+</Note>
+
+## Agent optimization
+
+The Chat History is the primary source of information for improving Agent behavior. Two direct uses:
+
+- **Identify Knowledge Base gaps** — messages where the Agent responded inaccurately or incompletely indicate topics that should be added to Training.
+- **Review tone and language** — Conversations completed with a negative contact rating reveal response patterns that need adjustment in the system prompt.
+
+To apply improvements:
+
+- Copy problematic conversation excerpts and use them as negative examples in the Agent's system prompt.
+- Create Q&A entries in the Knowledge Base based on frequently asked questions identified in the history.
+- Use Tag filters to segment Conversations by topic and review thematic batches.
+- Export histories via the Conversations API for analysis in external BI tools.

@@ -1,0 +1,61 @@
+---
+title: "LLM Node (AI Transformation)"
+description: "Process text with a language model directly in the workflow — without an agent persona."
+---
+
+## How It Works
+
+The **AI Transformation** node makes a direct call to a language model with a prompt you define. There is no agent persona or conversation history.
+
+The execution flow follows five steps:
+
+1. Resolves `{{ }}` templates in the input field and prompt with real execution data
+2. Assembles the model call with the prompt and configured parameters
+3. Waits for the response — 30-second timeout
+4. Parses the result: JSON when `output_format` is `json`, string when it is `text`
+5. Exposes the result via `{{ $json.result }}` for downstream nodes
+
+## Configuration Options
+
+- **Input Field** — `{{ }}` expression pointing to the text to process
+- **Prompt** — instruction for the model; accepts `{{ }}` templates with dynamic data
+- **Model** — `gpt-4o-mini`, `gpt-4o`, `claude-3-haiku`, or `claude-3-sonnet`
+- **Output format** — `text` for a free string or `json` for a structured object
+- **JSON Schema** — optional; guides the model on the expected fields when `output_format` is `json`
+- **Temperature / Max Tokens** — variation control (0.0 to 1.0) and token limit (100 to 4000)
+
+## Common Use Cases
+
+- Extract entities from unstructured forms or emails
+- Classify intent or sentiment to route service tickets
+- Summarize long tickets before notifying the team
+- Normalize date, phone, or address formats
+
+## Example
+
+Prompt:
+
+```text
+Extract the name, email, and reason from the text below.
+Return only valid JSON.
+
+Text: {{ $trigger.body.mensagem }}
+```
+
+Output with `output_format: json`:
+
+```json
+{
+  "result": {
+    "nome": "Carlos Menezes",
+    "email": "carlos@empresa.com",
+    "motivo": "dúvida sobre faturamento"
+  }
+}
+```
+
+## Tip
+
+<Note>
+  Use a temperature between 0.0 and 0.2 for extraction and classification — deterministic responses reduce failures in downstream nodes that consume the generated JSON.
+</Note>

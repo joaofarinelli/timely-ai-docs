@@ -1,0 +1,135 @@
+---
+title: "Production checklist"
+description: "Everything you need to review before opening to real customers"
+---
+
+Before routing real traffic to your integration, go through this checklist. Each item represents a class of problem we have seen in deployments — better to fix it beforehand than to chase it down later.
+
+## Authentication and secrets
+
+<AccordionGroup>
+  <Accordion title="API keys in environment variables">
+    No hardcoded keys in the code. Verify with:
+
+    ```bash
+    git grep "tly_live_" --  # should return empty
+    ```
+
+    Use a secrets manager (Doppler, AWS Secrets Manager, HashiCorp Vault, Vercel env vars) instead of a committed `.env` file.
+  </Accordion>
+
+  <Accordion title="Minimum scopes per service">
+    Review each API key and remove unnecessary scopes. A service that only sends messages does not need `agents:write` or `contacts:write`.
+  </Accordion>
+
+  <Accordion title="Webhook secret configured and validated">
+    Confirm that the handler validates the `X-Timely-Signature` header before processing any event. Test with a tampered payload — it should return `401`.
+  </Accordion>
+
+  <Accordion title="Credential rotation planned">
+    Set a rotation date (suggestion: every 90 days) and document the internal procedure. See the step-by-step in [Authentication → Rotating a key](/en/start/authentication).
+  </Accordion>
+</AccordionGroup>
+
+## API and integration
+
+<AccordionGroup>
+  <Accordion title="Production URL and API key are correct">
+    Confirm the code points to `https://api.timelyai.com.br/v1` and that the `x-api-key` belongs to the production workspace — not a test workspace. In CI/CD, use separate environment variables per stage.
+  </Accordion>
+
+  <Accordion title="Retry with backoff implemented">
+    Every API call has retry logic that respects the `Retry-After` header when receiving `429`. Without this, load spikes can cause cascading errors.
+  </Accordion>
+
+  <Accordion title="Pagination implemented for listings">
+    If you fetch lists (conversations, contacts, agents), the code iterates over all pages using `meta.total_pages`. Fetching only page 1 may omit records.
+  </Accordion>
+
+  <Accordion title="Timeouts configured on HTTP requests">
+    Configure a timeout of at least 15 seconds for API calls. Requests without a timeout will stall workers indefinitely in case of network slowness.
+  </Accordion>
+</AccordionGroup>
+
+## Webhooks
+
+<AccordionGroup>
+  <Accordion title="Endpoint publicly accessible">
+    Confirm the webhook URL is accessible from the internet (not `localhost`). Test with:
+
+    ```bash
+    curl -X POST https://yoursite.com/webhook/timely \
+      -H "Content-Type: application/json" \
+      -d '{"test": true}'
+    ```
+  </Accordion>
+
+  <Accordion title="2xx response in under 10 seconds">
+    The handler responds immediately and processes the event asynchronously (queue, worker). Synchronous processing that takes more than 10 seconds causes unnecessary retries.
+  </Accordion>
+
+  <Accordion title="Idempotency implemented">
+    The handler uses `X-Timely-Event-Id` to deduplicate events delivered more than once during retries.
+  </Accordion>
+
+  <Accordion title="Failure log configured">
+    Failed webhook events are available in the dashboard under **Settings → Webhooks → [endpoint] → Event log**. Set up an internal alert if the failure rate rises above 1%.
+  </Accordion>
+</AccordionGroup>
+
+## Agents and channels
+
+<AccordionGroup>
+  <Accordion title="Agent tested with real-world scenarios">
+    Run the test chat with at least 20 variations of questions your customers would ask. Include out-of-scope questions — verify the agent responds politely without hallucinating.
+  </Accordion>
+
+  <Accordion title="Human handoff configured">
+    Define the handoff rule (keyword, intent, number of turns without resolution). Confirm a human attendant receives the notification correctly.
+  </Accordion>
+
+  <Accordion title="Channel active and tested end-to-end">
+    Send a message from a real number to the production channel and follow the full flow: receipt → agent processing → response → conversation log in the CRM.
+  </Accordion>
+
+  <Accordion title="WhatsApp templates approved">
+    If you use proactive sending (outside the 24-hour window), templates must be approved by Meta before go-live. Approval can take 24 hours to 7 days.
+  </Accordion>
+</AccordionGroup>
+
+## Monitoring and alerts
+
+<AccordionGroup>
+  <Accordion title="Conversation dashboard monitored">
+    Assign a team member to monitor the dashboard during the first 48 hours after go-live. Catch issues before they become customer complaints.
+  </Accordion>
+
+  <Accordion title="Low credits alert configured">
+    Under **Settings → Billing → Alerts**, enable the low balance notification. Zero credits pause message sending.
+  </Accordion>
+
+  <Accordion title="Support contact saved">
+    Save **contato@timelyai.com.br** in your incident contacts list. For critical issues, include "URGENT" in the subject line.
+  </Accordion>
+</AccordionGroup>
+
+## Visual summary
+
+<CardGroup cols={2}>
+  <Card title="Secrets">
+    API keys in environment variables, minimum scopes, webhook secret validated, rotation planned.
+  </Card>
+  <Card title="API">
+    Correct production URL, retry with backoff, full pagination, timeouts configured.
+  </Card>
+  <Card title="Webhooks">
+    Public endpoint, fast response, idempotency, failure log monitored.
+  </Card>
+  <Card title="Agents and channels">
+    Tested with real-world scenarios, handoff configured, channel tested end-to-end, templates approved.
+  </Card>
+</CardGroup>
+
+<Note>
+  Checked everything? Go ahead. For any last-minute questions, reach us at **contato@timelyai.com.br**.
+</Note>

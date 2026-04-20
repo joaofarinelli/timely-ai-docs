@@ -1,0 +1,146 @@
+---
+title: "Voice"
+description: "Configure text-to-speech for the agent with Cartesia, ElevenLabs, or Fish Audio — including custom voice cloning."
+---
+
+The voice feature allows the agent to convert its responses into audio using Text-to-Speech (TTS). This is especially useful for telephony integrations, voice assistants, and channels that support audio messages.
+
+## Overview
+
+Voice configuration is in the **Voice** tab in the agent settings. You choose a voice from the catalog or create a cloned voice from an audio sample from your team.
+
+<Frame caption="Voice tab with voice catalog and cloning option">
+  <img src="/images/screenshots/placeholder-agent-voice.png" alt="Agent voice configuration" />
+</Frame>
+
+<Note>
+The voice feature is only available on plans that include **AI Audio**. If your plan does not include this feature, the tab will display an upgrade option.
+</Note>
+
+## TTS providers
+
+Timely.ai integrates with three high-quality speech synthesis providers:
+
+<CardGroup cols={3}>
+  <Card title="Cartesia" icon="waveform">
+    Ultra-realistic voices with very low latency. Recommended for real-time service where naturalness and response speed are critical.
+  </Card>
+  <Card title="ElevenLabs" icon="mic">
+    The reference for voice cloning quality and expressiveness. Ideal for agents that need a highly personalized and emotive voice.
+  </Card>
+  <Card title="Fish Audio" icon="headphones">
+    High-performance provider with good support for multiple languages, including Brazilian Portuguese with good prosody.
+  </Card>
+</CardGroup>
+
+The voice catalog available on the platform includes options for both genders and different tonal and accent characteristics.
+
+## Configure a voice
+
+<Steps>
+  <Step title="Open the Voice tab">
+    Access the agent settings and click the **Voice** tab.
+  </Step>
+  <Step title="Click Add voice">
+    The voice configuration panel opens with three fields: voice selector, instructions, and speed.
+  </Step>
+  <Step title="Select the voice">
+    In the selector, you will see two sections:
+
+    - **Catalog** — pre-defined voices from providers, identified by name and gender (e.g., "Aria – Female").
+    - **My Voices** — cloned voices you have created (appear with the "cloned" badge).
+  </Step>
+  <Step title="Adjust the instructions (optional)">
+    The instructions field lets you describe the tone you expect from the voice. Examples:
+
+    - "Speak calmly and empathetically, like an experienced support attendant"
+    - "Energetic and enthusiastic tone, like a sales presenter"
+    - "Slow and articulate, to ensure the customer understands every detail"
+
+    Limit: 1,000 characters.
+  </Step>
+  <Step title="Set the speed">
+    Use the slider to adjust speaking speed between 0.5x (slow) and 2.0x (fast). The default is 1.0x.
+  </Step>
+  <Step title="Generate a preview">
+    Click **Generate preview** to hear a sample of the voice with the current settings before saving.
+  </Step>
+  <Step title="Save">
+    Click **Add voice**. The voice becomes active for the agent immediately.
+  </Step>
+</Steps>
+
+## Voice cloning
+
+You can create a custom voice from an audio recording — useful for maintaining your brand's sonic identity or using the voice of a team member.
+
+<Warning>
+Voice cloning is available on the **Enterprise** plan and has a monthly clone limit defined by your plan. Check the limit in Settings > Billing.
+</Warning>
+
+<Steps>
+  <Step title="Start cloning">
+    In the voice selector of the configuration dialog, click **+ Clone my voice** (last option in the list). The cloning dialog opens.
+  </Step>
+  <Step title="Upload the audio sample">
+    Upload an audio recording of the voice to be cloned. Requirements for best results:
+
+    - Minimum recommended duration: 30 seconds
+    - Quiet environment, no background noise
+    - Clear and natural voice, as in a normal conversation
+    - Accepted formats: MP3, WAV, M4A
+  </Step>
+  <Step title="Name the clone">
+    Give the cloned voice a name to identify it (e.g., "Maria's Voice - Support").
+  </Step>
+  <Step title="Wait for processing">
+    Cloning is processed in a few seconds. When complete, the cloned voice appears in the **My Voices** section of the selector.
+  </Step>
+</Steps>
+
+## Manage voices
+
+In the Voice tab table, each preset displays:
+
+| Field | Description |
+|-------|-------------|
+| Name | Name of the selected voice |
+| Instructions | Summary of tone instructions |
+| Speed | Configured speed factor (e.g., 1.2x) |
+
+Through the actions menu (`...` icon) you can **edit**, **preview**, or **remove** the configured voice.
+
+## Common use cases
+
+<CardGroup cols={2}>
+  <Card title="Phone service">
+    Use a neutral female or male catalog voice with 1.0x speed. Instructions: "Professional and patient tone."
+  </Card>
+  <Card title="Brand assistant">
+    Clone the voice of a company spokesperson to maintain sonic identity consistency across all touchpoints.
+  </Card>
+  <Card title="Animated sales agent">
+    Select a voice with a more expressive character and set 1.1x speed. Instructions: "Enthusiastic, but not aggressive."
+  </Card>
+  <Card title="Educational content">
+    0.9x speed with "articulate and didactic speech" instructions. Good combination with Gemini for multimodal content.
+  </Card>
+</CardGroup>
+
+## Limits and best practices
+
+- Each agent supports one active voice preset at a time. To switch, edit or remove the existing preset.
+- The preview uses a generic sample text — always listen with a representative excerpt of the agent's actual content.
+- Cloned voices are tied to the workspace and can be used by multiple agents.
+- Cloning quality depends directly on the quality of the provided audio — recordings with heavy noise result in low-fidelity clones.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Transfer rules" href="/en/guides/agents/transfer-rules">
+    Configure when and to whom the agent should transfer the conversation.
+  </Card>
+  <Card title="Test the agent" href="/en/guides/agents/settings/internal-chat">
+    Validate voice, tools, and behavior in the Playground before publishing.
+  </Card>
+</CardGroup>

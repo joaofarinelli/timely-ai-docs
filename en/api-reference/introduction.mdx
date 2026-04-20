@@ -1,0 +1,204 @@
+---
+title: "Introduction"
+description: "Timely.ai REST API for AI-powered customer service automation."
+---
+
+<Note>
+  This documentation is intended for developers who want to integrate their systems with Timely.ai.
+  For information on using the platform, see the [Guides](/en/index).
+</Note>
+
+## Overview
+
+The Timely.ai API lets you programmatically manage all platform resources:
+
+- **Agents** — create, configure, and manage AI agents
+- **Trainings** — manage agent knowledge bases
+- **Channels** — configure communication channels (WhatsApp, Telegram, Email, Website)
+- **Contacts** — register and manage customers
+- **Conversations** — conversation history and messages
+- **Custom Fields** — define custom fields for contacts
+- **Chats** — operations on active chats and human handoff
+- **Messages** — direct access to individual messages
+- **MCP Servers** — manage Model Context Protocol servers
+- **Webhooks** — receive real-time events
+
+## Base URL
+
+```
+https://api.timelyai.com.br
+```
+
+All endpoints use the `/v1` prefix.
+
+## Authentication
+
+All requests (except `/v1/health`) require authentication via the `x-api-key` header:
+
+```bash
+curl -H "x-api-key: your_key_here" \
+  https://api.timelyai.com.br/v1/me
+```
+
+To obtain your API key, visit the [developers page](https://app.timelyai.com.br/developers).
+
+## Scopes
+
+Each API key has scopes that control which resources can be accessed:
+
+| Scope | Description |
+|---|---|
+| `agents:read` | Read agents, settings, webhooks, credits, and history |
+| `agents:write` | Create, update, and activate/deactivate agents |
+| `agents:delete` | Delete agents |
+| `trainings:read` | Read agent trainings |
+| `trainings:write` | Create, update, and delete trainings |
+| `channels:read` | Read channels, settings, QR code, and widget |
+| `channels:write` | Create, update, and delete channels |
+| `contacts:read` | Read contacts |
+| `contacts:write` | Create, update, and delete contacts |
+| `conversations:read` | Read conversations |
+| `messages:read` | Read conversation messages |
+| `messages:write` | Send messages in conversations |
+| `messages:delete` | Delete messages |
+| `chats:write` | Chat operations, message editing, and human handoff |
+| `custom-fields:read` | Read custom fields |
+| `custom-fields:write` | Create, update, and archive custom fields |
+| `mcp:read` | Read MCP servers and tools |
+| `mcp:write` | Manage MCP servers and tools |
+| `webhooks:read` | Read webhooks and delivery history |
+| `webhooks:write` | Create, update, and test webhooks |
+| `webhooks:delete` | Delete webhooks |
+
+Use the `GET /v1/me` endpoint to check your API key's scopes.
+
+## Rate Limiting
+
+The API limits to **100 requests per minute** per API key. Response headers include:
+
+| Header | Description |
+|---|---|
+| `X-RateLimit-Limit` | Request limit per window (100) |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |
+
+When the limit is exceeded, the API returns status `429` with a `Retry-After` header indicating how many seconds to wait.
+
+## Pagination
+
+Listing endpoints support pagination with the following parameters:
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | integer | `1` | Page number (minimum 1) |
+| `limit` | integer | `20` | Items per page (1–100) |
+| `order` | string | `desc` | Direction: `asc` or `desc` |
+
+The response includes a `pagination` object:
+
+```json
+{
+  "data": [...],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "total_pages": 8
+  }
+}
+```
+
+## Error Format
+
+All error responses follow the same format:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "customer_name: String must contain at least 1 character(s)",
+    "status": 400
+  }
+}
+```
+
+| Code | HTTP | Description |
+|---|---|---|
+| `UNAUTHORIZED` | 401 | Invalid or missing API key |
+| `FORBIDDEN` | 403 | Insufficient scope |
+| `NOT_FOUND` | 404 | Resource not found |
+| `VALIDATION_ERROR` | 400 | Invalid request data |
+| `RATE_LIMIT_EXCEEDED` | 429 | Request limit exceeded |
+| `INTERNAL_ERROR` | 500 | Internal server error |
+
+## Webhooks
+
+Webhooks let you receive real-time notifications when events occur on the platform.
+
+### Available Events
+
+| Event | Description |
+|---|---|
+| `conversation.created` | New conversation started |
+| `conversation.closed` | Conversation closed |
+| `conversation.transferred` | Conversation transferred |
+| `message.received` | Message received from customer |
+| `message.sent` | Message sent by agent |
+| `contact.created` | New contact registered |
+| `contact.updated` | Contact updated |
+| `appointment.created` | Appointment created |
+| `appointment.cancelled` | Appointment cancelled |
+| `appointment.completed` | Appointment completed |
+
+### Payload
+
+Each webhook delivery includes:
+
+```json
+{
+  "event": "message.received",
+  "timestamp": "2026-04-16T01:30:00.000Z",
+  "webhook_id": "webhook-uuid",
+  "data": {
+    // event-specific data
+  }
+}
+```
+
+### Signature
+
+All deliveries include an HMAC-SHA256 signature for verification:
+
+| Header | Description |
+|---|---|
+| `X-Webhook-Signature` | `sha256=<hex>` — HMAC signature of the payload |
+| `X-Webhook-Timestamp` | Unix timestamp of the delivery |
+| `X-Webhook-ID` | Webhook ID |
+
+To verify the signature:
+
+```javascript
+const crypto = require('crypto');
+
+function verifySignature(secret, timestamp, body, signature) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(`${timestamp}.${body}`)
+    .digest('hex');
+  
+  return `sha256=${expected}` === signature;
+}
+```
+
+### Retries
+
+If a delivery fails (timeout or status >= 300), the system retries up to 5 times with backoff:
+- Immediate
+- 1 minute
+- 5 minutes
+- 15 minutes
+- 1 hour
+
+After 5 consecutive failures, the webhook is automatically deactivated.
+
+Use `POST /v1/webhooks/{id}/test` to test connectivity before activating.

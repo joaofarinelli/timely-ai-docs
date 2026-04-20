@@ -1,0 +1,63 @@
+---
+title: "System Reference"
+sidebarTitle: "Reference"
+description: "Utility endpoints to check API status and inspect your API key"
+---
+
+## Concept
+
+The **System** group contains the simplest endpoints in the Timely.ai API: a public health check and an API key introspection endpoint. They are the natural starting point for any integration — you use the health check to confirm the API is reachable and the `/v1/me` endpoint to verify your key has the necessary scopes before making more complex calls.
+
+These endpoints do not perform operations on the workspace. They are read-only and do not consume credits.
+
+## Health Check
+
+The `GET /v1/health` endpoint requires no authentication and can be called at any time to verify the API is up. It is ideal for external monitoring (Uptime Robot, Grafana, etc.) or for validating connectivity in CI/CD scripts before running integration tests.
+
+```
+HTTP 200 → API operating normally
+HTTP 503 → Maintenance or degradation
+```
+
+## API Key Introspection
+
+The `GET /v1/me` endpoint returns information about the key used in the request: name, `company_id`, `workspace_id`, and the list of scopes. Use it to:
+
+- Confirm the correct key is configured in the environment
+- Check which scopes are available before calling protected endpoints
+- Identify which workspace the key belongs to in multi-tenant environments
+
+## Main Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | `ok` when the API is functioning |
+| `timestamp` | string | ISO 8601 timestamp of the check |
+| `key_name` | string | Descriptive name of the API key |
+| `company_id` | string (UUID) | ID of the company that owns the key |
+| `workspace_id` | string (UUID) | ID of the workspace associated with the key |
+| `scopes` | array | List of enabled scopes (e.g. `agents:read`, `messages:write`) |
+| `permissions` | object | Detailed permission map per resource |
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Usage Example
+
+```bash
+# Check if the API is reachable
+curl https://api.timelyai.com.br/v1/health
+
+# Inspect the configured API key
+curl https://api.timelyai.com.br/v1/me \
+  -H "x-api-key: YOUR_API_KEY"
+```
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

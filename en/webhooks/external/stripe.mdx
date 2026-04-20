@@ -1,0 +1,234 @@
+---
+title: "Stripe"
+description: "Stripe events consumed by Timely.ai — how payments and subscriptions are processed and reflected in your workspace"
+---
+
+Timely.ai uses **Stripe** as its payment platform for plan charges, credits, and add-ons. When a relevant event occurs in your Stripe account (a subscription is created, an invoice is paid, a payment fails), Stripe sends a webhook to Timely's servers, which updates the workspace status and may trigger [internal events](/en/webhooks/overview) for your server.
+
+This page documents the Stripe events that Timely consumes, the payload formats, and how you can use this in your automations.
+
+## How Timely receives Stripe events
+
+```
+Stripe → POST to Timely.ai servers
+         → Timely processes the event
+         → Updates workspace status (credits, plan, billing)
+         → Triggers internal webhook to your server (if configured)
+```
+
+You don't need to configure anything in Stripe — Timely manages the webhook endpoint directly. What you can do is **subscribe to Timely's internal webhooks** for billing events (such as `credit.depleted` or `plan.changed`) and react in your automations.
+
+## Consumed events
+
+### `checkout.session.completed`
+
+Triggered when a customer successfully completes a checkout session. Timely uses this event to:
+
+- Activate the purchased plan in the workspace
+- Add acquired credits
+- Send a welcome or upgrade email
+
+```json
+{
+  "id": "evt_1NabcXYZ",
+  "object": "event",
+  "type": "checkout.session.completed",
+  "created": 1713456789,
+  "data": {
+    "object": {
+      "id": "cs_test_a1b2c3d4e5",
+      "object": "checkout.session",
+      "mode": "subscription",
+      "payment_status": "paid",
+      "status": "complete",
+      "customer": "cus_ABC123",
+      "subscription": "sub_DEF456",
+      "metadata": {
+        "workspace_id": "uuid-do-workspace",
+        "plan": "pro",
+        "credits": "5000"
+      },
+      "amount_total": 19700,
+      "currency": "brl"
+    }
+  }
+}
+```
+
+The `metadata.workspace_id` field is inserted by Timely when creating the session to correlate the payment with the correct workspace.
+
+### `invoice.paid`
+
+Triggered on every successfully paid invoice — both on the first charge and on monthly/annual renewals.
+
+```json
+{
+  "id": "evt_1NabcXYZ2",
+  "object": "event",
+  "type": "invoice.paid",
+  "created": 1713543200,
+  "data": {
+    "object": {
+      "id": "in_1NabcXYZ2",
+      "object": "invoice",
+      "customer": "cus_ABC123",
+      "subscription": "sub_DEF456",
+      "status": "paid",
+      "amount_paid": 19700,
+      "currency": "brl",
+      "period_start": 1713456789,
+      "period_end": 1716048789,
+      "lines": {
+        "data": [
+          {
+            "description": "Timely Pro — Maio 2026",
+            "amount": 19700,
+            "period": {
+              "start": 1713456789,
+              "end": 1716048789
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Upon receiving `invoice.paid`, Timely renews the workspace's access period and reloads the plan's monthly credits.
+
+### `invoice.payment_failed`
+
+Triggered when a charge attempt fails (card declined, insufficient funds, etc.).
+
+```json
+{
+  "id": "evt_1NabcXYZ3",
+  "object": "event",
+  "type": "invoice.payment_failed",
+  "created": 1713543400,
+  "data": {
+    "object": {
+      "id": "in_1NabcXYZ3",
+      "object": "invoice",
+      "customer": "cus_ABC123",
+      "subscription": "sub_DEF456",
+      "status": "open",
+      "attempt_count": 2,
+      "next_payment_attempt": 1713629800,
+      "last_finalization_error": null,
+      "payment_intent": {
+        "last_payment_error": {
+          "code": "card_declined",
+          "decline_code": "insufficient_funds",
+          "message": "Your card has insufficient funds."
+        }
+      }
+    }
+  }
+}
+```
+
+After a payment failure, Timely enters a grace period (typically 3 days) and sends notifications to the workspace owner.
+
+### `customer.subscription.updated`
+
+Triggered on any subscription change: upgrade, downgrade, scheduled cancellation, billing period change.
+
+```json
+{
+  "id": "evt_1NabcXYZ4",
+  "object": "event",
+  "type": "customer.subscription.updated",
+  "created": 1713543600,
+  "data": {
+    "object": {
+      "id": "sub_DEF456",
+      "object": "subscription",
+      "customer": "cus_ABC123",
+      "status": "active",
+      "cancel_at_period_end": true,
+      "current_period_start": 1713456789,
+      "current_period_end": 1716048789,
+      "items": {
+        "data": [
+          {
+            "price": {
+              "id": "price_1NabcXYZ5",
+              "nickname": "Timely Pro Mensal",
+              "unit_amount": 19700,
+              "currency": "brl",
+              "recurring": { "interval": "month" }
+            }
+          }
+        ]
+      }
+    },
+    "previous_attributes": {
+      "cancel_at_period_end": false
+    }
+  }
+}
+```
+
+The `previous_attributes` field contains only the fields that changed — use it to identify exactly what was modified.
+
+### `customer.subscription.deleted`
+
+Triggered when the subscription is effectively terminated (not just scheduled — actually canceled).
+
+```json
+{
+  "id": "evt_1NabcXYZ6",
+  "object": "event",
+  "type": "customer.subscription.deleted",
+  "created": 1716048800,
+  "data": {
+    "object": {
+      "id": "sub_DEF456",
+      "object": "subscription",
+      "customer": "cus_ABC123",
+      "status": "canceled",
+      "ended_at": 1716048789
+    }
+  }
+}
+```
+
+Upon receiving this event, Timely moves the workspace to the free plan (if available) or suspends access.
+
+## Stripe events to Timely events mapping
+
+| Stripe event | Action in Timely | Timely internal webhook |
+|--------------|------------------|-------------------------|
+| `checkout.session.completed` | Activates plan, adds credits | `plan.changed` |
+| `invoice.paid` | Renews period, reloads credits | — |
+| `invoice.payment_failed` | Starts grace period | `credit.low` (if credits are low) |
+| `customer.subscription.updated` | Updates plan limits | `plan.changed` |
+| `customer.subscription.deleted` | Suspends or downgrades | `plan.changed` |
+
+## Security and idempotency fields
+
+All Stripe events include:
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique event ID (`evt_*`) — use for deduplication |
+| `created` | Creation Unix timestamp |
+| `livemode` | `true` in production, `false` in test mode |
+| `type` | Event type |
+
+<Warning>
+  In test environments, the `livemode` field is `false`. Timely processes Stripe test and production events separately. Never mix test and production API keys.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Billing events" icon="credit-card" href="/en/webhooks/events/billing-events">
+    Timely's internal webhooks for credit and plan events.
+  </Card>
+  <Card title="Webhooks — API Reference" icon="bell" href="/en/api-reference/webhooks/referencia">
+    Configure endpoints to receive events from your workspace.
+  </Card>
+</CardGroup>

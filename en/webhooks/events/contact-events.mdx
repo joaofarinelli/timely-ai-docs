@@ -1,0 +1,172 @@
+---
+title: "Contact events"
+description: "Triggered when contacts are created, updated, or removed from the workspace"
+---
+
+These events keep your external database or CRM in sync with Timely.ai's contact base. Every time a new contact comes in, a field is updated, or a contact is deleted, you receive an event.
+
+## Event list
+
+| Event | When it fires |
+|-------|---------------|
+| `contact.created` | A new contact is added to the workspace |
+| `contact.updated` | Data for an existing contact is modified |
+| `contact.deleted` | A contact is permanently removed |
+
+---
+
+## `contact.created`
+
+### When it fires
+
+A new contact is added to the workspace — either because an unknown number sent the first message on a channel, because an agent created it manually, or via API.
+
+### Payload
+
+```json
+{
+  "event": "contact.created",
+  "event_id": "evt_01HX5A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T14:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "contact_id": "cont_456",
+    "name": "Ana Costa",
+    "phone": "+5547991234567",
+    "email": "ana.costa@exemplo.com.br",
+    "avatar_url": null,
+    "source": "whatsapp",
+    "tags": [],
+    "custom_fields": {},
+    "assigned_to": null,
+    "created_at": "2026-04-19T14:30:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `contact_id` | string | Unique contact ID in the workspace |
+| `name` | string \| null | Contact name |
+| `phone` | string \| null | Phone number in E.164 format |
+| `email` | string \| null | Contact email |
+| `avatar_url` | string \| null | Avatar URL (when available via channel) |
+| `source` | enum | Origin channel: `whatsapp`, `instagram`, `widget`, `telegram`, `api`, `manual` |
+| `tags` | array | List of applied tags |
+| `custom_fields` | object | Custom fields in `{ "key": "value" }` format |
+| `assigned_to` | string \| null | ID of the responsible agent |
+
+### Usage example
+
+<Note>
+  Use `contact.created` with `source` to identify which channel brings in the most new contacts. Combine with `contact_id` to create the record in your CRM before any interaction.
+</Note>
+
+---
+
+## `contact.updated`
+
+### When it fires
+
+Any field of an existing contact is modified — name, email, phone, tags, custom fields, or responsible agent. The payload includes both the new and previous values.
+
+### Payload
+
+```json
+{
+  "event": "contact.updated",
+  "event_id": "evt_01HX5B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-19T15:10:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "contact_id": "cont_456",
+    "changes": {
+      "name": {
+        "before": "Ana Costa",
+        "after": "Ana Costa Ribeiro"
+      },
+      "tags": {
+        "before": [],
+        "after": ["cliente-vip", "pagamento-pendente"]
+      },
+      "custom_fields": {
+        "before": {},
+        "after": {
+          "plano": "pro",
+          "data_contrato": "2026-04-19"
+        }
+      }
+    },
+    "updated_by": "usr_321",
+    "updated_by_type": "attendant",
+    "updated_at": "2026-04-19T15:10:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `changes` | object | Dictionary of changed fields, each with `before` and `after` |
+| `updated_by` | string \| null | ID of who made the change |
+| `updated_by_type` | enum | `attendant`, `agent`, `api`, `automation` |
+| `updated_at` | string | ISO 8601 timestamp of the update |
+
+### Usage example
+
+<Note>
+  Use the `changes` object to update only the fields that actually changed in your external system — this avoids overwriting data you may have enriched locally.
+</Note>
+
+<Tip>
+  For bidirectional sync, record the `updated_by_type` and ignore updates where `updated_by_type` is `api` when you triggered the update yourself — this prevents sync loops.
+</Tip>
+
+---
+
+## `contact.deleted`
+
+### When it fires
+
+A contact is permanently removed from the workspace. Deletion can be done manually by an agent with the appropriate permission or via API. Deleted contacts cannot be recovered.
+
+### Payload
+
+```json
+{
+  "event": "contact.deleted",
+  "event_id": "evt_01HX5C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T16:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "contact_id": "cont_456",
+    "name": "Ana Costa Ribeiro",
+    "phone": "+5547991234567",
+    "email": "ana.costa@exemplo.com.br",
+    "deleted_by": "usr_321",
+    "deleted_by_type": "attendant",
+    "deleted_at": "2026-04-19T16:00:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `contact_id` | string | ID of the deleted contact |
+| `name` | string \| null | Contact name at the time of deletion |
+| `phone` | string \| null | Contact phone (for audit reference) |
+| `email` | string \| null | Contact email (for audit reference) |
+| `deleted_by` | string | ID of who performed the deletion |
+| `deleted_by_type` | enum | `attendant`, `api` |
+| `deleted_at` | string | ISO 8601 timestamp of deletion |
+
+### Usage example
+
+<Warning>
+  Use `contact.deleted` to ensure LGPD compliance in your CRM — remove or anonymize the contact's data in your systems as soon as you receive this event. The `contact_id` will no longer exist in the API after deletion.
+</Warning>

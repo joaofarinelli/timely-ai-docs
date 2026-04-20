@@ -1,0 +1,75 @@
+---
+title: "Creating Squads"
+description: "Step-by-step guide to creating a squad, adding agents, defining leadership roles, and managing the group over time."
+---
+
+Squads allow multiple specialized agents to handle the same channel in a coordinated way. Before creating a squad, make sure the agents that will be part of the group are already created and configured with their respective LLM models and knowledge bases.
+
+## Step 1: Create a squad
+
+<Steps>
+  <Step title="Go to the Squads section">
+    In the sidebar, click **Squads**. The list of existing squads is displayed.
+  </Step>
+  <Step title="Start a new squad">
+    Click **+ New squad** in the upper-right corner of the screen.
+  </Step>
+  <Step title="Define the name">
+    In the **Name** field, write a clear identifier — for example, "Technical Support" or "Inbound Sales". The name appears in reports and the squads panel. 100-character limit.
+  </Step>
+  <Step title="Add a description (optional)">
+    The **Description** field is optional, but recommended for larger teams. Use it to record the squad's purpose and the types of conversations it should receive.
+  </Step>
+  <Step title="Choose the operation mode">
+    Select **Hierarchical** or **Horizontal** by clicking the corresponding card. The choice determines which leadership role you will need to define in the next steps and cannot be changed after the squad is created.
+  </Step>
+  <Step title="Click Create squad">
+    Confirm the creation. The squad is saved in an inactive state — you still need to add agents before linking it to a channel.
+  </Step>
+  <Step title="Review the summary">
+    The squad details screen opens automatically. Confirm the name, description, and mode before proceeding to add agents.
+  </Step>
+</Steps>
+
+## Step 2: Add agents to the squad
+
+On the squad details screen, click **Add agent** to include members:
+
+- The limit is **20 active agents** per squad. Deactivated agents do not count toward this limit.
+- Each agent retains its own LLM, personality, and integration configuration — the squad does not override these settings.
+
+When adding an agent, select the appropriate role according to the squad mode:
+
+- **Hierarchical mode:** define one agent as `manager` and the rest as `member`.
+- **Horizontal mode:** define one agent as `principal` and the rest as `member` or `specialist`.
+
+## Promoting an agent to Manager or Principal
+
+After adding an agent to the squad, you can change their role directly in the squad's member list:
+
+- Click the options menu next to the agent's name.
+- Select **Change role**.
+- Choose the new role in the selector displayed.
+- Confirm the change.
+
+<Note>
+  Each squad accepts only one `manager` (hierarchical mode) or one `principal` (horizontal mode). Promoting a second agent to the leadership role automatically replaces the previous one.
+</Note>
+
+## Copying the Squad ID
+
+The Squad ID is the squad's unique identifier, required for programmatic linking via API or for reference in integrations:
+
+- On the squad details screen, locate the **Squad ID** field in the information panel.
+- Click the copy icon next to the ID to copy it to the clipboard.
+
+<Tip>
+  Keep the Squad ID in a safe place if you plan to use the Timely.ai API to create or update channel links programmatically. The ID does not change even if the squad's name is changed.
+</Tip>
+
+## Managing squads over time
+
+- **Add agents:** use the **Add agent** button at any time. The 20 active agents limit always applies.
+- **Remove agents:** click the agent's options menu and select **Remove from squad**. Squads with active conversations (`hasActiveConversations`) cannot be deleted — transfer or close the open conversations first.
+- **Edit name and description:** click **Edit squad** in the details panel to update this information.
+- **Delete the squad:** available in the options menu of the squads list. The action is irreversible — channels linked to the squad immediately stop receiving new conversations.

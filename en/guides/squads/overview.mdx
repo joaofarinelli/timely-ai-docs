@@ -1,0 +1,41 @@
+---
+title: "What are Squads"
+description: "Understand how squads group specialized agents with automatic routing and intelligent handoff between them."
+---
+
+Squads are groups of agents that collaborate to handle a conversation. Instead of exposing separate agents on each channel, you create a squad and connect that squad to WhatsApp, Instagram, or a widget. From there, the platform decides which agent responds at each moment — and when to transfer the conversation to another agent within the group.
+
+## Core concepts
+
+- **Squad:** a set of two or more agents with a shared service purpose.
+  - Each agent in the squad maintains its own LLM model configuration, personality, and tools.
+  - The limit is **20 active agents** per squad.
+  - A channel can only be linked to one squad at a time.
+- **Agent role in the squad:** defines the function the agent performs within the group.
+  - `manager` — leads routing in hierarchical mode. Central triage point.
+  - `principal` — coordinates without rigid hierarchy in horizontal mode.
+  - `member` — specialist agent that receives delegated or routed tasks.
+  - `specialist` — member variant with declared competencies for criteria-based routing.
+- **Handoff:** transfer of a conversation from one agent to another. Logged with source agent, destination, and reason.
+- **Squad ID:** unique identifier of the squad, used when linking channels programmatically via API.
+
+## Operation modes
+
+The mode determines how routing happens within the squad. The choice is made at creation and affects the required role structure.
+
+- **Hierarchical (`hierarchical`):**
+  - A `manager` agent receives all messages and decides which member to forward to.
+  - The end user interacts with a single entry point — triage happens behind the scenes.
+  - Requires exactly one `manager` to be defined before the squad is activated.
+  - Ideal for: support with specialized queues, service with gradual escalation.
+- **Horizontal (`horizontal`):**
+  - A `principal` agent coordinates, but all members can be triggered directly.
+  - Routing uses criteria such as language, channel, time, or contact tags.
+  - Requires exactly one `principal` to be defined before the squad is activated.
+  - Ideal for: teams with similar competencies, load distribution by criteria.
+
+## Why use squads?
+
+- Resolve complex conversations that require more than one specialty without scaling the prompt of a single agent.
+- Create single entry points per channel while multiple specialists work in parallel.
+- Log and audit every handoff, identifying bottlenecks in the service flow with real data.

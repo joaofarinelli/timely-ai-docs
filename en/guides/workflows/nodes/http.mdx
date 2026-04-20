@@ -1,0 +1,47 @@
+---
+title: "HTTP Request Node"
+description: "Call any external REST API from within your workflow — GET, POST, PUT, PATCH, or DELETE, with custom headers and automatic retry."
+---
+
+## How It Works
+
+The **HTTP Request** node connects the workflow to any external service that exposes a REST API. Execution is synchronous: the flow waits for the response before advancing to the next node.
+
+What the node supports:
+
+- Five HTTP methods: `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`
+- Custom headers with shortcuts for the most common presets (`Content-Type`, `Authorization`, `Accept`, `X-API-Key`)
+- Request body in JSON, Form Data, or plain text — available only for `POST`, `PUT`, and `PATCH`
+- Configurable timeout up to 30000ms (30 seconds)
+- Automatic retry from 0 to 3 attempts with a configurable interval between them
+- `{{ }}` templates in all fields — URL, headers, and body accept dynamic references to flow data
+
+## Configuration Options
+
+**Request tab:**
+
+- **Method and URL** — choose the HTTP verb and enter the full URL; templates like `{{ $trigger.body.id }}` work directly in the URL
+- **Body type** — `json` (textarea editor with highlighting), `form` (key/value pairs encoded as `application/x-www-form-urlencoded`), `text` (free-form), or `none`
+- **Body** — editor with `{{ }}` template support — resolution happens at runtime before sending
+
+**Headers tab:**
+
+- Add headers via preset shortcuts or as custom fields
+- For sensitive values, use `{{ $vars.token }}` instead of hardcoded strings
+
+**Advanced tab:**
+
+- **Timeout** — minimum 1000ms, maximum 30000ms
+- **Retry** — 0, 1, 2, or 3 attempts; retry interval from 100ms to 10000ms
+
+<Note>
+  Avoid inserting tokens and passwords directly in the URL or body. Prefer workflow variables defined in a preceding Set Variable node or retrieved from secure integrations configured in the workspace.
+</Note>
+
+## Common Use Cases
+
+The HTTP node is versatile enough to cover most no-code integrations:
+
+- **Fetch data before acting** — make a GET to the ERP API with the order ID received via webhook and use the response in downstream nodes via `{{ $json.body.field }}`
+- **Register events in external systems** — send a POST to a third-party CRM with contact data collected during the conversation, using `{{ $trigger.parameters.email }}` in the body
+- **Chain dependent calls** — first GET to fetch authentication data, then POST to the main API using the token returned by the first node via `{{ node_auth.body.access_token }}`

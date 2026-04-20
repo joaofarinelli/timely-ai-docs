@@ -1,0 +1,212 @@
+---
+title: "What is an Agent?"
+description: "Understand the complete structure of an agent in Timely.ai — identity, behavior, capabilities, tools, and where it operates."
+---
+
+An agent is the central entity in Timely.ai. It receives messages from your customers, processes them with a language model, queries knowledge bases, triggers external tools, and returns responses — all autonomously, on the channels you configure.
+
+## Agent identity
+
+Identity defines who the agent is before any behavioral instruction. It establishes the framing that the language model uses to interpret every incoming message.
+
+### Role
+
+The role is a short description of the agent's main function within your operation. Examples:
+
+- "customer support assistant"
+- "inbound lead qualifier"
+- "medical appointment scheduler"
+- "collections specialist"
+
+The role is not just a label — it communicates to the model the expected operating context. An agent with the role "financial assistant" interprets ambiguities differently from an agent with the role "consultative salesperson," even if the base prompt is similar.
+
+<Note>
+Keep the role aligned with the agent's internal name. Mismatches between name and role make management harder in workspaces with multiple agents.
+</Note>
+
+### Prompt
+
+The system prompt is the agent's most important instruction. It defines personality, tone of voice, restrictions, conversation flow, and expected behavior examples. A good prompt has four blocks:
+
+- **Identity** — who the agent is and which company it represents
+- **Tone and style** — how it should communicate
+- **What it can do** — list of permitted capabilities
+- **What it must not do** — explicit restrictions to avoid unwanted responses
+
+Timely's prompt editor offers real-time quality analysis, prioritized improvement suggestions, automatic version history, and one-click AI improvement. The character limit is controlled by the platform's `PROMPT_MAX_LENGTH` constant.
+
+<Note>
+Long prompts increase token cost per execution. Use the knowledge base for business-specific information and keep the prompt focused on behavior and tone.
+</Note>
+
+## Settings that shape behavior
+
+Beyond identity, four parameters control how the agent processes and formulates its responses.
+
+### Temperature
+
+Temperature is a numeric value from 0.00 to 1.00 that controls response variability. Low values produce consistent and predictable responses; high values produce more varied and creative responses. Timely uses four ranges with labels:
+
+- **0.00–0.15** — Methodical: responses nearly identical for the same question
+- **0.16–0.35** — Conservative: minimal variation in phrasing
+- **0.36–0.60** — Balanced: moderate variation for general use
+- **0.61–1.00** — Creative/Very creative: visibly different responses each interaction
+
+For customer support, the conservative range (0.20–0.40) produces the best results in most cases.
+
+### Effort
+
+Effort defines the depth of the agent's reasoning, controlled by a slider of 10 to 100 maximum steps. More steps mean more elaborate responses, higher latency, and higher credit consumption. The four levels are:
+
+- **10–20 steps** — Fast: FAQs, greetings, simple confirmations
+- **21–40 steps** — Balanced: general support, lead qualification
+- **41–70 steps** — Detailed: technical analysis, diagnostics
+- **71–100 steps** — Maximum: multi-step reasoning, critical decisions
+
+### Planning
+
+Planning mode defines whether the agent decomposes complex tasks into subtasks before executing. When enabled, the agent plans its steps before acting — useful for flows with multiple chained tools.
+
+**When to enable:**
+
+- Agents that need to call 3 or more tools in sequence
+- Flows where the order of actions matters
+- Tasks that require intermediate verification of results
+- Diagnostics that depend on multiple data sources
+
+**When to keep disabled:**
+
+- Simple support conversations with one or no tools
+- FAQ and direct knowledge base responses
+- High-frequency agents where latency is critical
+- Cases where the prompt already defines the flow explicitly
+
+<Note>
+Active planning increases latency and credit consumption. Use it only when the flow truly requires coordination across multiple actions.
+</Note>
+
+### Reasoning
+
+Reasoning is a capability available in specific models — such as Claude Sonnet 4.6, Claude Opus 4.6, Gemini 3.x, and Kimi K2.5 — that allows the model to "think out loud" before formulating the final response. This significantly improves quality for questions requiring logic, comparisons, or inferences.
+
+**When reasoning helps:**
+
+- Questions involving multiple simultaneous criteria
+- Comparisons between options with pros and cons
+- Diagnostics where the cause must be inferred from symptoms
+
+**Important limitations:**
+
+- Anthropic models with active reasoning force temperature to 1.0 via the API — the temperature slider is disabled
+- OpenAI models (GPT-5.1, GPT-5.2) use internal reasoning without support for external temperature
+- Token cost per execution increases significantly with active reasoning
+
+<Warning>
+Enabling reasoning on models that do not support the feature has no effect. Verify the selected model's compatibility before configuring flows that depend on active reasoning.
+</Warning>
+
+## Expanding agent capabilities
+
+Beyond base language processing, each agent can be equipped with additional resources that extend what it can accomplish in a conversation.
+
+### Memory
+
+Memory allows the agent to retain information from previous conversations with the same contact. With active memory, the agent recognizes returning customers, recalls context from past interactions, and avoids asking for information that has already been provided.
+
+- Ideal for long-term relationships where history matters
+- Requires the contact to be identified in Timely's CRM
+
+### Knowledge bases
+
+The knowledge base connects the agent to documents, FAQs, manuals, and indexed data sources. Using semantic retrieval (RAG), the system automatically injects the most relevant knowledge snippets for each question — without needing to put all that information in the prompt.
+
+- Supports PDF, DOCX, TXT, URL documents and Q&A pairs
+- Retrieval is semantic: the agent finds answers even when the question uses different words from the document
+- Update documents regularly — outdated knowledge produces incorrect responses with high confidence
+
+### Tables
+
+Tables allow the agent to query and write structured data in real time — prices, inventories, schedules, per-customer settings. Unlike static documents, tables support reading and writing during the conversation.
+
+- Useful for product catalogs with dynamic pricing
+- Allow recording data collected during the conversation (lead qualification, forms)
+- Integrate with external tools via Composio for automatic synchronization
+
+### Workflows
+
+Workflows define sequences of actions the agent executes autonomously — for example, checking calendar availability, creating an event, sending a confirmation email, and updating the CRM, all in a single conversation.
+
+- Defined as action graphs with conditionals and branches
+- Can combine multiple tools in sequence
+- Reduce the need for detailed instructions in the prompt for repetitive flows
+
+### MCPs (Model Context Protocol)
+
+MCPs are context servers that expose tools and data to the agent at runtime, following the open Model Context Protocol standard. They allow connecting the agent to internal systems or custom data sources without depending on pre-built integrations.
+
+- Compatible with any system that implements the MCP protocol
+- Allow integrations with legacy systems, internal databases, or proprietary APIs
+- Require technical configuration of the MCP server in the client's infrastructure
+
+<Note>
+MCPs are an advanced feature aimed at technical teams. For most use cases, Composio integrations cover the needs without server configuration.
+</Note>
+
+## Acting through tools
+
+An agent in Timely is not just a chat interface — it can execute real actions in external systems. Tools are the bridge between the conversation and the real world.
+
+Available tools via Composio include:
+
+- **Google Calendar** — create, read, and update calendar events
+- **Google Sheets** — read and write data in spreadsheets
+- **Slack** — send messages in channels and DMs
+- **HubSpot** — create and update contacts and deals in the CRM
+- **Gmail** — read and send emails
+- **Notion** — create and update database pages
+- **Stripe** — query charges and subscriptions
+- **Google Meet** — create meeting links and query recordings
+- **Meta Ads** — manage campaigns and audiences
+
+The agent automatically decides when and how to call each tool based on the conversation context and prompt instructions. The execution canvas records every call with sent parameters, received response, and latency — enabling complete auditing.
+
+<Note>
+For each tool used, the user must authorize the connection via OAuth or API key within the workspace's Composio integration settings.
+</Note>
+
+## Conditional prompts (Advanced)
+
+Conditional prompts allow a single agent to behave differently depending on conversation variables. Instead of creating multiple agents for each customer segment, you define instruction blocks that activate only when certain conditions are true.
+
+Variables available for conditionals include `contact.stage`, `contact.plan`, `channel`, `contact.language`, and `contact.tags`. The conditional block instructions are concatenated to the base prompt — they do not replace it.
+
+Usage examples:
+
+- More formal tone for enterprise plan contacts
+- Urgency instructions when the contact is in the "hot lead" stage
+- Responses in Spanish when `contact.language = "es"`
+- Shorter messages when `channel = "instagram"`
+
+<Warning>
+Conditional blocks with instructions that contradict the base prompt generate unpredictable behavior. Test each condition in isolation before combining multiple ones.
+</Warning>
+
+## Where the agent operates
+
+An agent can be published simultaneously on multiple channels:
+
+- **WhatsApp** — via integration with the official Meta Business API
+- **Instagram Direct** — automatic responses to direct messages
+- **Website widget** — embedded chat via JavaScript snippet
+- **REST API** — direct consumption by custom integrations
+
+The same agent can serve across all channels with the same base prompt, differentiating behavior by channel via conditional prompts when needed.
+
+## Why Timely agents are different
+
+Timely is not a fixed-flow chatbot or a generic assistant. Each agent combines adaptive reasoning with access to real tools, a semantic knowledge base, and complete traceability of every execution.
+
+- Every message is processed with full context from the conversation, contact, and configured instructions
+- Tools are called autonomously based on message content — not fixed keywords
+- The execution canvas records every step with input, output, and latency for auditing and debugging
+- Any configuration change takes effect immediately on the next execution — no redeployment needed

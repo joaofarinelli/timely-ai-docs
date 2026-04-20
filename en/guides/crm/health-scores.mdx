@@ -1,0 +1,105 @@
+---
+title: "Health Scores"
+description: "Engagement score automatically calculated for each contact and company, used in segmentation, alerts, and retention automations"
+---
+
+The **Health Score** is a 0–100 rating that measures the engagement level and relationship health with each contact or company. It is calculated automatically every day by the system and serves as the basis for campaign segmentation, churn risk alerts, and retention automations.
+
+<img
+  src="/images/screenshots/placeholder-health-score-dashboard.png"
+  alt="Health score dashboard with risk distribution"
+  className="rounded-lg border"
+/>
+
+## How the Score Is Calculated
+
+The calculation runs every day at 06:00 UTC via the `calculate-health-scores` edge function, which calls the `calculate_company_health_score` stored procedure in PostgreSQL for each active company.
+
+The factors that influence the score include:
+
+| Factor | Weight | Description |
+|-------|------|-----------|
+| Conversation frequency | High | How many interactions occurred in the last 30 days |
+| Recency | High | How many days since the last interaction |
+| Response rate | Medium | % of contact messages that received a reply |
+| Follow-up engagement | Medium | Opens and replies to proactive messages |
+| Profile completeness | Low | Contact fields filled in |
+
+The final result is a number between 0 and 100 with an associated `risk_level`:
+
+<CardGroup cols={3}>
+  <Card title="Green (70–100)" icon="circle-check">
+    Active and engaged contact. Healthy relationship. No action needed.
+  </Card>
+  <Card title="Yellow (40–69)" icon="triangle-exclamation">
+    Declining engagement. Candidate for a reactivation campaign.
+  </Card>
+  <Card title="Red (0–39)" icon="circle-xmark">
+    Inactive contact or at churn risk. Automatic alert triggered.
+  </Card>
+</CardGroup>
+
+## Automatic Alerts
+
+When the score drops to the red range with a negative variation greater than 15 points compared to the previous day (`score_delta <= -15`), the system automatically inserts an event into the lifecycle email queue with the `inactivity-3d` template. This alert notifies the team to act before churn materializes.
+
+<Note>
+  Alerts are sent on a best-effort basis — if the email fails, the event remains with `pending` status in the `lifecycle_email_events` table for automatic retry. You can monitor this in the system health dashboard under **Admin → Follow-up Health**.
+</Note>
+
+## Viewing Scores
+
+<Tabs>
+  <Tab title="By contact">
+    Open any contact's profile in **CRM → Contacts** and see the health score badge at the top of the panel. The number is accompanied by the risk color and the change relative to the previous calculation.
+  </Tab>
+  <Tab title="Company overview">
+    In **Admin → Health Scores**, you see the distribution of your entire base: how many contacts are in green, yellow, and red, with a 30-day trend.
+  </Tab>
+  <Tab title="Follow-up Dashboard">
+    The **Follow-up Health Dashboard** displays operational system metrics: jobs in the queue, completed in the last 24 hours, failures, and active circuit breakers.
+  </Tab>
+</Tabs>
+
+## Using Scores in Segmentation
+
+The health score is a filter available anywhere that has contact filtering:
+
+<Steps>
+  <Step title="Open the contact list">
+    Go to **CRM → Contacts** and click **Advanced filters**.
+  </Step>
+  <Step title="Add a health score filter">
+    Select **Health Score** and define the operator: `less than`, `greater than`, or `between`. E.g., `less than 40` to isolate at-risk contacts.
+  </Step>
+  <Step title="Save the segment (optional)">
+    Name the filter to reuse it as a segment in Broadcasts and Follow-ups without reconfiguring.
+  </Step>
+  <Step title="Act on the segment">
+    Use the segment to trigger a reactivation campaign via Broadcast, configure an automatic follow-up, or assign the contacts to a human agent for review.
+  </Step>
+</Steps>
+
+<Tip>
+  Combine `risk_level = red` with `last_interaction > 7 days` to create an "urgent reactivation" segment — at-risk contacts who have not responded for more than a week. This combination has the highest recovery potential with the least effort.
+</Tip>
+
+## Recalculating Manually
+
+If you imported a large volume of contacts or made significant changes to the data and want to update scores immediately without waiting for the cron, use the API:
+
+```bash
+POST /functions/v1/calculate-health-scores
+Authorization: Bearer <your-service-role-key>
+Content-Type: application/json
+
+{
+  "company_id": "<your-company-id>"
+}
+```
+
+To test without writing to the database, add `"dry_run": true` to the body. The response includes the total number of companies processed, error count, and the calculated risk distribution.
+
+<Note>
+  Manual recalculation consumes database resources proportional to the size of the base. For bases with more than 10,000 contacts, prefer waiting for the daily cron or running it outside peak hours.
+</Note>

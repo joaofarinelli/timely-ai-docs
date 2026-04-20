@@ -1,0 +1,113 @@
+---
+title: "First 10 minutes in the product"
+description: "From zero to your first conversation: create your account, configure an agent, and test it in real time"
+---
+
+No API, no code. We'll configure everything through the dashboard and have an agent responding in under 10 minutes.
+
+<Steps>
+  <Step title="Create your account">
+    Go to [app.timelyai.com.br](https://app.timelyai.com.br) and click **Create account**. Fill in your name, email, and password.
+
+    <Tip>
+      Use your corporate email from the start. It will appear in notifications and in communications with the support team.
+    </Tip>
+  </Step>
+
+  <Step title="Confirm your email">
+    You will receive a confirmation email with a link within 2 minutes. Click the link to activate your account.
+
+    <Note>
+      Can't find it? Check your spam folder or request a resend on the login screen by clicking **Resend confirmation**.
+    </Note>
+  </Step>
+
+  <Step title="Set up your company and workspace">
+    On first access, the onboarding wizard asks for:
+
+    - **Company name** — appears in the dashboard and in reports
+    - **Segment** — helps pre-configure relevant templates
+    - **Workspace name** — use something descriptive like "Support" or "Sales"
+
+    You can create additional workspaces later under **Settings → Workspaces**. Each workspace has isolated agents, channels, and conversations.
+  </Step>
+
+  <Step title="Create your first agent">
+    Navigate to **Agents → New agent**. The wizard takes about 5 minutes:
+
+    1. **Name and avatar** — how the agent will introduce itself to customers
+    2. **LLM model** — we recommend `gpt-4o-mini` to start (great cost-to-performance ratio)
+    3. **Personality and instructions** — the visual editor suggests templates by segment
+    4. **Tone of voice** — formal, casual, technical, friendly
+
+    <Tip>
+      Don't worry about writing the perfect prompt right now. You can adjust it at any time, and the version history saves every change.
+    </Tip>
+  </Step>
+
+  <Step title="Train the agent with a document">
+    Inside the agent, go to the **Training → Add content** tab.
+
+    You can add:
+    - Document (PDF, DOCX, TXT — up to 20 MB)
+    - Free text (paste directly)
+    - Website URL (Timely indexes the content automatically)
+    - Questions and answers (manual Q&A)
+
+    To get started quickly, paste a short text describing your product or service. The agent will immediately start using that content in its responses.
+
+    <Info>
+      RAG processing happens in the background. Large documents may take up to 2 minutes to become available.
+    </Info>
+  </Step>
+
+  <Step title="Connect a channel">
+    Go to **Channels → Add channel**. The **Web widget** is the fastest option for testing:
+
+    1. Select **Widget**
+    2. Choose the agent you just created
+    3. Customize the color, greeting, and position
+    4. Copy the generated JavaScript snippet
+
+    ```html
+    <!-- Paste before </body> on your site -->
+    <script>
+      window.TimelyConfig = { widgetId: "YOUR_WIDGET_ID" };
+    </script>
+    <script src="https://cdn.timelyai.com.br/widget.js" defer></script>
+    ```
+
+    For WhatsApp or Instagram, the connection flow is under **Channels → WhatsApp / Instagram** and uses Meta's Embedded Signup.
+  </Step>
+
+  <Step title="Open the test chat and start chatting">
+    Without publishing anything, go to **Agents → [your agent] → Test Chat**.
+
+    The test chat simulates a real conversation with the agent, including the tools and knowledge base you configured. Send a question about the content you trained the agent on — it should respond based on the document.
+
+    <Tip>
+      Try asking something that is not in the document to see how the agent handles knowledge gaps. Adjust the prompt accordingly.
+    </Tip>
+  </Step>
+</Steps>
+
+## What to explore next
+
+<CardGroup cols={2}>
+  <Card title="Advanced agent settings" href="/en/guides/agents/settings/prompt">
+    Tools, human handoff, conditional prompts, and voice.
+  </Card>
+  <Card title="Connect official WhatsApp" href="/en/guides/channels/types/whatsapp-waba">
+    WABA with support for approved templates and higher send volumes.
+  </Card>
+  <Card title="Train with multiple documents" href="/en/guides/agents/training">
+    Advanced RAG, automatic re-indexing, and relevance control.
+  </Card>
+  <Card title="Invite your team" href="/en/guides/team/members">
+    Add attendants, define roles, and configure automatic handoff.
+  </Card>
+</CardGroup>
+
+<Note>
+  Want to integrate via API? See the [API Quickstart](/en/start/quickstart-api) to make your first call in 5 minutes.
+</Note>

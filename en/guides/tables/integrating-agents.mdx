@@ -1,0 +1,93 @@
+---
+title: "Integrating Tables with Agents"
+description: "Configure the agent to query, filter, insert, and update rows in tables during conversations. Permission architecture, data flows, and best practices."
+---
+
+## How the Integration Works
+
+When a table is connected to an agent, the agent receives tools to interact with the data in real time. Each user message can trigger one or more actions on the table — a search to formulate a response, an insertion to record collected information, or an update to modify an existing record.
+
+The agent decides which action to take based on the system prompt instructions and the conversation context. Actions are executed by the `datagrid-tool-exec` function, which validates permissions, data types, and limits before modifying any record.
+
+## Available Datagrid Tools
+
+### Row Insertion (insert_row)
+
+The `insert_row` action creates a new record in the table with values collected by the agent during the conversation. The agent only executes the insertion after collecting all required fields — defined in each column's configuration. If a required field was not provided by the user, the agent requests it before proceeding.
+
+> Typical use case: the agent collects a lead's name, email, and interest during the conversation and inserts the data into the "Leads" table at the end, without human intervention.
+
+### Row Update (update_row)
+
+The `update_row` action modifies the values of an existing record. To update, the agent first locates the row via search (semantic or similarity), obtains the `row_id`, and then executes the update with the new values.
+
+> Typical use case: the user says they want to update their contact email. The agent searches for the record by name, requests the new email, and executes `update_row` with the updated field.
+
+### Semantic Row Search (semantic_search)
+
+The `semantic_search` action converts the agent's query into an embedding and runs a cosine similarity search on columns with active semantic indexing. Returns rows ordered by semantic relevance, with a similarity score.
+
+> Typical use case: the user asks about products for dry hair and the agent executes `semantic_search` on the catalog table, finding rows with "hydration", "hair nourishment", and "treatment for dry strands" even without exact word matches.
+
+### Similarity Row Search (similarity_search)
+
+The `similarity_search` action performs a text similarity search without vectorization — faster and without an embeddings API cost, but less capable with language variations. Ideal for identifiers, SKUs, and technical terms where approximate matching is more useful than semantic search.
+
+> Typical use case: the user provides the product code "NK-AIR-42" and the agent executes `similarity_search` to locate that exact record in the catalog.
+
+### Final Note
+
+All four actions can be combined in the same agent. A customer service agent can use `semantic_search` to query the catalog, `insert_row` to register leads, and `update_row` to modify order status — all configured from the system prompt.
+
+## Permission Architecture
+
+Each action is activated individually when connecting the table to the agent. There is no need to grant all actions — enable only what the use case requires.
+
+| Tool | Permission Level | Read/Write | Semantic Access |
+|------------|-------------------|-----------------|------------------|
+| `semantic_search` | Query | Read-only | Yes — requires columns with semantic search enabled |
+| `similarity_search` | Query | Read-only | No — text search without vectorization |
+| `insert_row` | Write | Write (create) | Not applicable |
+| `update_row` | Write | Write (modify) | No — locates the row by `row_id` obtained previously via search |
+
+## Connecting a Table to an Agent
+
+<Steps>
+  <Step title="Access the agent">
+    In the sidebar, click **Agents** and select the agent that will use the table.
+  </Step>
+  <Step title="Open the Tools tab">
+    Inside the agent configuration, go to the **Tools** (or **Tables**) tab. The list of available tables in the workspace is displayed.
+  </Step>
+  <Step title="Add the table">
+    Click **+ Add table** and select the desired table. Only tables in the same workspace are available.
+  </Step>
+  <Step title="Configure actions and instruct in the prompt">
+    Select which actions the agent can execute (query, insertion, update). Then, in the agent's system prompt, add specific instructions about when and how to use the table: which action to use, which fields to collect, and what behavior to adopt when the search returns no results.
+  </Step>
+</Steps>
+
+## Example — Using Multiple Tools
+
+> A customer service agent for a clinic has access to the "Professional Schedule" table. When the user asks "is there an available slot with Dr. Ana tomorrow?", the agent executes `semantic_search` with the query "Dr. Ana available tomorrow" and retrieves the registered time slots. When confirming the appointment, the agent executes `update_row` to decrement the available slots for the chosen time slot, and `insert_row` on the "Appointments" table to record the patient's details.
+
+## Data Flow — Agent + Table
+
+When the agent receives a user message, the data flow follows this sequence:
+
+1. The LLM processes the message and identifies the intent (query, data collection, update).
+2. Based on the prompt instructions, the agent decides which datagrid tool to trigger.
+3. The `datagrid-tool-exec` function receives the request, validates permissions and data types, and executes the action on the database.
+4. The result (rows found, confirmation of insertion or update) is returned to the LLM.
+5. The LLM formulates the final response to the user based on the data returned by the table.
+
+Insert and update actions are permanent and immediate — there is no automatic undo from the agent interface. Incorrect data inserted by the agent must be corrected manually in the table interface.
+
+## Best Practices
+
+| Recommendation | Description |
+|--------------|-----------|
+| Be specific in the prompt | The agent has access to multiple tools simultaneously. Vague instructions may cause the agent not to use the table when it should, or to use it when it should not. Explicitly indicate when each action should be triggered. |
+| Limit actions to the minimum needed | If the table is a read-only catalog, do not enable insertion or update. This reduces the risk of incorrect data and simplifies the expected agent behavior. |
+| Use required fields judiciously | Required fields ensure the agent collects critical information before inserting. In excess, they make conversations long and may frustrate the user. |
+| Test with edge cases | Simulate users who skip questions, give vague answers, or provide data in the wrong format. Verify how the agent handles each situation before activating in production. |

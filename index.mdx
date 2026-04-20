@@ -10,7 +10,7 @@ mode: "custom"
   width: "100%",
   minHeight: "260px",
   overflow: "hidden",
-  background: "radial-gradient(ellipse at top left, #1e40af 0%, #2563EB 45%, #4f46e5 100%)",
+  background: "linear-gradient(180deg, #000000 0%, #000000 40%, #0a1a3a 80%, #0f2b6b 100%)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -27,9 +27,9 @@ mode: "custom"
   </div>
 </div>
 
-<div style={{ maxWidth: "960px", margin: "0 auto", padding: "48px 24px" }}>
+<div className="home-cards" style={{ maxWidth: "1060px", margin: "0 auto", padding: "48px 24px" }}>
 
-## O que você pode fazer
+<h2 className="text-slate-900 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, marginTop: 0, marginBottom: "24px" }}>O que você pode fazer</h2>
 
 <CardGroup cols={3}>
   <Card title="Agentes de IA" icon="robot" href="/guides/agents/overview">
@@ -55,7 +55,7 @@ mode: "custom"
   </Card>
 </CardGroup>
 
-## Primeiros passos
+<h2 className="text-slate-900 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, marginTop: "48px", marginBottom: "24px" }}>Primeiros passos</h2>
 
 <CardGroup cols={3}>
   <Card title="Quickstart produto" icon="rocket" href="/start/quickstart-product">
@@ -75,45 +75,55 @@ mode: "custom"
   </Card>
 </CardGroup>
 
-<Accordion title="Mais recursos" icon="circle-plus">
-  <CardGroup cols={3}>
-    <Card title="Rate limits" icon="gauge" href="/start/rate-limits">
-      Limites e paginação.
-    </Card>
-    <Card title="Widget web" icon="globe" href="/guides/channels/types/widget">
-      Chat embeddable com voz.
-    </Card>
-    <Card title="Inbox" icon="inbox" href="/guides/inbox/chat-history">
-      Atendimento humano + takeover.
-    </Card>
-    <Card title="CRM" icon="address-book" href="/guides/crm/contacts">
-      Contatos, pipeline e datagrids.
-    </Card>
-    <Card title="Squads" icon="users-gear" href="/guides/squads/overview">
-      Roteamento entre múltiplos agentes.
-    </Card>
-    <Card title="Time AI" icon="sparkles" href="/guides/time-ai/overview">
-      Copilot interno da equipe.
-    </Card>
-    <Card title="Workers" icon="robot-astromech" href="/guides/workers/overview">
-      Tarefas assíncronas longas.
-    </Card>
-    <Card title="MCP servers" icon="plug-circle-plus" href="/api-reference/mcp-servers/referencia">
-      Conecte tools externas via MCP.
-    </Card>
-    <Card title="HTTP collections" icon="file-code" href="/http/overview">
-      Postman e Bruno prontos.
-    </Card>
-    <Card title="AI skills" icon="wand-magic-sparkles" href="/ai/overview">
-      Cursor, Claude e VS Code.
-    </Card>
-    <Card title="Changelog" icon="clock-rotate-left" href="/changelog">
-      Histórico de releases.
-    </Card>
-  </CardGroup>
-</Accordion>
+<div className="more-wrapper">
+  <div id="more-extras" className="more-extras">
+    <div style={{ marginTop: "24px", marginBottom: "8px" }}>
+      <CardGroup cols={3}>
+        <Card title="Rate limits" icon="gauge" href="/start/rate-limits">
+          Limites e paginação.
+        </Card>
+        <Card title="Widget web" icon="globe" href="/guides/channels/types/widget">
+          Chat embeddable com voz.
+        </Card>
+        <Card title="Inbox" icon="inbox" href="/guides/inbox/chat-history">
+          Atendimento humano + takeover.
+        </Card>
+        <Card title="CRM" icon="address-book" href="/guides/crm/contacts">
+          Contatos, pipeline e datagrids.
+        </Card>
+        <Card title="Squads" icon="users-gear" href="/guides/squads/overview">
+          Roteamento entre múltiplos agentes.
+        </Card>
+        <Card title="Time AI" icon="sparkles" href="/guides/time-ai/overview">
+          Copilot interno da equipe.
+        </Card>
+        <Card title="Workers" icon="robot-astromech" href="/guides/workers/overview">
+          Tarefas assíncronas longas.
+        </Card>
+        <Card title="MCP servers" icon="plug-circle-plus" href="/api-reference/mcp-servers/referencia">
+          Conecte tools externas via MCP.
+        </Card>
+        <Card title="HTTP collections" icon="file-code" href="/http/overview">
+          Postman e Bruno prontos.
+        </Card>
+        <Card title="AI skills" icon="wand-magic-sparkles" href="/ai/overview">
+          Cursor, Claude e VS Code.
+        </Card>
+        <Card title="Changelog" icon="clock-rotate-left" href="/changelog">
+          Histórico de releases.
+        </Card>
+      </CardGroup>
+    </div>
+  </div>
+  <div className="more-btn-row">
+    <a href="#more-extras" className="load-btn load-btn-open">Carregar mais</a>
+    <a href="#more-close" className="load-btn load-btn-close">Mostrar menos</a>
+  </div>
+  <div id="more-close" />
+</div>
 
-## Saiba mais sobre a Timely.ai
+
+<h2 className="text-slate-900 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, marginTop: "48px", marginBottom: "24px" }}>Saiba mais sobre a Timely.ai</h2>
 
 <CardGroup cols={3}>
   <Card title="Glossário" icon="book-open" href="/start/glossario">

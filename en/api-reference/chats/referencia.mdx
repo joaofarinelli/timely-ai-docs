@@ -1,0 +1,66 @@
+---
+title: "Chats Reference"
+sidebarTitle: "Reference"
+description: "Endpoints to operate on active chats — send messages as a human agent, manage handoff, and close support sessions"
+---
+
+## Concept
+
+**Chats** is the group of endpoints focused on real-time human support operations — what happens when a human agent takes over a conversation that was being managed by AI. While the Conversations group provides a complete view of history (reading, searching, analysis), the Chats group is action-oriented: sending messages on behalf of a human agent, starting and stopping human mode, and deleting messages from active chats.
+
+The practical difference: use **Conversations** to access and analyze historical data; use **Chats** when you are building a real-time human support interface — such as a custom inbox, a support panel, or an integration with a help desk system.
+
+## Handoff: How It Works
+
+When a human agent needs to take over a conversation from the AI:
+
+```
+1. POST /v1/chats/{id}/start-human
+   → conversation status changes to "human"
+   → AI agent stops responding automatically
+   → "agent.handoff_started" webhook is fired
+
+2. Agent replies via POST /v1/chats/{id}/messages
+   → message appears to the customer through the original channel
+
+3. POST /v1/chats/{id}/stop-human
+   → status returns to "open"
+   → AI agent resumes control
+   → "agent.handoff_completed" webhook is fired
+```
+
+## Main Chat Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Chat ID (same as conversation_id) |
+| `status` | enum | `open` \| `human` \| `closed` |
+| `assigned_to` | string (UUID) | ID of the active human agent |
+| `human_started_at` | string | ISO 8601 handoff start timestamp |
+| `channel_id` | string (UUID) | Channel through which messages are sent |
+| `contact_id` | string (UUID) | Contact being attended to |
+
+## Chat Message Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Message ID |
+| `conversation_id` | string (UUID) | Conversation it belongs to |
+| `content` | string | Text content |
+| `type` | enum | `text` \| `image` \| `audio` \| `video` \| `document` |
+| `sender_type` | enum | `agent` (AI) \| `human` \| `contact` |
+| `sender_id` | string (UUID) | ID of the human or agent sender |
+| `status` | enum | `sent` \| `delivered` \| `read` \| `failed` |
+| `created_at` | string | ISO 8601 send timestamp |
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

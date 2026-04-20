@@ -1,0 +1,92 @@
+---
+title: "Broadcasts"
+description: "Send broadcast campaigns via WhatsApp or other channels using the step-by-step creator, the intelligent speed optimizer, and real-time metrics."
+---
+
+Broadcasts let you send messages in bulk to segmented contact lists — whether for a promotion, an announcement, a billing reminder, or any mass communication. Timely.ai automatically controls the sending pace to protect your number's reputation.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-broadcasts-list.png" alt="Broadcast campaign list" />
+</Frame>
+
+## Creating a campaign
+
+The campaign creator follows a multi-step workflow. You advance to the next step only after filling in the required information for the current one.
+
+<Steps>
+  <Step title="Basic information">
+    Set the campaign name, the sending channel, and the agent responsible for the conversation after the broadcast.
+  </Step>
+  <Step title="Recipient selection">
+    Choose contacts manually, by tag, by CRM segment, or import a list. The panel displays the total number of eligible recipients in real time.
+  </Step>
+  <Step title="Message content">
+    Write the message or select an approved template. You can use dynamic variables (e.g., `{{name}}`) that are substituted individually for each contact.
+  </Step>
+  <Step title="Sending method">
+    Choose between immediate or scheduled sending. For scheduled sending, set the date and time.
+  </Step>
+  <Step title="Review and budget">
+    Review the campaign summary, the final number of recipients, and the estimated Credits. Confirm to create the campaign.
+  </Step>
+</Steps>
+
+<Note>
+  Created campaigns have **draft** status. They will only be sent after you click **Start** or when the scheduled time arrives.
+</Note>
+
+## Lifecycle status
+
+| Status | Description |
+|---|---|
+| `draft` | Created, waiting for user action |
+| `scheduled` | Scheduled for future sending |
+| `running` | Actively being processed |
+| `paused` | Manually paused |
+| `completed` | All sends processed |
+| `cancelled` | Cancelled by the user |
+| `failed` | Terminated with a critical error |
+
+You can pause and resume a `running` campaign, or cancel a `scheduled` or `paused` campaign at any time.
+
+## Speed Optimizer
+
+The Speed Optimizer analyzes your account's sending history from the last 24 hours and automatically adjusts the campaign pace to maximize delivery rate.
+
+<CardGroup cols={3}>
+  <Card title="High failure rate (>10%)" icon="triangle-exclamation">
+    Interval of 10–15 min between messages. Max 4 per hour.
+  </Card>
+  <Card title="Moderate rate (5–10%)" icon="circle-exclamation">
+    Interval of 5–10 min between messages. Max 8 per hour.
+  </Card>
+  <Card title="Low rate (<5%)" icon="circle-check">
+    Interval of 1–5 min. Up to 20 per hour (10 at high volume).
+  </Card>
+</CardGroup>
+
+When there is no history, the system uses a conservative pace of 5 minutes between messages and a maximum of 12 per hour. The interval includes a ±20% variance to appear more natural.
+
+<Tip>
+  The Speed Optimizer is activated automatically. No extra configuration is needed — but you can see the current reasoning in the campaign panel while it is running.
+</Tip>
+
+## Campaign metrics
+
+During and after sending, you can track metrics directly in the campaign list:
+
+| Metric | What it measures |
+|---|---|
+| **Total sent** | Messages processed by the dispatcher |
+| **Delivered** | Delivery confirmation on the channel |
+| **Read** | Read confirmation (when available on the channel) |
+| **Failed** | Messages that could not be delivered |
+| **Progress (%)** | `delivered / total_recipients × 100` |
+
+<Warning>
+  Messages with `failed` status are not automatically resent. If the failure rate is high, pause the campaign, investigate the cause (e.g., invalid number, channel API limit reached), and resume only after fixing the issue.
+</Warning>
+
+## Duplicating a campaign
+
+To reuse an existing campaign, click **Duplicate** in the row's action menu. The copy is created with `draft` status and you can edit any field before starting.

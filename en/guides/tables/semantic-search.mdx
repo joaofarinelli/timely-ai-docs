@@ -1,0 +1,34 @@
+---
+title: "Semantic Search in Tables"
+description: "How to enable semantic indexing on text columns, understand the available search types, and interpret similarity results."
+---
+
+**Semantic search** in tables allows the agent to find rows based on the meaning of the query, not on exact word matching. Internally, the system uses the `text-embedding-3-small` model (1,536 dimensions) to vectorize the values of enabled columns. Queries are executed via cosine similarity comparison in the database.
+
+## Example:
+
+> A user asks "do you have any running shoes for long distances?". The table contains a row with the description "High-performance athletic footwear for marathon runners, with reinforced cushioning". The agent finds this row via semantic search even though there are no words in common between the question and the description — because the embeddings capture the semantic proximity between the two texts.
+
+## When to Enable Semantic Search
+
+Enable semantic search on columns where natural language makes sense as a search criterion:
+
+- Product, service, or event description columns
+- Observation, summary, and note columns in text format
+- Category columns written in full ("electronics", "women's", "special promotion")
+- Frequently asked question columns where the user may use varied phrasings
+
+Do not enable semantic search on:
+
+- Columns with unique identifiers (SSN, SKU, order code, internal ID)
+- Columns with numeric values stored as text (e.g., "4990" for $49.90)
+- Columns with coded statuses where exact matching is sufficient (e.g., "active", "inactive", "pending")
+- `Number` and `Boolean` type columns — semantic search is not available for these types
+
+<Note>
+  Each insert or update to a column with semantic search enabled makes a call to OpenAI's embeddings API. For tables with high volumes of simultaneous inserts, enable semantic search only on columns where it genuinely adds value to the agent's behavior.
+</Note>
+
+<Note>
+  The column type cannot be changed after creation. If you need semantic search on a column that was created as `Number` or `Boolean`, you will need to create a new `String` column and migrate the existing data.
+</Note>

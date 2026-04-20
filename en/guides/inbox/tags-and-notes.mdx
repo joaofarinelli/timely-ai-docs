@@ -1,0 +1,108 @@
+---
+title: "Tags and Notes"
+description: "Organize Conversations with labels, add internal Notes visible only to your team, and maintain a complete audit trail"
+---
+
+Tags and Notes are the Inbox's internal organization and collaboration tools. Tags categorize Conversations for filters and reports; Notes are internal comments that the contact never sees, used to pass context between attendants or record important thread information.
+
+<img
+  src="/images/screenshots/placeholder-tags-notes-panel.png"
+  alt="Side panel with Tags and Notes for a Conversation"
+  className="rounded-lg border"
+/>
+
+## Tags
+
+### What they are
+
+Tags are free-text labels applied to a Conversation. They appear as colored badges in the Conversation list and can be used as filters in the Inbox and in Analytics reports.
+
+Usage examples:
+
+- `billing` — Conversation related to a payment or invoice
+- `complaint` — dissatisfied customer, to monitor complaint volume
+- `hot-lead` — identified sales opportunity
+- `bug-reported` — product error reported by the contact
+- `vip` — strategic contact that deserves priority attention
+
+### Adding Tags
+
+<Steps>
+  <Step title="Open the Conversation">
+    Select the thread in the Conversation list to load the central panel.
+  </Step>
+  <Step title="Access the side panel">
+    In the context panel on the right (or in the actions menu in the header), click **Tags**.
+  </Step>
+  <Step title="Type or select">
+    Start typing to filter existing Tags or create a new one by pressing **Enter**. The Tag is created in the Workspace scope.
+  </Step>
+  <Step title="Confirm">
+    The Tag appears immediately in the Conversation list and in the thread header.
+  </Step>
+</Steps>
+
+<Tip>
+  Establish a naming convention for Tags before you start — e.g., prefixes `type-*`, `status-*`, `product-*`. This greatly simplifies filtering and Analytics reports.
+</Tip>
+
+### Filtering by Tags
+
+In the Inbox, use the advanced filter to select one or more Tags. Conversations must have **all** selected Tags to appear (AND logic). For OR, use separate filters in different tabs.
+
+<Note>
+  Tags applied by attendants can also be automatically inferred by the AI Agent via handover rules. Conversations with certain patterns receive Tags like `"complaint"` or `"cancellation"` before they even enter the queue.
+</Note>
+
+## Internal Notes
+
+### What they are
+
+Notes are private team comments, visible only to attendants and managers. The contact never receives or sees Notes. They are ideal for:
+
+- Passing briefings between support shifts
+- Recording sensitive information (e.g., "customer threatened legal action")
+- Noting agreements made outside the platform
+- Documenting exceptions approved by supervision
+
+### Adding a Note
+
+<Steps>
+  <Step title="Open the Conversation">
+    Select the thread in the Inbox.
+  </Step>
+  <Step title="Click 'Internal Note'">
+    In the chat footer, switch the reply mode to **Note**. The text field changes color to indicate internal mode.
+  </Step>
+  <Step title="Write and send">
+    Type the comment and press **Enter**. The Note appears in the chat timeline with a distinct badge — not to be confused with real messages.
+  </Step>
+</Steps>
+
+### Audit trail
+
+<CardGroup cols={2}>
+  <Card title="Complete timeline" icon="timeline">
+    Tags added, Notes created, status changes, and Takeover events all appear together in the Conversation's chronological timeline.
+  </Card>
+  <Card title="Authorship recorded" icon="user-check">
+    Each Note and each Tag change records the attendant's ID and name with an ISO 8601 timestamp.
+  </Card>
+  <Card title="Immutability" icon="lock">
+    Notes cannot be edited after creation — only deleted by owners and managers. This ensures audit trail integrity.
+  </Card>
+  <Card title="Export" icon="download">
+    Notes and Tags history is included in the Conversation export via API. Useful for compliance processes.
+  </Card>
+</CardGroup>
+
+<Note>
+  Attendants with the `attendant` Role can create and view Notes, but cannot delete them. Only `manager` and `owner` have deletion Permission to ensure complete traceability.
+</Note>
+
+## Best practices
+
+- **Be concise** in Notes — the next attendant needs to understand in seconds
+- **Use consistent Tags** — avoid synonyms like `billing`, `payment`, and `invoice` for the same topic
+- **Review Tags periodically** — do a monthly cleanup of Tags that no longer make sense for the business
+- **Combine Tags + Notes** — Tags for categorization, Notes for detailed context

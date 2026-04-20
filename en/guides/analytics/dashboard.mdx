@@ -1,0 +1,76 @@
+---
+title: Analytics Dashboard
+description: Real-time metrics for your customer service — active conversations, response time, queue, and agent performance.
+---
+
+The Analytics Dashboard is the central health view for your customer service operation. It displays real-time updated metrics and historical indicators so you can quickly identify bottlenecks, demand peaks, and improvement opportunities.
+
+## Accessing the dashboard
+
+In the sidebar, click **Analytics**. The **Dashboard** tab is the default view for the section.
+
+<Frame>
+  <img src="/images/analytics-dashboard.png" alt="Analytics dashboard with real-time metric cards" />
+</Frame>
+
+## Real-time metrics
+
+The cards at the top of the page show the current state of customer service, with automatic updates every 60 seconds:
+
+<AccordionGroup>
+  <Accordion title="Active conversations">
+    Total number of service sessions currently in progress. The color indicator (green, yellow, red) signals whether volume is within normal capacity, in alert, or critical based on your historical peaks.
+  </Accordion>
+  <Accordion title="Average response time">
+    Average time between the user's last message and the agent's response, calculated over active conversations from the last 1 hour. Includes variation relative to the previous hour to contextualize the trend.
+  </Accordion>
+  <Accordion title="Queue size">
+    Conversations waiting to be assigned to an agent. A high number here indicates a need to increase service capacity or review the routing configuration.
+  </Accordion>
+  <Accordion title="Resolution rate">
+    Percentage of conversations closed as resolved in the last 24 hours. A drop in this rate may indicate issues with the agents' knowledge base or an increase in demand complexity.
+  </Accordion>
+  <Accordion title="CSAT score">
+    Average satisfaction score collected via post-service surveys. Displayed when there is sufficient data in the selected period.
+  </Accordion>
+</AccordionGroup>
+
+## Period filters
+
+Use the date selector in the upper-right corner to adjust the analysis period:
+
+- Today
+- Last 7 days
+- Last 30 days
+- Custom period (calendar)
+
+<Info>
+  Real-time cards always reflect the current moment, regardless of the period filter. The filter only affects the charts and historical tables below the cards.
+</Info>
+
+## Historical charts
+
+Below the real-time cards, the dashboard displays time-series charts with:
+
+- **Conversation volume by hour** — useful for identifying demand peaks and valleys throughout the day.
+- **Distribution by channel** — breakdown of conversations by WhatsApp, Instagram, widget, and other connected channels.
+- **Agent performance** — ranking of agents with the most conversations, lowest response time, and highest resolution rate.
+- **Conversations by status** — pie chart with the proportion of open, waiting, resolved, and abandoned conversations.
+
+## Visual alerts
+
+Status indicators on the cards follow a consistent pattern:
+
+| Status | Color | Meaning |
+|---|---|---|
+| Good | Green | Within normal limits |
+| Warning | Yellow | Approaching the limit — monitor |
+| Critical | Red | Action required |
+
+## Exporting dashboard data
+
+To export the displayed data, go to **Analytics > Exports** or use the download button available on each chart individually. See more details on the [Report Export](/en/guides/analytics/reports-export) page.
+
+## Required permissions
+
+Only users with the **owner**, **manager**, or **trainer** roles have access to the analytics dashboard. Attendants and members cannot view this section.

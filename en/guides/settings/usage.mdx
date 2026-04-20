@@ -1,0 +1,83 @@
+---
+title: "Usage"
+description: "How to monitor credits, monthly renewable metrics, and permanent plan limits, and how to inspect consumption by agent and use your own providers to reduce costs."
+---
+
+## Overview
+
+The **Usage** section displays the workspace's actual consumption relative to the active plan's limits. Use this panel to track trends, identify agents or channels with high volume, and anticipate the need for an upgrade before reaching the limits.
+
+Access is restricted to members with `manager` or `owner` role. Access it at **Settings > Usage**.
+
+Data is updated in near real time — the typical delay between a processed message and its recording in the panel is a few minutes. Period filters (7 days, 30 days, current month, previous month, and custom range) allow you to isolate specific analysis windows.
+
+## Renewable usage (resets monthly)
+
+Renewable metrics are reset at the beginning of each billing cycle. Current period consumption is compared to the limit included in the plan:
+
+| Metric | Description |
+|---|---|
+| **AI credits consumed** | Total credits used by messages processed by agents in the period. Cost per message varies by LLM model: Claude Haiku 4.5 = 3 credits, Claude Sonnet 4.6 = 4 credits, GPT-5.1 = 4 credits, Gemini 2.5 Flash = 2 credits, Kimi K2.5 = 1 credit |
+| **Agent executions** | Number of times an agent was triggered by an incoming message in the period |
+| **Processed messages** | Total messages that went through the AI pipeline (inbound + outbound) across all channels |
+| **Active members** | Users with access to the workspace in the period (compared to the plan limit) |
+
+## Permanent usage (plan-based limits)
+
+Permanent limits do not renew monthly — they are determined by the contracted plan and remain in effect as long as the plan is active:
+
+| Limit | Description |
+|---|---|
+| **AI agents** | Maximum number of active agents that can be created in the workspace |
+| **Squads** | Maximum number of squads that can be created and linked to channels |
+| **Connected channels** | Total active service channels (WhatsApp, Instagram, widget, etc.) |
+| **Composio integrations** | Access to external integrations via Composio (available on all plans) |
+
+## Inspecting credit consumption by agent
+
+The aggregate view in the panel shows total workspace consumption. To identify which agents account for the highest credit volume:
+
+- In the **Credits by agent** section, each agent appears with its total consumption for the filtered period.
+- Click the agent's name to see the breakdown by day and by conversation.
+- The LLM model associated with each agent appears next to the name — use this information to assess whether a more economical model would suit the use case.
+
+<Note>
+  Agents in squads consume credits individually. A handoff between two agents within a squad counts as two separate executions — one for the agent that received the message and one for the agent that responded.
+</Note>
+
+## Own providers
+
+When you connect your own provider key (OpenAI, Anthropic, Google, or OpenRouter), token consumption is billed directly to your provider account — not to the credits included in the Timely.ai plan:
+
+- Agents configured with an own provider appear in the **External providers** section of the Usage panel.
+- The volume of tokens (input and output) processed by these agents is displayed for monitoring purposes, but does not deduct from the plan's credit balance.
+- The actual cost is visible in the provider's billing panel (e.g., platform.openai.com or console.anthropic.com).
+
+<Tip>
+  Workspaces with high message volume on premium models (such as Claude Opus 4.6 at 20 credits/msg) can significantly reduce cost per message by migrating to an own provider with a volume contract. Compare the provider's cost per token with the equivalent cost in plan credits before deciding.
+</Tip>
+
+## Best practices
+
+- Access the Usage panel at least once a week during growth periods. Consumption that seems under control can double quickly with a volume increase in channels.
+- Monitor separately the agents using high-credit models. If an agent uses Claude Opus 4.6 (20 credits/msg) for simple tasks, migrate to Claude Haiku 4.5 (3 credits/msg) or Kimi K2.5 (1 credit/msg).
+- Use the custom range filter to isolate the impact of marketing campaigns or broadcasts — volume spikes during these periods can distort monthly projections.
+- If the projection indicates credit limit will be exceeded before the end of the cycle, upgrade in advance to avoid message blocking.
+- Configure usage alerts in **Settings > Profile > Notifications** to receive automatic emails when consumption reaches 70%, 90%, and 100% of the limit.
+
+## Frequently asked questions
+
+**What happens when the plan credits run out mid-month?**
+It depends on the plan configuration. Plans with paid overage continue processing messages and the additional cost is charged on the next invoice. Plans with a hard limit queue or block new messages until the cycle restarts or an upgrade is made.
+
+**Do Workers consume plan credits?**
+Yes. Messages sent in Workers sessions are processed by the same agent pipeline and consume credits normally.
+
+**Do agents in squads consume separate credits?**
+Yes. Each agent within a squad consumes credits independently according to the LLM model configured for it.
+
+**Can I view consumption for a specific workspace if I have multiple?**
+Yes. The workspace selector at the top of the Usage panel lets you switch between workspaces and view each one's consumption individually.
+
+**Do unused credits accumulate to the next month?**
+No. Renewable credits do not accumulate — the remaining balance at the end of the cycle is zeroed at renewal. Only annual plans receive the full year's credits at once, without monthly renewal.

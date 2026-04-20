@@ -1,0 +1,81 @@
+---
+title: "Knowledge Search Tool"
+description: "Allow the agent to semantically query documents, websites, Q&As, and workspace texts when responding — using vector search with RAG."
+---
+
+## What is a knowledge base?
+
+A knowledge base is a repository of structured, indexed content that the agent can query during a conversation. In Timely.ai, it acts as the workspace's long-term memory: information that doesn't fit or shouldn't stay in the agent's prompt is registered here and retrieved only when relevant.
+
+The knowledge base accepts different types of content:
+
+- **Documents** — PDF, Word, or text files imported directly.
+- **Crawled websites** — URLs whose content is automatically indexed by the platform.
+- **Free text** — manually entered text blocks, such as policies, scripts, and procedures.
+- **Q&As** — question-and-answer pairs that the agent uses as a direct reference.
+- **Structured data** — tables and lists converted into searchable chunks.
+
+All registered content goes through a process of segmentation into chunks and generation of vector embeddings. This processing happens at ingestion and is what makes semantic search possible.
+
+## How the tool works
+
+When the agent triggers the knowledge search tool, the process follows three steps:
+
+- The user's query is converted into a vector embedding using OpenAI's `text-embedding-3-small` model (1,536 dimensions).
+- This embedding is compared with the embeddings of the chunks already indexed in the base, using cosine similarity.
+- The chunks with the highest similarity scores are returned and injected into the agent's context before response generation.
+
+The search is semantic — it does not depend on exact word matching. The agent finds relevant content even when the user uses different vocabulary from what is in the registered documents.
+
+## Execution options
+
+You can control how and when the tool is triggered directly in the tool settings in the agent.
+
+### Always execute
+
+When the **Always execute** option is enabled, the agent queries the knowledge base in every response, regardless of the content of the user's message.
+
+- Recommended for agents whose primary role is to answer questions about the product or company.
+- Ensures the agent always considers the registered content, but increases cost per response.
+
+### Pre-select documents
+
+When the **Pre-select documents** option is enabled, you define which specific documents from the base the agent should query, instead of searching all available content.
+
+- Useful when the knowledge base is large and the agent should only respond about a defined scope.
+- Reduces the risk of the agent retrieving irrelevant content from other domains registered in the same base.
+
+## When to use a knowledge base
+
+Use the knowledge search tool when the ideal response depends on content specific to your business that changes frequently or is too extensive for the prompt:
+
+- Product documentation with frequently updated versions.
+- Internal policies that vary by region or customer type.
+- Service catalogs with detailed descriptions.
+
+<Note>
+The quality of the search directly depends on the quality of the indexed content. Well-structured documents with clear titles and paragraphs generate better chunks and more precise results than continuous text without formatting.
+</Note>
+
+## Configuration example
+
+<Steps>
+  <Step title="Add and activate the tool in the agent">
+    In the agent panel, go to the tools tab and click **Add tool**. Select **Knowledge search** from the catalog. In the tool settings, choose the workspace knowledge base the agent should query. Set the number of results (top-k) — the default is 10 — and adjust the similarity threshold if needed.
+  </Step>
+  <Step title="Validate in the Playground">
+    With the tool activated, open the agent's Playground and ask questions about the content indexed in the base. Check whether the agent retrieves the correct excerpts and whether the response incorporates the information coherently. Adjust the top-k and similarity threshold based on what you observe.
+  </Step>
+</Steps>
+
+## Best practices
+
+- Structure content with headings and sections — chunks generated from well-formatted text have better quality.
+- Use the Q&A format for frequently asked questions — the match between the user's question and the indexed question tends to be more precise.
+- Avoid very long documents without structure — continuous text generates generic chunks and imprecise results.
+- Review indexed content periodically — outdated documents cause the agent to respond with incorrect information.
+- Combine the tool with prompt instructions — guide the agent on when to search the base and when to ask the user for more information before searching.
+
+## Key point
+
+The knowledge search tool transforms the agent into a dynamic specialist about your business — without needing to embed all the content in the prompt. The key to good results lies in the quality of the indexed content and careful configuration of the top-k and similarity threshold.

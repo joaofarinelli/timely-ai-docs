@@ -1,0 +1,94 @@
+---
+title: "Website Crawler"
+description: "Automatically index pages from your website — the crawler extracts content, generates embeddings, and keeps the Knowledge Base up to date."
+---
+
+The Website Crawler lets you add your website content to the Knowledge Base without copying and pasting manually. Simply provide the URL and configure the crawl depth. Timely.ai uses [Firecrawl](https://www.firecrawl.dev) to extract the content of each page and then processes the embeddings automatically.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-website-crawler.png" alt="Indexed sites manager" />
+</Frame>
+
+## Crawl Modes
+
+<Tabs>
+  <Tab title="Scrape (single page)">
+    Extracts content from **one specific URL**. Use for standalone pages such as a FAQ, a pricing page, or a specific blog post.
+
+    Faster — result available in seconds.
+  </Tab>
+  <Tab title="Crawl (full site)">
+    Traverses the site starting from the root URL, following internal links up to the configured limit. Use to index an entire documentation site or a full blog.
+
+    Slower — progress visible in real time.
+  </Tab>
+</Tabs>
+
+## Indexing a Website
+
+<Steps>
+  <Step title="Open the Website Crawler">
+    In the agent, go to **Knowledge Base > Website Crawler**.
+  </Step>
+  <Step title="Enter the URL">
+    Paste the URL of the page or root site. Include `https://`.
+  </Step>
+  <Step title="Choose the mode">
+    Select **Scrape** for a single page or **Crawl** for full site traversal.
+  </Step>
+  <Step title="Configure limits (Crawl only)">
+    Set the maximum number of pages (`limit`) and the maximum navigation depth (`max_depth`).
+  </Step>
+  <Step title="Start the crawl">
+    Click **Start**. A crawl job is created and you can track the progress in real time.
+  </Step>
+</Steps>
+
+## Configuration Parameters
+
+| Parameter | Mode | Description |
+|---|---|---|
+| `url` | Both | Entry URL for the crawl |
+| `crawl_type` | Both | `scrape` or `crawl` |
+| `limit` | Crawl | Maximum number of pages to process |
+| `max_depth` | Crawl | Maximum link depth to follow from the root |
+
+<Note>
+  The `crawl` mode follows only internal links from the same domain. External links are not crawled, preserving the scope of the indexed content.
+</Note>
+
+## Crawl Job Status
+
+| Status | Description |
+|---|---|
+| `started` | Job started, awaiting response from Firecrawl |
+| `crawling` | Actively traversing pages |
+| `processing_embeddings` | Generating vectors for extracted chunks |
+| `completed` | Indexing completed successfully |
+| `failed` | Error during crawling or processing |
+
+Progress is updated in real time on the panel: `pages crawled / total pages`.
+
+## Viewing Indexed Pages
+
+After completion, each crawled page appears as an individual item in the list. For each page you see:
+
+- URL and title
+- Preview of extracted content
+- Number of chunks generated
+- Quality score (when available)
+- Indexing date
+
+Click the preview icon to read the full content extracted from each page.
+
+## Extracted Content Quality
+
+Firecrawl extracts the main text of the page, discarding navigation, footers, and scripts. Pages with little textual content (e.g., login pages, error pages) may have a low quality score and contribute little to the agent.
+
+<Warning>
+  Sites with bot protection (CAPTCHA, Cloudflare with challenge) may fail during crawling. In that case, use `scrape` mode for individual URLs with static content, or add the content manually via document or Q&A.
+</Warning>
+
+<Tip>
+  Re-index the site whenever content changes significantly. Delete the site from the list and add it again to ensure the agent uses the most up-to-date version — Timely.ai does not perform automatic re-crawling at this time.
+</Tip>

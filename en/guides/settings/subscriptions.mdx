@@ -1,0 +1,138 @@
+---
+title: "Subscriptions"
+description: "Available plans, feature comparison, per-plan limits, and how to manage your Timely.ai subscription."
+---
+
+## Available plans
+
+Timely.ai offers three subscription plans with monthly or annual billing. All include access to AI agents, service channels, squads, and monthly AI credits:
+
+| Plan | Description |
+|---|---|
+| **Starter** | For solo professionals and small businesses just getting started with service automation. Includes a single user with full access and 1,500 monthly credits. |
+| **Professional** | For growing companies that need more volume, multiple users, and advanced features such as smart broadcasts, automatic follow-ups, Tyme CRM, and voice synthesis. Includes 7,500 monthly credits. |
+| **Enterprise** | For large-scale operations with high service volume. Unlimited executions, 50,000 monthly credits, unlimited TTS, voice cloning, and premium support with a 24-hour SLA. |
+
+## Plan comparison
+
+| Feature | Starter | Professional | Enterprise |
+|---|---|---|---|
+| **Monthly AI credits** | 1,500 | 7,500 | 50,000 |
+| **Agent executions/month** | 1,000 | 5,000 | Unlimited |
+| **Members (seats)** | 1 | Unlimited | Unlimited |
+| **AI agents** | Unlimited | Unlimited | Unlimited |
+| **Squads** | Unlimited | Unlimited | Unlimited |
+| **Composio integrations** | Yes | Yes | Yes |
+| **AI broadcasts** | No | Yes | Yes |
+| **Automatic follow-ups** | No | Yes | Yes |
+| **Voice synthesis (TTS)** | No | Yes (5,000 chars/month) | Yes (unlimited) |
+| **Tyme CRM** | No | Yes | Yes |
+| **Support** | Community | Priority | Premium |
+
+<Note>
+  Annual plans are discounted compared to the monthly equivalent. The amount is charged in a single installment at the start of the annual cycle, and the full period's credits (12 months) are made available at once — not renewed month by month.
+</Note>
+
+## Understanding each limit
+
+### Timely.ai AI credits
+
+Credits are the unit of AI processing consumption on the platform. Each message processed by an agent consumes credits according to the selected LLM model:
+
+| Model | Credits per message |
+|---|---|
+| Kimi K2.5 (OpenRouter) | 1 |
+| Gemini 2.5 Flash (Google) | 2 |
+| Claude Haiku 4.5 (Anthropic) | 3 |
+| GPT-5.1 (OpenAI) | 4 |
+| Claude Sonnet 4.6 (Anthropic) | 4 |
+| Gemini 2.5 Pro (Google) | 4 |
+| GPT-5.2 (OpenAI) | 5 |
+| Gemini 3.0 / 3.1 Pro Preview (Google) | 6 |
+| Claude Opus 4.6 (Anthropic) | 20 |
+
+The cost per message varies with context length and the number of tool calls — the table above reflects the base cost per simple interaction. Renewable credits are reset at the start of each cycle. Unused credits do not carry over to the next period.
+
+<Warning>
+  Agents configured with own providers (customer API key) do not consume Timely.ai credits — the cost is billed directly to the provider account. Plan credits apply only to agents using the platform's managed credentials.
+</Warning>
+
+### Agent executions
+
+An execution is counted each time an agent is triggered by an incoming message — whether from a service channel or a Workers session. Handoffs within a squad count as separate executions for each agent involved:
+
+| Plan | Monthly executions |
+|---|---|
+| Starter | 1,000 |
+| Professional | 5,000 |
+| Enterprise | Unlimited |
+
+### Workflow executions
+
+Workflows are automated flows triggered by events (message received, scheduled time, tag added, etc.). Each workflow trigger counts as one execution:
+
+| Plan | Concurrent workflow executions |
+|---|---|
+| Starter | 3 |
+| Professional | 10 |
+| Enterprise | Unlimited |
+
+<Note>
+  Workflow executions are concurrent — the limit refers to the number of workflows running simultaneously, not the monthly total. Triggers that exceed the concurrency limit are queued and executed when a slot opens.
+</Note>
+
+### Members and seats
+
+A seat is an active user with workspace access. Deactivated members do not count toward the limit:
+
+| Plan | Members/seats |
+|---|---|
+| Starter | 1 |
+| Professional | Unlimited |
+| Enterprise | Unlimited |
+
+<Note>
+  The Starter plan is designed for individual use — a single user with full workspace access. For teams with two or more collaborators, Professional is the minimum recommended plan.
+</Note>
+
+## Managing your subscription
+
+<Steps>
+  <Step title="Go to Settings > Subscription">
+    In the sidebar, click **Settings** and select **Subscription** (or **Billing**, depending on the interface version).
+  </Step>
+  <Step title="Click Change plan">
+    On the current plan card, click **Change plan** to open the comparison modal.
+  </Step>
+  <Step title="Choose the cycle and desired plan">
+    Select between **Monthly** and **Annual** billing at the top of the modal. Then choose the plan and click **Select**.
+  </Step>
+  <Step title="Confirm the change">
+    The confirmation modal displays the preview: amount to pay today, proportional credit from the current plan, and start date of the new cycle. Read and click **Confirm change**.
+  </Step>
+</Steps>
+
+<Note>
+  **Upgrade:** applied immediately, with proportional billing for the remaining period. Access to new features unlocked right away. **Downgrade:** applied at the start of the next cycle. You keep the current plan until the end of the paid period.
+</Note>
+
+## Plan behavior
+
+| Aspect | Behavior |
+|---|---|
+| **Upgrade** | Immediate, with proportional credit from the current plan |
+| **Downgrade** | Scheduled for the start of the next cycle |
+| **Cancellation** | Access remains until the end of the paid period |
+| **Reactivation** | Available until the end of the grace period after cancellation |
+
+## Conclusion
+
+Choosing the right plan directly impacts workspace operational capacity:
+
+- Monitor credit and execution consumption on the **Usage** tab before deciding between upgrade and downgrade.
+- Take the LLM model of your agents into account when projecting monthly consumption — models like Claude Opus 4.6 (20 credits/msg) exhaust the Starter balance in 75 messages.
+- Annual plans offer a discount and make the full year's credits available at once — advantageous for workspaces with predictable volume.
+
+<Note>
+  Unused credits at the end of a monthly cycle are zeroed out. For workspaces with irregular consumption, the annual plan may result in underutilized balance. Evaluate your consumption history before migrating to the annual cycle.
+</Note>

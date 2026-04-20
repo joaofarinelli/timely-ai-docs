@@ -1,0 +1,60 @@
+---
+title: "Creating Tables"
+description: "How to create a table (datagrid) in Timely.ai: name, description, column types, semantic search, required fields, and row management."
+---
+
+## Step 1 — Create a New Table
+
+In the sidebar, go to **Tables** (or **Datagrids**). The screen displays all existing tables in the workspace. To create a new one:
+
+- Click **+ Add table** in the upper right corner
+- A creation modal will appear with two required fields
+- **Name**: up to 50 characters. Choose a descriptive name — the agent uses the name to identify which table to query when multiple are available. Examples: "Product Catalog", "October 2025 Schedule", "WhatsApp Leads".
+
+## Step 2 — Add Columns
+
+With the table created, add the columns that structure the data. Click **+ Add column** on the table screen. The column creation form opens.
+
+### To add a column:
+
+Fill in the form fields:
+
+| Field | Description | Requirements |
+|-------|-----------|------------|
+| **Name** | Column identifier. The agent uses the name to understand what each field represents. | Maximum 50 characters. Use clear names: `price_usd`, `available`, `product_description`. |
+| **Description** | Explanation of the column's purpose for the agent. The more specific, the better the agent understands when and how to fill in the field. | Minimum 3 characters, maximum 250. |
+| **Type** | Defines what value the column accepts. Cannot be changed after creation. | `String`, `Number`, or `Boolean`. |
+| **Semantic search** | When enabled, vectorizes values for natural language search. Available only for `String` columns. | Optional. Recommended for columns with descriptive text. |
+
+<Note>
+  The column type is permanent. Plan the types before creating columns — if you need to change from `Number` to `String` later, you will need to create a new column and migrate the data manually.
+</Note>
+
+## Supported Column Types
+
+| Type | Description | Examples |
+|------|-----------|---------|
+| `String` | Free text of any length. Supports semantic search when enabled. | product name, description, status, URL, category |
+| `Number` | Numeric value, integer or decimal. Allows numeric comparisons by the agent. | price in USD, quantity in stock, rating from 1 to 5, capacity |
+| `Boolean` | True or false. Ideal for flags and binary conditions. | available, active, featured, accepts installments |
+
+## Step 3 — Add and Edit Rows
+
+With the columns defined, populate the table with data. There are three ways to add rows:
+
+- **Manual entry**: click **+ Add row** in the data grid and fill in values cell by cell directly in the interface. Useful for small tables or individual records.
+- **CSV import**: on the table screen, click **Import CSV**. The file must have headers matching exactly the names of the created columns. Values of incompatible types will generate import errors.
+
+The grid editor works like a spreadsheet — clicking a cell opens the inline editor, Tab advances to the next cell, and changes are saved individually per cell immediately.
+
+## Step 4 — Update or Delete Tables
+
+Tables can be edited at any time: add new columns, rename existing columns, or adjust descriptions. To delete a table:
+
+1. In the table list, click the options menu for the desired table.
+2. Select **Delete table**.
+3. Confirm the deletion in the dialog box.
+
+<Warning>
+  Deleting a table is permanent and irreversible. All data (rows and columns) is erased, and agents that were using the table lose access to it immediately. Disconnect the table from agents before deleting to avoid errors in ongoing conversations.
+</Warning>

@@ -1,0 +1,62 @@
+---
+title: "Creating a Knowledge Base"
+description: "Step-by-step guide to creating a Knowledge Base in Timely.ai, adding content sources, and tracking processing status."
+---
+
+A **Knowledge Base** organizes the content that the agent queries in real time during conversations. Each base is independent and can contain multiple sources: documents, Q&As, website pages, and YouTube video transcripts. The same base can be connected to different agents, and an agent can use multiple bases simultaneously.
+
+## Step 1 — Access the Knowledge Module
+
+1. In the sidebar, click **Knowledge** (or **Knowledge Bases**).
+2. The screen displays all existing bases in the workspace, organized by creation date.
+
+## Step 2 — Define the Base
+
+Click **+ New base** in the upper right corner. A creation form will appear with two fields:
+
+- **Name** — internal identifier for the base. Choose something descriptive that indicates the purpose: "Product FAQ", "Return Policies", "2025 Service Catalog".
+- **Workspace** — if the account has multiple workspaces, select which workspace this base belongs to. The base will only be visible to agents in that workspace.
+
+## Step 3 — Add Items
+
+With the base created, add your information sources. The base supports four content types that can coexist in the same base:
+
+### Text and Documents
+
+Upload PDF or text files directly through the interface.
+
+- The processor automatically extracts text from the file
+- Content is split into chunks of ~4,000 characters with an overlap of ~400 characters
+- Each chunk is vectorized and stored for semantic search
+
+### PDF
+
+PDFs with structured content — manuals, policies, catalogs — are processed the same way as text documents.
+
+- PDFs with scanned content (scanned images) are not supported — the extractor requires selectable text
+- Maximum file size is 50 MB
+- The status changes from **Processing** to **Indexed** when vectorization is complete
+
+## Step 4 — Training and Status
+
+After adding a source, content goes through the asynchronous processing pipeline. Track the status on the base screen:
+
+| Status | Description |
+|--------|-----------|
+| **Processing** | Content is being extracted, split into chunks, and vectorized. The item is not yet available for search. |
+| **Indexed** | Processing complete. The agent can now retrieve this content in conversations. |
+| **Error** | Processing failed. Click the item to view the error details and try again. |
+
+## Step 5 — Update or Manage
+
+After the initial creation, the base can be maintained in three ways:
+
+- **Add new sources** — click **+ Add** inside the base to include new documents, Q&As, URLs, or videos without removing existing content.
+- **Edit Q&As** — question-and-answer pairs can be edited directly through the interface. Re-indexing occurs automatically after saving.
+- **Remove outdated content** — delete documents or Q&As that are no longer valid. Deleted content stops appearing in searches immediately.
+
+## Tip
+
+<Note>
+  Start with manual Q&As for the 10 to 20 most frequent topics. They are indexed instantly — no asynchronous pipeline — and have high precision because you control exactly what the agent will retrieve. Then supplement with documents for extensive, contextual content.
+</Note>

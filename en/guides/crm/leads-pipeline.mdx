@@ -1,0 +1,114 @@
+---
+title: "Leads Pipeline"
+description: "Kanban board to manage leads by funnel stage, with drag-and-drop, transition automation, and qualification score"
+---
+
+The Leads Pipeline is a Kanban board that organizes your contacts into sales funnel stages. Each card represents a lead, and you move it between columns as the deal progresses — manually via drag-and-drop or automatically via automation rules.
+
+<img
+  src="/images/screenshots/placeholder-leads-kanban.png"
+  alt="Leads Pipeline Kanban board with stages and cards"
+  className="rounded-lg border"
+/>
+
+## Default Stages
+
+The pipeline comes with seven predefined stages, but you can customize the list:
+
+| Stage | Color | Description |
+|---------|-----|-----------|
+| **New** | Blue | Newly created or imported lead |
+| **Contacted** | Yellow | First contact made |
+| **Qualified** | Green | Profile confirms purchase potential |
+| **Proposal** | Purple | Commercial proposal sent |
+| **Negotiation** | Orange | In the closing process |
+| **Won** | Dark green | Sale completed |
+| **Lost** | Red | Opportunity closed without a sale |
+
+<Note>
+  The AI agent can move leads automatically between stages via the `update-lead-stage` tool. Configure in the prompt when and how the agent should perform this transition — for example, when the contact confirms interest or requests a proposal.
+</Note>
+
+## Creating a Lead
+
+<Steps>
+  <Step title="Open the Pipeline">
+    In the side menu, go to **CRM → Leads Pipeline**.
+  </Step>
+  <Step title="Click '+ New Lead'">
+    The button is in the upper-right corner of the board.
+  </Step>
+  <Step title="Fill in the data">
+    Available fields: name, email, phone, company, job title, lead source (`website`, `whatsapp`, `instagram`, `referral`, `import`), budget range, decision deadline, and pain points.
+  </Step>
+  <Step title="Link to a contact">
+    If the lead already exists as a contact in the database, you can link it in the `contact_id` field. This connects the lead to the contact's conversation history.
+  </Step>
+  <Step title="Save">
+    The card appears in the **New** column automatically.
+  </Step>
+</Steps>
+
+## Moving Leads
+
+<Tabs>
+  <Tab title="Drag-and-drop">
+    Drag the card from the current column to the destination column. The system uses `@dnd-kit/core` with `closestCorners` detection — works on desktop and touch screens.
+  </Tab>
+  <Tab title="From the card">
+    Open the card and use the **Move to** dropdown to select the target stage. Useful when the board is crowded and dragging is difficult.
+  </Tab>
+  <Tab title="Automation">
+    Configure rules in **Settings → Pipeline** to move leads automatically. E.g., "when a conversation is closed with tag `proposal-sent` → move to Proposal".
+  </Tab>
+</Tabs>
+
+<Tip>
+  Every stage move records an event on the linked contact's timeline. You always know when and by whom the lead was moved, with a reason when provided.
+</Tip>
+
+## Lead Score
+
+Each lead has a numeric `score` from 0 to 100 representing the quality of the opportunity. The score is calculated based on:
+
+- Profile completeness (email, phone, company filled in)
+- Declared budget range
+- Decision deadline (the shorter, the higher the score)
+- Number of chat interactions
+- Current stage in the funnel
+
+The score appears as a badge on each Kanban card. Use the minimum score filter to see only hot leads.
+
+## Filters and Search
+
+<CardGroup cols={2}>
+  <Card title="Text search" icon="magnifying-glass">
+    Filters by lead name, company, or email in real time as you type. Operates across all stages simultaneously.
+  </Card>
+  <Card title="Filter by source" icon="filter">
+    Select `website`, `whatsapp`, `instagram`, or another source to see only leads from a specific channel. Ideal for measuring ROI by channel.
+  </Card>
+</CardGroup>
+
+## Converting a Lead
+
+When a lead is won, use the **Convert** button on the card to:
+
+1. Mark the stage as `won`
+2. Create a customer record in the contact database with all the lead's data
+3. Optionally open an onboarding workflow automatically
+
+The conversion dialog (`ConversionDialog`) lets you adjust data before confirming and associate the lead with a specific workspace or product.
+
+<Note>
+  Leads marked as `lost` remain visible on the board but are excluded from the active funnel by default. Use the **Show lost** toggle to include them in the view and analyze loss patterns.
+</Note>
+
+## Pipeline Metrics
+
+At the top of the board, the metrics panel displays:
+
+- **Total active leads** — excluding won and lost
+- **Conversion rate** — won leads / total
+- **Average deal size** — average of budget ranges of qualified leads
+- **Average time in funnel** — days from creation to won or lost

@@ -1,0 +1,18 @@
+---
+title: "Agent Role"
+description: "How the role defines the agent's function and persona in Timely.ai, influencing the framing the model uses to interpret ambiguities and make decisions."
+---
+
+The role is a short description of the agent's main function — think of it as the position it holds within your operation. It is not just an organizational label: the role is injected into the language model's context as the expected operating framing, complementing the system prompt.
+
+While the prompt details rules, restrictions, and specific examples, the role acts as the hat the agent wears before reading any instruction. An agent with the role "lead qualifier" interprets ambiguities with a commercial bias; an agent with the role "level 1 technical support" prioritizes diagnosis and problem resolution. The same question can receive very different responses depending on the configured role.
+
+## Best practices
+
+- Be specific: "SaaS software technical support" is more useful to the model than "support"
+- Align the role with the internal name — if the name is "L1 Technical Support," the role should be consistent with that function, not "salesperson"
+- Do not use the role to include detailed instructions — that belongs in the prompt. The role is the context; the prompt is the script
+
+## Example
+
+> customer support assistant specialized in subscription plans and cancellations, responsible for resolving inquiries and escalating critical cases to the retention team

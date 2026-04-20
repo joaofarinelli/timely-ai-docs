@@ -1,0 +1,34 @@
+---
+title: "What are MCPs?"
+description: "Understand the Model Context Protocol (MCP) — Anthropic's open standard for connecting AI agents to external tool servers — and why it matters."
+---
+
+**MCP (Model Context Protocol)** is an open protocol created by Anthropic that standardizes communication between AI agents and external tool servers. Instead of each platform inventing its own integration format, MCP defines a common contract: any agent that implements the protocol as a client knows how to talk to any server that implements it as a server — regardless of what that server offers or what language it was developed in.
+
+## Why MCP matters
+
+Before MCP, integrating tools into an AI agent was manual and fragmented work: each platform had its own tool calling format, and the same tool server had to be rewritten to work with different systems. MCP eliminates this fragmentation with a single protocol.
+
+- An MCP server developed once works with any compatible client — the Timely.ai agent, Claude Desktop, code editors with AI support, and others.
+- The agent automatically discovers the tools available on the server via the protocol — no manual documentation, no static mapping.
+- Public MCP servers developed by the community can be connected directly to your agent without modification.
+- Proprietary tools (internal APIs, ERPs, legacy systems) become accessible to the agent without exposing a public REST API.
+
+## MCPs in action
+
+In practice, MCP works as a universal interface between the agent and any external system you want to connect:
+
+- An MCP server with specific queries to your internal database — the agent queries records without needing a dedicated REST integration.
+- An MCP server that aggregates multiple internal APIs and exposes a simplified interface to the agent — the agent calls one tool and the server orchestrates the necessary calls.
+- A public MCP server for web search, file management, or browser control — connected to the agent with no adaptation required.
+
+> The Timely.ai agent acts as an MCP client: it maintains a session with each configured server, discovers the available tools, and registers them in the model context. When the LLM decides to trigger a server tool, the client executes the call via SSE or HTTP, receives the result, and injects it into the context before the next iteration.
+
+## Key characteristics
+
+MCP was designed specifically for use by AI agents — and this is reflected in its fundamental characteristics:
+
+- **Automatic tool discovery** — the agent reads the tool schema directly from the server, without manual intervention.
+- **Communication via SSE or HTTP** — compatible with any language and server infrastructure.
+- **Stateful session support** — the protocol allows the server to maintain context between calls in the same session.
+- **Model-readable descriptions** — each tool exposes a name, description, and parameter schema that the LLM uses to decide when and how to trigger it.

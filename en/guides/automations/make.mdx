@@ -1,0 +1,94 @@
+---
+title: "Make.com Integration"
+description: "Connect Timely.ai to Make.com via webhooks to orchestrate automations with hundreds of external apps without code."
+---
+
+The integration with [Make.com](https://www.make.com) (formerly Integromat) allows your Make scenarios to trigger actions in Timely.ai and Timely.ai events to start Make scenarios — all via bidirectional webhooks.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-make-integration.png" alt="Make.com integration configuration" />
+</Frame>
+
+## How the integration works
+
+Timely.ai exposes a dedicated endpoint (`make-webhook`) that receives payloads from Make. In the opposite direction, you configure a Make Webhook URL as the destination for actions in your agents or workflows.
+
+```
+Make → POST /functions/v1/make-webhook → Timely.ai
+Timely.ai → POST webhook_url → Make (scenario Webhook trigger)
+```
+
+## Configuring the integration
+
+<Steps>
+  <Step title="Open the agent">
+    In the Timely.ai panel, access the agent you want to connect to Make and go to the **Tools / Integrations** tab.
+  </Step>
+  <Step title="Enable the Make integration">
+    Click **Configure** next to Make.com. The configuration dialog will open.
+  </Step>
+  <Step title="Fill in the credentials">
+    Enter the fields below:
+
+    | Field | Description |
+    |---|---|
+    | **Webhook URL** | Your Make scenario's incoming webhook URL |
+    | **API Key** | Your Make account API key (for optional authentication) |
+    | **Team ID** | Team ID in Make (to identify the origin) |
+  </Step>
+  <Step title="Save and test">
+    Click **Save configuration**. Use the **Test connection** button to send a test payload to Make and confirm the scenario receives it correctly.
+  </Step>
+  <Step title="Manage scenarios">
+    In the **Scenarios** section, you will see the list of linked scenarios. Enable or disable each one individually with the toggle.
+  </Step>
+</Steps>
+
+<Note>
+  The **API Key** field is stored with encryption at rest. It is never returned in API responses — only indicated as configured.
+</Note>
+
+## Receiving data from Make in Timely.ai
+
+The `make-webhook` endpoint accepts payloads with the following minimum structure:
+
+```json
+{
+  "company_id": "your-company-uuid",
+  "agent_id": "your-agent-uuid",
+  "action": "send_message",
+  "data": {
+    "contact_id": "your-contact-uuid",
+    "message": "Hello, your order has been approved!"
+  }
+}
+```
+
+### Security
+
+All requests must include the authentication token in the header:
+
+```
+X-Make-Webhook-Token: <your-token>
+```
+
+The token is configured in the `MAKE_WEBHOOK_SECRET` environment variable. Requests without the correct token receive `401 Unauthorized`.
+
+<Warning>
+  Never expose your webhook token in public repositories or logs. Generate a new token in the panel if you suspect it has been compromised.
+</Warning>
+
+## Available payload fields
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `company_id` | string (UUID) | Yes | Company identifier |
+| `agent_id` | string (UUID) | No | Agent that will execute the action |
+| `scenario_id` | string | No | Make scenario ID for tracking |
+| `execution_id` | string | No | Make execution ID for deduplication |
+| `action` | string | No | Action to execute in Timely.ai |
+| `data` | object | No | Additional action data |
+
+<Tip>
+  Use the `execution_id` field sent by Make to ensure idempotency — if the same event is delivered twice (Make retry), Timely.ai can ignore the duplicate.
+</Tip>

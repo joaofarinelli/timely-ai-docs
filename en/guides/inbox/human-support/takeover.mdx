@@ -1,0 +1,103 @@
+---
+title: "Takeover — Human Takes Over the Conversation"
+description: "Temporarily pause the AI Agent and take control of the Conversation, with configurable automatic return"
+---
+
+**Takeover** is the fastest way for an attendant to take over a Conversation without permanently stopping the AI Agent. Instead of transferring the Conversation to a permanent human queue, you pause the AI, respond as needed, and it returns automatically when you signal — or after the configured timer expires.
+
+<img
+  src="/images/screenshots/placeholder-takeover-panel.png"
+  alt="Active Takeover panel with timer"
+  className="rounded-lg border"
+/>
+
+## How Takeover works
+
+The system uses the `ai_pause_logs` table to record each event in the pause lifecycle. The possible states are:
+
+| State | Meaning |
+|--------|------------|
+| `pause_activated` | Human took over — AI stopped responding |
+| `interaction_blocked` | Agent message blocked during active pause |
+| `auto_resume` | Timer expired — AI returned automatically |
+| `force_resume` | Attendant ended the pause manually |
+| `extend_pause` | Attendant extended the pause duration |
+
+<Note>
+  While Takeover is active, any attempt by the AI Agent to send a message is recorded as `interaction_blocked` and discarded. The contact never receives a duplicate response.
+</Note>
+
+## Activating Takeover
+
+<Steps>
+  <Step title="Open the Conversation in the Inbox">
+    Go to [Inbox → Live Chat](/en/guides/inbox/chat-history) and select the Conversation you want to take over.
+  </Step>
+  <Step title="Click 'Pause AI'">
+    In the Conversation header, click the **Pause AI** button. A modal confirms the action and displays a field to set the duration.
+  </Step>
+  <Step title="Set the pause duration">
+    Choose how long the AI will be paused: **15 min**, **30 min**, **1 hour**, **2 hours**, or **indefinite**. The Workspace default is configurable in Settings → Support.
+  </Step>
+  <Step title="Take over and respond">
+    From this point on, only you send messages. The timer appears in the header with a countdown.
+  </Step>
+</Steps>
+
+## Automatic return
+
+When the timer expires, the system executes the automatic resume:
+
+<CardGroup cols={2}>
+  <Card title="Auto Resume" icon="clock-rotate-left">
+    The AI Agent returns control of the Conversation without human intervention. An `auto_resume` event is recorded in the log with the reason `"timer_expired"`.
+  </Card>
+  <Card title="Force Resume" icon="hand">
+    The attendant clicks **Return to AI** before the timer runs out. The `force_resume` event is recorded immediately.
+  </Card>
+</CardGroup>
+
+<Tip>
+  If you need more time, click **Extend pause** before the timer reaches zero. Each extension records an `extend_pause` event with the new duration, maintaining a complete audit history.
+</Tip>
+
+## Audit and logs
+
+Each action in the Takeover lifecycle is persisted in the `pause-logger` Edge Function with the following fields:
+
+- `conversation_id` — which Conversation was paused
+- `action` — the event type (see table above)
+- `reason` — descriptive text of the reason
+- `duration_minutes` — configured duration (when applicable)
+- `triggered_by` — attendant ID or `"system"` for auto-resumes
+- `previous_ai_mode` / `new_ai_mode` — before and after the mode change
+
+You can query the complete history of a Conversation via API:
+
+```bash
+POST /functions/v1/pause-logger
+{
+  "action": "get_timeline",
+  "conversationId": "<id>"
+}
+```
+
+The response returns events in chronological order, useful for audits and SLA reports.
+
+## Configuring the default timer
+
+<Steps>
+  <Step title="Go to Workspace Settings">
+    Navigate to **Settings → Support → Takeover**.
+  </Step>
+  <Step title="Set the default duration">
+    Choose the default value that appears pre-selected when an attendant activates Takeover.
+  </Step>
+  <Step title="Enable automatic return">
+    Enable or disable auto-resume. If disabled, the pause remains indefinite until the attendant ends it manually.
+  </Step>
+</Steps>
+
+<Note>
+  The duration configuration is per Workspace. Different Teams can have different default times — useful for separating Sales (long pauses) from Support (short pauses).
+</Note>

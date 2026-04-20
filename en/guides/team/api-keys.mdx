@@ -1,0 +1,106 @@
+---
+title: API Keys
+description: Create, configure scopes, rotate, and revoke API keys to integrate external systems with Timely.ai.
+---
+
+Timely.ai API Keys allow external systems to access platform resources programmatically — without requiring user credentials. Use API keys to integrate your CRM, internal systems, or automation pipelines.
+
+## How API Keys work
+
+Each key is generated with a `tml_` prefix followed by a random string. The full key is displayed **only at the time of creation** — after that, only the masked prefix is visible in the interface for security. Store the key in a secrets manager immediately after creating it.
+
+Keys are scoped per workspace. A key created in one workspace does not work in other workspaces in the same account.
+
+## Creating an API Key
+
+<Steps>
+  <Step title="Go to Settings > API Keys">
+    In the sidebar, click **Settings** and select the **API Keys** tab.
+  </Step>
+  <Step title="Click New key">
+    Click the **New key** button in the upper-right corner.
+  </Step>
+  <Step title="Name the key">
+    Give it a descriptive name that identifies the system that will use the key (e.g., "Salesforce CRM Integration", "Data pipeline").
+  </Step>
+  <Step title="Define the scopes">
+    Select the permissions the key will have. Apply the principle of least privilege: grant only the scopes necessary for the integration.
+  </Step>
+  <Step title="Configure expiration (optional)">
+    Set how many days the key will remain valid. Leave blank for a key with no expiration. We recommend always setting expiration in production environments.
+  </Step>
+  <Step title="Copy and save the key">
+    The full key is displayed only once. Copy it immediately and store it in a secrets manager (AWS Secrets Manager, 1Password, HashiCorp Vault, etc.).
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/api-keys-create.png" alt="API Key creation dialog with name, scopes, and expiration fields" />
+</Frame>
+
+## Available scopes
+
+| Scope | What it allows |
+|---|---|
+| `read` | Read data (conversations, agents, contacts, analytics) |
+| `write` | Create and update records |
+| `conversations` | Specific access to conversations (sending messages, closing) |
+| `agents` | Agent management via API |
+| `analytics` | Access to metrics and exports |
+
+For most read-only data integrations, the `read` scope is sufficient. Avoid creating keys with `write` in production environments unless the integration needs to create or modify records.
+
+## Managing existing keys
+
+In the API Keys list, each entry shows:
+
+- Key name
+- Masked prefix (`tml_xxxx...`)
+- Status (active / inactive)
+- Last used
+- Expiration date (when configured)
+- Number of requests made
+
+<AccordionGroup>
+  <Accordion title="Activate / Deactivate a key">
+    Click the key's options menu and select **Activate** or **Deactivate**. Deactivating a key immediately blocks any request using it, without deleting it. Useful for temporarily pausing an integration.
+  </Accordion>
+  <Accordion title="Edit name and description">
+    Click **Edit** in the options menu to change the key's name or description. Scopes and expiration cannot be changed after creation — in that case, delete and create a new key.
+  </Accordion>
+  <Accordion title="View usage statistics">
+    Click **View usage** to open the key's statistics panel: total requests, success rate, most accessed endpoints, and recent activity.
+  </Accordion>
+  <Accordion title="Delete (revoke) a key">
+    Click **Delete** in the options menu. The key is revoked immediately and permanently. Any system using it loses access right away. This cannot be undone.
+  </Accordion>
+</AccordionGroup>
+
+## Key rotation
+
+Rotating a key means creating a new one with the same scopes and deleting the old one. Do this:
+
+- Periodically (security best practice, recommended every 90 days)
+- After suspected compromise
+- When a collaborator who had access to the key leaves the company
+
+Zero-downtime rotation process:
+
+1. Create a new key with the same scopes.
+2. Update the new key in all systems using the old key.
+3. Test to confirm the systems work with the new key.
+4. Delete the old key.
+
+## Security
+
+<Warning>
+  Never expose API Keys in source code, public repositories, or application logs. Use environment variables or secrets vaults to store the keys.
+</Warning>
+
+- Keys with `write` scopes should have expiration configured.
+- Keep one key per integration — never reuse the same key in multiple systems.
+- Monitor the usage panel regularly to detect abnormal or unexpected usage.
+
+## Required permissions
+
+Only **owner** and **manager** can create, edit, and revoke API Keys.

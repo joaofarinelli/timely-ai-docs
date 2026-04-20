@@ -1,0 +1,129 @@
+---
+title: "VS Code"
+description: "Use the Timely.ai documentation in VS Code with Continue.dev as a context provider or with context comments for GitHub Copilot."
+---
+
+VS Code does not have native support for external documentation sources like Cursor, but two extensions cover this use case in different ways: **Continue.dev** (semantic access to documentation) and **GitHub Copilot** (via manual context comments).
+
+## Continue.dev
+
+Continue.dev is an open-source extension that adds an AI chat to VS Code with support for context providers, including `@docs`. With it, you index the Timely.ai documentation and mention it in prompts the same way you would in Cursor.
+
+### Setup
+
+<Steps>
+  <Step title="Install the extension">
+    Open VS Code, go to **Extensions** (`Cmd+Shift+X`), and search for **Continue**. Install the official extension.
+  </Step>
+  <Step title="Open config.json">
+    After installation, click the Continue icon in the sidebar. In the panel, click the gear icon or open the file directly:
+
+    ```
+    ~/.continue/config.json
+    ```
+  </Step>
+  <Step title="Add Timely.ai as docs">
+    In `config.json`, add the entry inside `"docs"`:
+
+    ```json
+    {
+      "docs": [
+        {
+          "title": "Timely.ai",
+          "startUrl": "https://docs.timelyai.com.br",
+          "rootUrl": "https://docs.timelyai.com.br",
+          "maxDepth": 3
+        }
+      ]
+    }
+    ```
+
+    Save the file. Continue will start indexing automatically.
+  </Step>
+  <Step title="Use in prompts">
+    In the Continue panel, mention `@docs` and select **Timely.ai**:
+
+    ```
+    @docs How do I create a contact via API and associate it with a conversation?
+    ```
+  </Step>
+</Steps>
+
+### Complete config.json (minimal example)
+
+```json
+{
+  "models": [
+    {
+      "title": "Claude 3.5 Sonnet",
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022",
+      "apiKey": "your-anthropic-key"
+    }
+  ],
+  "docs": [
+    {
+      "title": "Timely.ai",
+      "startUrl": "https://docs.timelyai.com.br",
+      "rootUrl": "https://docs.timelyai.com.br",
+      "maxDepth": 3
+    }
+  ],
+  "contextProviders": [
+    { "name": "code" },
+    { "name": "docs" },
+    { "name": "diff" }
+  ]
+}
+```
+
+<Note>
+Replace `"your-anthropic-key"` with your API key or configure another provider of your choice. Continue supports OpenAI, Anthropic, Ollama, and others.
+</Note>
+
+## GitHub Copilot
+
+GitHub Copilot does not have native support for context providers from external URLs. To give it context about the Timely.ai API, use comments at the top of files where you will be working on the integration.
+
+### Strategy with context comments
+
+Add a comment block at the top of the file before asking Copilot for suggestions:
+
+```typescript
+/**
+ * Timely.ai API Integration
+ * Base URL: https://api.timelyai.com.br
+ * Auth: x-api-key header with your API key
+ * Docs: https://docs.timelyai.com.br
+ *
+ * Endpoints used in this file:
+ * - GET  /v1/contacts         → list contacts
+ * - POST /v1/contacts         → create contact (name, phone required)
+ * - POST /v1/conversations/{id}/messages → send message
+ *
+ * Rate limit: 60 req/min per workspace
+ * Pagination: page and limit parameters, response includes meta.total
+ */
+```
+
+With this block present, Copilot generates suggestions that are more aligned with the real API structure.
+
+### Alternative: use llms.txt as an inline reference
+
+For longer sessions, download the `llms.txt` and open it as a file in the editor. Copilot treats open files in the window as additional context in some configurations.
+
+```bash
+curl https://docs.timelyai.com.br/llms.txt -o timely-llms.txt
+```
+
+Open the file in VS Code and keep it in a tab while working on the integration files.
+
+## Quick comparison
+
+| Feature | Continue.dev | GitHub Copilot |
+|---|---|---|
+| Automatic docs indexing | Yes | No |
+| Mention `@docs` in prompt | Yes | No |
+| Inline editor suggestions | Yes | Yes |
+| Cost | Free | GitHub subscription |
+| Supported models | Many | OpenAI (via GitHub) |

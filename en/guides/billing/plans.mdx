@@ -1,0 +1,65 @@
+---
+title: "Billing"
+description: "Overview of the active plan, payment methods, billing statement, and the link between workspace and subscription."
+---
+
+## Overview
+
+The **Billing** page centralizes everything related to the workspace's financial cycle: the contracted plan, subscription status, Credits consumed, and billing history. Access is restricted to the workspace `owner` — only this role has the `manage_billing` permission.
+
+| Field | Description |
+|---|---|
+| **Active plan** | Name and status of the contracted subscription |
+| **Cycle** | Monthly or annual, with next renewal date |
+| **Period Credits** | Total included in the plan vs. consumed so far |
+| **Subscription status** | `active`, `past_due`, `pending`, or `canceled` |
+
+<Note>
+  The `past_due` status indicates that the last charge failed. The workspace continues to work during the grace period, but access may be suspended if payment is not resolved. Update the card to trigger a new automatic retry.
+</Note>
+
+## Adding or updating a payment method
+
+<Steps>
+  <Step title="Go to Settings > Billing">
+    In the sidebar, click **Settings** and select **Billing**.
+  </Step>
+  <Step title="Click Update payment method">
+    The button is in the **Payment** section of the page.
+  </Step>
+  <Step title="Enter card details">
+    A secure form is displayed. Enter the card number, expiration date, CVV, and cardholder name. Data is transmitted directly to the payment processor — Timely.ai does not store card data on its servers.
+  </Step>
+  <Step title="Confirm and save">
+    Click **Save card**. A $1.00 verification charge may be made and automatically reversed to validate the instrument.
+  </Step>
+</Steps>
+
+<Tip>
+  If the subscription has `past_due` status, updating the card automatically triggers a new charge attempt. No additional action is required — the system will attempt to process the pending payment shortly after.
+</Tip>
+
+## Payment statement
+
+The statement table lists all charges made to the subscription:
+
+| Statement ID | Charge date | Status | Amount |
+|---|---|---|---|
+| Unique transaction identifier | Date the charge was processed | Paid, Pending, or Failed | Amount |
+
+Click **Download receipt** on any row to get the document as a PDF. Receipts can be used for reimbursement, tax documentation, or internal accounting entries.
+
+## Link between workspace and subscription
+
+Each workspace has exactly one linked subscription. Understanding this link is important for managing multiple workspaces:
+
+- Credits, member limits, and agent executions are counted **per workspace** — they are not shared between separate workspaces on the same account.
+- The plan of workspace A does not affect the plan of workspace B, even if both are linked to the same credit card.
+
+## Best practices
+
+- Set the billing email to a finance group inbox (e.g., finance@company.com) to ensure invoices arrive even when team members change.
+- Download and archive receipts monthly to simplify accounting reconciliation at the end of the fiscal year.
+- Monitor Credit consumption in the **Usage** tab before deciding on an upgrade — retroactive upgrades are not applied.
+- Keep the credit card always up to date. Expired cards cause `past_due` and can interrupt service on connected channels.
+- Review the plan every quarter comparing actual usage against contracted limits — growing workspaces often underutilize higher-tier plans for too long.

@@ -1,0 +1,86 @@
+---
+title: "Model Selection"
+description: "How to choose the provider and LLM model for each agent in Timely.ai, capability comparison, credit cost, and selection best practices."
+---
+
+The language model defines the intelligence, speed, and cost of each agent execution. Timely.ai supports four providers with access to multiple models — each agent can use a different model.
+
+## Where to select the model
+
+<Steps>
+  <Step title="Access the agent settings">
+    In the agent list, click the agent you want to configure.
+  </Step>
+  <Step title="Open the Model tab">
+    Click the **Model** tab in the agent settings. The configuration dialog displays three columns: providers, available models, and behavior parameters.
+  </Step>
+  <Step title="Select the provider">
+    In the left column, choose the provider: OpenAI, Anthropic, Google, or OpenRouter. The center column updates with the available models for the selected provider.
+  </Step>
+  <Step title="Select the model and save">
+    Click the desired model in the center list. Adjust temperature and effort in the bottom section and click **Save settings**. The change takes effect on the next execution.
+  </Step>
+</Steps>
+
+## How providers work
+
+Timely.ai offers two modes of model access: using the platform's credits (access via Timely) or connecting your own API key from an external provider.
+
+### Option 1 — Using Timely credits
+
+Each model consumes a fixed number of credits per execution. You do not need to create accounts with providers — Timely manages authentication and billing.
+
+<Steps>
+  <Step title="Select any available model">
+    All models listed in the interface are immediately available if you have credits in the workspace.
+  </Step>
+  <Step title="Check the credit cost">
+    Each model displays the estimated cost per execution. Actual consumption varies based on prompt size, conversation history, and the number of tool calls in the same execution.
+  </Step>
+  <Step title="Monitor consumption">
+    Track credit consumption in **Settings > Billing** to adjust the model as conversation volume grows.
+  </Step>
+  <Step title="Reload credits when needed">
+    Credits can be reloaded at any time from the billing panel. Agents without available credits automatically pause their responses.
+  </Step>
+</Steps>
+
+### Option 2 — Connecting your own provider
+
+Workspaces on the Enterprise plan can configure custom providers, connecting models with their own API keys or open-source models hosted on internal infrastructure.
+
+<Steps>
+  <Step title="Access workspace settings">
+    Go to **Workspace Settings > AI Models** in the administration menu.
+  </Step>
+  <Step title="Add the provider credentials">
+    Enter the provider's API key (OpenAI, Anthropic, or Google). The key is stored with encryption and used exclusively for your workspace's executions.
+  </Step>
+  <Step title="Select the custom provider in the agent">
+    When configuring the agent model, the custom provider appears as an additional option in the providers column.
+  </Step>
+  <Step title="Confirm the connection with a test">
+    Use the Internal chat to send a test message and confirm the custom provider is responding correctly before publishing the agent to production.
+  </Step>
+</Steps>
+
+<Note>
+Custom provider configuration requires an Enterprise plan. Contact support to enable this feature in your workspace.
+</Note>
+
+## Switching model per agent
+
+Each agent can use a different model within the same workspace. This allows you to optimize cost and performance per use case:
+
+- High-volume FAQ agents use cheaper models (Kimi K2.5 or Gemini 2.5 Flash)
+- Complex analysis agents use high-capacity models (Claude Opus 4.6 or Gemini 3.1 Pro)
+- General support agents use balanced models (Claude Sonnet 4.6, marked as recommended)
+- OpenAI GPT-5.x models disable temperature — the slider becomes inactive automatically
+- Anthropic models with active reasoning force temperature to 1.0 — the temperature control has no effect
+
+## Best practices
+
+- Always start with **Claude Sonnet 4.6** — it is the platform's recommended model for most use cases, with a good balance between quality (4 credits/execution), speed, and tool support
+- Test any model change in the Internal chat with representative questions before applying to production
+- Monitor latency after switching to larger models — models such as Claude Opus 4.6 and Gemini 3.1 Pro have higher latency that may affect the experience on messaging channels
+- Do not switch models based on cost alone — compare response quality in the real scenarios of your use case before migrating

@@ -1,0 +1,134 @@
+---
+title: "Authentication"
+description: "How to use API keys, permission scopes, and credential rotation"
+---
+
+Authentication with the Timely.ai API is done via an **API key** sent on every request in the `x-api-key` header. No OAuth, no sessions — just the key.
+
+## Sending the key
+
+```http
+GET /v1/agents HTTP/1.1
+Host: api.timelyai.com.br
+x-api-key: tly_live_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+For environment variables, always store the key as `TIMELY_API_KEY` and reference it via `process.env` (Node), `os.environ` (Python), or `os.Getenv` (Go). Never hardcode it.
+
+## Creating an API key
+
+1. Go to [app.timelyai.com.br](https://app.timelyai.com.br)
+2. Navigate to **Settings → API Keys → New key**
+3. Give it a name that identifies its use (e.g., `crm-integration`, `n8n-automations`)
+4. Select the required scopes (principle of least privilege)
+5. Copy the key — it is shown **only once**
+
+<Warning>
+  If you lose the key, it cannot be recovered. You will need to revoke it and create a new one. Plan the rollout before revoking keys in production.
+</Warning>
+
+## Available scopes
+
+Each API key has a set of scopes that define what it can do. Grant only what the service needs.
+
+<AccordionGroup>
+  <Accordion title="Agents">
+    | Scope | Permission |
+    |---|---|
+    | `agents:read` | List and view agents |
+    | `agents:write` | Create, edit, and delete agents |
+  </Accordion>
+
+  <Accordion title="Conversations and messages">
+    | Scope | Permission |
+    |---|---|
+    | `conversations:read` | List and read conversations |
+    | `conversations:write` | Create, update, and close conversations |
+    | `messages:send` | Send messages via agent |
+    | `chats:manage` | Manage chat threads, including history |
+  </Accordion>
+
+  <Accordion title="Contacts">
+    | Scope | Permission |
+    |---|---|
+    | `contacts:read` | List and search contacts |
+    | `contacts:write` | Create, edit, and delete contacts |
+    | `custom-fields:manage` | Manage CRM custom fields |
+  </Accordion>
+
+  <Accordion title="Channels">
+    | Scope | Permission |
+    |---|---|
+    | `channels:read` | List connected channels |
+    | `channels:write` | Configure and disconnect channels |
+  </Accordion>
+
+  <Accordion title="Training">
+    | Scope | Permission |
+    |---|---|
+    | `training:read` | View the knowledge base |
+    | `training:write` | Add and remove documents from training |
+  </Accordion>
+
+  <Accordion title="Workspaces and team">
+    | Scope | Permission |
+    |---|---|
+    | `workspaces:read` | View workspaces |
+    | `workspaces:write` | Create and configure workspaces |
+  </Accordion>
+
+  <Accordion title="Automation">
+    | Scope | Permission |
+    |---|---|
+    | `webhooks:manage` | Create, list, and delete webhook endpoints |
+    | `followups:manage` | Manage automatic follow-up rules |
+  </Accordion>
+
+  <Accordion title="Scheduling">
+    | Scope | Permission |
+    |---|---|
+    | `appointments:read` | View appointments |
+    | `appointments:write` | Create and cancel appointments |
+  </Accordion>
+
+  <Accordion title="Infrastructure">
+    | Scope | Permission |
+    |---|---|
+    | `mcp-servers:manage` | Register and remove external MCP servers |
+  </Accordion>
+</AccordionGroup>
+
+## Security best practices
+
+**Use one key per service.** If a service is compromised, you revoke only its key without affecting everything else.
+
+**Minimum scopes.** A job that only reads conversations does not need `agents:write`. The smaller the scope, the smaller the blast radius of a leaked key.
+
+**Periodic rotation.** Rotate keys every 90 days or whenever a team member who had access to the credentials leaves.
+
+**Monitor usage.** Under **Settings → API Keys**, you can see the request volume per key. Unexpected spikes may indicate unauthorized use.
+
+## Rotating a key
+
+<Steps>
+  <Step title="Create the new key">
+    Under **Settings → API Keys → New key**, create the replacement with the same scopes as the current key.
+  </Step>
+  <Step title="Update services">
+    Update the environment variable in all services that use the old key. Deploy or restart the services.
+  </Step>
+  <Step title="Revoke the old key">
+    After confirming that the services are operational with the new key, click **Revoke** on the old key. Revocation is immediate — any request with the old key will return `401`.
+  </Step>
+</Steps>
+
+## Common authentication errors
+
+| Status | Cause | Solution |
+|---|---|---|
+| `401 Unauthorized` | Key is missing, invalid, or revoked | Check the `x-api-key` header |
+| `403 Forbidden` | Valid key, but missing the required scope | Add the missing scope to the key |
+
+<Note>
+  API keys are isolated by workspace. A key created in the "Support" workspace cannot access data from the "Sales" workspace.
+</Note>

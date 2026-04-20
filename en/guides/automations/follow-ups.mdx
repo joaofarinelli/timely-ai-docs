@@ -1,0 +1,92 @@
+---
+title: "Automatic Follow-ups"
+description: "Configure automatic follow-up rules by time or condition and monitor every execution in the Automation Runs panel."
+---
+
+Automatic follow-ups let your agents resume stalled conversations without manual intervention. You define when and how the resumption happens — whether after a time interval or when a specific event occurs — and the platform handles the rest.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-follow-ups-list.png" alt="Follow-up automations list" />
+</Frame>
+
+## How it works
+
+Each follow-up automation consists of three parts: the **trigger** (what starts it), the **condition** (an optional filter to refine when to act), and the **actions** (what to execute). The automation engine (`automation-engine`) continuously evaluates rules and dispatches executions via `automation-dispatcher`.
+
+<Note>
+  Automations remain in **draft** status until you explicitly activate them. Only automations with **active** status are evaluated by the scheduler.
+</Note>
+
+## Available trigger types
+
+| Type | When it fires |
+|---|---|
+| `cron` | On a recurring schedule or interval (cron expression) |
+| `event` | When an internal event occurs (e.g., unanswered conversation, contact created) |
+| `webhook` | When an external HTTP payload arrives at the automation endpoint |
+
+## Creating a follow-up automation
+
+<Steps>
+  <Step title="Open Automations">
+    In the sidebar, click **Automations**. Then click **New Automation**.
+  </Step>
+  <Step title="Set name and description">
+    Choose a clear name to identify the rule (e.g., "Follow-up 24h no reply WhatsApp").
+  </Step>
+  <Step title="Choose the trigger type">
+    Select `cron`, `event`, or `webhook` and fill in the corresponding configuration. For time-based follow-ups, use `cron` with the desired interval.
+  </Step>
+  <Step title="Add conditions (optional)">
+    Filter which conversations or contacts should receive the follow-up — by channel, tag, status, or custom field.
+  </Step>
+  <Step title="Configure the actions">
+    Add actions in sequence: send message, update a contact field, call an agent, trigger a webhook, etc.
+  </Step>
+  <Step title="Activate the automation">
+    Change the status to **active** and save. The automation enters immediate evaluation.
+  </Step>
+</Steps>
+
+## Failure control and retries
+
+Timely.ai implements an automatic retry mechanism with configurable backoff.
+
+| Parameter | Description |
+|---|---|
+| `max_retries` | Maximum number of attempts on failure |
+| `retry_delay_seconds` | Interval between retries |
+| `max_consecutive_failures` | Consecutive failure limit before automatic pause |
+| `rate_limit_per_hour` | Maximum executions per hour (anti-spam) |
+| `rate_limit_per_day` | Maximum executions per day |
+
+When `consecutive_failures` reaches `max_consecutive_failures`, the automation is automatically paused and its status changes to `error`. You receive an alert and can review the logs before reactivating.
+
+<Warning>
+  Automations with `error` status must be investigated before reactivating. Check the Automation Runs to identify the step that failed.
+</Warning>
+
+## Monitoring executions (Automation Runs)
+
+Each trigger generates an **Automation Run** with a complete execution record.
+
+<CardGroup cols={2}>
+  <Card title="Run status" icon="circle-dot">
+    `pending`, `running`, `completed`, `failed`, `cancelled`
+  </Card>
+  <Card title="Per-step log" icon="list-tree">
+    Input, output, duration, and errors for each individual action.
+  </Card>
+  <Card title="Credits consumed" icon="coins">
+    Each run records the credit cost for usage tracking.
+  </Card>
+  <Card title="Idempotency" icon="shield-check">
+    Runs with the same `idempotency_key` are not executed twice.
+  </Card>
+</CardGroup>
+
+To access runs, open the desired automation and click **View executions**. You can filter by status and load more records with pagination of 50 per page.
+
+<Tip>
+  Set `rate_limit_per_day` to prevent a follow-up automation from sending excessive messages to the same contact in a single day — especially important for channels like WhatsApp, which have limits imposed by Meta.
+</Tip>

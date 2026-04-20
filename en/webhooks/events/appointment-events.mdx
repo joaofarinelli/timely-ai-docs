@@ -1,0 +1,215 @@
+---
+title: "Appointment events"
+description: "Triggered when appointments are scheduled, rescheduled, canceled, or when reminders are sent"
+---
+
+These events cover the lifecycle of appointments managed by Timely.ai — whether via an AI agent integrating with Google Calendar or via a manual agent flow. Use them to sync with clinic management systems, gyms, salons, or any business with a scheduling component.
+
+## Event list
+
+| Event | When it fires |
+|-------|---------------|
+| `appointment.scheduled` | A new appointment is confirmed |
+| `appointment.rescheduled` | The date or time of an appointment is changed |
+| `appointment.canceled` | An appointment is canceled |
+| `appointment.reminder_sent` | An automatic reminder is sent to the contact |
+
+---
+
+## `appointment.scheduled`
+
+### When it fires
+
+A new appointment is created and confirmed — either by the AI agent via Google Calendar integration, by an agent manually, or via API. The event fires only when the status is `confirmed`, not for drafts or pending attempts.
+
+### Payload
+
+```json
+{
+  "event": "appointment.scheduled",
+  "event_id": "evt_01HX7A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T14:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "appointment_id": "appt_01HX7A1K",
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "title": "Consulta - Ana Costa",
+    "description": "Primeira consulta de avaliação",
+    "start_at": "2026-04-22T09:00:00-03:00",
+    "end_at": "2026-04-22T09:30:00-03:00",
+    "timezone": "America/Sao_Paulo",
+    "location": "Online — Google Meet",
+    "meet_link": "https://meet.google.com/abc-defg-hij",
+    "calendar_event_id": "cal_event_google_xyz",
+    "calendar_id": "gcal_abc123",
+    "attendant_id": "usr_321",
+    "created_by": "agt_101",
+    "created_by_type": "agent",
+    "reminders": [
+      { "method": "whatsapp", "minutes_before": 1440 },
+      { "method": "whatsapp", "minutes_before": 60 }
+    ],
+    "created_at": "2026-04-19T14:30:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `appointment_id` | string | Unique appointment ID |
+| `conversation_id` | string \| null | ID of the conversation where the appointment was created |
+| `contact_id` | string | Contact ID |
+| `title` | string | Appointment title |
+| `start_at` | string | Start date/time with timezone offset (ISO 8601 with offset) |
+| `end_at` | string | End date/time with timezone offset |
+| `timezone` | string | Timezone in IANA format |
+| `location` | string \| null | Physical location or link |
+| `meet_link` | string \| null | Google Meet link (when created via integration) |
+| `calendar_event_id` | string \| null | Event ID in Google Calendar |
+| `attendant_id` | string \| null | Agent responsible for the appointment |
+| `created_by_type` | enum | `agent`, `attendant`, `api`, `automation` |
+| `reminders` | array | List of configured reminders with `method` and `minutes_before` |
+
+### Usage example
+
+<Note>
+  Use `appointment.scheduled` to register the appointment in your internal system, confirm it with the contact via a separate email, or block time slots in another calendar.
+</Note>
+
+---
+
+## `appointment.rescheduled`
+
+### When it fires
+
+The date, time, or location of an existing appointment is changed. The event includes both the previous and new values to facilitate auditing and targeted notifications.
+
+### Payload
+
+```json
+{
+  "event": "appointment.rescheduled",
+  "event_id": "evt_01HX7B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-20T10:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "appointment_id": "appt_01HX7A1K",
+    "contact_id": "cont_456",
+    "changes": {
+      "start_at": {
+        "before": "2026-04-22T09:00:00-03:00",
+        "after": "2026-04-23T14:00:00-03:00"
+      },
+      "end_at": {
+        "before": "2026-04-22T09:30:00-03:00",
+        "after": "2026-04-23T14:30:00-03:00"
+      }
+    },
+    "rescheduled_by": "usr_321",
+    "rescheduled_by_type": "attendant",
+    "rescheduled_at": "2026-04-20T10:00:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `appointment_id` | string | ID of the changed appointment |
+| `changes` | object | Modified fields with `before` and `after` |
+| `rescheduled_by` | string | ID of who rescheduled |
+| `rescheduled_by_type` | enum | `agent`, `attendant`, `contact`, `api` |
+| `rescheduled_at` | string | ISO 8601 timestamp of rescheduling |
+
+---
+
+## `appointment.canceled`
+
+### When it fires
+
+An appointment is canceled. Cancellation can be initiated by the contact, the agent, the AI agent, or via API. The Google Calendar event is also updated automatically when an active integration is present.
+
+### Payload
+
+```json
+{
+  "event": "appointment.canceled",
+  "event_id": "evt_01HX7C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-21T08:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "appointment_id": "appt_01HX7A1K",
+    "contact_id": "cont_456",
+    "title": "Consulta - Ana Costa",
+    "start_at": "2026-04-23T14:00:00-03:00",
+    "cancellation_reason": "contact_requested",
+    "cancellation_note": "Cliente solicitou cancelamento via WhatsApp",
+    "canceled_by": "agt_101",
+    "canceled_by_type": "agent",
+    "canceled_at": "2026-04-21T08:30:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `cancellation_reason` | enum | `contact_requested`, `attendant_decision`, `no_show`, `api`, `automation` |
+| `cancellation_note` | string \| null | Note about the cancellation reason |
+| `canceled_by` | string | ID of who performed the cancellation |
+| `canceled_by_type` | enum | `agent`, `attendant`, `contact`, `api` |
+| `canceled_at` | string | ISO 8601 timestamp of cancellation |
+
+<Warning>
+  After an `appointment.canceled`, the `appointment_id` remains accessible via the API for history purposes, but the status is `canceled`. No new events will be emitted for that appointment.
+</Warning>
+
+---
+
+## `appointment.reminder_sent`
+
+### When it fires
+
+An automatic reminder is sent to the contact before the appointment time. Reminders are configured at the time the appointment is created and fired automatically by the system.
+
+### Payload
+
+```json
+{
+  "event": "appointment.reminder_sent",
+  "event_id": "evt_01HX7D7Q5SJUW8ZCFQWA3ZFH",
+  "timestamp": "2026-04-22T13:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "appointment_id": "appt_01HX7A1K",
+    "contact_id": "cont_456",
+    "title": "Consulta - Ana Costa",
+    "start_at": "2026-04-23T14:00:00-03:00",
+    "reminder_method": "whatsapp",
+    "minutes_before": 1440,
+    "message_id": "msg_01HX7D7Q",
+    "sent_at": "2026-04-22T13:00:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `appointment_id` | string | ID of the appointment the reminder refers to |
+| `reminder_method` | enum | `whatsapp`, `email`, `sms` |
+| `minutes_before` | integer | Reminder lead time in minutes (e.g. `1440` = 24h before) |
+| `message_id` | string \| null | ID of the message sent via the channel (when `whatsapp`) |
+| `sent_at` | string | ISO 8601 timestamp of sending |
+
+### Usage example
+
+<Note>
+  Use `appointment.reminder_sent` to record in your system that the contact was notified. If a reminder fails to arrive, investigate whether the channel associated with the contact is still connected.
+</Note>

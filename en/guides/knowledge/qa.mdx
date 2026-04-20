@@ -1,0 +1,89 @@
+---
+title: "Questions and Answers (Q&A)"
+description: "Create manual question-and-answer pairs to ensure the agent always responds accurately on the most critical topics."
+---
+
+Manual Q&As are the most direct way to teach your agent something. Unlike documents that require interpretation, a Q&A pair defines exactly the expected question and the correct answer — without ambiguity. They are ideal for frequently asked questions, service policies, and information that changes often.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-qa-manager.png" alt="Q&A Manager" />
+</Frame>
+
+## When to Use Q&A Instead of Documents
+
+| Situation | Recommendation |
+|---|---|
+| Frequently asked questions with a fixed answer | Q&A |
+| Short policies and rules | Q&A |
+| Extensive technical manuals | Document |
+| Company website content | Website Crawler |
+| Information that changes weekly | Q&A (easy to edit) |
+
+<Tip>
+  Q&As are indexed instantly — as soon as you save, the pair is available in semantic searches. Documents and websites require asynchronous processing.
+</Tip>
+
+## Creating a Q&A Pair
+
+<Steps>
+  <Step title="Open the Q&A manager">
+    In the agent, go to the **Knowledge Base** tab and click **Questions and Answers**.
+  </Step>
+  <Step title="Click New Q&A">
+    The creation form will appear in a modal.
+  </Step>
+  <Step title="Fill in the question">
+    Write the question as the user would likely ask it. The more natural it sounds, the better the semantic retrieval.
+  </Step>
+  <Step title="Write the answer">
+    Provide a complete and accurate answer. Be direct — the agent will use this text as the basis for its final response.
+  </Step>
+  <Step title="Add category and tags (optional)">
+    Categories and tags help organize the base and make searches in the manager easier. They do not affect the agent's semantic search.
+  </Step>
+  <Step title="Save">
+    Click **Save**. The pair is vectorized and becomes available immediately.
+  </Step>
+</Steps>
+
+## Q&A Structure
+
+| Field | Required | Description |
+|---|---|---|
+| `question` | Yes | The question exactly as the user would ask it |
+| `answer` | Yes | The complete and correct answer |
+| `category` | No | Thematic grouping (e.g., "Payments", "Support") |
+| `tags` | No | List of keywords for filtering in the manager |
+
+## Editing and Deleting Q&As
+
+To **edit**, click the pencil icon next to the pair. The editing modal is identical to the creation modal. After saving, the vector is automatically regenerated with the new content.
+
+To **delete**, click the trash icon. Deletion is immediate and irreversible.
+
+<Warning>
+  Editing the question of a very generic Q&A can dramatically improve retrieval precision. If the agent responds with the wrong Q&A, revise the question wording to be more specific.
+</Warning>
+
+## Organizing with Categories and Tags
+
+Use categories to separate distinct topics within the same base:
+
+- **Finance**: payment methods, installments, refunds
+- **Technical support**: access problems, common errors
+- **Product**: features, limitations, integrations
+
+Tags allow you to filter Q&As in the manager without needing to search by text. Example: a `urgent` tag to mark answers that need frequent review.
+
+## Search and Filtering in the Manager
+
+The search field at the top of the manager filters Q&As by:
+
+- Question text
+- Answer text
+- Category name
+- Any tag
+
+<Note>
+  The manager search is a simple text search (not semantic) to help with base administration. The semantic search used by the agent in production operates independently.
+</Note>

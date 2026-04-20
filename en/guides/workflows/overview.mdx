@@ -1,0 +1,30 @@
+---
+title: "Workflows: Overview"
+description: "Orchestrate complex automations by connecting triggers, actions, and logic in a visual editor — no code required."
+---
+
+Workflows are sequences of connected nodes that execute automations in Timely.ai. Every flow starts with a trigger, moves through action and logic nodes you configure, and can return structured data to the caller when needed.
+
+## How Workflows Work
+
+A workflow is built in the drag-and-drop visual editor: drag components onto the canvas, connect nodes via output handles, and configure each one with a double-click. Every publish creates an immutable version — the draft you are editing does not affect the production flow until you click **Publish**.
+
+Each execution generates a **Workflow Run** with a status, individual log for each node, input and output payload, and total duration. The history is available under **Automations > Workflows > View runs**.
+
+## Available Nodes
+
+The editor offers three categories of nodes:
+
+- **Webhook** — receives an external HTTP request and exposes body, headers, and query params to downstream nodes
+- **Schedule** — fires on a scheduled time via a cron expression with a configurable timezone
+- **Agent Request** — allows an AI agent to trigger the workflow as a tool, passing structured parameters
+- **HTTP Request** — calls any external REST API with support for GET, POST, PUT, PATCH, and DELETE
+- **Set Variable** — creates or transforms variables accessible via `{{ $vars.name }}`
+- **JavaScript Code** — executes custom logic in an isolated environment with a 10-second timeout
+- **AI Transformation** — processes text with a language model to extract, classify, or rewrite data
+
+## Why Use Workflows
+
+Workflows are the right choice when you need to integrate external systems, process data before acting, or orchestrate steps that depend on one another. Unlike instructions in an agent's prompt, a workflow executes in a deterministic, traceable, and auditable way — every node has its logs, status, and execution time recorded.
+
+Use workflows to automate event-driven notifications, synchronize data between platforms, or generate periodic reports without manual intervention.

@@ -1,0 +1,86 @@
+---
+title: "Changelog"
+description: "Product and API update history for Timely.ai"
+---
+
+All relevant changes are recorded here in reverse chronological order. API breaking changes are highlighted with <span style={{ color: "#dc2626", fontWeight: 600 }}>⚠ Breaking</span>.
+
+## 2026-04-19
+
+### Workers
+- **New Workers** — an internal ChatGPT-style workspace for chatting with agents and squads without leaving the platform.
+- File and image uploads in chat with **multimodal support** (vision) for compatible models.
+- Refined chat UX: full-height layout, hidden subheader, removed padding, header aligned to 48px, and larger gap in the home navigation.
+
+### Knowledge Base
+- **New Knowledge Base management UI** with dedicated support for document upload and organization.
+
+### Datagrids
+- New **required description** field on columns and support for columns marked as `is_required`.
+- New `reprocess_datagrid` action to recompute embeddings and a **pg_cron** job that detects and reprocesses rows with stale embeddings.
+- Fixed an issue with updating datagrid settings through the agent.
+- Datagrid tool settings now display **Name and Description at the top** for faster editing.
+- `ToolCatalogDialog` now occupies the full viewport, giving more space for configuring tools.
+
+### Navigation
+- New **AI** category in the dual sidebar, with the Time AI panel integrated.
+- Grouped sections in the **Builder** side panel, making it easier to find agent settings.
+
+### Settings
+- **API tab moved to a dedicated page** in the settings sidebar.
+- Fixed user profile loading after switching workspaces.
+
+### Header
+- The **Time AI** button now displays a text label and has a new position in the platform header.
+
+### Pipeline
+- **Lead temperature scoring** feature removed to simplify manual qualification.
+
+## 2026-04-18
+
+### Navigation (DualSidebar)
+- **New dual sidebar**: narrow category rail (52px) + contextual panel per category, replacing the old `AppSidebar`.
+- Six main categories with i18n labels and a safe fallback when the category is invalid.
+- **Hides empty categories by role**, respecting the permissions matrix (owner / manager / trainer / attendant / member).
+- `WorkspaceSelector` moved from the panel to the **platform header**, freeing up space in the navigation.
+- Rail and panel styled as cards; panel now sits flush against the content area.
+- New **MobileDrawer** with a hamburger menu on mobile and a referral dialog in the panel footer.
+- **CMD/CTRL+B** shortcut to collapse/expand the sidebar with persistence in `localStorage`.
+
+### Datagrids — initial feature
+- New `/datagrids` route with a **table editor**, components, and hooks to create, edit, and organize columns and rows.
+- Database migrations with RLS, `SECURITY DEFINER` RPCs with role checks, and triggers for column type immutability.
+- New **`datagrid-tool-exec`** edge function integrated with Cloudflare as a tool registry and executor.
+- Agent catalog gains **4 datagrid tools** (semantic search, similarity search, insert_row, update_row) with configuration dialogs and full i18n.
+- `always_run` instruction injected per tool so the agent uses semantic search when appropriate.
+
+### Time AI
+- Legacy side panel replaced by a **draggable floating window** for Time AI.
+
+### Billing
+- `/billing` route migrated to **`/faturamento`** (Portuguese), with layout adjustments, voice tab, and email templates.
+
+### Dashboard
+- Consistent tooltip and formatting for the credits pill (`formatCredits`).
+- SEO titles resolved via i18n across all 17 routes.
+- Polished empty state in ranking cards.
+
+### Pipeline
+- Fixed typos in the tour and a broken **add contact** button, with cleanup of the legacy tour.
+
+### Removed
+- **Custom fields** system removed entirely (replaced by Datagrids).
+- Eight unused pages and routes removed along with dead components.
+
+## 2026-04-19 — Documentation
+
+- **New documentation structure** inspired by modern standards (Mintlify): separate tabs for Get Started, Product Guides, API Reference, Webhooks, AI, and HTTP Collections.
+- **Complete webhook event catalog** with example payloads per event type.
+- **Technical glossary** with the platform's key terms.
+- **llms.txt** available at `/llms.txt` for use in AI-powered IDEs (Cursor, Claude, VS Code).
+
+---
+
+<Note>
+This changelog covers customer-visible changes. Internal fixes and refactors are not included. To follow detailed releases, subscribe to our [YouTube channel](https://www.youtube.com/@ai.timely) or join our [Discord](https://discord.gg/2S3s6NCTHk).
+</Note>

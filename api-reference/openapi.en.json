@@ -1,0 +1,2788 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Timely.ai API",
+    "description": "Timely.ai REST API for AI-powered customer service automation. Manage agents, conversations, contacts, and integrations.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Timely.ai",
+      "email": "contato@timelyai.com.br",
+      "url": "https://timelyai.com.br"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.timelyai.com.br",
+      "description": "Production"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "System",
+      "description": "Health check and API key introspection"
+    },
+    {
+      "name": "Agents",
+      "description": "AI agents — creation, configuration, and management"
+    },
+    {
+      "name": "Trainings",
+      "description": "Agent knowledge bases"
+    },
+    {
+      "name": "Channels",
+      "description": "Communication channels (WhatsApp, Telegram, Email, Website)"
+    },
+    {
+      "name": "Contacts",
+      "description": "Customer records"
+    },
+    {
+      "name": "Conversations",
+      "description": "Conversation history and messages"
+    },
+    {
+      "name": "Custom Fields",
+      "description": "CRM custom fields"
+    },
+    {
+      "name": "Chats",
+      "description": "Active chat operations and human handoff"
+    },
+    {
+      "name": "Messages",
+      "description": "Individual messages"
+    },
+    {
+      "name": "MCP",
+      "description": "Model Context Protocol — servers and tools"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Outbound webhooks for real-time events"
+    }
+  ],
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "operationId": "healthCheck",
+        "summary": "Health check",
+        "description": "Checks whether the API is running. Does not require authentication.",
+        "tags": ["System"],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "API is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "timestamp": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "operationId": "getApiKeyInfo",
+        "summary": "API key information",
+        "description": "Returns information about the API key, including scopes and permissions.",
+        "tags": ["System"],
+        "responses": {
+          "200": {
+            "description": "API key information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "key_name": { "type": "string" },
+                        "company_id": { "type": "string", "format": "uuid" },
+                        "workspace_id": { "type": "string", "format": "uuid" },
+                        "scopes": { "type": "array", "items": { "type": "string" } },
+                        "permissions": { "type": "object" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/agents": {
+      "get": {
+        "operationId": "listAgents",
+        "summary": "List agents",
+        "description": "Returns a paginated list of AI agents.",
+        "tags": ["Agents"],
+        "parameters": [
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" },
+          { "$ref": "#/components/parameters/Order" },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["active", "inactive"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of agents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Agent" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      },
+      "post": {
+        "operationId": "createAgent",
+        "summary": "Create agent",
+        "description": "Creates a new AI agent.",
+        "tags": ["Agents"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateAgent" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agent created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Agent" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/v1/agents/{id}": {
+      "get": {
+        "operationId": "getAgent",
+        "summary": "Get agent",
+        "description": "Returns details of a specific agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Agent details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Agent" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "operationId": "updateAgent",
+        "summary": "Update agent",
+        "description": "Updates an existing agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateAgent" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Agent" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteAgent",
+        "summary": "Delete agent",
+        "description": "Deletes an agent (soft delete).",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Agent deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/activate": {
+      "post": {
+        "operationId": "activateAgent",
+        "summary": "Activate agent",
+        "description": "Activates an agent to receive conversations.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Agent activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Agent" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/deactivate": {
+      "post": {
+        "operationId": "deactivateAgent",
+        "summary": "Deactivate agent",
+        "description": "Temporarily deactivates an agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Agent deactivated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Agent" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/settings": {
+      "get": {
+        "operationId": "getAgentSettings",
+        "summary": "Get agent settings",
+        "description": "Returns advanced settings for an agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Agent settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/AgentSettings" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "operationId": "updateAgentSettings",
+        "summary": "Update agent settings",
+        "description": "Updates advanced settings for an agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AgentSettings" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/AgentSettings" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/webhooks": {
+      "get": {
+        "operationId": "getAgentWebhooks",
+        "summary": "Get agent webhooks",
+        "description": "Returns the webhook configuration for an agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Agent webhooks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/AgentWebhooks" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "operationId": "updateAgentWebhooks",
+        "summary": "Update agent webhooks",
+        "description": "Updates the webhook configuration for an agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AgentWebhooks" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhooks updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/AgentWebhooks" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/conversation": {
+      "post": {
+        "operationId": "createAgentConversation",
+        "summary": "Create conversation with agent",
+        "description": "Starts a new conversation with the agent via API.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["message"],
+                "properties": {
+                  "message": { "type": "string", "description": "Initial message" },
+                  "contact_id": { "type": "string", "format": "uuid", "description": "Contact ID (optional)" },
+                  "metadata": { "type": "object", "description": "Additional metadata" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Conversation created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "conversation_id": { "type": "string", "format": "uuid" },
+                        "response": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/context": {
+      "post": {
+        "operationId": "injectAgentContext",
+        "summary": "Inject context into agent",
+        "description": "Injects additional context for the agent's next response.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["conversation_id", "context"],
+                "properties": {
+                  "conversation_id": { "type": "string", "format": "uuid" },
+                  "context": { "type": "string", "description": "Context to be injected" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Context injected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "object", "properties": { "success": { "type": "boolean" } } }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/credits": {
+      "get": {
+        "operationId": "getAgentCredits",
+        "summary": "Get agent credits",
+        "description": "Returns the credit balance for an agent.",
+        "tags": ["Agents"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Agent credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "credits_remaining": { "type": "number" },
+                        "credits_used": { "type": "number" },
+                        "credits_total": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/behavior-history": {
+      "get": {
+        "operationId": "getAgentBehaviorHistory",
+        "summary": "Behavior history",
+        "description": "Returns the history of behavior changes for an agent.",
+        "tags": ["Agents"],
+        "parameters": [
+          { "$ref": "#/components/parameters/AgentId" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Behavior history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/BehaviorHistory" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agents/{id}/trainings": {
+      "get": {
+        "operationId": "listAgentTrainings",
+        "summary": "List agent trainings",
+        "description": "Returns trainings associated with the agent.",
+        "tags": ["Trainings"],
+        "parameters": [
+          { "$ref": "#/components/parameters/AgentId" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of trainings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Training" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "post": {
+        "operationId": "createAgentTraining",
+        "summary": "Create training",
+        "description": "Adds a new training to the agent's knowledge base.",
+        "tags": ["Trainings"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTraining" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Training created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Training" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/trainings/{id}": {
+      "put": {
+        "operationId": "updateTraining",
+        "summary": "Update training",
+        "description": "Updates an existing training.",
+        "tags": ["Trainings"],
+        "parameters": [{ "$ref": "#/components/parameters/TrainingId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateTraining" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Training updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Training" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteTraining",
+        "summary": "Delete training",
+        "description": "Removes a training from the knowledge base.",
+        "tags": ["Trainings"],
+        "parameters": [{ "$ref": "#/components/parameters/TrainingId" }],
+        "responses": {
+          "200": {
+            "description": "Training deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/channels": {
+      "get": {
+        "operationId": "listChannels",
+        "summary": "List channels",
+        "description": "Returns a list of communication channels.",
+        "tags": ["Channels"],
+        "parameters": [
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["whatsapp", "telegram", "email", "website", "instagram"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of channels",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Channel" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "operationId": "createChannel",
+        "summary": "Create channel",
+        "description": "Creates a new communication channel.",
+        "tags": ["Channels"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateChannel" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Channel created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Channel" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/channels/{id}": {
+      "put": {
+        "operationId": "updateChannel",
+        "summary": "Update channel",
+        "description": "Updates an existing channel.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateChannel" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Channel updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Channel" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteChannel",
+        "summary": "Delete channel",
+        "description": "Removes a communication channel.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "responses": {
+          "200": {
+            "description": "Channel deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/channels/{id}/config": {
+      "get": {
+        "operationId": "getChannelConfig",
+        "summary": "Get channel configuration",
+        "description": "Returns channel-specific settings.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "responses": {
+          "200": {
+            "description": "Channel configuration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/ChannelConfig" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "operationId": "updateChannelConfig",
+        "summary": "Update channel configuration",
+        "description": "Updates channel-specific settings.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChannelConfig" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Configuration updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/ChannelConfig" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/channels/{id}/qr-code": {
+      "get": {
+        "operationId": "getChannelQrCode",
+        "summary": "Get channel QR code",
+        "description": "Returns the QR code for WhatsApp connection.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "responses": {
+          "200": {
+            "description": "Channel QR code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "qr_code": { "type": "string", "description": "QR code in base64" },
+                        "status": { "type": "string", "enum": ["pending", "connected", "disconnected"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/channels/{id}/conversation": {
+      "post": {
+        "operationId": "createChannelConversation",
+        "summary": "Start conversation on channel",
+        "description": "Starts a new conversation through the channel.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["to", "message"],
+                "properties": {
+                  "to": { "type": "string", "description": "Recipient (phone, email, etc.)" },
+                  "message": { "type": "string", "description": "Initial message" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Conversation started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "conversation_id": { "type": "string", "format": "uuid" },
+                        "message_id": { "type": "string", "format": "uuid" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/channels/{id}/widget/links": {
+      "get": {
+        "operationId": "getChannelWidgetLinks",
+        "summary": "Get widget links",
+        "description": "Returns links for embedding the widget on a website.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "responses": {
+          "200": {
+            "description": "Widget links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "embed_url": { "type": "string", "format": "uri" },
+                        "script_tag": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/channels/{id}/widget/settings": {
+      "put": {
+        "operationId": "updateChannelWidgetSettings",
+        "summary": "Update widget settings",
+        "description": "Updates the widget's appearance and behavior.",
+        "tags": ["Channels"],
+        "parameters": [{ "$ref": "#/components/parameters/ChannelId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WidgetSettings" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/WidgetSettings" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "operationId": "listContacts",
+        "summary": "List contacts",
+        "description": "Returns a paginated list of contacts.",
+        "tags": ["Contacts"],
+        "parameters": [
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" },
+          { "$ref": "#/components/parameters/Order" },
+          { "$ref": "#/components/parameters/Search" },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["active", "inactive", "blocked"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Contact" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "operationId": "createContact",
+        "summary": "Create contact",
+        "description": "Creates a new contact.",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateContact" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Contact" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "operationId": "getContact",
+        "summary": "Get contact",
+        "description": "Returns details of a contact.",
+        "tags": ["Contacts"],
+        "parameters": [{ "$ref": "#/components/parameters/ContactId" }],
+        "responses": {
+          "200": {
+            "description": "Contact details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Contact" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "operationId": "updateContact",
+        "summary": "Update contact",
+        "description": "Updates an existing contact.",
+        "tags": ["Contacts"],
+        "parameters": [{ "$ref": "#/components/parameters/ContactId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateContact" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Contact" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteContact",
+        "summary": "Delete contact",
+        "description": "Removes a contact.",
+        "tags": ["Contacts"],
+        "parameters": [{ "$ref": "#/components/parameters/ContactId" }],
+        "responses": {
+          "200": {
+            "description": "Contact deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/conversations": {
+      "get": {
+        "operationId": "listConversations",
+        "summary": "List conversations",
+        "description": "Returns a paginated list of conversations.",
+        "tags": ["Conversations"],
+        "parameters": [
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" },
+          { "$ref": "#/components/parameters/Order" },
+          { "$ref": "#/components/parameters/Search" },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["open", "closed", "pending"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of conversations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Conversation" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/conversations/{id}": {
+      "get": {
+        "operationId": "getConversation",
+        "summary": "Get conversation",
+        "description": "Returns details of a conversation.",
+        "tags": ["Conversations"],
+        "parameters": [{ "$ref": "#/components/parameters/ConversationId" }],
+        "responses": {
+          "200": {
+            "description": "Conversation details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Conversation" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteConversation",
+        "summary": "Close conversation",
+        "description": "Closes a conversation (soft delete).",
+        "tags": ["Conversations"],
+        "parameters": [{ "$ref": "#/components/parameters/ConversationId" }],
+        "responses": {
+          "200": {
+            "description": "Conversation closed",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/conversations/{id}/messages": {
+      "get": {
+        "operationId": "listConversationMessages",
+        "summary": "List conversation messages",
+        "description": "Returns messages from a conversation.",
+        "tags": ["Conversations"],
+        "parameters": [
+          { "$ref": "#/components/parameters/ConversationId" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" },
+          { "$ref": "#/components/parameters/Order" },
+          {
+            "name": "since",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of messages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Message" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "post": {
+        "operationId": "sendConversationMessage",
+        "summary": "Send message",
+        "description": "Sends a message in the conversation.",
+        "tags": ["Conversations"],
+        "parameters": [{ "$ref": "#/components/parameters/ConversationId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateMessage" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Message" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteConversationMessages",
+        "summary": "Delete all messages",
+        "description": "Removes all messages from a conversation.",
+        "tags": ["Conversations"],
+        "parameters": [{ "$ref": "#/components/parameters/ConversationId" }],
+        "responses": {
+          "200": {
+            "description": "Messages deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/conversations/{id}/messages/{messageId}": {
+      "put": {
+        "operationId": "updateConversationMessage",
+        "summary": "Edit message",
+        "description": "Edits the content of a message.",
+        "tags": ["Conversations"],
+        "parameters": [
+          { "$ref": "#/components/parameters/ConversationId" },
+          { "$ref": "#/components/parameters/MessageId" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content"],
+                "properties": {
+                  "content": { "type": "string", "minLength": 1 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Message" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteConversationMessage",
+        "summary": "Delete message",
+        "description": "Removes a specific message.",
+        "tags": ["Conversations"],
+        "parameters": [
+          { "$ref": "#/components/parameters/ConversationId" },
+          { "$ref": "#/components/parameters/MessageId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/conversations/{id}/human-handoff": {
+      "post": {
+        "operationId": "startHumanHandoff",
+        "summary": "Start human handoff",
+        "description": "Pauses the AI agent and transfers to human support.",
+        "tags": ["Conversations"],
+        "parameters": [{ "$ref": "#/components/parameters/ConversationId" }],
+        "responses": {
+          "200": {
+            "description": "Handoff started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "ai_mode": { "type": "string", "enum": ["paused"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/conversations/{id}/ai-resume": {
+      "post": {
+        "operationId": "resumeAI",
+        "summary": "Resume AI agent",
+        "description": "Resumes AI agent control of the conversation.",
+        "tags": ["Conversations"],
+        "parameters": [{ "$ref": "#/components/parameters/ConversationId" }],
+        "responses": {
+          "200": {
+            "description": "AI resumed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "ai_mode": { "type": "string", "enum": ["auto"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/custom-fields": {
+      "get": {
+        "operationId": "listCustomFields",
+        "summary": "List custom fields",
+        "description": "Returns a list of custom fields.",
+        "tags": ["Custom Fields"],
+        "parameters": [
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/CustomField" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "operationId": "createCustomField",
+        "summary": "Create custom field",
+        "description": "Creates a new custom field.",
+        "tags": ["Custom Fields"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCustomField" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Field created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/CustomField" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/custom-fields/{id}": {
+      "put": {
+        "operationId": "updateCustomField",
+        "summary": "Update custom field",
+        "description": "Updates an existing custom field.",
+        "tags": ["Custom Fields"],
+        "parameters": [{ "$ref": "#/components/parameters/CustomFieldId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCustomField" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Field updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/CustomField" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/custom-fields/{id}/archive": {
+      "put": {
+        "operationId": "archiveCustomField",
+        "summary": "Archive custom field",
+        "description": "Archives a custom field (soft delete).",
+        "tags": ["Custom Fields"],
+        "parameters": [{ "$ref": "#/components/parameters/CustomFieldId" }],
+        "responses": {
+          "200": {
+            "description": "Field archived",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/chats/{id}": {
+      "delete": {
+        "operationId": "deleteChat",
+        "summary": "Delete chat",
+        "description": "Removes a chat and all its messages.",
+        "tags": ["Chats"],
+        "parameters": [{ "$ref": "#/components/parameters/ChatId" }],
+        "responses": {
+          "200": {
+            "description": "Chat deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/chats/{id}/messages": {
+      "delete": {
+        "operationId": "deleteChatMessages",
+        "summary": "Delete chat messages",
+        "description": "Removes all messages from a chat.",
+        "tags": ["Chats"],
+        "parameters": [{ "$ref": "#/components/parameters/ChatId" }],
+        "responses": {
+          "200": {
+            "description": "Messages deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/chats/{id}/messages/{messageId}": {
+      "put": {
+        "operationId": "updateChatMessage",
+        "summary": "Edit chat message",
+        "description": "Edits the content of a message.",
+        "tags": ["Chats"],
+        "parameters": [
+          { "$ref": "#/components/parameters/ChatId" },
+          { "$ref": "#/components/parameters/MessageId" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["content"],
+                "properties": {
+                  "content": { "type": "string", "minLength": 1 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Message" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteChatMessage",
+        "summary": "Delete chat message",
+        "description": "Removes a specific message.",
+        "tags": ["Chats"],
+        "parameters": [
+          { "$ref": "#/components/parameters/ChatId" },
+          { "$ref": "#/components/parameters/MessageId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/chats/{id}/start-human": {
+      "post": {
+        "operationId": "startHumanChat",
+        "summary": "Start human support",
+        "description": "Pauses the AI agent and starts human support.",
+        "tags": ["Chats"],
+        "parameters": [{ "$ref": "#/components/parameters/ChatId" }],
+        "responses": {
+          "200": {
+            "description": "Human support started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "ai_mode": { "type": "string", "enum": ["paused"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/chats/{id}/stop-human": {
+      "post": {
+        "operationId": "stopHumanChat",
+        "summary": "Stop human support",
+        "description": "Resumes AI agent control.",
+        "tags": ["Chats"],
+        "parameters": [{ "$ref": "#/components/parameters/ChatId" }],
+        "responses": {
+          "200": {
+            "description": "AI agent resumed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "ai_mode": { "type": "string", "enum": ["auto"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "operationId": "getMessage",
+        "summary": "Get message",
+        "description": "Returns details of a specific message.",
+        "tags": ["Messages"],
+        "parameters": [{ "$ref": "#/components/parameters/MessageId" }],
+        "responses": {
+          "200": {
+            "description": "Message details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Message" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteMessage",
+        "summary": "Delete message",
+        "description": "Removes a message.",
+        "tags": ["Messages"],
+        "parameters": [{ "$ref": "#/components/parameters/MessageId" }],
+        "responses": {
+          "200": {
+            "description": "Message deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agent/{id}/mcp/add": {
+      "post": {
+        "operationId": "addMcpServer",
+        "summary": "Add MCP server",
+        "description": "Adds a new MCP server to the agent.",
+        "tags": ["MCP"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateMcpServer" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "MCP server added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/McpServer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agent/{id}/mcp/connect": {
+      "post": {
+        "operationId": "connectMcpServer",
+        "summary": "Connect MCP server",
+        "description": "Establishes a connection with an MCP server.",
+        "tags": ["MCP"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["mcp_id"],
+                "properties": {
+                  "mcp_id": { "type": "string", "format": "uuid" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MCP server connected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/McpServer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agent/{id}/mcp/tools": {
+      "get": {
+        "operationId": "listMcpTools",
+        "summary": "List MCP tools",
+        "description": "Lists tools available on the agent's MCP servers.",
+        "tags": ["MCP"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "List of tools",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/McpTool" } }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agent/{id}/mcp/tools/{toolId}/active": {
+      "put": {
+        "operationId": "activateMcpTool",
+        "summary": "Activate MCP tool",
+        "description": "Activates an MCP tool for use by the agent.",
+        "tags": ["MCP"],
+        "parameters": [
+          { "$ref": "#/components/parameters/AgentId" },
+          { "$ref": "#/components/parameters/ToolId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tool activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/McpTool" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agent/{id}/mcp/tools/{toolId}/inactive": {
+      "put": {
+        "operationId": "deactivateMcpTool",
+        "summary": "Deactivate MCP tool",
+        "description": "Deactivates an MCP tool.",
+        "tags": ["MCP"],
+        "parameters": [
+          { "$ref": "#/components/parameters/AgentId" },
+          { "$ref": "#/components/parameters/ToolId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tool deactivated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/McpTool" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agent/{id}/mcp/sync-tools": {
+      "post": {
+        "operationId": "syncMcpTools",
+        "summary": "Sync MCP tools",
+        "description": "Syncs tools from all of the agent's MCP servers.",
+        "tags": ["MCP"],
+        "parameters": [{ "$ref": "#/components/parameters/AgentId" }],
+        "responses": {
+          "200": {
+            "description": "Tools synced",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "synced": { "type": "integer" },
+                        "tools": { "type": "array", "items": { "$ref": "#/components/schemas/McpTool" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/agent/{id}/mcp/{mcpId}": {
+      "delete": {
+        "operationId": "deleteMcpServer",
+        "summary": "Remove MCP server",
+        "description": "Removes an MCP server from the agent.",
+        "tags": ["MCP"],
+        "parameters": [
+          { "$ref": "#/components/parameters/AgentId" },
+          { "$ref": "#/components/parameters/McpId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "MCP server removed",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/webhooks": {
+      "get": {
+        "operationId": "listWebhooks",
+        "summary": "List webhooks",
+        "description": "Returns a list of configured webhooks.",
+        "tags": ["Webhooks"],
+        "parameters": [
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of webhooks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Webhook" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "operationId": "createWebhook",
+        "summary": "Create webhook",
+        "description": "Creates a new webhook to receive events.",
+        "tags": ["Webhooks"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateWebhook" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Webhook created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Webhook" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/webhooks/{id}": {
+      "get": {
+        "operationId": "getWebhook",
+        "summary": "Get webhook",
+        "description": "Returns details of a webhook.",
+        "tags": ["Webhooks"],
+        "parameters": [{ "$ref": "#/components/parameters/WebhookId" }],
+        "responses": {
+          "200": {
+            "description": "Webhook details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Webhook" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "operationId": "updateWebhook",
+        "summary": "Update webhook",
+        "description": "Updates an existing webhook.",
+        "tags": ["Webhooks"],
+        "parameters": [{ "$ref": "#/components/parameters/WebhookId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateWebhook" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Webhook" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "operationId": "deleteWebhook",
+        "summary": "Delete webhook",
+        "description": "Removes a webhook.",
+        "tags": ["Webhooks"],
+        "parameters": [{ "$ref": "#/components/parameters/WebhookId" }],
+        "responses": {
+          "200": {
+            "description": "Webhook deleted",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/webhooks/{id}/test": {
+      "post": {
+        "operationId": "testWebhook",
+        "summary": "Test webhook",
+        "description": "Sends a test event to the webhook.",
+        "tags": ["Webhooks"],
+        "parameters": [{ "$ref": "#/components/parameters/WebhookId" }],
+        "responses": {
+          "200": {
+            "description": "Test sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "success": { "type": "boolean" },
+                        "status_code": { "type": "integer" },
+                        "response_time_ms": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/webhooks/{id}/deliveries": {
+      "get": {
+        "operationId": "listWebhookDeliveries",
+        "summary": "List webhook deliveries",
+        "description": "Returns the delivery history for a webhook.",
+        "tags": ["Webhooks"],
+        "parameters": [
+          { "$ref": "#/components/parameters/WebhookId" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of deliveries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/WebhookDelivery" } },
+                    "pagination": { "$ref": "#/components/schemas/Pagination" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "API key obtained from the dashboard"
+      }
+    },
+    "parameters": {
+      "Page": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number",
+        "schema": { "type": "integer", "minimum": 1, "default": 1 }
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Items per page",
+        "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 }
+      },
+      "Order": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort direction",
+        "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" }
+      },
+      "Search": {
+        "name": "search",
+        "in": "query",
+        "description": "Search term",
+        "schema": { "type": "string" }
+      },
+      "AgentId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Agent ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "TrainingId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Training ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "ChannelId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Channel ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "ContactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Contact ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "ConversationId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Conversation ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "MessageId": {
+        "name": "messageId",
+        "in": "path",
+        "required": true,
+        "description": "Message ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "ChatId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Chat ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "CustomFieldId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Custom field ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "WebhookId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Webhook ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "ToolId": {
+        "name": "toolId",
+        "in": "path",
+        "required": true,
+        "description": "MCP tool ID",
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "McpId": {
+        "name": "mcpId",
+        "in": "path",
+        "required": true,
+        "description": "MCP server ID",
+        "schema": { "type": "string", "format": "uuid" }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Invalid or missing API key",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Insufficient scope for this operation",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Invalid request data",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "integer" },
+          "limit": { "type": "integer" },
+          "total": { "type": "integer" },
+          "total_pages": { "type": "integer" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "status": { "type": "integer" }
+            }
+          }
+        }
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "deleted": { "type": "boolean", "example": true }
+            }
+          }
+        }
+      },
+      "Agent": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "avatar_url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["active", "inactive"] },
+          "model": { "type": "string" },
+          "temperature": { "type": "number" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateAgent": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "description": { "type": "string", "maxLength": 500 },
+          "avatar_url": { "type": "string", "format": "uri" },
+          "model": { "type": "string", "default": "gpt-4o-mini" },
+          "temperature": { "type": "number", "minimum": 0, "maximum": 2, "default": 0.7 }
+        }
+      },
+      "UpdateAgent": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "description": { "type": "string", "maxLength": 500 },
+          "avatar_url": { "type": "string", "format": "uri" },
+          "model": { "type": "string" },
+          "temperature": { "type": "number", "minimum": 0, "maximum": 2 }
+        }
+      },
+      "AgentSettings": {
+        "type": "object",
+        "properties": {
+          "max_tokens": { "type": "integer" },
+          "context_window": { "type": "integer" },
+          "system_prompt": { "type": "string" },
+          "fallback_message": { "type": "string" },
+          "typing_delay_ms": { "type": "integer" }
+        }
+      },
+      "AgentWebhooks": {
+        "type": "object",
+        "properties": {
+          "on_message": { "type": "string", "format": "uri" },
+          "on_conversation_start": { "type": "string", "format": "uri" },
+          "on_conversation_end": { "type": "string", "format": "uri" }
+        }
+      },
+      "BehaviorHistory": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "field": { "type": "string" },
+          "old_value": { "type": "string" },
+          "new_value": { "type": "string" },
+          "changed_by": { "type": "string", "format": "uuid" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Training": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "agent_id": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "content": { "type": "string" },
+          "type": { "type": "string", "enum": ["text", "file", "url"] },
+          "status": { "type": "string", "enum": ["pending", "processed", "failed"] },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateTraining": {
+        "type": "object",
+        "required": ["title", "content"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "content": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["text", "file", "url"], "default": "text" }
+        }
+      },
+      "UpdateTraining": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "content": { "type": "string", "minLength": 1 }
+        }
+      },
+      "Channel": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "type": { "type": "string", "enum": ["whatsapp", "telegram", "email", "website", "instagram"] },
+          "status": { "type": "string", "enum": ["active", "inactive", "pending"] },
+          "agent_id": { "type": "string", "format": "uuid" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateChannel": {
+        "type": "object",
+        "required": ["name", "type", "agent_id"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "type": { "type": "string", "enum": ["whatsapp", "telegram", "email", "website", "instagram"] },
+          "agent_id": { "type": "string", "format": "uuid" }
+        }
+      },
+      "UpdateChannel": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "agent_id": { "type": "string", "format": "uuid" }
+        }
+      },
+      "ChannelConfig": {
+        "type": "object",
+        "properties": {
+          "phone_number": { "type": "string" },
+          "api_key": { "type": "string" },
+          "webhook_url": { "type": "string", "format": "uri" }
+        }
+      },
+      "WidgetSettings": {
+        "type": "object",
+        "properties": {
+          "primary_color": { "type": "string" },
+          "position": { "type": "string", "enum": ["bottom-right", "bottom-left"] },
+          "welcome_message": { "type": "string" },
+          "placeholder": { "type": "string" }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "customer_name": { "type": "string" },
+          "customer_email": { "type": "string", "format": "email" },
+          "customer_phone": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "inactive", "blocked"] },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "custom_fields": { "type": "object" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateContact": {
+        "type": "object",
+        "required": ["customer_name"],
+        "properties": {
+          "customer_name": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "customer_email": { "type": "string", "format": "email" },
+          "customer_phone": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "custom_fields": { "type": "object" }
+        }
+      },
+      "UpdateContact": {
+        "type": "object",
+        "properties": {
+          "customer_name": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "customer_email": { "type": "string", "format": "email" },
+          "customer_phone": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "inactive", "blocked"] },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "custom_fields": { "type": "object" }
+        }
+      },
+      "Conversation": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "channel": { "type": "string" },
+          "channel_id": { "type": "string", "format": "uuid" },
+          "contact_id": { "type": "string", "format": "uuid" },
+          "agent_id": { "type": "string", "format": "uuid" },
+          "customer_name": { "type": "string" },
+          "status": { "type": "string", "enum": ["open", "closed", "pending"] },
+          "ai_mode": { "type": "string", "enum": ["auto", "paused"] },
+          "last_message_at": { "type": "string", "format": "date-time" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "conversation_id": { "type": "string", "format": "uuid" },
+          "content": { "type": "string" },
+          "sender_type": { "type": "string", "enum": ["customer", "agent", "ai", "system", "bot"] },
+          "message_type": { "type": "string", "enum": ["text", "image", "file", "audio", "video", "contact", "transfer"] },
+          "media_url": { "type": "string", "format": "uri" },
+          "media_type": { "type": "string" },
+          "is_edited": { "type": "boolean" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateMessage": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": { "type": "string", "minLength": 1, "maxLength": 65535 },
+          "sender_type": { "type": "string", "enum": ["customer", "agent", "ai", "system", "bot"], "default": "agent" },
+          "message_type": { "type": "string", "enum": ["text", "image", "file", "audio", "video"], "default": "text" },
+          "media_url": { "type": "string", "format": "uri" },
+          "media_type": { "type": "string" }
+        }
+      },
+      "CustomField": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "type": { "type": "string", "enum": ["text", "number", "date", "boolean", "select", "multiselect"] },
+          "description": { "type": "string" },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "required": { "type": "boolean" },
+          "archived": { "type": "boolean" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateCustomField": {
+        "type": "object",
+        "required": ["name", "type"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "type": { "type": "string", "enum": ["text", "number", "date", "boolean", "select", "multiselect"] },
+          "description": { "type": "string", "maxLength": 500 },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "required": { "type": "boolean", "default": false }
+        }
+      },
+      "UpdateCustomField": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "description": { "type": "string", "maxLength": 500 },
+          "options": { "type": "array", "items": { "type": "string" } },
+          "required": { "type": "boolean" }
+        }
+      },
+      "McpServer": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["connected", "disconnected", "error"] },
+          "tools_count": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateMcpServer": {
+        "type": "object",
+        "required": ["name", "url"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "url": { "type": "string", "format": "uri" },
+          "api_key": { "type": "string" }
+        }
+      },
+      "McpTool": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "mcp_server_id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "input_schema": { "type": "object" },
+          "is_active": { "type": "boolean" }
+        }
+      },
+      "Webhook": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "events": { "type": "array", "items": { "type": "string" } },
+          "is_active": { "type": "boolean" },
+          "secret": { "type": "string", "description": "Returned only at creation" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateWebhook": {
+        "type": "object",
+        "required": ["name", "url", "events"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "url": { "type": "string", "format": "uri" },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "conversation.created",
+                "conversation.closed",
+                "conversation.transferred",
+                "message.received",
+                "message.sent",
+                "contact.created",
+                "contact.updated",
+                "appointment.created",
+                "appointment.cancelled",
+                "appointment.completed"
+              ]
+            }
+          }
+        }
+      },
+      "UpdateWebhook": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "url": { "type": "string", "format": "uri" },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "conversation.created",
+                "conversation.closed",
+                "conversation.transferred",
+                "message.received",
+                "message.sent",
+                "contact.created",
+                "contact.updated",
+                "appointment.created",
+                "appointment.cancelled",
+                "appointment.completed"
+              ]
+            }
+          },
+          "is_active": { "type": "boolean" }
+        }
+      },
+      "WebhookDelivery": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "webhook_id": { "type": "string", "format": "uuid" },
+          "event": { "type": "string" },
+          "status": { "type": "string", "enum": ["pending", "success", "failed"] },
+          "status_code": { "type": "integer" },
+          "response_time_ms": { "type": "integer" },
+          "attempt": { "type": "integer" },
+          "next_retry_at": { "type": "string", "format": "date-time" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

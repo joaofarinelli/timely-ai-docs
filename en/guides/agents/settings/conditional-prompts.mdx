@@ -1,0 +1,43 @@
+---
+title: "Conditional Prompts"
+description: "How to use conditional prompts in Timely.ai to adapt agent behavior by customer segment, channel, or funnel stage without creating multiple agents."
+---
+
+Conditional prompts allow a single agent to behave differently depending on the conversation context. Instead of creating a separate agent for each customer segment or service channel, you define instruction blocks that the agent uses only when certain conditions are true.
+
+## What is a conditional prompt?
+
+A conditional prompt is an instruction block linked to a condition based on conversation or contact variables. When the condition is true, the block's instructions are concatenated to the base prompt — they do not replace the main prompt, they simply supplement it with additional context.
+
+Variables available for conditionals:
+
+- `contact.stage` — the contact's funnel stage (e.g., `hot_lead`, `customer`, `inactive`)
+- `contact.plan` — the plan contracted by the contact (e.g., `enterprise`, `starter`)
+- `channel` — the conversation's origin channel (e.g., `whatsapp`, `widget`, `instagram`)
+- `contact.language` — the contact's preferred language (e.g., `en-US`, `es`)
+
+## How conditional prompts work
+
+1. At each execution, the system evaluates all configured conditions for the agent.
+2. For each true condition, the corresponding instruction block is added to the context sent to the model.
+3. If multiple conditions are simultaneously true, all corresponding blocks are included — which is why it is important that the instructions do not contradict each other.
+
+## Usage examples
+
+Common situations where conditional prompts solve problems without needing to create multiple agents:
+
+- Instagram channel: shorter response, up to 3 sentences, no long lists, emojis in moderation
+- Enterprise plan contact: confirm ticket number, priority SLA, escalate in under 2 hours if unresolved
+- Hot lead: focus on the decision timeline, offer a call with the sales team, avoid drifting to support
+- Spanish language: respond in neutral Spanish regardless of the language used in the message
+
+## Best practices
+
+- Write small, focused conditional blocks — 2 to 4 clear instructions per block work much better than long blocks that try to cover every scenario
+- Test each condition in isolation with the Internal chat using a contact that meets the condition before combining multiple conditions
+- Do not replicate in the conditional block instructions that are already in the base prompt — this increases context size with no real benefit
+- If a specific condition is being triggered in almost every conversation, move the instruction to the base prompt — it is probably not as conditional as it seems
+
+<Tip>
+Keep variable values synchronized with actual CRM data. A condition that is never true due to data inconsistency between systems is invisible and difficult to diagnose.
+</Tip>

@@ -1,0 +1,232 @@
+---
+title: "Message events"
+description: "Triggered when messages are received, sent, delivered, read, or fail to send"
+---
+
+These events track the lifecycle of each message — from the moment a contact sends it to the read confirmation. Use them to sync conversation history, trigger content-based automations, or monitor delivery failures.
+
+## Event list
+
+| Event | When it fires |
+|-------|---------------|
+| `message.received` | A message arrives from a contact on any channel |
+| `message.sent` | The AI agent or human agent sends a message |
+| `message.delivered` | The channel confirms the message was delivered to the device |
+| `message.read` | The contact viewed the message (when the channel supports it) |
+| `message.failed` | The send failed — channel unavailable, invalid number, etc. |
+
+---
+
+## `message.received`
+
+### When it fires
+
+A new message from a contact arrives on any channel connected to the workspace. This includes text, image, audio, video, document, and location.
+
+### Payload
+
+```json
+{
+  "event": "message.received",
+  "event_id": "evt_01HX4A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T14:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "message_id": "msg_01HX4A1K",
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "content": "Oi, gostaria de saber sobre os planos",
+    "type": "text",
+    "direction": "inbound",
+    "media_url": null,
+    "media_mime_type": null,
+    "location": null,
+    "received_at": "2026-04-19T14:30:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message_id` | string | Unique message ID |
+| `conversation_id` | string | ID of the conversation the message belongs to |
+| `contact_id` | string | ID of the sending contact |
+| `content` | string \| null | Message text (null for media without a caption) |
+| `type` | enum | `text`, `image`, `audio`, `video`, `document`, `location`, `sticker` |
+| `direction` | enum | `inbound` (from the contact) |
+| `media_url` | string \| null | Pre-signed media URL (expires in 24h) |
+| `media_mime_type` | string \| null | File MIME type, e.g. `image/jpeg` |
+| `location` | object \| null | `{ lat, lng, label }` when `type` is `location` |
+
+### Usage example
+
+<Note>
+  Use `message.received` to integrate with your CRM, trigger external automations, or route messages to your own support system. If `type` is something other than `text`, check `media_url` to access the file.
+</Note>
+
+---
+
+## `message.sent`
+
+### When it fires
+
+The AI agent or a human agent sends a message to the contact — whether via inbox, API, or automation.
+
+### Payload
+
+```json
+{
+  "event": "message.sent",
+  "event_id": "evt_01HX4B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-19T14:30:45Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "message_id": "msg_01HX4B3M",
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "content": "Olá! Temos três planos disponíveis...",
+    "type": "text",
+    "direction": "outbound",
+    "sent_by": "agt_101",
+    "sent_by_type": "agent",
+    "media_url": null,
+    "sent_at": "2026-04-19T14:30:45Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `direction` | enum | Always `outbound` |
+| `sent_by` | string | ID of who sent it (agent or attendant) |
+| `sent_by_type` | enum | `agent` (AI) \| `attendant` (human) \| `api` \| `automation` |
+| `sent_at` | string | ISO 8601 timestamp of sending |
+
+### Usage example
+
+<Note>
+  Use `sent_by_type` to separate metrics for messages sent by AI vs. humans in your performance dashboard.
+</Note>
+
+---
+
+## `message.delivered`
+
+### When it fires
+
+The channel (WhatsApp, Instagram, etc.) confirms the message reached the contact's device. Not all channels support delivery confirmation — widget and Telegram do not emit this event.
+
+### Payload
+
+```json
+{
+  "event": "message.delivered",
+  "event_id": "evt_01HX4C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T14:31:02Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "message_id": "msg_01HX4B3M",
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "delivered_at": "2026-04-19T14:31:02Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message_id` | string | ID of the message confirmed as delivered |
+| `delivered_at` | string | ISO 8601 timestamp of the delivery confirmation |
+
+---
+
+## `message.read`
+
+### When it fires
+
+The contact opened and viewed the message. Available only on channels that return read status — WhatsApp Business API and Instagram Direct.
+
+### Payload
+
+```json
+{
+  "event": "message.read",
+  "event_id": "evt_01HX4D7Q5SJUW8ZCFQWA3ZFH",
+  "timestamp": "2026-04-19T14:32:10Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "message_id": "msg_01HX4B3M",
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "read_at": "2026-04-19T14:32:10Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message_id` | string | ID of the viewed message |
+| `read_at` | string | ISO 8601 timestamp of the read |
+
+<Info>
+  The `message.read` event is generated at the individual message level. If the contact opens the conversation, you may receive several read events in sequence for previously unread messages.
+</Info>
+
+---
+
+## `message.failed`
+
+### When it fires
+
+Sending a message failed. This can happen due to a number not registered on WhatsApp, a disconnected channel, an expired Instagram session, or any other channel error.
+
+### Payload
+
+```json
+{
+  "event": "message.failed",
+  "event_id": "evt_01HX4E9R6TKXV9ADGRXB4AGI",
+  "timestamp": "2026-04-19T14:30:51Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "message_id": "msg_01HX4B3M",
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "error_code": "131026",
+    "error_message": "Message undeliverable — number not registered on WhatsApp",
+    "failed_at": "2026-04-19T14:30:51Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `error_code` | string | Error code returned by the channel |
+| `error_message` | string | Human-readable error description |
+| `failed_at` | string | ISO 8601 timestamp of the failure |
+
+### Usage example
+
+<Warning>
+  Monitor `message.failed` with alerts. Many consecutive failures on the same `channel_id` indicate the channel may be disconnected — check the `channel.error` event in parallel.
+</Warning>

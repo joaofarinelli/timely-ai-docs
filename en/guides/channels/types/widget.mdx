@@ -1,0 +1,53 @@
+---
+title: "Web Widget"
+description: "Add a chat to your website in minutes with a JavaScript snippet — with voice support, visual customization, and multi-domain support."
+---
+
+The Web Widget is the fastest Channel to get an Agent into production. Just paste a JavaScript snippet into your site's HTML — no Business account, no third-party approval, no manual webhook configuration.
+
+## Step-by-step setup
+
+<Steps>
+  <Step title="Open Channels in the Dashboard">
+    In the sidebar, go to **Channels → Add channel** and select **Web Widget**.
+  </Step>
+  <Step title="Name the integration">
+    Set an internal name (e.g., "Main Website", "Blog EN") to identify this Widget in Inbox filters.
+  </Step>
+  <Step title="Choose the Agent">
+    Select the AI Agent that will handle Conversations from this Widget.
+  </Step>
+  <Step title="Customize the appearance">
+    Adjust primary color, accent color, button position (`bottom-right` or `bottom-left`), welcome message, assistant name, avatar, and theme (`auto`, `light`, or `dark`).
+  </Step>
+  <Step title="Copy the snippet">
+    Timely.ai generates the code with the `data-agent-id` of your integration. Paste it before the `</body>` tag on all pages where the chat should appear.
+  </Step>
+  <Step title="(Optional) Configure allowed domains">
+    Restrict which domains can load the Widget to prevent unauthorized use.
+  </Step>
+</Steps>
+
+## Customization notes
+
+- Attributes set directly in the snippet override Dashboard settings — useful for multiple variations on different pages.
+- The Widget supports embeddable mode: add `data-embedded="true"` and `data-target="#container-id"` to render it inside a `<div>` instead of the floating button.
+- For voice support, the site must use HTTPS and the Agent must have voice configured in **Agents → [agent] → Voice**.
+- The `embed.js` script cache is 5 minutes — configuration changes may take that long to reflect on the site.
+
+| Snippet attribute | Description |
+|------------------|-----------|
+| `data-agent-id` | Widget integration ID — required |
+| `data-theme` | Visual theme: `auto`, `light`, or `dark` (default: `auto`) |
+| `data-position` | Floating button position: `bottom-right` or `bottom-left` |
+
+<Note>
+  The Widget uses `sessionStorage` to maintain the session while the tab is open. When the browser is closed and reopened, a new session begins — the previous Chat History remains available to the attendant in the Inbox.
+</Note>
+
+```html
+<script src="https://widget.timelyai.com.br/embed.js"
+        data-agent-id="agent_abc123"
+        data-theme="auto"
+        async></script>
+```

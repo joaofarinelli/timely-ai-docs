@@ -1,0 +1,99 @@
+---
+title: "Tools via MCP"
+description: "Add custom tools to the agent by connecting MCP (Model Context Protocol) servers — any internal or third-party API, without depending on the Composio catalog."
+---
+
+## Overview
+
+In addition to the 29 ready-made integrations via Composio, Timely.ai supports tools via **MCP (Model Context Protocol)** — Anthropic's open standard for communication between AI agents and external tool servers.
+
+With MCP, you can connect to the agent **any server that implements the protocol**, whether a public community server, a third-party service with native MCP support, or an internal API from your team.
+
+## MCP vs. Composio: what is the difference?
+
+Both allow the agent to execute actions in external systems, but they work differently:
+
+| | Composio | MCP |
+|---|---|---|
+| **Available connectors** | 29 ready-made apps (Google, HubSpot, Slack, etc.) | Any MCP server |
+| **Configuration** | OAuth or credentials in the panel | Server URL + authentication |
+| **Ideal for** | Popular apps with managed OAuth | Internal APIs, proprietary systems, community servers |
+| **Authentication** | Managed by Composio | Configured directly on the MCP server |
+| **Available tools** | Fixed catalog per app | Defined by the server — synchronized on demand |
+
+Use **Composio** when the app you need is already in the catalog. Use **MCP** when you need to connect something that isn't — or when you want to expose tools from your own system.
+
+## How to configure an MCP server
+
+<Steps>
+  <Step title="Go to the agent's MCP section">
+    Open the desired agent, go to the settings tab, and click **MCP** in the sidebar. In this section you can see all MCP servers connected to the agent and add new ones.
+  </Step>
+  <Step title="Add the server">
+    Click **New MCP connection**. Provide:
+
+    - **Name**: a label to identify the server (e.g., "Internal Inventory API").
+    - **Server URL**: the SSE or HTTP endpoint of the MCP server (e.g., `https://mcp.yourcompany.com/sse`).
+    - **Authentication**: if the server requires it, enter the Bearer token or API key in the corresponding fields.
+
+    Click **Add** to register the server.
+  </Step>
+  <Step title="Connect to the server">
+    After adding, click **Connect**. Timely.ai opens a session with the MCP server and verifies availability.
+
+    If the connection fails, review the URL and credentials. Authentication errors are displayed with details in the panel.
+  </Step>
+  <Step title="Sync the tools">
+    With the connection established, click **Sync tools**. Timely.ai queries the MCP server and imports the list of available tools.
+
+    Each imported tool appears in the list with its name, description, and the parameters it accepts.
+  </Step>
+  <Step title="Activate the desired tools">
+    By default, imported tools are deactivated. Individually activate the ones the agent can use.
+
+    For each tool, you can:
+    - **Edit the description**: guide the model about when to use that tool.
+    - **Add usage instructions**: text injected into the system prompt with specific guidance on the expected behavior when triggering the tool.
+  </Step>
+</Steps>
+
+## Usage instructions per tool
+
+MCP tools support a special **usage instruction** field. When filled in, this text is injected directly into the agent's system prompt — before any conversation — with guidance on how and when to trigger that tool.
+
+This is especially useful for tools with non-obvious behavior from their name, or that need business context. Examples:
+
+- "Use this tool only when the customer asks about order tracking. Always confirm the order number before calling."
+- "When querying stock, return only products with a quantity greater than zero."
+
+## Use cases
+
+- **ERP or internal system**: expose stock, order, or customer queries as MCP tools without needing to publish a public API.
+- **Proprietary database**: an MCP server with access to the company's internal PostgreSQL, with controlled search and update tools.
+- **Community MCP tools**: public servers available in community repositories that already implement the protocol (file managers, browsers, search tools, etc.).
+- **Multi-system orchestration**: a single MCP server that aggregates tools from different sources and exposes a unified interface to the agent.
+
+## Best practices
+
+- Re-sync tools whenever the MCP server is updated with new tools or parameters.
+- Activate only the tools the agent actually needs — each active tool adds context to the model's reasoning.
+- Write clear usage instructions for tools with technical names or multiple required parameters.
+- If the MCP server requires dynamic authentication (tokens with short expiration), implement automatic renewal in the server itself — Timely.ai does not manage MCP token refresh.
+- Test the MCP server with a local MCP client (such as Claude Desktop) before connecting to the agent to validate that the tools work correctly.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="MCP concept" href="/en/guides/mcps/overview">
+    Understand what the Model Context Protocol is and why it exists.
+  </Card>
+  <Card title="Connect an MCP server" href="/en/guides/mcps/connecting">
+    Full technical step-by-step guide to adding and configuring an MCP server.
+  </Card>
+  <Card title="Tools overview" href="/en/guides/tools/overview">
+    Compare all types of tools available in Timely.ai.
+  </Card>
+  <Card title="Composio integrations" href="/en/guides/tools/composio">
+    See the 29 ready-made apps available via Composio.
+  </Card>
+</CardGroup>

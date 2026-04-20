@@ -1,0 +1,62 @@
+---
+title: "Creating an Agent with the Conversational Assistant"
+description: "How to use Timely.ai's guided flow to create an agent via conversation: the assistant asks the right questions and generates the prompt automatically."
+---
+
+Timely.ai's conversational assistant walks you through a structured dialog that collects everything needed to build a complete agent. You answer questions in natural language and the assistant configures the agent — including the system prompt — automatically at the end of the process.
+
+## How it works
+
+<Steps>
+  <Step title="Go to the Agents section">
+    In the sidebar menu, click **Agents** and then **+ New agent**.
+  </Step>
+
+  <Step title="Choose to create with the assistant">
+    In the choice dialog, click **Create with the Team** (labeled as beta). A chat interface opens in the central panel with the assistant ready to begin.
+  </Step>
+
+  <Step title="Discovery phase — agent objective">
+    The assistant starts with the discovery phase. It asks what the agent's main objective is. Be specific: instead of "customer service," say "answer questions about subscription plans and help with password resets." The more context you provide, the more precise the generated prompt will be.
+  </Step>
+
+  <Step title="Business phase — company context">
+    The assistant asks about the company, the industry, and the profile of end users. This information feeds the business context into the prompt, allowing the agent to use the right language and tone for your specific audience.
+  </Step>
+
+  <Step title="Personality phase — tone of voice">
+    In this phase you define the communication style: formal or casual, technical or simplified, proactive or reactive. The assistant uses these choices to shape the style instructions that go into the generated prompt.
+  </Step>
+
+  <Step title="Knowledge phase — specific information">
+    The assistant asks about products, services, policies, and any information the agent will need to know. You can mention topics to be added to the knowledge base after creation.
+  </Step>
+
+  <Step title="Rules phase — restrictions and limits">
+    Define what the agent must not do: topics it cannot address, actions requiring human approval, channels with different behavior. Clear rules in this phase prevent behavior issues in production.
+  </Step>
+
+  <Step title="Validation phase — confirmation and creation">
+    A progress bar shows which phase the dialog is in: discovery → business → personality → knowledge → rules → validation. When it reaches 100%, the assistant confirms and creates the agent automatically.
+  </Step>
+
+  <Step title="Review the generated prompt">
+    After creation, go to the **Prompt** tab in the agent settings. The conversational assistant generates a professional-grade prompt as a starting point. Use the **Improve with AI** button to refine specific points without having to rewrite everything.
+  </Step>
+</Steps>
+
+Strengths of the conversational flow:
+
+- Questions in natural language — no prompt engineering knowledge required
+- Generated prompt already includes identity, tone, restrictions, and examples
+- Visible progress with a real-time percentage bar
+- Ability to correct any answer with more context in the same message
+
+## Why use the assistant?
+
+The conversational assistant is the fastest way to arrive at a functional, well-structured prompt when you are still defining the agent's scope. It ensures that no important section is overlooked — identity, tone, restrictions, and expected behavior are all covered by the question sequence.
+
+- Ideal for the workspace's first agent or for new use cases
+- Reduces the time to create a complete agent from hours to minutes
+- The generated prompt serves as living documentation of what the agent was configured to do
+- Any field can be manually edited after creation without losing the assistant's work

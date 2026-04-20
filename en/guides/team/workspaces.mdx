@@ -1,0 +1,97 @@
+---
+title: Workspaces
+description: How to create and manage multiple workspaces, switch between contexts, and understand data isolation between environments.
+---
+
+Workspaces are isolated environments within the same Timely.ai account. Each workspace has its own agents, channels, conversations, and settings. Teams managing multiple clients, products, or departments use workspaces to keep everything separate without needing to create different accounts.
+
+## What is isolated per workspace?
+
+Each workspace has complete separation of the following resources:
+
+- Agents and squads
+- Connected channels (WhatsApp, Instagram, widget)
+- Conversations and contacts
+- Configured LLM providers
+- API Keys
+- Integrations (Composio)
+
+Company settings, members, and billing are shared across all workspaces in the same account.
+
+## Active workspace
+
+The active workspace is the context you are currently operating in. Every action performed on the platform — creating an agent, viewing conversations, exporting a report — happens within the active workspace.
+
+The name of the active workspace appears at the top of the sidebar. A visual indicator (badge or icon) signals which workspace is selected.
+
+## Switching between workspaces
+
+<Steps>
+  <Step title="Click the workspace selector">
+    At the top of the sidebar, click the name of the current workspace to open the selector.
+  </Step>
+  <Step title="Choose the target workspace">
+    The list displays all workspaces you have access to. Click the desired workspace.
+  </Step>
+  <Step title="Wait for the context to load">
+    The platform reloads the data in the context of the new workspace. The URL and the data displayed on screen are updated automatically.
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/workspace-switcher.png" alt="Workspace selector in the sidebar with list of available workspaces" />
+</Frame>
+
+<Info>
+  Switching workspaces does not end your session or require a new login. The system validates your role in the target workspace automatically.
+</Info>
+
+## Creating a workspace
+
+Creating additional workspaces is available depending on the account plan.
+
+<Steps>
+  <Step title="Go to workspace settings">
+    In the workspace selector, click **Manage workspaces** or go to **Settings > Workspaces**.
+  </Step>
+  <Step title="Click New workspace">
+    Click the **New workspace** button in the upper-right corner of the list.
+  </Step>
+  <Step title="Configure the workspace">
+    Enter the workspace name. Optionally, add a description to identify the purpose of the environment.
+  </Step>
+  <Step title="Save">
+    The workspace is created immediately and you are automatically redirected to it as owner.
+  </Step>
+</Steps>
+
+## Permissions per workspace
+
+The same member can have different roles in each workspace. The account owner is owner in all workspaces by default. Invited members have the role assigned at the time of the invitation for that specific workspace.
+
+To manage a member's role in a specific workspace:
+
+1. Make sure you are in the correct workspace (check the selector in the sidebar).
+2. Go to **Settings > Team**.
+3. Adjust the member's role as needed.
+
+The change only affects the active workspace — it does not propagate to other workspaces.
+
+## Deleting a workspace
+
+<Warning>
+  Deleting a workspace is irreversible. All agents, conversations, contacts, and settings in the workspace are permanently removed. Back up any important information before proceeding.
+</Warning>
+
+To delete a workspace:
+
+1. Go to **Settings > Workspaces**.
+2. Click the options menu for the workspace you want to delete.
+3. Select **Delete workspace**.
+4. Confirm by typing the workspace name in the confirmation field.
+
+The primary workspace (created with the account) cannot be deleted.
+
+## Workspace and LLM providers
+
+Each workspace can have its own LLM providers configured with separate credentials. This allows you to use a different OpenAI key for each workspace, with separate budgets. See [LLM providers](/en/guides/settings/providers) for details.

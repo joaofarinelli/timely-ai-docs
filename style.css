@@ -1,0 +1,71 @@
+/* Pill toggle (Carregar mais / Mostrar menos) — anchor :target pattern */
+.more-wrapper {
+  margin-top: 8px;
+}
+
+.more-extras {
+  display: none;
+}
+
+.more-wrapper:has(#more-extras:target) .more-extras {
+  display: block;
+}
+
+.more-btn-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.load-btn {
+  cursor: pointer;
+  display: inline-block;
+  padding: 12px 32px;
+  border-radius: 9999px;
+  background: #2563EB;
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none !important;
+  user-select: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 180px;
+  text-align: center;
+}
+
+.load-btn:hover {
+  background: #1d4ed8;
+  color: #ffffff !important;
+}
+
+.load-btn:active {
+  transform: scale(0.98);
+}
+
+.load-btn-close {
+  display: none;
+}
+
+.more-wrapper:has(#more-extras:target) .load-btn-open {
+  display: none;
+}
+
+.more-wrapper:has(#more-extras:target) .load-btn-close {
+  display: inline-block;
+}
+
+/* Force card-group gap inside home landing */
+.home-cards [class*="card-group"],
+.home-cards div:has(> a[class*="card"]) {
+  gap: 24px !important;
+  row-gap: 24px !important;
+  column-gap: 24px !important;
+}
+
+/* Remove vertical margin on cards in landing */
+.home-cards a[class*="card"],
+.home-cards [class*="card"] {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}

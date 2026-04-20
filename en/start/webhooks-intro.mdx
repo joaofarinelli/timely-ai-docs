@@ -1,0 +1,189 @@
+---
+title: "Webhooks"
+description: "Receive real-time events, validate HMAC-SHA256 signatures, and handle retries"
+---
+
+Webhooks are HTTP POSTs that Timely.ai sends to the URL you configure whenever an event occurs — message received, conversation closed, human handoff, and more. They are the most efficient way to react to real-time events without polling the API.
+
+## How it works
+
+```
+Customer sends a message
+       ↓
+Timely.ai processes it
+       ↓
+POST to your URL with the event payload
+       ↓
+Your server responds 2xx within 10 seconds
+```
+
+If your server does not respond `2xx` within 10 seconds, Timely.ai treats it as a failure and schedules a retry.
+
+## Payload structure
+
+Every event shares the same envelope:
+
+```json
+{
+  "event": "message.received",
+  "timestamp": "2026-04-19T14:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "message_id": "msg_xyz789",
+    "conversation_id": "conv_def456",
+    "contact": {
+      "id": "cnt_ghi012",
+      "phone": "+5511999998888",
+      "name": "Maria Silva"
+    },
+    "content": "I'd like to know the price of the Pro plan.",
+    "channel": "whatsapp",
+    "agent_id": "agt_jkl345"
+  }
+}
+```
+
+The `event` field identifies the type. The other fields in `data` vary by event — see the full reference at [/en/webhooks/overview](/en/webhooks/overview).
+
+## Validating the HMAC-SHA256 signature
+
+Each request includes the `X-Timely-Signature` header with a signature that guarantees the payload came from Timely.ai and was not tampered with.
+
+The signature is generated as follows:
+
+```
+HMAC-SHA256(secret, timestamp + "." + payload_body)
+```
+
+Implement the validation in your handler before processing any data:
+
+<Tabs>
+  <Tab title="Node.js">
+    ```js
+    import crypto from "crypto";
+
+    function validateSignature(req) {
+      const signature = req.headers["x-timely-signature"];
+      const timestamp  = req.headers["x-timely-timestamp"];
+      const body       = JSON.stringify(req.body);
+      const secret     = process.env.TIMELY_WEBHOOK_SECRET;
+
+      const expected = crypto
+        .createHmac("sha256", secret)
+        .update(`${timestamp}.${body}`)
+        .digest("hex");
+
+      // Use timingSafeEqual to prevent timing attacks
+      return crypto.timingSafeEqual(
+        Buffer.from(signature, "hex"),
+        Buffer.from(expected, "hex")
+      );
+    }
+
+    app.post("/webhook/timely", (req, res) => {
+      if (!validateSignature(req)) {
+        return res.status(401).send("Invalid signature");
+      }
+      // Process the event here
+      res.status(200).send("ok");
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import hmac, hashlib, os
+    from flask import Flask, request, abort
+
+    app = Flask(__name__)
+
+    def validate_signature(req):
+        signature = req.headers.get("X-Timely-Signature", "")
+        timestamp  = req.headers.get("X-Timely-Timestamp", "")
+        body       = req.get_data(as_text=True)
+        secret     = os.environ["TIMELY_WEBHOOK_SECRET"].encode()
+
+        expected = hmac.new(
+            secret,
+            f"{timestamp}.{body}".encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        return hmac.compare_digest(signature, expected)
+
+    @app.post("/webhook/timely")
+    def webhook():
+        if not validate_signature(request):
+            abort(401)
+        event = request.json
+        # Process the event here
+        return "ok", 200
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+  Never skip signature validation in production. Without it, anyone who discovers your URL can forge events and inject data into your system.
+</Warning>
+
+## Retries with exponential backoff
+
+If your server does not respond `2xx`, Timely.ai will retry the event at the following intervals:
+
+| Attempt | Wait |
+|---|---|
+| 1st | 5 seconds |
+| 2nd | 15 seconds |
+| 3rd | 60 seconds |
+| 4th | 300 seconds (5 min) |
+| 5th | 900 seconds (15 min) |
+
+After 5 failed attempts, the event is marked as a **permanent failure** and is available for review under **Settings → Webhooks → [endpoint] → Event log**.
+
+<Tip>
+  Respond `200 OK` immediately and process the event asynchronously (queue, worker) to avoid the 10-second timeout on heavy operations.
+</Tip>
+
+## Idempotency
+
+Due to retries, the same event may arrive more than once. Use the `event_id` field (present in the `X-Timely-Event-Id` header) as an idempotency key to prevent duplicate processing:
+
+```js
+const eventId = req.headers["x-timely-event-id"];
+if (await alreadyProcessed(eventId)) {
+  return res.status(200).send("already processed");
+}
+await markAsProcessed(eventId);
+// Continue processing
+```
+
+## Registering an endpoint
+
+<Steps>
+  <Step title="Via dashboard">
+    **Settings → Webhooks → New endpoint**. Enter the URL, select the events you want to receive, and copy the generated secret.
+  </Step>
+  <Step title="Via API">
+    ```bash
+    curl -X POST https://api.timelyai.com.br/v1/webhooks \
+      -H "x-api-key: YOUR_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "url": "https://yoursite.com/webhook/timely",
+        "events": ["message.received", "conversation.closed"],
+        "description": "Main CRM handler"
+      }'
+    ```
+    The response includes the `secret` you use to validate the signature. Store it as an environment variable.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Event reference" href="/en/webhooks/overview">
+    Complete list of event types and their payloads.
+  </Card>
+  <Card title="Rate limits and errors" href="/en/start/rate-limits">
+    Request limits and API error codes.
+  </Card>
+</CardGroup>

@@ -1,0 +1,60 @@
+---
+title: "Agents Reference"
+sidebarTitle: "Reference"
+description: "Endpoints to create, configure, and manage AI agents in your workspace"
+---
+
+## Concept
+
+An **Agent** is the core of Timely.ai — it is the AI entity that receives messages from your customers, processes the conversation context, and responds autonomously based on its behavior, knowledge base (Trainings), and the channels connected to it. Each agent has its own identity (name, personality, language), configurable behavior rules, and can be connected to multiple channels simultaneously (WhatsApp, Instagram, Telegram, website widget).
+
+You can have multiple agents in the same workspace, each specialized in a different area — support, sales, finance — with independent knowledge bases and configurations.
+
+## Lifecycle
+
+```
+create (inactive)
+    │
+    ▼
+configure (settings, trainings, channels)
+    │
+    ▼
+activate → active ──────────────────────────────┐
+    │                                            │
+    │   receives messages → processes → responds │
+    │                                            │
+    ▼                                            │
+deactivate → inactive ◄──────────────────────────┘
+    │
+    ▼
+delete (soft delete — data preserved)
+```
+
+An `inactive` agent does not process new messages, but its conversation history and configurations are retained. Soft delete ensures historical data is not accidentally lost.
+
+## Main Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique agent ID |
+| `name` | string | Agent name displayed to the customer |
+| `status` | enum | `active` \| `inactive` |
+| `description` | string | Internal description of the agent's purpose |
+| `language` | string | Primary language (e.g. `en-US`) |
+| `model` | string | LLM model used (e.g. `gpt-4o`) |
+| `system_prompt` | string | Base system prompt for behavior |
+| `created_at` | string | ISO 8601 creation timestamp |
+| `updated_at` | string | ISO 8601 last update timestamp |
+| `credits_remaining` | number | Credits available for the agent |
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

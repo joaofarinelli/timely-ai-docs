@@ -1,0 +1,157 @@
+---
+title: "Telegram"
+description: "Connect a Telegram bot to your Agent using the BotFather token — setup in under 5 minutes, no commercial account approval required"
+---
+
+The Telegram channel uses the Telegram bot API. You create a bot through **BotFather** (Telegram's official bot for managing other bots), copy the generated token, and paste it into Timely.ai. The platform configures the webhook automatically.
+
+## Prerequisites
+
+- A **Telegram** account (personal or team)
+- Access to **BotFather** on Telegram to create the bot and obtain the token
+- An **Agent** created and active in Timely.ai
+
+<Note>
+  Unlike WhatsApp and Instagram, Telegram does not require a verified business account or third-party approval. Any Telegram account can create a bot.
+</Note>
+
+## Step-by-step connection
+
+<Steps>
+  <Step title="Create a bot in BotFather">
+    Open Telegram and search for `@BotFather`. Start a conversation and send the command:
+
+    ```
+    /newbot
+    ```
+
+    BotFather will ask for:
+
+    1. **Bot name** — a friendly name that appears in conversations (e.g., "Timely Support")
+    2. **Bot username** — must end in `bot` (e.g., `timely_support_bot`)
+
+    At the end, BotFather displays the **access token** in the format:
+
+    ```
+    123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+    ```
+
+    Copy this token — you will need it in the next step.
+
+    <Warning>
+      Treat the bot token like a password. Anyone with access to the token can send messages on behalf of your bot. Do not share it in public repositories or logs.
+    </Warning>
+  </Step>
+
+  <Step title="Go to Channels in the Dashboard">
+    In the Timely.ai sidebar, go to **Channels → Add channel** and select **Telegram**.
+  </Step>
+
+  <Step title="Paste the token and connect">
+    Enter the **bot token** in the corresponding field. The token must be in the `number:string` format (e.g., `123456789:ABCdef...`). Timely.ai validates the token with the Telegram API before proceeding.
+
+    <Frame>
+      ![Telegram bot configuration screen](/images/screenshots/placeholder-telegram-setup.png)
+    </Frame>
+  </Step>
+
+  <Step title="Webhook configured automatically">
+    Upon confirming the valid token, Timely.ai:
+
+    1. Calls `setWebhook` on the Telegram API pointing to `https://[YOUR-SUPABASE].supabase.co/functions/v1/telegram-webhook`
+    2. Generates a random **webhook secret** to validate requests
+    3. Saves the integration in the database with the bot information (`bot_id`, `bot_username`, `bot_name`)
+
+    You do not need to configure anything manually in Telegram.
+  </Step>
+
+  <Step title="Link to the Agent">
+    Select the Agent that will handle Telegram Conversations. One Telegram integration corresponds to one bot and one Agent.
+
+    <Tip>
+      You can create multiple bots (each with its own token) and link them to different Agents — useful for separating technical support, sales, and community into distinct bots.
+    </Tip>
+  </Step>
+
+  <Step title="Test the bot">
+    Open Telegram, search for your bot's username (e.g., `@timely_support_bot`) and send a message. The Agent should respond within 2 seconds.
+  </Step>
+</Steps>
+
+## Supported features
+
+### Media types
+
+| Type | Receive | Send |
+|---|---|---|
+| Text | Yes | Yes |
+| Image (JPG, PNG, WebP) | Yes | Yes |
+| Document (PDF, DOCX, etc.) | Yes | Yes |
+| Audio / Voice message | Yes | — |
+| Video | Yes | — |
+| Sticker | Yes | — |
+| Location | Yes | — |
+
+### Bot commands
+
+Telegram allows users to send **slash commands** (e.g., `/start`, `/help`). You can register commands in BotFather with `/setcommands` and the Agent treats those commands as regular text messages — the Agent's prompt should describe how to respond to each one.
+
+### Groups and supergroups
+
+By default, the bot only responds to **direct messages** (DMs). To enable responses in groups:
+
+1. In BotFather, send `/setjoingroups` and select **Enable**
+2. Add the bot to the desired group
+3. Configure the Agent to respond to `@mentions` or to all group messages
+
+<Warning>
+  In groups with many members, the Agent may receive a high volume of messages. Configure filters in the prompt or use `@mention_only` so the bot only responds when directly mentioned.
+</Warning>
+
+## Incoming webhook
+
+Messages arrive via:
+
+```
+POST https://[YOUR-SUPABASE].supabase.co/functions/v1/telegram-webhook
+```
+
+Timely.ai validates the `X-Telegram-Bot-Api-Secret-Token` header on each request. For details about the payload and supported events, see [External Webhooks → Telegram](/en/webhooks/external/telegram).
+
+## Limits and best practices
+
+- **Telegram API rate limit** — 30 messages/second for the same chat, 20 messages/minute for different groups. The API returns error `429` when the limit is reached.
+- **File size** — bots can receive files up to 20 MB and send up to 50 MB.
+- **Unique token per bot** — one token corresponds to a single bot. For multiple Telegram channels, create separate bots in BotFather.
+- **Bot cannot initiate conversation** — unlike some channels, Telegram bots can only send messages to users who have already started a conversation with `/start`. Account for this in your prompt configuration.
+- **Token rotation** — if you suspect the token has been compromised, revoke it in BotFather with `/revoke` and generate a new one. Update it in Timely.ai under **Channels → [your Telegram integration] → Edit**.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="'Invalid token' error when trying to connect">
+    Confirm that the token is in the correct format: `number:string` without spaces (e.g., `123456789:ABCdefGHI...`). Tokens generated by BotFather always have two segments separated by `:`. If you copied it with accidental spaces, remove them.
+  </Accordion>
+
+  <Accordion title="Bot does not respond after connecting">
+    Check whether the webhook was configured correctly by calling the Telegram API directly:
+
+    ```bash
+    curl https://api.telegram.org/bot{TOKEN}/getWebhookInfo
+    ```
+
+    The `url` field should point to `https://[YOUR-SUPABASE].supabase.co/functions/v1/telegram-webhook`. If it is empty, disconnect and reconnect the Channel in Timely.ai to force the `setWebhook`.
+  </Accordion>
+
+  <Accordion title="Bot responds in DMs but not in groups">
+    For groups, the bot needs permission to read messages. Check with BotFather whether `can_read_all_group_messages` is enabled (`/setprivacy → Disable`). Also, in groups with privacy enabled, the bot only receives messages with @mention.
+  </Accordion>
+
+  <Accordion title="Messages arrive duplicated">
+    This can happen if there are two webhooks pointing to the same bot (e.g., development and production environments). Use `getWebhookInfo` to check the active URL and `deleteWebhook` to clear it before reconfiguring.
+  </Accordion>
+
+  <Accordion title="How to change the token without losing history?">
+    Go to **Channels → [Telegram integration] → Edit**, update the token, and save. Timely.ai calls `setWebhook` with the new token automatically. The Conversation history is preserved in Timely.ai's database.
+  </Accordion>
+</AccordionGroup>

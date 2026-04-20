@@ -1,0 +1,243 @@
+---
+title: "Billing events"
+description: "Triggered when credits are running low, when the plan changes, or when the trial period is nearing its end"
+---
+
+These events let you proactively monitor the workspace's financial status — receive alerts before credits run out, be notified of plan changes, and track the trial cycle without having to check the dashboard manually.
+
+## Event list
+
+| Event | When it fires |
+|-------|---------------|
+| `credit.low` | The credit balance falls below the configured alert threshold |
+| `credit.depleted` | Credits reach zero — the workspace loses the ability to process messages |
+| `plan.changed` | The workspace plan is changed (upgrade, downgrade, or cancellation) |
+| `trial.expiring` | The trial period is 3 days from ending |
+| `trial.expired` | The trial ended without converting to a paid plan |
+
+---
+
+## `credit.low`
+
+### When it fires
+
+The workspace credit balance falls below the alert threshold configured in **Settings → Billing**. By default, the alert is triggered when less than 20% of the current cycle's credits remain.
+
+### Payload
+
+```json
+{
+  "event": "credit.low",
+  "event_id": "evt_01HX9A1K9MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T18:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "credits_remaining": 1850,
+    "credits_total": 10000,
+    "credits_used": 8150,
+    "usage_percentage": 81.5,
+    "alert_threshold_percentage": 80,
+    "estimated_depletion_at": "2026-04-21T12:00:00Z",
+    "billing_period_end": "2026-04-30T23:59:59Z",
+    "plan_id": "plan_pro",
+    "plan_name": "Pro"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `credits_remaining` | integer | Credits still available |
+| `credits_total` | integer | Total credits for the cycle |
+| `credits_used` | integer | Credits consumed so far |
+| `usage_percentage` | number | Usage percentage (0–100) |
+| `alert_threshold_percentage` | number | Configured threshold that triggered the alert |
+| `estimated_depletion_at` | string \| null | Estimated time when credits will reach zero, based on average consumption |
+| `billing_period_end` | string | End date of the current billing period |
+| `plan_id` | string | Current plan ID |
+
+### Usage example
+
+<Note>
+  Use `credit.low` to trigger an automatic alert in Slack or WhatsApp for the billing manager before service is interrupted. The `estimated_depletion_at` field helps prioritize urgency.
+</Note>
+
+---
+
+## `credit.depleted`
+
+### When it fires
+
+The credit balance reaches zero. When this happens, the workspace enters restricted mode: the AI agent stops responding to new messages until credits are added or the billing cycle renews.
+
+### Payload
+
+```json
+{
+  "event": "credit.depleted",
+  "event_id": "evt_01HX9B3M2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-21T14:35:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "credits_remaining": 0,
+    "credits_total": 10000,
+    "credits_used": 10000,
+    "billing_period_end": "2026-04-30T23:59:59Z",
+    "plan_id": "plan_pro",
+    "plan_name": "Pro",
+    "service_status": "restricted",
+    "depleted_at": "2026-04-21T14:35:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `credits_remaining` | integer | Always `0` in this event |
+| `service_status` | enum | `restricted` — the AI agent is paused |
+| `depleted_at` | string | ISO 8601 timestamp of depletion |
+
+### Usage example
+
+<Warning>
+  `credit.depleted` is critical. When triggered, the AI agent stops responding — contacts may be left without support. Set up an automation that adds credits automatically or immediately notifies the person responsible for billing.
+</Warning>
+
+---
+
+## `plan.changed`
+
+### When it fires
+
+The workspace plan is changed: upgrade to a higher plan, downgrade to a lower one, migration between same-tier plans, or subscription cancellation. Includes both the previous and new plans.
+
+### Payload
+
+```json
+{
+  "event": "plan.changed",
+  "event_id": "evt_01HX9C5P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T11:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "previous_plan_id": "plan_starter",
+    "previous_plan_name": "Starter",
+    "new_plan_id": "plan_pro",
+    "new_plan_name": "Pro",
+    "change_type": "upgrade",
+    "effective_at": "2026-04-19T11:00:00Z",
+    "billing_period_end": "2026-05-19T23:59:59Z",
+    "changed_by": "usr_321"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `previous_plan_id` | string | Previous plan ID |
+| `previous_plan_name` | string | Previous plan name |
+| `new_plan_id` | string | New plan ID |
+| `new_plan_name` | string | New plan name |
+| `change_type` | enum | `upgrade`, `downgrade`, `canceled`, `reactivated` |
+| `effective_at` | string | When the change took effect |
+| `changed_by` | string \| null | ID of the user who made the change |
+
+### Usage example
+
+<Note>
+  Use `plan.changed` with `change_type: "canceled"` to trigger a retention flow — send a follow-up message or offer support before the customer fully stops using the platform.
+</Note>
+
+---
+
+## `trial.expiring`
+
+### When it fires
+
+The workspace's trial period is 3 days from expiration and has not yet converted to a paid plan. This event fires only once per trial cycle.
+
+### Payload
+
+```json
+{
+  "event": "trial.expiring",
+  "event_id": "evt_01HX9D7Q5SJUW8ZCFQWA3ZFH",
+  "timestamp": "2026-04-17T09:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "trial_end_at": "2026-04-20T23:59:59Z",
+    "days_remaining": 3,
+    "plan_id": "plan_trial",
+    "conversations_used": 142,
+    "messages_used": 1834,
+    "contacts_total": 87,
+    "upgrade_url": "https://app.timelyai.com.br/billing/upgrade"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `trial_end_at` | string | Trial expiration date/time |
+| `days_remaining` | integer | Days remaining until the trial ends |
+| `conversations_used` | integer | Total conversations opened during the trial |
+| `messages_used` | integer | Total messages exchanged during the trial |
+| `contacts_total` | integer | Total contacts in the workspace |
+| `upgrade_url` | string | Direct link to the upgrade page |
+
+---
+
+## `trial.expired`
+
+### When it fires
+
+The trial period ended without the workspace subscribing to a paid plan. After this date, the workspace enters read-only mode — no AI agents respond and new channels cannot be connected.
+
+### Payload
+
+```json
+{
+  "event": "trial.expired",
+  "event_id": "evt_01HX9E9R6TKXV9ADGRXB4AGI",
+  "timestamp": "2026-04-21T00:00:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "trial_end_at": "2026-04-20T23:59:59Z",
+    "plan_id": "plan_trial",
+    "service_status": "read_only",
+    "conversations_used": 198,
+    "messages_used": 2540,
+    "contacts_total": 115,
+    "upgrade_url": "https://app.timelyai.com.br/billing/upgrade",
+    "expired_at": "2026-04-21T00:00:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `service_status` | enum | `read_only` — the workspace is locked for operations |
+| `conversations_used` | integer | Total conversations opened during the trial |
+| `messages_used` | integer | Total messages during the trial |
+| `expired_at` | string | ISO 8601 timestamp of expiration |
+| `upgrade_url` | string | Direct link to the upgrade page |
+
+### Usage example
+
+<Tip>
+  If you are a Timely.ai partner or reseller managing multiple workspaces, use `trial.expiring` and `trial.expired` to automate conversion follow-ups. The `conversations_used` and `messages_used` fields show customer engagement during the trial — great data for personalizing your outreach.
+</Tip>
+
+<Info>
+  Billing events are only sent to webhooks that have `credit.*`, `plan.*`, or `trial.*` events in their subscription list. Make sure to include those categories when creating the webhook if you want to receive these notifications.
+</Info>

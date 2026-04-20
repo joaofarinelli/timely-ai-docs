@@ -1,0 +1,30 @@
+---
+title: "Tables — Overview"
+description: "Understand the data model for tables (datagrids) in Timely.ai: core concepts, when to use tables versus Knowledge Bases, and typical use cases."
+---
+
+Tables — referred to internally as **datagrids** — are structured data stores that AI agents can query and populate during conversations. Unlike a Knowledge Base, which stores free text for semantic search, a table stores data in columns and rows with defined types, like a lightweight database directly accessible by the agent.
+
+## Core Concepts
+
+| Concept | Description |
+|----------|-----------|
+| **Table (Datagrid)** | A data structure with named and typed columns, organized into rows. Each table belongs to a workspace and can be connected to one or more agents. |
+| **Column** | Defines a field in the table. Each column has a name (up to 50 characters), description (3 to 250 characters), data type (`String`, `Number`, `Boolean`), and optional settings such as semantic search and required field. |
+| **Row** | A record in the table. Each row contains values for each defined column. Rows can be inserted manually through the interface, imported via CSV, or created by the agent during conversations. |
+| **Datagrid Tool** | A capability made available to the agent for interacting with the table. The available actions are: `semantic_search`, `similarity_search`, `insert_row`, and `update_row`. Each action is activated individually per table. |
+| **Column Semantic Search** | When enabled on a `String` column, values are vectorized using the `text-embedding-3-small` model (1,536 dimensions) and indexed for similarity search — the agent finds rows by meaning, not just exact match. |
+
+## Why Tables Matter
+
+1. **Real-time data without external integration**: the agent accesses tables directly during a conversation. No webhooks, APIs, or integrations need to be configured for the agent to query a product catalog or register a lead.
+2. **Separation of structured and unstructured knowledge**: Knowledge Bases are ideal for free text — manuals, policies, FAQs. Tables are ideal for data with a defined structure — catalogs, schedules, inventories, records. Using each resource for what it was designed for improves agent accuracy.
+3. **Writing during the conversation**: unlike Knowledge Bases (read-only for the agent), tables allow the agent to insert and update data in real time — the agent collects information from the user and records it in a structured way in the table, without human intervention.
+4. **Updates independent of the prompt**: data changes in the table without needing to edit the agent prompt. A price updated in the table is immediately available for the agent on the next query.
+
+Typical use cases where tables outperform other approaches:
+
+- Product catalog with price, availability, and description
+- Professional or event schedule with time slots and vacancies
+- Lead records collected during conversations
+- Inventory with real-time quantity tracking

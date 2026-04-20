@@ -1,0 +1,63 @@
+---
+title: "Custom Fields Reference"
+sidebarTitle: "Reference"
+description: "Endpoints to create and manage custom fields in the CRM — adapt contact profiles to your business needs"
+---
+
+## Concept
+
+**Custom Fields** let you add extra fields to contact profiles in the Timely.ai CRM, beyond the default fields like name, email, and phone. They are useful when you need to store business-specific information — order number, subscribed plan, customer segment, last purchase date, tax ID, company name, and so on.
+
+Fields are defined at the workspace level and apply to all contacts. Each field has a data type (text, number, date, boolean, select) and can be marked as required or optional. Each contact's field values are accessed via `contact.custom_fields` in the Contacts API.
+
+## Available Field Types
+
+| Type | Value in `type` | Example use |
+|------|----------------|-------------|
+| Free text | `text` | Notes, protocol number |
+| Number | `number` | Contract value, order count |
+| Date | `date` | Birthday, due date |
+| Boolean | `boolean` | VIP, overdue, newsletter |
+| Single select | `select` | Segment, plan, status |
+| Multi-select | `multiselect` | Interests, contracted products |
+
+## Main Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique field ID |
+| `name` | string | Field name (displayed in UI) |
+| `key` | string | API access key (snake_case) |
+| `type` | enum | Field data type |
+| `required` | boolean | Whether the field is required |
+| `options` | array | Available options for `select` and `multiselect` |
+| `default_value` | any | Default value for new contacts |
+| `created_at` | string | ISO 8601 creation timestamp |
+
+## Using Together with Contacts
+
+When creating or updating a contact, pass custom field values in the `custom_fields` object using each field's `key`:
+
+```json
+{
+  "name": "Lucas Ferreira",
+  "email": "lucas@company.com",
+  "custom_fields": {
+    "plan": "pro",
+    "customer_number": "CLT-00123",
+    "vip": true
+  }
+}
+```
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

@@ -1,0 +1,35 @@
+---
+title: "System Prompt"
+description: "How to use Timely.ai's prompt editor: recommended structure, real-time quality analysis, automatic AI improvement, and version history."
+---
+
+The system prompt is the agent's most important instruction. It defines identity, tone, restrictions, and expected behavior. Timely.ai's prompt editor goes beyond a text field — it offers real-time quality analysis, automatic AI improvement, and version history with one-click restoration.
+
+An effective prompt covers four aspects:
+
+- **Identity** — who the agent is and which company it represents
+- **Tone and style** — how it should communicate, with examples when necessary
+- **What it can do** — permitted capabilities and actions
+- **What it must not do** — explicit restrictions to avoid unwanted responses
+
+```
+# Identity
+You are [Name], assistant for [company/area].
+Your objective is [main objective].
+
+# Tone and style
+- Be direct and objective
+- Use accessible language, without unnecessary technical jargon
+- Respond in US English
+
+# What you can do
+- [List of permitted capabilities]
+
+# What you must NOT do
+- Never mention competitors
+- Never invent prices — always consult the catalog tool
+```
+
+> A good prompt does not try to cover every scenario — it defines default behavior clearly and trusts tools and the knowledge base for specific details.
+
+The editor analyzes the prompt in real time and displays suggestions prioritized by impact: identity clarity, presence of explicit restrictions, completeness of instructions, and possible ambiguities. The **Improve with AI** button rewrites and optimizes the text while maintaining the original intent. The version history records every save automatically — restore any previous version with one click without losing the current content.

@@ -1,0 +1,49 @@
+---
+title: "Datagrid Tools"
+description: "Allow the agent to read and write to Timely.ai custom tables — product catalogs, property listings, lead records, and more."
+---
+
+Datagrid tools connect the agent to the custom tables (datasheets) created in the workspace. The agent can query, insert, and update records during a conversation, autonomously, without the user needing to leave the chat.
+
+## Insert row in the table
+
+The `insert_row` action creates a new record in the table with the fields provided by the agent. The agent builds the values from the conversation context — name, email, interest, source channel — and saves the record to the table in real time.
+
+- Columns marked as required in the Datagrid are required by the agent before executing the insert.
+- Indicated for lead capture, order registration, scheduling, and any scenario where the agent needs to persist data collected in the conversation.
+
+## Update row in the table
+
+The `update_row` action modifies an existing record identified by the `row_id`. The agent locates the record with a prior search and then applies the necessary changes.
+
+- Useful for updating order statuses, changing time slot availability, or recording the outcome of a service interaction.
+- Requires the agent to have the record's `row_id` — typically obtained with a semantic or similarity search before executing the update.
+
+## Semantic search in the table
+
+The `semantic_search` action locates records whose content is semantically close to the query, even without exact word matching. The search uses the `text-embedding-3-small` model (1,536 dimensions): the agent's query is converted into an embedding and compared with the embeddings of the indexed records.
+
+- Ideal for product catalogs, property listings, and any table where the user describes what they are looking for in natural language.
+- Returns records with the highest similarity scores, ordered by relevance.
+
+<Warning>
+Semantic search requires the table records to be indexed. Rows inserted directly via API or imported in bulk may take a few minutes to be indexed and become available for search.
+</Warning>
+
+## Similarity search in the table
+
+The `similarity_search` action locates records by approximate text matching — useful for searches by exact name, product code, tax ID, or any short identification field where literal matching matters more than semantics.
+
+- Faster than semantic search for identification fields.
+- Returns records whose text column has the highest overlap with the provided query.
+
+<Warning>
+Similarity search does not understand synonyms or intent — it compares text with text. Use semantic search when the user might describe what they are looking for with different words from those registered in the table.
+</Warning>
+
+## Best practices
+
+- Name columns clearly — the agent uses the column name to interpret the data and build the tool arguments.
+- Mark required columns to avoid incomplete inserts.
+- Enable insert and update only when the use case truly requires it — start with read and validate before enabling write.
+- Limit the number of results per search — the default is 10, with a maximum of 100; for most cases 5 to 10 are sufficient.

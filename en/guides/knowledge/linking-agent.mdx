@@ -1,0 +1,57 @@
+---
+title: "Connecting a KB to an Agent"
+description: "How to activate a Knowledge Base on an agent, configure retrieval parameters, and best practices for multiple bases."
+---
+
+## How the Connection Works
+
+Creating a Knowledge Base is not enough for the agent to use it — you must explicitly connect the base to the agent. This connection is established in the agent's training tab and activates the retrieval pipeline for all conversations handled by that agent.
+
+When the connection is active, the agent automatically runs a semantic search on the base for every incoming message. Chunks with similarity above the configured threshold are included in the context sent to the LLM alongside the user's message. The response is then formulated based on those retrieved excerpts.
+
+An agent can have multiple bases connected simultaneously. In that case, the search runs across all bases at the same time. Results are ranked by similarity and the best chunks from the full combined set are selected — not a top-k per base.
+
+## Connecting a Knowledge Base
+
+<Steps>
+  <Step title="Open the agent">
+    In the sidebar, go to **Agents** and click the agent that will receive the Knowledge Base.
+  </Step>
+  <Step title="Open the Training tab">
+    Inside the agent screen, click the **Training** (or **Knowledge**) tab. This tab centralizes all knowledge sources for the agent.
+  </Step>
+  <Step title="Add the base">
+    In the **Knowledge bases** section, click **+ Add base**. A list of available bases in the workspace will appear. Select the desired base and confirm.
+  </Step>
+  <Step title="Configure retrieval parameters">
+    After adding, the parameters become available for editing:
+
+    - **Top-k** — maximum number of chunks returned per query. Default: `5`. Higher values bring more context but increase the size of the prompt sent to the LLM.
+    - **Threshold** — minimum cosine similarity threshold (0 to 1). Default: `0.7`. Chunks with similarity below this value are automatically discarded.
+  </Step>
+</Steps>
+
+## Connecting to a Squad
+
+A squad is a group of specialized agents that collaborate in the same conversation. When a Knowledge Base is connected to the squad (instead of to a specific agent), all agents in the squad will query it during their interactions.
+
+Access the squad configuration, open the **Knowledge bases** tab, and add the base the same way you would for an individual agent. The base is shared across all squad members without duplication — content is indexed once and queried by all.
+
+Use this approach when the knowledge is cross-cutting across all squad agents (e.g., general company policies). For knowledge specific to a particular agent (e.g., a product catalog consulted only by the sales agent), connect the base directly to the agent, not to the squad.
+
+## Example Scenario
+
+An e-commerce company has three agents: Support, Sales, and Finance. Each uses specific bases:
+
+- **Support**: "Frequently Asked Questions" base + "Exchange and Return Policies" base
+- **Sales**: "2025 Product Catalog" base + "Current Promotions" base
+- **Finance**: "Installment Terms" base + "Payments FAQ" base
+
+When a customer asks about delivery times, the Support agent searches across both connected bases, retrieves the relevant excerpts from the "Exchange and Return Policies" base, and responds with the company's actual timelines.
+
+## Best Practices
+
+- Before connecting a base to the agent, verify that documents have **Indexed** status. Documents with **Processing** status do not yet contribute to searches and may give the impression that the base is not working.
+- Adjust the threshold incrementally: decrease by 0.05 at a time and evaluate the agent's behavior after each adjustment. Drastic changes make it difficult to isolate the effect.
+- Separate knowledge with very different purposes into different bases. A "Support FAQ" base and a "Product Catalog" base should be separate — this simplifies maintenance and allows you to disconnect one without affecting the other.
+- For bases with dense technical content, increase top-k to 7–10. For Q&A bases with short answers, a top-k of 3 is sufficient and reduces token costs.

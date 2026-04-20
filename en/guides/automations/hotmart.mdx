@@ -1,0 +1,92 @@
+---
+title: "Hotmart Integration"
+description: "Connect your Hotmart account to automate messages and flows based on purchase, cancellation, and subscription events."
+---
+
+The integration with [Hotmart](https://www.hotmart.com) allows Timely.ai to react automatically to events from your digital product — purchase approval, refund, subscription cancellation, and much more. The flow starts when Hotmart delivers an event to the Timely.ai webhook and ends with a personalized message to the buyer.
+
+<Frame>
+  <img src="/images/screenshots/placeholder-hotmart-integration.png" alt="Hotmart integration panel" />
+</Frame>
+
+## Connecting your account
+
+<Steps>
+  <Step title="Open the integration page">
+    In the sidebar, go to **Integrations > Hotmart**.
+  </Step>
+  <Step title="Add a connection">
+    Click **New Connection** and enter an identifying name. Timely.ai will automatically generate the webhook URL and the security `hottok`.
+  </Step>
+  <Step title="Configure the webhook in Hotmart">
+    In the Hotmart panel, go to **Tools > Webhooks** and register the generated URL. Paste the `hottok` in the corresponding Hotmart field to authenticate events.
+  </Step>
+  <Step title="Confirm the connection">
+    Click **Test connection** in Timely.ai. Hotmart will send a test event and you will see the receipt confirmation.
+  </Step>
+</Steps>
+
+<Note>
+  The webhook URL follows the pattern: `POST /functions/v1/hotmart-webhook?company_id={your-company-id}`. Each company has its own URL — never share the same URL between different accounts.
+</Note>
+
+## Supported events
+
+Timely.ai processes 14 types of Hotmart events, organized into two groups:
+
+### Purchase lifecycle
+
+| Hotmart event | What it means |
+|---|---|
+| `PURCHASE_APPROVED` | Purchase approved — main welcome trigger |
+| `PURCHASE_COMPLETE` | Payment cleared (treated the same as approved) |
+| `PURCHASE_CANCELED` | Purchase cancelled by the buyer |
+| `PURCHASE_REFUNDED` | Refund processed |
+| `PURCHASE_PROTEST` | Dispute opened |
+| `PURCHASE_CHARGEBACK` | Chargeback recorded |
+| `PURCHASE_EXPIRED` | Payment deadline expired |
+| `PURCHASE_DELAYED` | Payment under review |
+| `PURCHASE_BILLET_PRINTED` | Bank slip generated (awaiting payment) |
+| `PURCHASE_OUT_OF_SHOPPING_CART` | Cart abandonment |
+
+### Subscription lifecycle
+
+| Hotmart event | What it means |
+|---|---|
+| `SUBSCRIPTION_CANCELLATION` | Subscription cancelled |
+| `SWITCH_PLAN` | Plan change |
+| `UPDATE_SUBSCRIPTION_CHARGE_DATE` | Billing date change |
+| `CLUB_FIRST_ACCESS` | First access to Hotmart Club |
+
+## Automations per event
+
+In the **Automations** tab of the integration, you individually enable or disable automatic responses for each event type. For example:
+
+- `PURCHASE_APPROVED` → send welcome message + access link
+- `PURCHASE_REFUNDED` → send refund confirmation message
+- `SUBSCRIPTION_CANCELLATION` → start a retention flow or exit survey
+- `PURCHASE_OUT_OF_SHOPPING_CART` → send cart recovery message
+
+<Warning>
+  Authentication uses the `hottok` field sent by Hotmart in the payload body (or in the `X-Hotmart-Hottok` header). Events received without the correct hottok are rejected with `401`. Keep the generated secret in a safe place.
+</Warning>
+
+## Message templates
+
+In the **Templates** tab, you customize the messages sent for each event. Use dynamic variables populated with data from the Hotmart payload:
+
+| Variable | Data |
+|---|---|
+| `{{comprador_nome}}` | Buyer's name |
+| `{{produto_nome}}` | Name of the purchased product |
+| `{{valor}}` | Transaction amount |
+| `{{data_compra}}` | Approval date |
+
+## Event log and metrics
+
+- **Events tab**: displays all received events with processing status (`pending`, `processed`, `failed`), timestamp, and full payload.
+- **Metrics tab**: charts of event volume by type and processing success rate over time.
+
+<Tip>
+  Use the event log to debug configurations. If an event appears as `failed`, the received payload is stored for inspection — making it easier to identify mapping issues.
+</Tip>

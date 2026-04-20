@@ -7,21 +7,77 @@ Todas as mudanças relevantes ficam registradas aqui em ordem cronológica rever
 
 ## 2026-04-19
 
-### Documentação
+### Workers
+- **Novo Workers** — workspace interno estilo ChatGPT para conversar com agentes e squads sem sair da plataforma.
+- Upload de arquivos e imagens no chat com **suporte multimodal** (vision) para modelos compatíveis.
+- UX do chat refinada: layout em altura total, subheader oculto, padding removido, header alinhado em 48px e gap maior na navegação inicial.
+
+### Knowledge Base
+- **Nova UI de gestão da Base de Conhecimento** com suporte dedicado a upload e organização de documentos.
+
+### Datagrids (Tabelas)
+- Novo campo **descrição obrigatória** nas colunas e suporte a colunas marcadas como `is_required`.
+- Nova ação `reprocess_datagrid` para recomputar embeddings e job **pg_cron** que detecta e reprocessa linhas com embeddings desatualizados.
+- Correção na atualização de configurações de tabelas pelo agente.
+- Configurações de ferramentas de datagrid passam a exibir **Nome e Descrição no topo** para editar mais rápido.
+- `ToolCatalogDialog` agora ocupa a viewport inteira, dando mais espaço para configurar ferramentas.
+
+### Navegação
+- Nova categoria **AI** na sidebar dupla, com o painel do Time AI integrado.
+- Seções agrupadas no painel lateral do **Builder**, facilitando encontrar ajustes do agente.
+
+### Configurações
+- Aba de **API movida para página dedicada** na sidebar de configurações.
+- Correção no carregamento do perfil de usuário após troca de workspace.
+
+### Header
+- Botão do **Time AI** agora exibe rótulo textual e assume nova posição no header da plataforma.
+
+### Pipeline
+- Recurso de **lead temperature scoring** removido para simplificar a qualificação manual.
+
+## 2026-04-18
+
+### Navegação (DualSidebar)
+- **Nova sidebar dupla**: rail estreito de categorias (52px) + painel contextual por categoria, substituindo a `AppSidebar` antiga.
+- Seis categorias principais com rótulos i18n e fallback seguro quando a categoria é inválida.
+- **Esconde categorias vazias por role**, respeitando a matriz de permissões (owner / manager / trainer / attendant / member).
+- `WorkspaceSelector` movido do painel para o **header da plataforma**, liberando espaço na navegação.
+- Rail e painel estilizados como cards, painel agora fica rente à área de conteúdo.
+- Novo **MobileDrawer** com hambúrguer no mobile e diálogo de indicações no rodapé do painel.
+- Atalho **CMD/CTRL+B** para colapsar/expandir a sidebar com persistência em `localStorage`.
+
+### Datagrids (Tabelas) — feature inicial
+- Nova rota `/datagrids` com **editor de tabelas**, componentes e hooks para criar, editar e organizar colunas e linhas.
+- Migrações de banco com RLS, RPCs `SECURITY DEFINER` com checagem de role e triggers para imutabilidade de tipo de coluna.
+- Nova edge function **`datagrid-tool-exec`** integrada ao Cloudflare como registry e executor de ferramentas.
+- Catálogo de agentes ganha **4 ferramentas de datagrid** (semantic search, similarity search, insert_row, update_row) com diálogos de configuração e i18n completos.
+- Instrução `always_run` injetada por ferramenta para que o agente use busca semântica quando apropriado.
+
+### Time AI
+- Painel lateral legado substituído por **janela flutuante arrastável** do Time AI.
+
+### Billing
+- Rota `/billing` migrada para **`/faturamento`** (português), com ajustes em layout, aba de voz e templates de email.
+
+### Dashboard
+- Tooltip e formatação consistentes na pílula de créditos (`formatCredits`).
+- Títulos SEO resolvidos via i18n em todas as 17 rotas.
+- Polimento do estado vazio em cards de ranking.
+
+### Pipeline
+- Correções em typos do tour e no botão de **adicionar contato** quebrado, com limpeza do tour legado.
+
+### Removido
+- Sistema de **campos customizados** retirado por completo (substituído por Datagrids).
+- Oito páginas e rotas sem uso foram removidas junto com componentes mortos.
+
+## 2026-04-19 — Documentação
+
 - **Nova estrutura de documentação** inspirada em padrões modernos (Mintlify): tabs separados para Comece Aqui, Guias de Produto, API Reference, Webhooks, AI e HTTP Collections.
 - **Catálogo de eventos de webhook** completo com payloads de exemplo por tipo.
 - **Glossário técnico** com os principais termos da plataforma.
 - **llms.txt** disponível em `/llms.txt` para uso em IDEs com IA (Cursor, Claude, VS Code).
-
-## 2026-04-18
-
-### Workers
-- Upload de arquivos e imagens no chat do Worker com suporte multimodal.
-- Melhorias de UX no fluxo de mensagens e testes automatizados.
-
-### Settings
-- Aba de API movida para página dedicada na sidebar de configurações.
-- Correção no carregamento do perfil de usuário após troca de workspace.
 
 ---
 

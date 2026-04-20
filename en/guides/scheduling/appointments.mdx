@@ -1,0 +1,116 @@
+---
+title: "Chat-based Appointments"
+description: "Understand how the agent schedules, reschedules, and cancels appointments directly in the conversation with the client."
+---
+
+The Timely.ai agent can manage the complete appointment lifecycle without human intervention: it checks availability, confirms with the client, creates the appointment, sends reminders, and processes reschedules or cancellations when requested.
+
+## Scheduling Flow
+
+When the client expresses intent to schedule (via text or after data collection by the agent), the following process occurs automatically:
+
+<Steps>
+  <Step title="Intent identification">
+    The agent detects that the client wants to book a time based on the conversation. You can reinforce this behavior in the agent's prompt with instructions such as "when the client asks to schedule, collect name, preferred date, and email".
+  </Step>
+  <Step title="Data collection">
+    The agent requests the necessary information: client name, desired date, preferred time, and email or phone for confirmation. The required fields are name, date, and start time.
+  </Step>
+  <Step title="Availability check">
+    The system queries the calendar configured for the agent and returns available time slots. If the requested time is taken, the agent suggests alternatives automatically.
+  </Step>
+  <Step title="Confirmation and creation">
+    After the client confirms the time, the agent calls the `agent-schedule-appointment` edge function internally. The appointment is created with `confirmed` status and the client receives the confirmation via chat.
+  </Step>
+  <Step title="Notifications">
+    Automatic reminders are sent before the scheduled time based on the `appointment-reminders` settings.
+  </Step>
+</Steps>
+
+## Data Collected at Scheduling
+
+| Field | Required | Description |
+|---|---|---|
+| `customerName` | Yes | Client's full name |
+| `appointmentDate` | Yes | Date in YYYY-MM-DD format |
+| `startTime` | Yes | Start time (HH:MM) |
+| `customerEmail` | No | Email for confirmation and Google Calendar invite |
+| `customerPhone` | No | Client's phone number |
+| `notes` | No | Conversation notes |
+| `locationType` | No | `online`, `physical`, or `both` |
+
+## Rescheduling
+
+The client can request a change to an appointment at any time during a conversation. The agent identifies the request, locates the existing appointment, and executes the update:
+
+```
+Client: I need to change our meeting tomorrow to Friday at 3pm.
+Agent:  Of course! I found your Thursday 10am appointment.
+        Friday at 3pm is available. Shall I confirm the change?
+Client: Yes, please confirm.
+Agent:  Done! Your appointment has been rescheduled to Friday, 04/25, at 15:00.
+        You will receive a confirmation by email.
+```
+
+The reschedule updates:
+- The `appointments` record in the database
+- The corresponding event in Google Calendar (when connected)
+- A new Google Meet link, if applicable
+
+<Note>
+  The agent identifies the client's appointment from the conversation context or by the associated phone/email. If there are multiple active appointments, the agent asks which one the client wants to change.
+</Note>
+
+## Cancellation
+
+To cancel, the client simply informs the agent:
+
+```
+Client: I need to cancel my Friday appointment.
+Agent:  Understood. I will cancel your Friday meeting at 15:00.
+        Are you sure you want to cancel?
+Client: Yes.
+Agent:  Appointment canceled. If you want to reschedule at another time,
+        just let me know!
+```
+
+The cancellation:
+- Updates the appointment status to `cancelled`
+- Removes or cancels the event in Google Calendar
+- Invalidates the associated Google Meet link
+
+## Automatic Reminders
+
+Timely.ai sends automatic reminders to the client before the scheduled time. The default settings are:
+
+- **24 hours before**: reminder message with appointment details
+- **1 hour before**: final reminder with the Meet link (when applicable)
+
+Reminders are sent through the same channel where the conversation took place — WhatsApp, Instagram, or widget.
+
+## Appointment Location
+
+You can configure the location type in the calendar:
+
+| Type | Behavior |
+|---|---|
+| `online` | The agent mentions that the appointment will be online and includes the Meet link |
+| `physical` | The agent provides the physical address configured in the calendar |
+| `both` | The agent asks the client for their preference during the conversation |
+
+## Viewing Appointments
+
+All appointments are recorded in the **Appointments** section of the Timely.ai dashboard. You can filter by agent, calendar, date, and status (`confirmed`, `cancelled`, `completed`, `no_show`).
+
+## Prompt Best Practices
+
+For the agent to manage appointments smoothly, include instructions such as:
+
+- Explicitly define when the agent should offer scheduling (e.g., "after any expression of interest in an in-person appointment")
+- List which data to collect before checking availability
+- Instruct the agent to confirm the time with the client before creating the appointment
+- Guide the agent to ask whether the client prefers an online or in-person appointment, if applicable
+
+<Tip>
+  Combine the scheduling module with the **Tyme CRM** to automatically record the appointment as an opportunity in the sales pipeline — available on Professional and Enterprise plans.
+</Tip>

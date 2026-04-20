@@ -1,0 +1,83 @@
+---
+title: "llms.txt"
+description: "Full context file for Timely.ai in the llmstxt.org standard — how to download it, where to use it, and how to keep it up to date."
+---
+
+## What is llms.txt
+
+`llms.txt` is an open standard created by [llmstxt.org](https://llmstxt.org) so that websites and APIs can expose a structured text file that language models can consume efficiently. It works like a `robots.txt`, but for LLMs: instead of saying what not to index, it says what is worth reading.
+
+The Timely.ai file contains:
+
+- A description of all REST endpoints (method, path, parameters, examples)
+- Webhook event types and payload structure
+- Authentication and rate limiting rules
+- Glossary of platform concepts (agents, channels, workspaces, etc.)
+
+All of this in plain text, no HTML, no sidebar — ready to be injected as context into any LLM.
+
+## Where to find it
+
+The file is available at the root of the documentation:
+
+```
+https://docs.timelyai.com.br/llms.txt
+```
+
+Approximate size: **~75 KB**. It fits within the context window of all modern models (Claude 3.x, GPT-4o, Gemini 1.5+).
+
+## How to download
+
+```bash
+curl https://docs.timelyai.com.br/llms.txt -o timely-llms.txt
+```
+
+To save directly to your project root:
+
+```bash
+curl https://docs.timelyai.com.br/llms.txt -o ./timely-llms.txt
+```
+
+## Use cases
+
+<AccordionGroup>
+  <Accordion title="Cursor — @Docs">
+    When you add `https://docs.timelyai.com.br` as Docs in Cursor, the editor indexes the `llms.txt` automatically and makes it available via `@Timely.ai`. You don't need to download the file manually.
+  </Accordion>
+  <Accordion title="Claude Code — CLAUDE.md">
+    Add a reference to the file in your `CLAUDE.md` so that Claude Code loads the context every time it starts a session in the project:
+
+    ```markdown
+    ## Timely.ai API Context
+    Read the `timely-llms.txt` file at the project root to understand
+    the endpoints, authentication, and events of the Timely.ai API.
+    ```
+
+    Then download the file once with `curl` and commit it to the repository, or configure a pre-session script to fetch the latest version.
+  </Accordion>
+  <Accordion title="MCP Sessions">
+    In MCP servers that support context injection via local file, point to `timely-llms.txt` as the source document. The server injects the content into the system prompt before each model call.
+  </Accordion>
+  <Accordion title="Continue.dev — @docs">
+    Configure Continue.dev to index `https://docs.timelyai.com.br` as a context provider. It will read the `llms.txt` and the linked pages to build the semantic search index.
+  </Accordion>
+</AccordionGroup>
+
+## How the file is generated and updated
+
+The `llms.txt` is generated automatically by the documentation build pipeline. Every time an `.mdx` page is modified and deployed, the file is regenerated and published at the same URL.
+
+To ensure you have the latest version in long-running projects, add a script to your workflow:
+
+```bash
+#!/bin/bash
+# scripts/update-timely-context.sh
+curl -sL https://docs.timelyai.com.br/llms.txt -o ./timely-llms.txt
+echo "llms.txt updated on $(date)"
+```
+
+You can run this script manually before intensive API development sessions, or schedule it via cron/CI.
+
+<Note>
+The file contains no sensitive information — only public documentation. It is safe to commit it to your repository.
+</Note>

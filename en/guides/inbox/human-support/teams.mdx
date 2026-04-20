@@ -1,0 +1,41 @@
+---
+title: "Teams and Distribution"
+description: "Create support Teams, add members, and configure the Conversation distribution mode among attendants."
+---
+
+## Teams
+
+Teams group attendants around a support scope — a channel, a product, or a department. When a Conversation is escalated to Human Support, it can be directed to a specific Team instead of an individual.
+
+Creating and configuring Teams requires the `manager` or `owner` Role. Members with the `attendant`, `trainer`, or `manager` Role can be added to a Team.
+
+- **Collective visibility** — all Team members see the unassigned Conversations in the shared queue
+- **Automatic distribution** — the platform distributes Tickets among available members without manual intervention
+- **Multiple channels per Team** — a Team can handle WhatsApp, Instagram, Widget, Telegram, and Slack simultaneously
+- **Member in multiple Teams** — the same attendant can belong to more than one Team and receive Conversations from all of them
+
+## Round Robin
+
+Round-robin mode distributes Tickets in sequential rotation among Team members. The system maintains a rotating pointer: each new Ticket goes to the next member in the queue.
+
+| Member | Weight | Expected distribution |
+|--------|------|----------------------|
+| Ana | 1 | 33% of Tickets |
+| Bruno | 1 | 33% of Tickets |
+| Carla | 1 | 33% of Tickets |
+
+<Note>
+  In the current version, offline members are not automatically skipped in round-robin. To avoid assignments to absent attendants, temporarily remove them from the Team or use the Least load mode, which only considers active Conversations.
+</Note>
+
+## Status and Responsibility
+
+The distribution mode defines who receives each Conversation and when:
+
+- **Round-robin** — Tickets are assigned in sequential rotation, regardless of each member's current workload
+- **Least load** — each new Ticket goes to the member with the fewest open Conversations at the time; in case of a tie, the system chooses whoever received the oldest Ticket
+- **Manual** — Tickets arrive unassigned and any Team member can claim them through the Inbox
+
+<Note>
+  Manual mode is recommended for Teams that need visual triage before taking a case — for example, specialized support teams where complexity determines who should handle it.
+</Note>

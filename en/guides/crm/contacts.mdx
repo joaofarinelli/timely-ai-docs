@@ -1,0 +1,113 @@
+---
+title: "Contacts"
+description: "Manage your contact database with custom fields, activity timeline, and advanced search integrated into the CRM"
+---
+
+The Contacts module is the core of Timely.ai's CRM. Every person who has ever interacted with any of your agents becomes a contact — with a complete profile, conversation history, customizable fields, and an activity timeline.
+
+<img
+  src="/images/screenshots/placeholder-contacts-list.png"
+  alt="Contact list with filters and search"
+  className="rounded-lg border"
+/>
+
+## Contact Structure
+
+Every contact in Timely has the following base data:
+
+| Field | Description |
+|-------|-----------|
+| `nome_cliente` | Contact's full name |
+| `customer_phone` | Phone number (primary identifier on WhatsApp) |
+| `customer_email` | Email address |
+| `customer_company` | Contact's company |
+| `position` | Job title |
+| `gender` | Gender (optional) |
+| `birth_date` | Date of birth |
+| `state` / `city` | Geographic location |
+| `profile_picture_url` | Profile picture (synced from the channel when available) |
+
+Beyond these native fields, you can add as many **custom fields** as you need via Settings.
+
+<Note>
+  Contacts are created automatically when a new phone number or email address interacts with any agent in the workspace. The `upsert-contact` edge function ensures that duplicate data never creates duplicate contacts — it performs intelligent merging by phone or email.
+</Note>
+
+## Browsing Contacts
+
+<Tabs>
+  <Tab title="List">
+    The default view displays all contacts in a paginated table with configurable columns. Click any row to open the full profile.
+  </Tab>
+  <Tab title="Search">
+    Search operates in real time on name, phone, email, and company. Use advanced filters to combine criteria — e.g., all contacts from a specific city with an open conversation in the last 7 days.
+  </Tab>
+  <Tab title="Filters">
+    Filter by source channel, attending agent, conversation tag, creation date, or custom fields. Multiple filters combine with AND logic.
+  </Tab>
+</Tabs>
+
+## Contact Profile
+
+When you click a contact, you see the profile panel divided into:
+
+<CardGroup cols={2}>
+  <Card title="Personal data" icon="user">
+    All native and custom fields, editable inline. Changes are saved automatically.
+  </Card>
+  <Card title="Linked channels" icon="plug">
+    Badges for the channels through which the contact has communicated: WhatsApp, Instagram, Widget. Each badge shows the channel identifier.
+  </Card>
+  <Card title="Activity timeline" icon="timeline">
+    Chronological history of conversations, agent interactions, lead status changes, applied tags, and modified fields.
+  </Card>
+  <Card title="Recent conversations" icon="messages">
+    The contact's latest threads with a direct link to open them in the Inbox. Includes the attending agent and the status of each conversation.
+  </Card>
+</CardGroup>
+
+## Editing a Contact
+
+<Steps>
+  <Step title="Open the profile">
+    Click the contact in the list to load the details form.
+  </Step>
+  <Step title="Edit the fields">
+    Click any field to edit it. Fields are inline inputs — no need to enter a separate edit mode.
+  </Step>
+  <Step title="Save">
+    Click **Save** at the bottom of the form. A confirmation appears in the toast and the contact's `updated_at` is updated in the database.
+  </Step>
+</Steps>
+
+<Tip>
+  AI agents can also update contact fields automatically during conversations using the contact update tool. Configure in the agent's prompt which fields it should capture and fill in.
+</Tip>
+
+## Custom Fields
+
+To add custom fields to the profile:
+
+<Steps>
+  <Step title="Go to Settings → Contacts → Custom Fields">
+    In the workspace settings menu.
+  </Step>
+  <Step title="Click '+ New Field'">
+    Define the name, data type (`text`, `number`, `date`, `boolean`, `select`), and whether it is required.
+  </Step>
+  <Step title="Configure the field">
+    For `select` type, add the available options. For `number`, set minimum and maximum limits if needed.
+  </Step>
+  <Step title="Activate">
+    The field appears immediately on the form for all contacts in the workspace and becomes available for filters and exports.
+  </Step>
+</Steps>
+
+<Note>
+  Custom fields are also accessible by AI agents via contact read and write tools. This allows the agent to collect structured information during the conversation and automatically save it to the profile.
+</Note>
+
+## Importing and Exporting
+
+- **Import**: upload a CSV with headers mappable to the system fields. The `upsert` by phone or email prevents duplicates.
+- **Export**: export the current filtered list to CSV or JSON via the button at the top corner of the table. The export includes custom fields and channel data.

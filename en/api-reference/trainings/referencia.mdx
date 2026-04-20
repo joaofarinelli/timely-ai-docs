@@ -1,0 +1,66 @@
+---
+title: "Trainings Reference"
+sidebarTitle: "Reference"
+description: "Endpoints to manage agent knowledge bases — documents, FAQs, and training content"
+---
+
+## Concept
+
+**Trainings** are the knowledge base that powers Timely.ai agents. While the `system_prompt` defines the agent's behavior and personality, Trainings provide the factual content it uses to respond: company policies, product catalogs, frequently asked questions, support manuals, sales scripts, and any other material the agent needs to consult during a conversation.
+
+Each Training is associated with one or more agents and is indexed so the agent can perform semantic searches when it needs specific information — without loading all the content into context with every message.
+
+## Supported Content Types
+
+You can add trainings in different formats:
+
+- **Free text** — any structured or unstructured content (Q&A, policies, instructions)
+- **File** — PDF, DOCX, TXT, MD uploaded via upload
+- **URL** — Timely crawls and indexes the page content
+
+## Lifecycle
+
+```
+create training (processing)
+    │
+    ▼
+semantic indexing
+    │
+    ▼
+ready → agent queries during conversations
+    │
+    ▼
+update content → reprocessing
+    │
+    ▼
+delete (removes from the agent's knowledge base)
+```
+
+The `processing` status indicates the content is being vectorized. Once it becomes `ready`, the agent can query it in subsequent conversations.
+
+## Main Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique training ID |
+| `agent_id` | string (UUID) | Agent it belongs to |
+| `title` | string | Descriptive title of the content |
+| `type` | enum | `text` \| `file` \| `url` |
+| `content` | string | Text content (for type `text`) |
+| `file_url` | string | URL of the indexed file |
+| `source_url` | string | Source URL (for type `url`) |
+| `status` | enum | `processing` \| `ready` \| `error` |
+| `created_at` | string | ISO 8601 creation timestamp |
+| `updated_at` | string | ISO 8601 last update timestamp |
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

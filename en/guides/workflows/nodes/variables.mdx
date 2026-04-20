@@ -1,0 +1,43 @@
+---
+title: "Variables Node (Set Variable)"
+description: "Create, store, and transform values to reuse at any point in the workflow via {{ $vars.name }}."
+---
+
+<Note>
+  Variables defined in this node exist only during the current execution. They do not persist between separate runs of the same workflow.
+</Note>
+
+## How It Works
+
+The **Set Variable** node creates or overwrites variables scoped to the current execution. Once defined, they are accessible in all downstream nodes via `{{ $vars.variable_name }}` — including condition nodes, HTTP nodes, JavaScript code nodes, and the LLM node prompt.
+
+Use the node to:
+
+- Extract fields from a large payload and give them clear, short names
+- Calculate or concatenate values derived from multiple flow sources
+- Store intermediate results that will be consumed by more than one downstream node
+- Initialize counters, flags, or control objects before entering a loop
+
+## Configuration Options
+
+A single node can define as many variables as needed. Each variable requires three fields:
+
+- **Name** — snake_case identifier with no spaces; after typing, the panel displays the access expression `{{ $vars.your_name }}`
+- **Type** — determines how the value is stored and interpreted by the execution engine
+- **Value** — static field, dynamic reference via `{{ }}` template, or block editor for JSON
+
+| Type | When to use |
+|---|---|
+| `string` | Text, IDs, names, emails, alphanumeric values |
+| `number` | Quantities, totals, indices for calculations and comparisons |
+| `boolean` | Control flags (`true` / `false`) for conditionals |
+| `json` | Complex objects or arrays to be passed to the HTTP or LLM node |
+| `expression` | Full dynamic template — the entire value is resolved at runtime |
+
+## Common Use Cases
+
+The Set Variable node is most useful in the following patterns:
+
+- **Rename payload fields** — an external webhook arrives with keys in a different language or format (`customer.full_name`, `order.ref`); define variables with clearer names before referencing them in downstream nodes, making the flow more readable
+- **Build an HTTP request body** — assemble a complex `json` object with fields from different parts of the flow (`$trigger`, `$json`, other `$vars`) and reference the variable as `{{ $vars.payload }}` in the HTTP node's body field
+- **Control loop iterations** — initialize `counter` as a `number` with value `0` and `error_list` as `json` with value `[]` before the Loop node; the internal JavaScript node updates these values on each iteration using `vars.counter` and `vars.error_list`

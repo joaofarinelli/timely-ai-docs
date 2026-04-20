@@ -1,0 +1,84 @@
+---
+title: "Cursor"
+description: "Configure the Timely.ai documentation in Cursor to use @Timely.ai in any prompt and get accurate answers about the API."
+---
+
+Cursor has native support for external documentation sources via **@Docs**. When you add Timely.ai as a Docs source, the editor indexes the pages and makes the content available as context in the chat and Composer windows.
+
+## Add as Docs
+
+<Steps>
+  <Step title="Open Settings">
+    In Cursor, press `Cmd + ,` (macOS) or `Ctrl + ,` (Windows/Linux) to open **Settings**.
+  </Step>
+  <Step title="Navigate to Features → Docs">
+    In the settings sidebar, click **Features**. Scroll down to the **Docs** section.
+  </Step>
+  <Step title="Add the URL">
+    Click **+ Add** and paste the URL:
+
+    ```
+    https://docs.timelyai.com.br
+    ```
+
+    Cursor will index the site automatically. The process takes a few seconds.
+  </Step>
+  <Step title="Confirm indexing">
+    After indexing, the **Timely.ai** entry will appear in the list of available Docs. You can click it to view the status and force a re-index if needed.
+  </Step>
+</Steps>
+
+## Use in prompts
+
+Once indexed, mention `@Timely.ai` in any Chat or Composer prompt:
+
+```
+@Timely.ai How do I authenticate with the API and make my first call to GET /v1/me?
+```
+
+```
+@Timely.ai What are the required fields to create an agent via POST /v1/agents?
+```
+
+```
+@Timely.ai Show me the structure of the conversation.created webhook event.
+```
+
+Cursor retrieves the relevant documentation snippets and injects them into the context before sending to the model.
+
+## Usage tips
+
+<AccordionGroup>
+  <Accordion title="Combine with @codebase">
+    Use `@Timely.ai` together with `@codebase` so the model can see both the API documentation and your project's code:
+
+    ```
+    @Timely.ai @codebase Refactor the src/services/timely.ts file
+    to use the correct contact creation endpoint.
+    ```
+  </Accordion>
+  <Accordion title="Questions about HTTP errors">
+    Paste the error directly into the prompt:
+
+    ```
+    @Timely.ai I got this error calling POST /v1/agents:
+    { "error": "rate_limit_exceeded", "retry_after": 30 }
+    What does this mean and how do I handle it in my code?
+    ```
+  </Accordion>
+  <Accordion title="Generate integration code">
+    ```
+    @Timely.ai Generate a TypeScript function that uses fetch to
+    send a message via POST /v1/conversations/{id}/messages
+    with automatic retry on 429.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Alternative: MCP Server
+
+<Note>
+MCP Server support for Cursor is under development. When available, you will be able to add the Timely.ai MCP server in Cursor's settings and get real-time semantic search without the need for periodic re-indexing.
+</Note>
+
+For now, the @Docs approach covers most use cases. If the returned context seems outdated, force a re-index by clicking the refresh icon next to the **Timely.ai** entry in Settings.

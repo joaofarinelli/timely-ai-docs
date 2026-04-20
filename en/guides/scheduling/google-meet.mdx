@@ -1,0 +1,93 @@
+---
+title: "Google Meet"
+description: "Automatically generate video call links for every appointment made by the agent."
+---
+
+When Google Meet is enabled, the agent creates a unique meeting link for each new appointment and shares it with the client directly in the chat. No manual action is needed — the link is generated and sent automatically.
+
+## Prerequisite
+
+Automatic Meet link generation requires **Google Calendar** to be connected to the agent. Meet uses the same Google account authorized via the calendar's OAuth to create events with a virtual meeting room.
+
+If Google Calendar is not yet configured, go to [Google Calendar](/en/guides/scheduling/google-calendar) before continuing.
+
+## Enabling Google Meet
+
+With Google Calendar already connected:
+
+<Steps>
+  <Step title="Open the calendar settings">
+    In the agent, go to **Scheduling → Calendars** and select the desired calendar.
+  </Step>
+  <Step title="Enable Google Meet">
+    Turn on the **Automatically generate Google Meet link** option. From that point on, all new appointments via this calendar will include a Meet link.
+  </Step>
+</Steps>
+
+No additional configuration is needed. The link is created via the Google Meet API at the moment the event is inserted into Google Calendar.
+
+## Behavior During Scheduling
+
+When the agent confirms an appointment with Meet enabled:
+
+1. The event is created in Google Calendar with a virtual meeting room
+2. Google generates a unique link in the format `meet.google.com/xxx-xxxx-xxx`
+3. The agent sends the link to the client in the same confirmation message
+4. The link is also recorded in the calendar event and in the appointment details in Timely.ai
+
+The client can access the link from a browser without needing a Google account — meetings open to the public work without a login.
+
+## Coordination Between Meet and Calendar
+
+When both apps are active at the same time, the agent follows this coordinated flow:
+
+<Steps>
+  <Step title="Client requests a meeting with date and time">
+    The agent identifies the scheduling intent and extracts the date, time, and meeting type from the conversation.
+  </Step>
+  <Step title="Availability check">
+    The system queries Google Calendar to confirm the time slot is free.
+  </Step>
+  <Step title="Simultaneous creation">
+    The event is created in Google Calendar with the Meet room embedded — a single operation, not two separate calls.
+  </Step>
+  <Step title="Confirmation with link">
+    The agent responds to the client with the appointment confirmation and the Meet link.
+  </Step>
+</Steps>
+
+<Tip>
+  Instruct the agent in the prompt to explicitly mention that the meeting will be online and that the link will be sent. This reduces client confusion about the format of the appointment.
+</Tip>
+
+## Available Tools
+
+The Google Meet integration exposes the following tools to the agent when connected via Composio:
+
+| Tool | Description |
+|---|---|
+| `GOOGLEMEET_CREATE_MEET` | Creates a new meeting room |
+| `GOOGLEMEET_GET_MEET` | Retrieves details of an existing meeting |
+| `GOOGLEMEET_LIST_CONFERENCE_RECORDS` | Lists previous conference records |
+| `GOOGLEMEET_GET_TRANSCRIPTS_BY_CONFERENCE_RECORD_ID` | Retrieves transcripts of a meeting |
+| `GOOGLEMEET_GET_PARTICIPANT_SESSION` | Details a participant's session |
+| `GOOGLEMEET_LIST_PARTICIPANT_SESSIONS` | Lists participant sessions |
+
+The creation tools (`CREATE_MEET`) are used automatically by the agent in the scheduling flow. The query tools are available for more advanced flows, such as retrieving transcripts from previous meetings.
+
+## Advanced Use Cases
+
+- **Follow-up meetings**: the agent can create a follow-up meeting at the end of a conversation without the client needing to fill out any form
+- **Rescheduling with a new link**: when rescheduling, a new Meet link is generated automatically — the old link is invalidated
+- **Post-meeting transcripts**: with access to transcripts via tool, the agent can summarize what was discussed and record it in the CRM automatically
+
+## Frequently Asked Questions
+
+**Does the client need a Google account to join the meeting?**
+No. The Google Meet link works for anyone with access to the link, without requiring a login.
+
+**Does the link expire?**
+Meet links created via Google Calendar remain active as long as the event exists. After canceling an appointment, the corresponding link stops working.
+
+**Can I use Meet without Google Calendar?**
+No. Automatic Meet link creation within Timely.ai depends on the OAuth connection with Google Calendar. Without it, the link is not generated.

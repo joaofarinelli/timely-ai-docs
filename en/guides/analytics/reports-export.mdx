@@ -1,0 +1,87 @@
+---
+title: Report Export
+description: Export service and analytics data in CSV or XLSX for external analysis, auditing, and integrations.
+---
+
+Report export allows you to download structured data from your operation for use in spreadsheets, external BI tools, or audit archives. You can export conversations, agent metrics, token usage, and BI Dashboard data.
+
+## Available formats
+
+| Format | Extension | Best for |
+|---|---|---|
+| CSV | `.csv` | Import into any BI tool, database, or spreadsheet |
+| Excel | `.xlsx` | Formatted reports with multiple tabs, formulas, and charts |
+
+## Accessing exports
+
+<Steps>
+  <Step title="Open the Analytics section">
+    In the sidebar, click **Analytics**.
+  </Step>
+  <Step title="Go to the Exports tab">
+    Select the **Exports** tab (or click the **Export report** button available in the Dashboard or BI Dashboard).
+  </Step>
+  <Step title="Select the report type">
+    Choose which dataset to export. See the available types in the section below.
+  </Step>
+  <Step title="Configure the period">
+    Set the report start and end date using the calendar selector.
+  </Step>
+  <Step title="Choose the format">
+    Select **CSV** or **XLSX** in the format selector.
+  </Step>
+  <Step title="Click Export">
+    The file is generated and the download starts automatically. For large reports, the file may take a few seconds to be ready.
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/reports-export.png" alt="Report export screen with type, period, and format selectors" />
+</Frame>
+
+## Report types
+
+<AccordionGroup>
+  <Accordion title="Conversations">
+    Exports all conversations in the selected period with the fields: conversation ID, channel, responsible agent, open date, close date, status, CSAT (when available), and number of messages exchanged.
+  </Accordion>
+  <Accordion title="Messages">
+    Exports the full content of each message: ID, source conversation, sender (user or agent), timestamp, and text. Useful for language analysis and model training.
+  </Accordion>
+  <Accordion title="Agent performance">
+    Exports metrics per agent: total conversations, average response time, resolution rate, average CSAT, and token consumption in the period.
+  </Accordion>
+  <Accordion title="Token usage (BI)">
+    Exports detailed token consumption by agent, model, and day. Includes cost estimate calculated based on the configured provider's pricing rates.
+  </Accordion>
+  <Accordion title="Leads and contacts">
+    Exports the contact base with the fields: name, phone, email, source channel, date of first contact, and associated tags.
+  </Accordion>
+</AccordionGroup>
+
+## Per-chart export
+
+In addition to the full export, each chart in the Dashboard and BI Dashboard has an individual download button. Click the download icon in the corner of any chart to export only that dataset as CSV.
+
+## Scheduled reports
+
+<Info>
+  Scheduled reports (automatic email delivery on a configurable frequency) are available on Pro and Enterprise plans. On the Starter plan, export is always manual.
+</Info>
+
+To configure a scheduled report (when available on your plan):
+
+1. On the Exports screen, click **Schedule delivery**.
+2. Select the report type, period (weekly, biweekly, monthly), and format.
+3. Enter the email or list of emails that will receive the file.
+4. Save. The report will be generated and sent automatically on the configured date.
+
+## Limits and considerations
+
+- Exports with more than 100,000 rows are processed asynchronously. You receive an email with the download link when the file is ready.
+- Exported data respects the same access policies as the platform. A manager exports only data from their current workspace.
+- Generated files are available for download for 7 days in the export history.
+
+## Required permissions
+
+Export available for **owner**, **manager**, and **trainer**. Attendants and members do not have access to this feature.

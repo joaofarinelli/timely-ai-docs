@@ -1,0 +1,147 @@
+---
+title: "Transfer Rules"
+description: "Configure natural-language conditions to transfer a conversation to another agent or a human attendant — intelligent handoff without code."
+---
+
+Transfer rules define when and to whom the agent should hand over control of the conversation. They function as natural language instructions that the model interprets during the conversation — they are not fixed keywords, but flexible semantic conditions.
+
+## Overview
+
+Access the **Transfers** tab in the agent settings. Each rule has a trigger condition and a destination: another AI agent or a human team member.
+
+<Frame caption="Agent transfer rules list">
+  <img src="/images/screenshots/placeholder-agent-transfer-rules.png" alt="Agent transfer rules" />
+</Frame>
+
+## How rules work
+
+When the agent processes a message, active transfer rules are injected into the prompt context. The model analyzes the conversation and, if it identifies that a condition has been met, executes the transfer automatically.
+
+The transfer is **intelligent**: the model does not look for exact words — it understands intent. A rule like "when the customer shows frustration with the service" is triggered both by "I'm angry" and "this is outrageous" or "I want to cancel everything."
+
+## Destination types
+
+<CardGroup cols={2}>
+  <Card title="Another AI agent" icon="bot">
+    The conversation is passed to a specialized agent. Useful for creating service flows with agents specialized by topic (support, sales, finance).
+  </Card>
+  <Card title="Human attendant" icon="user">
+    The conversation is passed to a team member in the inbox. The agent stops responding and the attendant takes control.
+  </Card>
+</CardGroup>
+
+## Create a transfer rule
+
+<Steps>
+  <Step title="Click New rule">
+    In the **Transfers** tab, click **+ New rule**. The creation form is displayed.
+  </Step>
+  <Step title="Write the condition">
+    The **Instruction** field is where you describe in natural language when the transfer should happen.
+
+    Examples of effective instructions:
+
+    ```
+    Transfer to the finance team when the customer asks about 
+    refunds, chargebacks, or incorrect charges.
+    ```
+
+    ```
+    When the customer explicitly requests to speak with a human 
+    or attendant, perform the transfer immediately.
+    ```
+
+    ```
+    If after 3 attempts the agent cannot resolve the customer's 
+    problem, transfer to advanced technical support.
+    ```
+  </Step>
+  <Step title="Select the destination type">
+    Choose between **AI Agent** or **Human**.
+
+    - **AI Agent**: select which workspace agent should receive the conversation.
+    - **Human**: select which team member should receive the conversation in the inbox.
+  </Step>
+  <Step title="Enable or disable">
+    The **Active rule** toggle controls whether the rule is being evaluated. Inactive rules are saved but not injected into the agent's context.
+  </Step>
+  <Step title="Save">
+    Click **Create rule**. The rule appears in the list and takes effect immediately.
+  </Step>
+</Steps>
+
+## Manage existing rules
+
+In the rules list, each card displays:
+
+- The destination type ("AI" or "Human" badge)
+- Active/inactive status
+- The instruction excerpt (up to 100 characters)
+- The name of the destination agent or attendant
+
+Through the card you can:
+
+| Action | How to do it |
+|--------|-------------|
+| Enable/disable | Toggle on the card, without opening the form |
+| Edit | Click the pencil icon |
+| Delete | Click the trash icon and confirm |
+
+## Intelligent handoff
+
+The transfer to a human does not just pass control — it also:
+
+1. **Notifies the attendant** in the inbox with the conversation context up to that point.
+2. **Preserves the history** — the attendant sees all messages exchanged with the agent.
+3. **Stops the agent** — the agent no longer responds while the human is in control.
+4. **Allows returning to the agent** — the attendant can close the service or return it to automation.
+
+## Limits and restrictions
+
+<Note>
+Each agent supports a maximum of **10 transfer rules**. When the limit is reached, the new rule button is automatically disabled.
+</Note>
+
+- The instruction field is required — a rule without an instruction cannot be saved.
+- When selecting the **AI Agent** type, you must select a destination agent different from the current agent.
+- When selecting the **Human** type, you must select at least one team user with workspace access.
+- Deleted rules cannot be recovered — but you can recreate a rule with the same content.
+
+## Best practices
+
+<Tip>
+Write the transfer instruction from the perspective of the expected behavior, not keywords. "When the customer shows cancellation intent" is more robust than "when the customer writes 'cancel'."
+</Tip>
+
+- Create a generic fallback rule to ensure conversations the agent cannot resolve always reach a human.
+- Order rules from most specific to most generic — the model evaluates all rules and uses judgment to choose which to apply.
+- Temporarily disable rules instead of deleting them — useful for tests or periods without available attendants.
+- Test rules in the [Playground](/en/guides/agents/settings/internal-chat) by simulating the situations described in the conditions.
+
+## Common use cases
+
+<CardGroup cols={2}>
+  <Card title="Escalation by topic">
+    Transfer to specialized agents: a technical support agent, a sales agent, and a finance agent — each with their own rules and knowledge base.
+  </Card>
+  <Card title="Explicit request">
+    Always honor when the customer explicitly asks to speak with a human. Keep this rule always active.
+  </Card>
+  <Card title="Attempt limit">
+    After N exchanges without resolution, transfer to advanced support. Helps avoid frustrating loops.
+  </Card>
+  <Card title="Business hours">
+    Combine with time logic in the prompt: during business hours, transfer to human; outside hours, log the contact and notify about follow-up.
+  </Card>
+</CardGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Test the agent" href="/en/guides/agents/settings/internal-chat">
+    Simulate conversations in the Playground to validate that transfer rules fire correctly.
+  </Card>
+  <Card title="Agent overview" href="/en/guides/agents/overview">
+    Review all agent configuration blocks to ensure it is ready for publication.
+  </Card>
+</CardGroup>

@@ -1,0 +1,17 @@
+---
+title: "Effort (Reasoning Level)"
+description: "How the effort parameter controls the depth of the agent's reasoning in Timely.ai, its impact on cost and latency, and when to use each level."
+---
+
+Effort defines how many reasoning steps the agent can use to formulate a response. In Timely.ai, it is controlled by a slider from 10 to 100 steps (5-step increments), divided into four labeled levels:
+
+- **Fast** (10–20 steps) — simple questions, FAQs, confirmations, and greetings. Near-instant response, lower credit cost.
+- **Balanced** (21–40 steps) — general support, lead qualification, scheduling. A good starting point for any new agent.
+- **Detailed** (41–70 steps) — technical analyses, multi-cause diagnostics, responses requiring chained logic.
+- **Maximum** (71–100 steps) — critical cases where accuracy matters more than speed or cost.
+
+The trade-off is straightforward: more effort means more elaborate responses, higher latency, and higher credit consumption. Do not use maximum effort as a default — the correct level is the minimum that delivers sufficient quality for the use case.
+
+<Note>
+Start with Balanced for any new agent and adjust upward only if tests show shallow or incorrect responses on questions that represent the actual complexity of the use case.
+</Note>

@@ -1,0 +1,174 @@
+---
+title: "Training"
+description: "Five training types to add knowledge to the agent — documents, websites, free text, Q&A, and YouTube — and how the RAG pipeline works."
+---
+
+Training is the agent's knowledge base. While the prompt defines behavior, training provides the content — policies, catalogs, manuals, FAQs, and any information the agent needs to respond accurately.
+
+## Overview
+
+Access the **Training** tab in the agent settings. You can add knowledge from five different sources, and they coexist in the same base.
+
+<Frame caption="Training tab with the five source types">
+  <img src="/images/screenshots/placeholder-agent-training.png" alt="Agent training screen" />
+</Frame>
+
+## How RAG works
+
+Timely.ai uses **Retrieval-Augmented Generation (RAG)** to inject relevant knowledge into each execution:
+
+1. All added content is divided into **chunks** (excerpts) and transformed into embedding vectors.
+2. When the customer sends a message, the system searches for the chunks semantically closest to the question.
+3. The retrieved chunks are injected into the model's context alongside the prompt and conversation history.
+4. The model generates the response based on this enriched context.
+
+<Info>
+Only the most relevant excerpts are injected — not the entire document. This saves tokens and keeps the context focused.
+</Info>
+
+## Training types
+
+<Tabs>
+  <Tab title="Document">
+    Upload files directly to the platform. Supported formats:
+
+    - PDF (manuals, contracts, catalogs)
+    - DOCX (Word documents)
+    - TXT (plain text)
+    - CSV (data tables)
+
+    <Steps>
+      <Step title="Go to the Documents tab">
+        In the training section, click **Documents** and then **Add document**.
+      </Step>
+      <Step title="Upload the file">
+        Drag the file or use the file selector. Large files may take a few seconds to process.
+      </Step>
+      <Step title="Wait for processing">
+        The system extracts the text, divides it into chunks, and generates the embeddings. The status changes to **Processed** when complete.
+      </Step>
+    </Steps>
+
+    <Note>
+    Documents with many images and little text (e.g., presentations with visual slides) have reduced extraction quality. Prefer exporting to PDF with selectable text.
+    </Note>
+  </Tab>
+  <Tab title="Website">
+    Index web pages directly by URL. The crawler accesses the page, extracts the textual content, and processes it as training.
+
+    <Steps>
+      <Step title="Add the URL">
+        Click **Add site** and enter the full URL (e.g., `https://yoursite.com/privacy-policy`).
+      </Step>
+      <Step title="Configure crawling">
+        Choose whether the crawler should follow internal links on the page (deep crawling) or process only the entered URL.
+      </Step>
+      <Step title="Start crawling">
+        Click **Crawl**. Progress is displayed in real time. Already-processed URLs appear in the list with the indexing date.
+      </Step>
+    </Steps>
+
+    <Warning>
+    Pages protected by login or CAPTCHA cannot be crawled. For this content, use the **Text** or **Document** type.
+    </Warning>
+  </Tab>
+  <Tab title="Text">
+    For content that does not exist in a file or URL — internal policies, specific instructions, sales scripts.
+
+    <Steps>
+      <Step title="Open the text editor">
+        Click **Add text**. A free text editor is displayed.
+      </Step>
+      <Step title="Paste or write the content">
+        Add the text directly. You can format with Markdown for better structure.
+      </Step>
+      <Step title="Save and process">
+        Click **Save**. The text is immediately added to the knowledge base.
+      </Step>
+    </Steps>
+
+    <Tip>
+    Use headings (`# Section`) and lists to structure the content. The RAG system respects the structure and groups chunks by section, improving retrieval accuracy.
+    </Tip>
+  </Tab>
+  <Tab title="Q&A">
+    Question and answer pairs — the most accurate way to train an agent for specific frequently asked questions.
+
+    <Steps>
+      <Step title="Access the Q&A manager">
+        Click **Q&A** in the training tab.
+      </Step>
+      <Step title="Add a pair">
+        Click **New question**. Fill in the question exactly as a customer would ask it and the ideal response the agent should give.
+      </Step>
+      <Step title="Organize by category and tags">
+        Use categories (e.g., "Shipping", "Payment") and tags to organize and facilitate searching in the manager. This does not affect RAG behavior, but helps with maintenance.
+      </Step>
+    </Steps>
+
+    The Q&A manager has integrated search — filter by text, category, or tag to find and edit entries quickly.
+
+    <Tip>
+    Add variations of the same question as separate entries with the same answer. This improves semantic coverage and retrieval rate for similar questions.
+    </Tip>
+  </Tab>
+  <Tab title="YouTube">
+    Transcribe YouTube videos and add the content to the knowledge base. Ideal for video training, tutorials, and webinars.
+
+    <Steps>
+      <Step title="Paste the video URL">
+        Go to **YouTube** in the training section and enter the full video URL.
+      </Step>
+      <Step title="Validate the video">
+        The system displays the title, channel, and thumbnail for confirmation. Click **Process**.
+      </Step>
+      <Step title="Wait for transcription">
+        The system extracts the automatic YouTube transcript (or closed captions when available), divides it into chunks, and generates the embeddings.
+      </Step>
+    </Steps>
+
+    <Note>
+    Videos without automatic or closed captions on YouTube cannot be processed. The video status is displayed in the list after the processing attempt.
+    </Note>
+  </Tab>
+</Tabs>
+
+## Knowledge base viewer
+
+In the **Training** tab, you can open the **Knowledge Base Viewer** to:
+
+- List all indexed chunks and their metadata
+- Test semantic search — simulate a question and see which chunks would be retrieved
+- Identify duplicate or outdated content for removal
+
+## Token limits
+
+The volume of content that can be stored and processed per execution has limits depending on the plan:
+
+| Plan | Total storage | Chunks injected per execution |
+|------|--------------|-------------------------------|
+| Starter | 5 MB of processed text | Up to 5 chunks |
+| Pro | 50 MB of processed text | Up to 10 chunks |
+| Enterprise | Unlimited | Up to 20 chunks |
+
+<Warning>
+Adding more content does not guarantee better responses. The system injects only the most relevant chunks — the quality of content organization and writing is more important than volume.
+</Warning>
+
+## Best practices
+
+- Keep each document focused on a single topic. Overly extensive and generic documents reduce retrieval accuracy.
+- Update training whenever policies or products change. Outdated content causes incorrect responses.
+- Prefer Q&A for critical questions where the answer needs to be exact and consistent.
+- Use the Knowledge Base Viewer to test the search before publishing the agent.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Connect tools" href="/en/guides/tools/composio">
+    Add tools for the agent to act beyond responding — scheduling, creating records, sending emails.
+  </Card>
+  <Card title="Test the agent" href="/en/guides/agents/settings/internal-chat">
+    Use the Playground and semantic search to validate the knowledge base.
+  </Card>
+</CardGroup>

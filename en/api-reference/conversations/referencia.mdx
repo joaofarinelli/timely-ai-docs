@@ -1,0 +1,64 @@
+---
+title: "Conversations Reference"
+sidebarTitle: "Reference"
+description: "Endpoints to access conversation history, manage messages, and control human handoff"
+---
+
+## Concept
+
+A **Conversation** represents the complete thread of an exchange between a customer and a Timely agent — from the first "hello" to closing. Each conversation belongs to exactly one channel, one contact, and one agent, and contains all messages exchanged in chronological order. The conversation status controls whether the AI agent is responding automatically or whether a human has taken over the support.
+
+Conversations are created automatically when a customer initiates contact through any connected channel. You can also create conversations programmatically via API — useful for proactively initiating a support session with an existing contact.
+
+## Conversation Status
+
+| Status | Description |
+|--------|-------------|
+| `open` | Active conversation, agent responding automatically |
+| `human` | Human has taken over (active handoff) |
+| `closed` | Conversation closed — agent does not respond to new messages |
+| `waiting` | Waiting for customer response |
+
+## Lifecycle
+
+```
+customer sends message → conversation created (open)
+    │
+    ├── AI agent responds automatically
+    │       │
+    │       ├── handoff requested → human
+    │       │       │
+    │       │       └── human resolves → resume AI (open) or close (closed)
+    │       │
+    │       └── conversation resolved → closed
+    │
+    └── no customer response → waiting → timeout → closed
+```
+
+## Main Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique conversation ID |
+| `agent_id` | string (UUID) | Agent managing the conversation |
+| `channel_id` | string (UUID) | Channel through which the conversation arrived |
+| `contact_id` | string (UUID) | Associated contact |
+| `status` | enum | `open` \| `human` \| `closed` \| `waiting` |
+| `assigned_to` | string (UUID) | ID of the human agent (if in handoff) |
+| `subject` | string | Subject or automatic summary |
+| `tags` | array | Tags for categorization |
+| `created_at` | string | ISO 8601 conversation start timestamp |
+| `closed_at` | string | ISO 8601 closing timestamp |
+| `last_message_at` | string | ISO 8601 last message timestamp |
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

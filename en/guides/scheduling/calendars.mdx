@@ -1,0 +1,81 @@
+---
+title: "Scheduling Calendars"
+description: "Configure business hours, session duration, timezones, and multiple calendars per agent."
+---
+
+Each Timely.ai agent can have one or more scheduling calendars. A calendar defines when the agent accepts appointments, how long each session lasts, and in which timezone the times are displayed to the client.
+
+## Creating a Calendar
+
+Go to **Agent Settings → Scheduling** and click **New calendar**. You need to provide:
+
+- **Name** — internal identifier (e.g., "Initial Consultation", "Technical Support")
+- **Timezone** — the timezone in which times will be managed. Use your company's or your client's timezone, depending on your service model
+- **Default session duration** — time reserved per appointment (e.g., 30 min, 1 h)
+
+After saving, the calendar appears in the list and can be configured in detail.
+
+## Business Hours
+
+The hours editor lets you define which days and time slots are available for scheduling.
+
+<Steps>
+  <Step title="Enable the day">
+    Turn on the toggle next to the day of the week (Monday, Tuesday…).
+  </Step>
+  <Step title="Define the intervals">
+    Enter the start and end time. You can add multiple intervals on the same day to create breaks — for example, 09:00–12:00 and 13:30–18:00.
+  </Step>
+  <Step title="Repeat for the remaining days">
+    Each day has an independent configuration. Days turned off are completely blocked for new appointments.
+  </Step>
+</Steps>
+
+<Note>
+  If you enable the **Always available** option, the calendar will ignore the configured hours and accept appointments at any time. Use with caution — this normally only makes sense for asynchronous chatbots.
+</Note>
+
+## Duration and Buffers Between Sessions
+
+The **default duration** is used automatically when the agent schedules via chat (without the client choosing manually). The field accepts `HH:MM` format — for example, `01:00` for one hour.
+
+If you want to leave breathing room between appointments, configure a margin in the **buffer before** and **buffer after** session fields. This ensures the agent never schedules two back-to-back meetings without a gap.
+
+## Timezones
+
+Timely.ai stores all times in UTC internally and converts to the calendar's timezone for display. This means:
+
+- The agent sees times in the timezone configured in the calendar
+- Google Calendar (when connected) synchronizes correctly with the Google account's timezone
+- Clients in different timezones are shown times in their local timezone if you use the public scheduling widget
+
+<Tip>
+  If your team serves international clients, create separate calendars per region and associate the correct agent with each one.
+</Tip>
+
+## Multiple Calendars
+
+An agent can have more than one active calendar. Common use cases:
+
+| Scenario | Suggested configuration |
+|---|---|
+| Services with different durations | One calendar per service type |
+| Serving clients in different countries | One calendar per timezone |
+| Team with different shifts | One calendar per shift, different agent for each |
+
+When the agent has multiple calendars, it selects which one to use based on instructions in its prompt or by asking the client during the conversation.
+
+### Exclusive Calendar
+
+You can mark a calendar as **exclusive to the agent**. This prevents other agents in the same company from reusing the same calendar — useful when you want to ensure that a specific specialist's schedule is not shared.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Google Calendar" icon="google" href="/en/guides/scheduling/google-calendar">
+    Connect for automatic two-way synchronization.
+  </Card>
+  <Card title="Chat-based appointments" icon="calendar-check" href="/en/guides/scheduling/appointments">
+    See how the agent schedules, reschedules, and cancels directly in the conversation.
+  </Card>
+</CardGroup>

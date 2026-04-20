@@ -1,0 +1,94 @@
+---
+title: "Credits (Coins)"
+description: "Understand how the Timely.ai Coins system works — what consumes Credits, how to top up, and how to track your balance."
+---
+
+Coins are the internal currency of Timely.ai. Each plan includes a monthly Credits quota, and actions performed by agents consume from that quota. When plan Credits run out, you can purchase extra packs without needing to change plans.
+
+## Monthly quota by plan
+
+| Plan | Credits included/month |
+|---|---|
+| Starter | 1,500 |
+| Professional | 7,500 |
+| Enterprise | 50,000 |
+
+Credits are renewed automatically each billing cycle. Unused balance from the previous month is not carried over to the next period.
+
+## What consumes Credits
+
+Consumption is calculated per action performed by the agent. The exact cost depends on the LLM model configured and the volume of tokens processed.
+
+| Action type | Credits consumed (approx.) |
+|---|---|
+| Message processed by LLM (standard model) | 1–3 per response |
+| Message with advanced model (e.g., GPT-4o, Claude 3.5) | 3–10 per response |
+| Voice synthesis / TTS (text to audio) | 1–5 per text block |
+| Voice clone — audio generation | 5–15 per clip |
+| Composio tool call (e.g., Google Calendar, Notion) | 1–3 per execution |
+| Scheduling execution via agent | 2–5 per appointment |
+| AI-powered smart send | 1–3 per message sent |
+
+<Note>
+  LLM consumption is calculated based on input and output tokens. Larger models have a higher cost per token, which increases the total Credits debited per interaction. The system rounds up (ceil) — a response costing 1.2 Credits debits 2.
+</Note>
+
+## How the balance is calculated
+
+The available balance is the sum of two independent pools:
+
+- **Plan Credits**: renewed monthly according to the billing cycle
+- **Extra Credits**: purchased separately with no expiration date (they do not expire)
+
+The system debits plan Credits first. When those run out, extra Credits are consumed. If both are at zero, agents stop processing new messages until a top-up or renewal.
+
+## Topping up Credits
+
+To purchase extra Credits:
+
+<Steps>
+  <Step title="Go to Billing → Credits">
+    On the Billing page, locate the **Credits Balance** card and click **Buy Credits**.
+  </Step>
+  <Step title="Choose the pack">
+    Select the desired number of Coins. The price is displayed before confirming.
+  </Step>
+  <Step title="Checkout via Stripe">
+    You are redirected to a secure Stripe payment session. The card already on file is used automatically if available, or you can enter a new one.
+  </Step>
+  <Step title="Credits added">
+    After payment confirmation, Credits are added to the balance immediately — no need to wait for the cycle to close.
+  </Step>
+</Steps>
+
+## Low-balance alerts
+
+Timely.ai sends automatic notifications when the Credits balance reaches the following thresholds:
+
+| Threshold | Alert sent |
+|---|---|
+| 20% of remaining balance | Low balance warning |
+| 10% of remaining balance | Attention alert |
+| 5% of remaining balance | Urgent alert |
+| 0% (exhausted) | Block notification |
+
+Alerts arrive by email and as in-platform notifications. When the balance reaches zero, agents stop processing LLM messages until topped up — incoming channels continue to work, but the agent does not respond.
+
+## Tracking consumption
+
+On the **Billing** page, the balance card displays:
+
+- Total available (plan Credits + extras)
+- Percentage consumed in the current period
+- Breakdown between plan Credits and extra Credits
+- Next cycle renewal date
+
+To see the detailed transaction and deduction history, access the **Billing history** tab.
+
+## Partner accounts
+
+Companies with a partner plan have unlimited Credits and are not affected by monthly consumption limits. Total consumption is still recorded for audit purposes, but does not block agent operation.
+
+<Tip>
+  If your agents' monthly consumption consistently exceeds your current plan's limit, consider upgrading before needing to top up — Credits included in the Professional or Enterprise plan are generally cheaper than frequent top-up packs.
+</Tip>

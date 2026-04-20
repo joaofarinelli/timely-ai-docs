@@ -1,0 +1,86 @@
+---
+title: "Email Marketing"
+description: "Send email campaigns, lifecycle sequences, and the weekly digest automatically with Timely.ai integrated with Brevo."
+---
+
+The Timely.ai Email Marketing module covers three distinct scenarios: **manual campaigns** for one-time communication, **lifecycle emails** for automatic onboarding and engagement, and the **weekly digest** with a weekly activity summary. All sends go through Brevo (formerly Sendinblue).
+
+<Frame>
+  <img src="/images/screenshots/placeholder-email-marketing-dashboard.png" alt="Email marketing dashboard" />
+</Frame>
+
+## Email campaigns
+
+Campaigns are one-time sends — such as product announcements, newsletters, or notices. You select a template, define the recipient list, and schedule or send immediately.
+
+<Steps>
+  <Step title="Open Email Marketing">
+    In the sidebar, go to **Automations > Email Marketing**.
+  </Step>
+  <Step title="Create a new campaign">
+    Click **New Campaign**. Fill in the subject, sender name, and reply-to address.
+  </Step>
+  <Step title="Choose the template">
+    Select an existing template or write the content directly. Variables in the format `{{name}}` are substituted for each recipient.
+  </Step>
+  <Step title="Define the list">
+    Import contacts via CSV, select CRM segments, or choose manually.
+  </Step>
+  <Step title="Send or schedule">
+    Send immediately or schedule for a specific date and time.
+  </Step>
+</Steps>
+
+## Lifecycle emails
+
+Lifecycle emails are automatically triggered by `lifecycle-email-processor` based on milestones in the user journey. The `email-scheduler` runs via cron (recommended: every hour) and identifies eligible users.
+
+| Email | When it is sent | Condition |
+|---|---|---|
+| **Welcome** | Shortly after signup | User created an account |
+| **Onboarding D+1** | 24h after signup | User has not yet completed onboarding |
+| **Activation milestone** | When the user reaches a configured milestone | Configurable per account |
+
+<Note>
+  Each lifecycle email is sent at most once per user. The system checks the `email_logs` table to see if that `template_slug` has already been sent before triggering again.
+</Note>
+
+## Weekly Digest
+
+The `lifecycle-weekly-digest` automatically generates and sends a weekly summary. The digest includes:
+
+- Conversations handled during the week
+- Agent performance metrics
+- Highlights of new contacts and leads
+- Comparison with the previous week
+
+The send occurs every Monday morning for users who have not opted out.
+
+## Preferences and opt-out
+
+Users can manage their email preferences by accessing the preference center via the link in the footer of each email. Timely.ai respects opt-outs immediately — users who have unsubscribed will not receive any more marketing emails.
+
+<Warning>
+  Transactional emails (e.g., password reset, account confirmation) are always sent regardless of marketing preferences.
+</Warning>
+
+## Performance metrics
+
+<CardGroup cols={2}>
+  <Card title="Open rate" icon="envelope-open">
+    Percentage of recipients who opened the email.
+  </Card>
+  <Card title="Click rate" icon="arrow-pointer">
+    Percentage who clicked on at least one link.
+  </Card>
+  <Card title="Bounce rate" icon="ban">
+    Emails that could not be delivered (bounce).
+  </Card>
+  <Card title="Unsubscribes" icon="user-minus">
+    Users who opted out after receiving the email.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Configure an authenticated sending domain (SPF, DKIM, DMARC) in Brevo to maximize deliverability. Emails sent from unauthenticated domains are more likely to land in spam.
+</Tip>

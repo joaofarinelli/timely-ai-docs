@@ -1,0 +1,81 @@
+---
+title: "Internal Chat"
+description: "How to use Timely.ai's internal chat to test the agent directly on the platform, inspect executions, and validate behavior before publishing."
+---
+
+The internal chat is the agent's native testing interface within Timely.ai. It allows you — and any team member with access — to converse with the agent directly on the platform, without needing to publish to any external channel like WhatsApp, Instagram, or a website widget.
+
+It is the first place you should go after any change to the prompt, model, tools, or temperature and effort settings.
+
+## What you can do with the internal chat
+
+The internal chat brings together several testing capabilities in a single interface:
+
+- Send text messages and start test conversations with real workspace context
+- Simulate different customer profiles to activate conditional prompts
+- Inspect every reasoning step and tool call in the execution
+- View the conversation's credit consumption in real time
+- Clear the conversation history to reset the agent's context
+
+### Testing the agent's real behavior
+
+The internal chat runs the agent with the same configuration that will be in production — same model, same prompt, same knowledge base, same connected tools. There is no simplified mode or cache: every message generates a complete real execution.
+
+This means prompt changes are reflected immediately in the next message after saving. You can iterate quickly — change, save, test — without leaving the interface.
+
+Essential scenarios to test before publishing any agent:
+
+- The main journey: the customer asks exactly what the agent was configured to respond to. Is the response correct, in the right tone, in the expected format?
+- Out-of-scope question: does the agent decline or redirect politely without making up information?
+- Tool triggering: is every configured tool called when it should be?
+- Transfer trigger: is the transfer to human fired at the right moment?
+
+### Sending rich inputs
+
+In addition to text, the internal chat supports sending files and images when the agent is configured with a multimodal model (Gemini 2.5 Pro, Gemini 3.x). This allows testing flows where the customer sends documents, product photos, or screenshots for analysis.
+
+<Warning>
+Sending files in the internal chat consumes credits the same way as in production. Pay attention to the cost per execution when testing with high-consumption multimodal models like Gemini 3.1 Pro.
+</Warning>
+
+### Inspecting each message and execution step
+
+Next to each agent response, the internal chat displays an execution details panel with:
+
+- Which knowledge base snippets were retrieved by the RAG system and with what relevance score
+- Which tools were called, with the parameters sent and the response received
+- The number of tokens consumed in the execution (prompt + response)
+- The total execution latency in milliseconds
+- Errors that occurred at any step, with the full message
+
+These details are essential for diagnosing why the agent gave an incorrect response or why a tool was not called as expected. Instead of guessing, you see exactly what happened at each step.
+
+To inspect the full visual execution graph with all steps represented as connected nodes, go to **Agents > [Agent name] > Executions** and select the corresponding execution in the canvas.
+
+### Viewing credit consumption
+
+The internal chat displays the accumulated credit consumption for the active test session. This number includes the base model cost plus the additional cost of tools and reasoning steps when applicable.
+
+Use this information to:
+
+- Compare the real cost of different models with the same use case
+- Identify whether the configured effort is generating disproportionate cost for the complexity of the questions
+- Estimate the average cost per conversation before scaling the agent to production with high volume
+
+### Managing conversation history
+
+The internal chat maintains the active session history as context for the agent — exactly as it works in production. To test behavior in a new conversation without previous context, click **Clear conversation**. The history is erased and the agent starts the next message without memory of the previous session.
+
+This is especially useful when you want to test:
+
+- How the agent handles the first message from a new contact
+- Whether the agent asks the correct qualification questions without depending on prior context
+- Behavior after a prompt change — old conversations may have context that interferes with evaluation
+
+## Why the internal chat matters
+
+Publishing an agent without testing it in the internal chat is equivalent to putting a new attendant on the phone with customers without any prior training. The difference is that with the internal chat, you have complete visibility into every decision the agent makes before it reaches a real customer.
+
+Teams that use the internal chat systematically — with a fixed set of test scenarios executed after every significant configuration change — identify issues before production and build more reliable agents in fewer iterations.
+
+The internal chat is also the right environment for training new team members who need to understand how the agent behaves in different situations, without the risk of interrupting real customer conversations.

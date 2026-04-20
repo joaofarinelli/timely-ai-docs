@@ -1,0 +1,49 @@
+---
+title: "Contacts Reference"
+sidebarTitle: "Reference"
+description: "Endpoints to create, update, and manage contacts in the Timely.ai CRM"
+---
+
+## Concept
+
+**Contacts** are customer records in the Timely.ai integrated CRM. Every conversation that arrives through any channel (WhatsApp, Instagram, Telegram, widget) is automatically associated with a contact — created based on the channel identifier (phone number, IGSID, Telegram chat_id) or linked to an existing contact by email or phone.
+
+You can also create and update contacts via API to sync with your external CRM, e-commerce platforms, billing systems, or any other data source. Contacts support custom fields via [Custom Fields](/en/api-reference/custom-fields/referencia), which lets you adapt the CRM to your specific business needs.
+
+## Main Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (UUID) | Unique contact ID |
+| `name` | string | Full name |
+| `email` | string | Email address |
+| `phone` | string | Phone in E.164 format (e.g. `+15551234567`) |
+| `avatar_url` | string | Contact avatar URL |
+| `tags` | array | List of tags for segmentation |
+| `custom_fields` | object | Custom field values |
+| `source` | string | Contact source (`whatsapp`, `instagram`, `api`, etc.) |
+| `created_at` | string | ISO 8601 creation timestamp |
+| `updated_at` | string | ISO 8601 last update timestamp |
+| `last_conversation_at` | string | ISO 8601 last conversation timestamp |
+
+## Automatic Deduplication
+
+Timely tries to avoid duplicate contacts when automatically creating one during a conversation. Deduplication uses the following priority:
+
+1. Channel identifier (phone for WhatsApp, IGSID for Instagram)
+2. Email (if available)
+3. Normalized phone number (E.164)
+
+When creating via API, if a contact with the same `phone` or `email` already exists, Timely returns the existing contact instead of creating a duplicate.
+
+## Available Endpoints
+
+<Note>
+  See the left sidebar for the full list of endpoints in this group. Each endpoint has its own page with request/response schema, cURL/JS/Python examples, and an interactive playground.
+</Note>
+
+## Next Steps
+
+<Card title="Your first request" href="/en/start/quickstart-api">
+  If you haven't made your first call yet, start here.
+</Card>

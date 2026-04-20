@@ -1,0 +1,27 @@
+---
+title: "Agent Node (Agent Request)"
+description: "Expose a workflow as a tool for Timely.ai AI agents."
+---
+
+<Note>
+  The agent will only trigger this workflow if it is **published**. Drafts are not exposed as tools.
+</Note>
+
+## How It Works
+
+The **Agent Request** trigger turns a workflow into a tool that AI agents configured in Timely can trigger during a conversation. When the agent identifies that it needs to execute the workflow, it assembles the parameters defined in the node and fires the call.
+
+- Parameters arrive via `{{ $trigger.parameters.param_name }}`
+- The workflow queries external APIs, processes data, and can return a structured response to the agent
+- `node` mode keeps the agent suspended until the flow reaches a Return Response node
+
+## Configuration Options
+
+- **Parameters** — fields the agent will send; each has a name, type (`string`, `number`, or `boolean`), description, and a required flag
+- **Response mode** — `immediate` (agent does not wait for the result) or `node` (agent stays suspended until the Return Response node)
+
+## Common Use Cases
+
+- **Real-time lookup** — agent captures an order number from the conversation, the workflow fetches the status from the ERP API, and returns the result
+- **Contact enrichment** — agent collects the user's email, the workflow queries an enrichment API and saves the data in the CRM
+- **Classification and routing** — agent passes the last message to a workflow with an LLM node that classifies the intent and returns the category

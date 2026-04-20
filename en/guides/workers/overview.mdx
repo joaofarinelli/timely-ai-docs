@@ -1,0 +1,120 @@
+---
+title: "Workers"
+description: "Work sessions directly with agents and squads for long tasks, analyses, and processing that do not fit into the customer service flow."
+---
+
+Workers is the Timely.ai space where you converse directly with an agent or squad as if they were an internal collaborator. While the customer service chat is designed for sessions aimed at the end consumer, Workers is for you — the operator — to delegate work that the agent will process autonomously.
+
+## What is Workers
+
+Workers functions as a personal workspace with persistent conversation sessions. Each session is linked to a specific agent or squad in your workspace. The agent responds using the same LLM model, tools, and knowledge base it uses in real customer service — the difference is that the conversation is yours, private, and does not generate records in the customer CRM.
+
+## When to use Workers
+
+- **Data and conversation analysis:** ask the agent to process a large volume of records, extract patterns, or consolidate information into a structured report.
+- **Research and information synthesis:** ask the agent to research a topic, compare sources, and deliver a ready-to-use summary.
+- **Batch content generation:** delegate the creation of multiple texts, scripts, templates, or replies all at once.
+- **Tasks with external integrations:** when the agent needs to access Google Sheets, Notion, Slack, or other tools, processing may take longer — Workers ensures the task is not interrupted.
+
+## How it works
+
+The Workers screen is divided into two main panels that you will use together during work.
+
+### Left panel (conversation history)
+
+The left sidebar lists all your sessions in chronological order, with the most recent at the top. Each item displays:
+
+- Name of the agent or squad executor
+- Preview of the last message in the session
+- Time of the last activity
+
+Sessions are grouped by period: **Today**, **Yesterday**, **Last 7 days**, **Last 30 days**, and **Older**. Use the search bar at the top of the sidebar to find sessions by content.
+
+### Main chat area
+
+The central area displays the active conversation with the selected agent. The message field accepts text and attachments (images, PDFs, Office documents, and CSVs) with a limit of 25 MB per file and 4,000 characters per message.
+
+## Starting a new conversation
+
+<Steps>
+  <Step title="Click the new session icon">
+    At the top of the sidebar, click the **+** button to open the new session dialog.
+  </Step>
+  <Step title="Choose the executor">
+    The dialog displays two tabs: **Agents** and **Squads**. Select the agent or squad that will process the task. Each option shows the name and avatar of the executor.
+  </Step>
+  <Step title="Write the first message">
+    With the session open, describe the task in the chat field. Be specific about the context, the expected output format, and any relevant constraints.
+  </Step>
+</Steps>
+
+<Note>
+  The Credits balance available for the workspace appears in the footer of the message field. Each processed message consumes Credits according to the LLM model configured on the agent.
+</Note>
+
+## Continuing conversations
+
+Previous sessions stay in the sidebar and can be resumed at any time:
+
+- Click a session to open the full history and continue from where you left off.
+- The conversation context is preserved between sessions — the agent "remembers" what was said previously.
+
+## Renaming conversations
+
+To facilitate organization, you can rename any session:
+
+<Steps>
+  <Step title="Right-click on the session">
+    In the sidebar, right-click on the session item you want to rename.
+  </Step>
+  <Step title="Select Rename">
+    Choose the **Rename** option in the context menu that appears.
+  </Step>
+  <Step title="Type the new name and confirm">
+    Edit the title directly in the displayed field and press **Enter** to save.
+  </Step>
+</Steps>
+
+## Search
+
+The search field at the top of the sidebar filters sessions by content in real time:
+
+- The search considers the session title and message content.
+- Results appear instantly as you type.
+- To clear the filter, delete the text in the field or click the close icon.
+
+## Behavior in production
+
+Workers runs the same agents that are active in real customer service. This has important implications:
+
+- Messages sent in Workers consume real Credits from the workspace.
+- Files sent are stored in the workspace's storage bucket.
+- External integrations triggered by the agent (such as Google Calendar or Sheets) execute real actions — not in a test environment.
+
+<Warning>
+  Do not use Workers to test agent behaviors in production with fictional data. Use the **Test Chat** available in the agent panel or in the squad detail for tests without impact on Credits or real integrations.
+</Warning>
+
+## Workers vs. Internal Chat
+
+| Feature | Workers | Internal Chat (Time AI) |
+|---|---|---|
+| Executor | Agent or squad from your account | Timely.ai built-in copilot |
+| History | Separate sessions per executor | Unified sessions |
+| Consumes plan Credits | Yes | No |
+
+## Best practices
+
+- Write the first message with complete instructions to reduce back-and-forth with the agent.
+- Send all relevant files in a single message when possible — the agent processes the set as unified context.
+- Create separate sessions for distinct tasks. Mixing topics in a session makes future reference harder and can confuse the agent's context.
+- Use Workers for tasks that take more than a few minutes. For quick queries, the chat in the agent panel is more agile.
+
+## Conclusion
+
+Workers is the shortcut to leveraging the power of your agents beyond customer service:
+
+- Personal productivity with autonomous processing of time-consuming tasks.
+- History organized by session, agent, and period.
+- Support for files and multimodal vision when the agent's model supports it.
+- Context preserved between sessions for ongoing work.

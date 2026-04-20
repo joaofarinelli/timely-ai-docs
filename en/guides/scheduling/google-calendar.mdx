@@ -1,0 +1,85 @@
+---
+title: "Google Calendar"
+description: "Connect your Google account and keep the agent's schedule in automatic two-way synchronization with Google Calendar."
+---
+
+The Google Calendar integration keeps appointments made by the agent reflected in your personal or team calendar — and automatically blocks time slots that are already occupied in Google, preventing double-booking conflicts.
+
+## How It Works
+
+When the integration is active:
+
+- Appointments created by the agent appear as events in Google Calendar
+- Existing events in Google Calendar block that time slot in the agent's schedule
+- Cancellations and reschedules made by the agent update the corresponding event in Google
+- The Google account's timezone is respected when creating events
+
+## Connecting Your Google Account
+
+<Steps>
+  <Step title="Access agent settings">
+    Open the desired agent and go to **Scheduling → Connected calendars**.
+  </Step>
+  <Step title="Start the OAuth connection">
+    Click **Connect Google Calendar**. A Google authorization window will open.
+  </Step>
+  <Step title="Authorize the scopes">
+    Select the Google account and grant the requested permissions. Timely.ai requests access to:
+    - Read and write events (`calendar.events`)
+    - Read the list of calendars (`calendar`)
+    - Basic profile information (`userinfo.email`, `userinfo.profile`)
+  </Step>
+  <Step title="Choose the calendar">
+    After authorizing, select which calendar in the Google account will be synchronized. You can choose the primary calendar or a secondary calendar dedicated to Timely.ai appointments.
+  </Step>
+</Steps>
+
+After completing the flow, the connection status appears as **Connected** with the associated Google account email.
+
+## Authorization Callback
+
+The OAuth flow redirects back to `https://app.timelyai.com.br/calendar-callback` after authorization. This page finalizes the token exchange automatically — you do not need to do anything other than wait for the redirect.
+
+If the redirect fails, check:
+- Popups are not blocked in the browser
+- You are logged in to the correct Timely.ai account during the flow
+
+## Availability Synchronization
+
+The integration checks for conflicts by querying Google Calendar before confirming any appointment. This ensures that:
+
+- Personal meetings, travel commitments, and manual blocks in Google Calendar are respected
+- The agent never schedules on top of an existing event
+- Holidays added to Google Calendar also block availability
+
+<Warning>
+  Conflict checking occurs in real time during scheduling. If you create an event in Google Calendar right after a conversation has started, there may be a window of a few seconds of desynchronization. The system always confirms availability at the final moment of appointment creation.
+</Warning>
+
+## Events Created in Google
+
+Each appointment made by the agent creates an event in Google Calendar with:
+
+- Title with the service name and client name
+- Date, time, and duration configured in the calendar
+- Description with notes and conversation context (when available)
+- Guest with the client's email (if provided)
+
+If Google Meet is active, the meeting link is generated automatically and included in the event. See more at [Google Meet](/en/guides/scheduling/google-meet).
+
+## Disconnecting the Account
+
+To disconnect, go to **Scheduling → Connected calendars** and click **Disconnect**. Appointments already created in Google Calendar are not deleted — only future synchronization is stopped.
+
+<Note>
+  Each agent can have a different Google account connected. This is useful when each team member manages their own schedule.
+</Note>
+
+## Troubleshooting
+
+| Symptom | Probable cause | Action |
+|---|---|---|
+| Appointments do not appear in Google | Expired token | Reconnect the account through the same OAuth flow |
+| "Access denied" error in the flow | Scope revoked by the Google account | Go to [myaccount.google.com/permissions](https://myaccount.google.com/permissions), revoke the app, then reconnect |
+| Wrong calendar selected | Incorrect initial selection | Disconnect and reconnect, choosing the correct calendar |
+| Misaligned timezones | Timely calendar timezone different from Google | Verify and standardize the timezone in **Calendar settings** |

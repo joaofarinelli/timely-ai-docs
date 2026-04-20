@@ -1,0 +1,105 @@
+---
+title: "Postman"
+description: "Import the Timely.ai collection into Postman, configure the environment, and run your first request in under 5 minutes."
+---
+
+Postman is the most widely used HTTP request tool in development teams. The Timely.ai collection covers all API endpoints with ready-to-use payload examples and response handling.
+
+## Download the collection
+
+Download the collection JSON file:
+
+<Card title="timely-ai.postman_collection.json" icon="download" href="/http/collections/timely-ai.postman_collection.json">
+  Complete collection with all endpoints grouped by resource.
+</Card>
+
+## Import into Postman
+
+<Steps>
+  <Step title="Open Postman">
+    Launch Postman. If you don't have it installed, download it at [postman.com/downloads](https://www.postman.com/downloads/).
+  </Step>
+  <Step title="Import the file">
+    Click **Import** in the upper-left corner. Drag the `timely-ai.postman_collection.json` file into the drop area, or click **Select Files** and select the file.
+
+    The **Timely.ai API** collection will appear in the sidebar under **Collections**.
+  </Step>
+  <Step title="Create the environment">
+    Click the eye icon in the upper-right corner (or go to **Environments → + New Environment**) and create an environment named **Timely.ai - Production** with the following variables:
+
+    | Variable | Initial Value | Current Value |
+    |---|---|---|
+    | `base_url` | `https://api.timelyai.com.br` | `https://api.timelyai.com.br` |
+    | `api_key` | *(leave empty)* | `your-api-key-here` |
+
+    Save the environment and select it in the dropdown at the top of the screen.
+  </Step>
+  <Step title="Run your first request">
+    In the collection, open **System → GET /v1/health**. Click **Send**. You should receive:
+
+    ```json
+    {
+      "status": "ok",
+      "version": "1.0.0"
+    }
+    ```
+
+    If the response is `200 OK`, your setup is correct.
+  </Step>
+</Steps>
+
+## Pre-request script for automatic authentication
+
+The collection already includes the `x-api-key` header configured via the `{{api_key}}` variable. If you want to centralize it further and ensure every request always carries the correct header, add this script to the **Pre-request Script** tab at the collection root:
+
+```javascript
+// Pre-request script — collection level
+const apiKey = pm.environment.get("api_key");
+
+if (!apiKey) {
+  throw new Error("Variable 'api_key' not configured in the environment.");
+}
+
+pm.request.headers.add({
+  key: "x-api-key",
+  value: apiKey,
+});
+```
+
+With this script at the collection level, all child requests inherit the header automatically, even ones you create manually.
+
+## Collection structure
+
+```
+Timely.ai API
+├── System
+│   ├── GET  /v1/health
+│   └── GET  /v1/me
+├── Agents
+│   ├── GET  /v1/agents
+│   ├── POST /v1/agents
+│   └── ...
+├── Contacts
+├── Conversations
+├── Channels
+├── Webhooks
+└── MCP Servers
+```
+
+## How to update the collection
+
+When the API evolves with new endpoints or fields, download the updated JSON file from `/http/collections/timely-ai.postman_collection.json` and import it again. Postman will ask whether you want to **replace** or **create a copy**. Choose **Replace** to keep your execution history.
+
+<Tip>
+Use Postman's **Fork** feature if you want to keep your customizations while still receiving updates from the original collection. This way you can merge changes without losing your adjustments.
+</Tip>
+
+## Run the full collection (smoke test)
+
+To run all requests in sequence, use the **Collection Runner**:
+
+1. Right-click the collection and select **Run collection**
+2. Select the **Timely.ai - Production** environment
+3. Click **Run Timely.ai API**
+
+The runner displays the result of each request and marks in red any that returned an error. Useful for checking the health of the integration after updates.

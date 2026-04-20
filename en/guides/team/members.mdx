@@ -1,0 +1,85 @@
+---
+title: "Members"
+description: "How to add members to the workspace, manage roles and permissions, remove access, and apply best practices for team management."
+---
+
+Member management lets you add collaborators to the Timely.ai workspace, assign roles with specific permissions, and control who has access to each resource. All management is done in **Settings > Team**. Only `owner` and `manager` have access to this subsection.
+
+## Adding members
+
+<Steps>
+  <Step title="Go to Settings > Team">
+    In the sidebar, click **Settings** and select the **Team** tab.
+  </Step>
+  <Step title="Click Invite member">
+    The button is in the upper-right corner of the active members list.
+  </Step>
+  <Step title="Enter the email address">
+    Type the collaborator's email address. They do not need to have an existing Timely.ai account.
+  </Step>
+  <Step title="Select the role">
+    Choose the role appropriate for the access level the collaborator should have. The invitation is sent immediately after confirmation.
+  </Step>
+</Steps>
+
+The invitee receives an email with an acceptance link valid for 7 days. When they click it, they create an account (or log in if they already have one) and are added to the workspace with the selected role. Invitation status can be tracked on the **Team** tab:
+
+| Status | Description |
+|---|---|
+| **Pending** | Invitation sent, awaiting acceptance from the recipient |
+| **Accepted** | Collaborator has joined the workspace and is active |
+| **Expired** | The invitation link expired after 7 days without acceptance |
+
+Expired invitations can be resent by clicking **Resend** in the pending invitations list.
+
+## Updating or removing members
+
+On the **Team** tab, the active members list allows individual actions for each collaborator:
+
+- **Change role:** click the role selector next to the member's name and choose the new role. The change takes effect immediately.
+- **Deactivate:** removes the member's access without deleting the activity history. The member can be reactivated later from the same panel.
+- **Remove:** permanently deletes the member's association with the workspace. The history of actions and conversations is preserved, but a new invitation will be required to restore access.
+
+<Warning>
+  Member removal is immediate and irreversible via the panel. If the member is the only one with access to a critical setting, make sure another collaborator with equivalent permission is already registered before removing.
+</Warning>
+
+## Roles and permissions
+
+Timely.ai uses a hierarchical role system. Each role inherits a fixed set of permissions that cannot be customized individually:
+
+| Role | Access level | Description |
+|---|---|---|
+| **owner** | Full | Access to all resources, including billing, subscription, and ownership transfer. Only one per workspace. |
+| **manager** | High | Manages agents, team, company settings, and views reports. No access to billing. |
+| **trainer** | Medium | Creates and edits agents, accesses conversations and reports. Cannot manage members or administrative settings. |
+| **attendant** | Operational | Accesses conversations for human support. Cannot view reports or change settings. |
+| **member** | Minimum | Views conversations without permission to interact with settings or reports. |
+
+<Note>
+  The `owner` cannot be invited via the panel — the owner role is transferred directly to another member via the **Transfer ownership** action in Settings. If access to the owner account is lost, contact support.
+</Note>
+
+## Removing access
+
+To completely remove a collaborator's access to the workspace:
+
+<Steps>
+  <Step title="Go to Settings > Team">
+    Locate the member in the active members list.
+  </Step>
+  <Step title="Click the member's options menu">
+    Use the three-dot button or the context menu next to the collaborator's name.
+  </Step>
+  <Step title="Select Remove and confirm">
+    Read the confirmation warning and click **Confirm removal**. Access is revoked immediately.
+  </Step>
+</Steps>
+
+## Best practices
+
+- Keep at least two members with the `owner` role to avoid losing access to subscription and billing settings if one collaborator leaves.
+- Assign the most restrictive role that meets the collaborator's needs. Unnecessarily broad roles increase the operational risk surface.
+- Use the `trainer` role for collaborators responsible for agent quality — they have access to agent settings without being able to change financial or team data.
+- Review the active members list monthly. Collaborators who have left the company but still have access represent a security risk that can be mitigated with immediate deactivation.
+- Set the invitation email to a group inbox (e.g., it@company.com) when inviting integration profiles or bots — this avoids dependency on a collaborator's personal email.

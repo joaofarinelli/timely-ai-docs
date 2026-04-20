@@ -1,0 +1,15 @@
+---
+title: "Temperature"
+description: "How the temperature parameter affects the variability of agent responses, recommended ranges by use case, and how to configure the slider in Timely.ai."
+---
+
+Temperature is a numeric value from 0.00 to 1.00 that controls the degree of variability in the agent's responses. The lower the value, the more consistent and predictable the agent; the higher, the more creative and varied. For most customer service cases, consistency outweighs creativity.
+
+Timely.ai uses range labels to make slider selection easier (0.05 increments). OpenAI GPT-5.x models disable the slider automatically; Anthropic models with active reasoning force temperature 1.0 via the API.
+
+| Range | Behavior | Recommended use |
+|-------|----------|----------------|
+| 0.00 – 0.15 | Highly consistent responses, nearly identical for the same question | Technical support, scheduling, confirmations, critical FAQ |
+| 0.16 – 0.35 | Slight variation in phrasing, stable content | General support, lead qualification, conversational service |
+| 0.36 – 0.60 | Moderate variation, natural tone without being predictable | Relationship agents, onboarding, general use |
+| 0.61 – 1.00 | Visibly different responses each interaction | Assisted copywriting, creative content, internal brainstorming |

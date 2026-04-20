@@ -1,0 +1,204 @@
+---
+title: "Conversation events"
+description: "Triggered when conversations are created, assigned, closed, or reopened in the workspace"
+---
+
+These events cover the full lifecycle of a conversation — from opening to closing, including assignments and reopening. Use them to keep your CRM in sync, trigger SLAs, or generate support reports.
+
+## Event list
+
+| Event | When it fires |
+|-------|---------------|
+| `conversation.created` | A new conversation is started by a contact or created manually |
+| `conversation.assigned` | The conversation is assigned to an agent or AI agent |
+| `conversation.closed` | The conversation is marked as closed |
+| `conversation.reopened` | A closed conversation returns to open status |
+
+---
+
+## `conversation.created`
+
+### When it fires
+
+A new conversation begins — either because a contact sent the first message, or because an agent or automation created the conversation manually via API.
+
+### Payload
+
+```json
+{
+  "event": "conversation.created",
+  "event_id": "evt_01HX3B2K8MFQR4YZDNV7P9WCE",
+  "timestamp": "2026-04-19T14:30:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "status": "open",
+    "assigned_to": null,
+    "assigned_type": null,
+    "tags": [],
+    "created_at": "2026-04-19T14:30:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `conversation_id` | string | Unique conversation ID |
+| `contact_id` | string | ID of the contact who initiated |
+| `channel_id` | string | ID of the channel through which the conversation arrived |
+| `channel_type` | enum | `whatsapp`, `instagram`, `widget`, `telegram`, `slack` |
+| `status` | enum | `open`, `closed` |
+| `assigned_to` | string \| null | ID of the assigned agent or attendant |
+| `assigned_type` | enum \| null | `agent` (AI) or `attendant` (human) |
+| `tags` | array | Tags applied to the conversation |
+
+### Usage example
+
+<Note>
+  Use `conversation.created` to register new conversations in your CRM or trigger a notification to the sales team when a new lead comes in.
+</Note>
+
+---
+
+## `conversation.assigned`
+
+### When it fires
+
+The conversation is assigned (or reassigned) to a human agent or an AI agent. This includes automatic assignments via routing rules and manual assignments from the inbox.
+
+### Payload
+
+```json
+{
+  "event": "conversation.assigned",
+  "event_id": "evt_01HX3C5N2PGTS6YADOV8Q1XDF",
+  "timestamp": "2026-04-19T14:31:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "assigned_to": "usr_321",
+    "assigned_type": "attendant",
+    "previous_assigned_to": null,
+    "previous_assigned_type": null,
+    "assigned_at": "2026-04-19T14:31:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `assigned_to` | string | ID of the agent or attendant who received it |
+| `assigned_type` | enum | `agent` \| `attendant` |
+| `previous_assigned_to` | string \| null | Who was previously responsible, if any |
+| `previous_assigned_type` | enum \| null | Type of the previous assignee |
+| `assigned_at` | string | ISO 8601 timestamp of the assignment |
+
+### Usage example
+
+<Note>
+  Use this to calculate average first response time (FRT) — record the `assigned_at` and compare it with the timestamp of the agent's first message.
+</Note>
+
+---
+
+## `conversation.closed`
+
+### When it fires
+
+The conversation is marked as closed — either manually by an agent, by an inactivity timeout automation, or via API.
+
+### Payload
+
+```json
+{
+  "event": "conversation.closed",
+  "event_id": "evt_01HX3D7P4RHTW7ZBEPV9S2YEG",
+  "timestamp": "2026-04-19T16:45:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "closed_by": "usr_321",
+    "closed_by_type": "attendant",
+    "resolution": "resolved",
+    "duration_seconds": 8700,
+    "message_count": 24,
+    "closed_at": "2026-04-19T16:45:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `closed_by` | string | ID of whoever closed it |
+| `closed_by_type` | enum | `attendant`, `agent`, `automation`, `api` |
+| `resolution` | enum | `resolved`, `unresolved`, `spam` |
+| `duration_seconds` | integer | Total conversation duration in seconds |
+| `message_count` | integer | Total messages exchanged |
+| `closed_at` | string | ISO 8601 timestamp of closing |
+
+### Usage example
+
+<Note>
+  Use `conversation.closed` with `duration_seconds` and `resolution` to feed service quality dashboards and calculate CSAT automatically.
+</Note>
+
+---
+
+## `conversation.reopened`
+
+### When it fires
+
+A closed conversation returns to `open` status. This happens when a contact sends a new message in a closed conversation or when an agent reopens it manually.
+
+### Payload
+
+```json
+{
+  "event": "conversation.reopened",
+  "event_id": "evt_01HX3E9Q5SJUW8ZCFQWA3ZFH",
+  "timestamp": "2026-04-20T09:10:00Z",
+  "workspace_id": "ws_abc123",
+  "data": {
+    "conversation_id": "conv_01HX3B2K",
+    "contact_id": "cont_456",
+    "channel_id": "chan_789",
+    "channel_type": "whatsapp",
+    "reopened_by": null,
+    "reopened_reason": "new_message",
+    "reopened_at": "2026-04-20T09:10:00Z"
+  }
+}
+```
+
+### Key fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `reopened_by` | string \| null | ID of whoever reopened it (null if triggered by a new message) |
+| `reopened_reason` | enum | `new_message`, `manual`, `api` |
+| `reopened_at` | string | ISO 8601 timestamp of reopening |
+
+### Usage example
+
+<Note>
+  Monitor `conversation.reopened` with `reopened_reason: "new_message"` to identify patterns of returning contacts — it may indicate an unsatisfactory resolution the first time around.
+</Note>
+
+<Warning>
+  Always use the `event_id` to ensure idempotency. In the event of a retry, the same event may be delivered more than once with the same `event_id`.
+</Warning>

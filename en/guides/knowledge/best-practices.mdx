@@ -1,0 +1,146 @@
+---
+title: "Best Practices and Optimization — Knowledge Base"
+description: "Document granularity, embedding optimization, multilingual content, update management, and retrieval monitoring for Knowledge Bases in Timely.ai."
+---
+
+A well-structured Knowledge Base is just as important as the agent configuration. The RAG pipeline retrieves chunks — not entire documents — and retrieval quality depends directly on how content is organized. The following practices make a concrete difference in response accuracy.
+
+## Structuring Knowledge
+
+The biggest mistake when creating Knowledge Bases is treating documents as indivisible units of information. The chunker automatically divides content into pieces of ~4,000 characters — but if a single chunk mixes different topics, retrieval brings irrelevant context alongside the relevant content.
+
+The goal is to organize content so that each chunk can be useful on its own, without relying on adjacent chunks to make sense. A practical test: read an isolated excerpt from the document. If it answers a specific question without requiring additional context, the granularity is appropriate. If you need to read what comes before or after to understand what it is about, the document needs to be restructured.
+
+### Do:
+
+- Split long documents into smaller files by topic. A 12-chapter product manual PDF benefits from being uploaded as 12 separate files — one per chapter.
+- Use clear headings and subheadings. The chunker respects paragraph structure, and headings help create more thematically cohesive chunks.
+- Write in natural language close to what users use. Semantic similarity works better when the document's style approximates the style of the questions.
+- Prefer Q&A for short, objective answers. A question-and-answer pair is indexed with full control over what will be retrieved — without depending on how the chunker will fragment the text.
+- Include terminology variations. If the product is referred to as "system," "platform," and "app" by users, mention all three forms in the documents to increase semantic coverage.
+
+### Avoid:
+
+- Documents that cover 10 different topics in a single file. Split by topic before uploading.
+- Duplicate content across bases. If the same cancellation policy exists in two different documents, the agent may retrieve inconsistent versions and generate contradictory responses.
+- Internal abbreviations and acronyms without explanation. "The CRM sends the ticket to ATD via webhook" has low retrievability for "how does the system log my request?".
+
+## Optimizing for Embeddings
+
+The `text-embedding-3-small` model converts text into 1,536-dimensional vectors. The quality of the embedding — and therefore of the retrieval — depends directly on the quality of the input text. Malformed text with many errors or overly technical language produces embeddings with lower semantic discrimination.
+
+The embedding captures the global meaning of the chunk, not individual words. This means "running shoe for long distances" and "athletic footwear for marathon runners" have close embeddings even without sharing words. This behavior is the strength of semantic search — but it also requires that content be written with conceptual clarity.
+
+### Embedding Best Practices
+
+- Keep chunks thematically cohesive. A chunk that discusses pricing, then support, then installation has an "averaged" embedding that poorly represents any of the three topics.
+- Avoid chunks with long lists lacking context. A catalog list of 50 items without descriptions produces an embedding that generically represents "product list" — difficult to distinguish through semantic search.
+- Prioritize complete paragraphs over sentence fragments. The embedding of an incomplete sentence is less precise than that of a well-formed paragraph.
+- Include the necessary context within the chunk itself. If an excerpt says "see the previous section for prerequisites," it depends on another chunk to be useful — rewrite it to be self-contained.
+- Re-index after major content revisions. When you update a document, old embeddings are replaced by new ones in the next vectorization.
+
+<Note>
+  Manual Q&As are indexed instantly and have high-quality embeddings because the question and answer are short, well-defined texts. For content with high expected precision, prefer Q&A over documents.
+</Note>
+
+## Bilingual and Multilingual Content
+
+The `text-embedding-3-small` model supports multiple languages and is capable of finding semantic similarity between texts in different languages. A document in Portuguese can be retrieved by a question in English if the meaning is close enough.
+
+For bases that need to serve users in more than one language, the recommended structure is to keep content separated by language within the same base:
+
+### Recommended Structure
+
+```
+Base: Core Product
+├── [PT] FAQ - Product
+├── [PT] Policies - Product
+├── [EN] FAQ - Product
+└── [EN] Policies - Product
+```
+
+### Tips:
+
+- Prefix document names with the language code `[PT]`, `[EN]`, `[ES]`. This simplifies maintenance and makes it easy to identify which version was updated.
+- Do not mix languages within the same document. A chunk with paragraphs in two languages produces a lower-quality embedding than a monolingual chunk.
+- For multilingual Q&As, create separate entries for each language. The question in Portuguese and the same question in English should be different Q&As with responses in their respective language.
+
+## Managing Updates and Re-training
+
+Knowledge Bases accumulate outdated content over time. Policies change, prices are revised, products are discontinued. Without regular maintenance, the agent starts retrieving obsolete information that contradicts current reality.
+
+The greatest risk is not the absence of content — it is the presence of outdated content. An agent that "does not know" something informs the user clearly. An agent that knows an old version of a policy may generate incorrect commitments.
+
+### Best Practices
+
+- When information changes, delete the old document **before** adding the new one. Keeping old versions "just in case" creates retrieval inconsistency.
+- Review documents older than 90 days regularly. Prices, deadlines, and policies have high obsolescence rates — prioritize these types in quarterly reviews.
+- Use Q&A for frequently changing content. Editing a Q&A answer is faster than re-uploading an entire document.
+- Document the source and creation date in the name or description of each document. This makes it easier to identify what needs to be reviewed in periodic audits.
+
+## Optimization for Multi-Agent and Squads
+
+When multiple agents share Knowledge Bases, the organization of those bases affects both response precision and system maintenance.
+
+The temptation is to centralize everything in a single large base — it is simpler to manage initially, but creates semantic noise as it grows. A base with mixed technical support content, product catalog, and financial policies produces less precise retrieval results than three separate bases.
+
+### Guidelines
+
+- Create bases by subject area, not by agent. The "Company Policies" base can be connected to the Support, Sales, and Finance agents simultaneously — without duplicating content.
+- Connect to the squad only knowledge that is cross-cutting to all agents. Specialized knowledge goes directly to the specific agent.
+- Name bases so that responsibility is clear: "Summer 2025 Catalog" is more informative than "Products".
+- Periodically review the connections between bases and agents. Disconnected bases that have not been deleted consume indexing quota without contributing to any agent.
+
+## Retrieval Optimization (for Developers)
+
+Retrieval parameters directly control the quality and cost of responses. Understanding the effect of each parameter enables fine-tuning for specific use cases.
+
+| Parameter | Description | Recommendation |
+|-----------|-----------|--------------|
+| `similarity_threshold` | Minimum cosine similarity threshold (0 to 1). Chunks below this are discarded. | `0.7` for general use; `0.5` for bases with varied language; `0.85` for critical data bases where false positives have high cost. |
+| `limit` (top-k) | Maximum number of chunks returned per query. | `5` for Q&As and bases with short answers; `8–10` for extensive technical documentation where context may be distributed. |
+| `document_ids` | Filter the search to specific documents within the base. | Use to restrict retrieval to documents of a specific version or a specific product when the agent serves multiple product lines. |
+
+## Data Quality and Security
+
+Retrieval quality starts with the quality of the indexed data. Spelling errors, inconsistent formatting, and contradictory information directly degrade agent accuracy.
+
+Before indexing a new document:
+
+- Review spelling and grammar. Errors affect embedding quality.
+- Verify the information is current. Do not index drafts or provisional versions.
+- Confirm the content is authorized for the agent to consume — do not index confidential information that should not be shared with customers.
+
+On security:
+
+- All searches are filtered by `company_id` and `knowledge_base_id`. There is no risk of cross-contamination between different customers' bases.
+- Indexed content is not directly exposed — only relevant chunks are injected into the LLM context, which decides what to include in the final response.
+- Periodically review which documents are indexed. Documents uploaded by mistake (containing personal or strategic data) should be deleted immediately.
+
+## Performance and Testing
+
+After creating or updating a base, test retrieval before activating it in production:
+
+<Steps>
+  <Step title="Use the interface's semantic search">
+    On the base screen, use the semantic search feature to manually test whether real questions return the expected chunks. Run searches using the most common questions from your users.
+  </Step>
+  <Step title="Test in the agent's preview chat">
+    In the preview chat, ask questions that should be answered by the base. Verify whether the response is based on indexed content or on the LLM's generic knowledge.
+  </Step>
+  <Step title="Adjust threshold and top-k">
+    If the base returns no results for questions it should answer, decrease the threshold by 0.05. If the agent returns tangentially related information, increase the threshold by 0.05.
+  </Step>
+  <Step title="Monitor misses in production">
+    Filter conversations where the agent responded with "I don't have that information" or gave generic responses. Identify uncovered topics and add Q&As or documents to fill them.
+  </Step>
+</Steps>
+
+## Advanced Techniques (Optional)
+
+For Knowledge Bases with specific precision or volume requirements:
+
+- **Q&A hyperdocumentation**: for FAQs with high variation in how users phrase the same question, create multiple Q&As with different formulations that lead to the same answer — increases semantic coverage.
+- **Manual chunking via multiple files**: instead of relying on the automatic chunker, split long documents into one-to-two-page files before uploading — full control over each chunk's boundaries.
+- **Persona-based bases**: if the agent serves distinct audiences (e.g., end customer and reseller), create separate bases with the same information formatted for each audience and connect different bases to different agents.
+- **Base versioning**: before major content updates, duplicate the current base and work on the copy. This allows rollback if the new version degrades retrieval quality.

@@ -1,0 +1,236 @@
+---
+title: "Webhooks"
+description: "Receive real-time notifications about everything happening in your workspace — conversations, messages, contacts, appointments, and more"
+---
+
+Webhooks are HTTP `POST` requests that Timely.ai automatically sends to the URL you configure whenever a relevant event occurs in your workspace. Instead of polling the API, you receive data instantly — no latency, no wasted requests.
+
+## Why use webhooks
+
+With webhooks you can:
+
+- **Sync your CRM** every time a new contact comes in or a conversation changes status
+- **Trigger external automations** (Make, n8n, Zapier, your own backend) in response to events
+- **Feed BI dashboards** with real-time data
+- **Integrate your own support systems** by receiving messages as soon as they arrive
+- **Monitor channel health** when a connection drops or encounters an error
+
+## How it works
+
+<Steps>
+  <Step title="You register an endpoint">
+    Create a webhook in the dashboard or via API by providing your server URL and selecting which event categories you want to receive.
+  </Step>
+  <Step title="An event occurs">
+    A contact sends a message, a conversation is closed, an appointment is created — anything you subscribed to.
+  </Step>
+  <Step title="Timely.ai sends a POST">
+    We send a `POST` with the event's JSON payload to your URL, including the `X-Timely-Signature` header so you can validate authenticity.
+  </Step>
+  <Step title="You respond with 2xx">
+    Your server must respond with any `2xx` status within **10 seconds**. If it doesn't respond, we begin retrying.
+  </Step>
+</Steps>
+
+## Development vs Production
+
+<Tabs>
+  <Tab title="Development">
+    In dev, use a tool like [ngrok](https://ngrok.com) or [Hookdeck](https://hookdeck.com) to expose your local server over HTTPS:
+
+    ```bash
+    ngrok http 3000
+    # Forwarding: https://abc123.ngrok.io -> localhost:3000
+    ```
+
+    Set `https://abc123.ngrok.io/webhooks/timely` as the URL in the dashboard. Remember to update it every time you restart ngrok.
+
+    <Tip>
+      The `POST /v1/webhooks/{id}/test` endpoint sends a test event without needing to generate a real one in the workspace.
+    </Tip>
+  </Tab>
+  <Tab title="Production">
+    Always use HTTPS with a valid certificate. Timely.ai rejects HTTP URLs in production. Make sure your URL responds in under 10 seconds — move heavy processing to an async queue.
+  </Tab>
+</Tabs>
+
+## Security: HMAC signature validation
+
+Every delivery includes the `X-Timely-Signature` header in the format `sha256=HEX`. This value is the HMAC-SHA256 of the request body using the **secret** generated when the webhook was created.
+
+**Never skip validation.** Any server on the internet could post fake data to your URL if you don't verify the signature.
+
+<CodeGroup>
+
+```typescript Node.js
+import crypto from "crypto";
+import { Request, Response } from "express";
+
+const WEBHOOK_SECRET = process.env.TIMELY_WEBHOOK_SECRET!;
+
+export function verifySignature(req: Request, res: Response, next: Function) {
+  const signature = req.headers["x-timely-signature"] as string;
+  const rawBody = (req as any).rawBody as Buffer; // body-parser com verify
+
+  if (!signature || !rawBody) {
+    return res.status(401).json({ error: "Missing signature" });
+  }
+
+  const expected = "sha256=" + crypto
+    .createHmac("sha256", WEBHOOK_SECRET)
+    .update(rawBody)
+    .digest("hex");
+
+  const isValid = crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+
+  if (!isValid) {
+    return res.status(401).json({ error: "Invalid signature" });
+  }
+
+  next();
+}
+```
+
+```python Python
+import hashlib
+import hmac
+import os
+from flask import request, abort
+
+WEBHOOK_SECRET = os.environ["TIMELY_WEBHOOK_SECRET"]
+
+def verify_signature():
+    signature = request.headers.get("X-Timely-Signature", "")
+    raw_body = request.get_data()
+
+    expected = "sha256=" + hmac.new(
+        WEBHOOK_SECRET.encode(),
+        raw_body,
+        hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(signature, expected):
+        abort(401)
+```
+
+```go Go
+import (
+    "crypto/hmac"
+    "crypto/sha256"
+    "encoding/hex"
+    "fmt"
+    "io"
+    "net/http"
+    "os"
+)
+
+func verifySignature(r *http.Request) bool {
+    secret := os.Getenv("TIMELY_WEBHOOK_SECRET")
+    sig := r.Header.Get("X-Timely-Signature")
+    body, _ := io.ReadAll(r.Body)
+
+    mac := hmac.New(sha256.New, []byte(secret))
+    mac.Write(body)
+    expected := "sha256=" + hex.EncodeToString(mac.Sum(nil))
+
+    return hmac.Equal([]byte(sig), []byte(expected))
+}
+```
+
+</CodeGroup>
+
+<Warning>
+  Always use `crypto.timingSafeEqual` (or its equivalent in your language) to compare signatures. Direct comparison with `==` is vulnerable to timing attacks.
+</Warning>
+
+## Automatic retries
+
+If your URL does not respond with `2xx` within 10 seconds, Timely.ai automatically retries with exponential backoff:
+
+| Attempt | Wait before retry |
+|---------|-------------------|
+| 1st failure | 5 seconds |
+| 2nd failure | 15 seconds |
+| 3rd failure | 60 seconds |
+| 4th failure | 5 minutes |
+| 5th failure | 15 minutes |
+
+After **5 consecutive failures**, the webhook is marked as `failing` and you receive an alert email. The webhook remains active — new events continue to be queued — but you need to check the endpoint before more deliveries fail.
+
+<Info>
+  Check the delivery history at `GET /v1/webhooks/{id}/deliveries` to see the status of each attempt, the HTTP code returned, and the response time.
+</Info>
+
+## How to create a webhook
+
+<Tabs>
+  <Tab title="Dashboard">
+    1. Go to **Settings → Webhooks** in the sidebar
+    2. Click **New webhook**
+    3. Enter the destination URL and select the events you want to receive
+    4. Copy the generated **secret** — it is shown only once
+    5. Save and use the **Test** button to validate delivery
+  </Tab>
+  <Tab title="API">
+    ```bash
+    curl -X POST https://api.timelyai.com.br/v1/webhooks \
+      -H "x-api-key: YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "url": "https://your-server.com/webhooks/timely",
+        "events": ["message.received", "conversation.created", "contact.created"],
+        "description": "CRM sync"
+      }'
+    ```
+
+    The response includes the `secret` field — store it in a secrets vault (AWS Secrets Manager, Vault, etc.); it will not be shown again.
+  </Tab>
+</Tabs>
+
+## Best practices
+
+<CardGroup cols={2}>
+  <Card title="Respond fast" icon="bolt">
+    Return `200 OK` immediately and process the event asynchronously (queue, worker, task). Never make database calls or third-party API calls before responding.
+  </Card>
+  <Card title="Idempotency via event_id" icon="fingerprint">
+    Every payload includes a unique `event_id` field. Store processed IDs and ignore duplicates — retries may re-deliver the same event.
+  </Card>
+  <Card title="Secret in a vault" icon="lock">
+    Never expose the secret in unencrypted environment variables in CI, logs, or source code. Use a dedicated secret manager.
+  </Card>
+  <Card title="Monitor failures" icon="bell">
+    Set up alerts on your end as well. Use `GET /v1/webhooks/{id}/deliveries` periodically or integrate with your observability system.
+  </Card>
+</CardGroup>
+
+## Event categories
+
+See the detailed documentation for each event category:
+
+<CardGroup cols={2}>
+  <Card title="Conversations" icon="messages" href="/en/webhooks/events/conversation-events">
+    `conversation.created`, `.assigned`, `.closed`, `.reopened`
+  </Card>
+  <Card title="Messages" icon="message" href="/en/webhooks/events/message-events">
+    `message.received`, `.sent`, `.failed`, `.delivered`, `.read`
+  </Card>
+  <Card title="Contacts" icon="address-book" href="/en/webhooks/events/contact-events">
+    `contact.created`, `.updated`, `.deleted`
+  </Card>
+  <Card title="Agent" icon="robot" href="/en/webhooks/events/agent-events">
+    `agent.handoff_started`, `.handoff_completed`, `.transferred`
+  </Card>
+  <Card title="Appointments" icon="calendar" href="/en/webhooks/events/appointment-events">
+    `appointment.scheduled`, `.rescheduled`, `.canceled`, `.reminder_sent`
+  </Card>
+  <Card title="Channels" icon="plug" href="/en/webhooks/events/channel-events">
+    `channel.connected`, `.disconnected`, `.error`
+  </Card>
+  <Card title="Billing" icon="credit-card" href="/en/webhooks/events/billing-events">
+    `credit.low`, `.depleted`, `plan.changed`, `trial.expiring`, `.expired`
+  </Card>
+</CardGroup>

@@ -1,0 +1,111 @@
+---
+title: "Webhook Node"
+description: "Receive external HTTP requests and use the payload as the entry point of your workflow in Timely.ai."
+---
+
+## How It Works
+
+The Webhook node generates a dedicated HTTP endpoint for your workflow. When an external system — an e-commerce platform, a form, an ERP, or any other service — sends a request to that URL, Timely validates the call and starts execution immediately.
+
+The full request payload is available to all downstream nodes via `{{ $trigger }}`. This includes the request body (`$trigger.body`), the headers sent (`$trigger.headers`), query string parameters (`$trigger.query`), and the HTTP method used (`$trigger.method`).
+
+The node operates in two distinct response modes. In **immediate** mode, the endpoint responds to the caller as soon as it receives the request with a fixed body you define — the workflow continues running in parallel without blocking the call. In **node** mode, the request stays suspended until the flow reaches a Return Response node, which sets the status code and response body dynamically based on the processed data.
+
+<Note>
+  Save the workflow at least once before trying to copy the webhook URL. The URL is only generated after the first save.
+</Note>
+
+## Configuration Options
+
+| Field | Description |
+|---|---|
+| Generated URL | Workflow's unique endpoint — copy and share with the external system |
+| HTTP Method | `GET`, `POST`, `PUT`, `PATCH`, or `DELETE` — defaults to `POST` |
+| Authentication | `none` or `bearer` — controls validation of the `Authorization` header |
+| Bearer Token | Secret used to validate calls when authentication is enabled |
+| CORS Origins | Domains authorized to call the webhook from a browser — empty accepts `*` |
+| Response mode | `immediate` (fixed immediate response) or `node` (waits for a response node) |
+
+## Authentication Options
+
+### None
+
+When set to **None**, the endpoint accepts any request without validating credentials. Use only for internal integrations, private networks, or cases where security is ensured by another mechanism — such as an IP allowlist on the calling system.
+
+Requests without authentication are appropriate for callbacks between services within the same controlled infrastructure, where exposing the endpoint publicly without protection poses no risk.
+
+### Bearer Authentication
+
+When set to **Bearer Token**, Timely validates the `Authorization` header on every incoming request. Requests that do not include the header or that present a token different from the one configured receive `401 Unauthorized` automatically, without triggering workflow execution.
+
+| Field | Detail |
+|---|---|
+| Expected header | `Authorization: Bearer {your-secret-token}` |
+| Behavior without token | Returns `401 Unauthorized` and blocks execution |
+
+Use a long random string as the token — at least 32 characters — and never expose this value in logs or public interfaces. The field displays the token masked by default; click the eye icon to reveal it temporarily.
+
+## Node Test Mode
+
+The Webhook node panel offers an integrated test mode that lets you capture a real request before publishing the workflow.
+
+<Note>
+  Test mode is only available after saving the workflow. Click **Save** to generate the URL and enable the **Start Test** button.
+</Note>
+
+To test the webhook:
+
+1. Click **Start Test** — the system starts listening on the webhook URL for up to 60 seconds.
+2. Send a test request from the external system (or use curl, Postman, or similar).
+3. The captured payload appears in real time in the panel, including body, headers, query params, and method.
+4. Click **Pin Output** to use the real data as example values when configuring downstream nodes.
+
+Example payload captured after the test:
+
+```json
+{
+  "body": {
+    "evento": "pedido.criado",
+    "pedido_id": "ORD-5521",
+    "cliente_id": "C-881"
+  },
+  "headers": {
+    "content-type": "application/json",
+    "authorization": "Bearer meu-token"
+  },
+  "query": {},
+  "method": "POST"
+}
+```
+
+## Response Behavior
+
+| Mode | Behavior |
+|---|---|
+| `immediate` | Responds to the caller immediately with the configured fixed body; the workflow continues in the background |
+| `node` | Keeps the connection open until the Return Response node is reached; timeout of 30000ms |
+
+## Common Use Cases
+
+| Scenario | Recommended configuration |
+|---|---|
+| Payment approved notification | POST with Bearer Token, `immediate` mode |
+| Synchronous data query via API | POST with Bearer Token, `node` mode with Return Response |
+
+## Best Practices
+
+- Always configure a Bearer Token on endpoints exposed to the internet — never leave public webhooks without authentication
+- Use `node` mode only when the calling system expects a synchronous response
+- Add a Set Variable node right after the trigger to extract and rename payload fields
+- Validate the `$trigger.method` field in flows that accept more than one HTTP method
+- Store the webhook URL and token in a secure location — the URL does not change after creation, but the token can be rotated by recreating the field
+
+## Summary
+
+| Capability | Detail |
+|---|---|
+| Supported methods | GET, POST, PUT, PATCH, DELETE |
+| Authentication | None or Bearer Token |
+| Response modes | `immediate` or `node` (timeout 30000ms) |
+| Available payload | `$trigger.body`, `$trigger.headers`, `$trigger.query`, `$trigger.method` |
+| Integrated testing | Captures a real request and allows pinning output for configuration |

@@ -1,0 +1,104 @@
+---
+title: "Quick Replies"
+description: "Create response templates with text shortcuts, dynamic variables, and media support to speed up support interactions"
+---
+
+Quick Replies are saved templates that attendants trigger with a `/` shortcut during chat. Instead of writing the same messages repeatedly, you create a library of texts, images, and documents available with two keystrokes.
+
+<img
+  src="/images/screenshots/placeholder-quick-replies-list.png"
+  alt="Quick Replies list with active autocomplete"
+  className="rounded-lg border"
+/>
+
+## Quick Reply types
+
+<CardGroup cols={2}>
+  <Card title="Text" icon="align-left">
+    Plain text message, with or without variables. The most common type — ideal for greetings, confirmations, and standard responses.
+  </Card>
+  <Card title="Image" icon="image">
+    Sends an image saved in Storage. Useful for catalogs, tutorial screenshots, or promotional banners.
+  </Card>
+  <Card title="Video" icon="film">
+    MP4 or WebM video. Size limit defined by the destination channel (WhatsApp: 16 MB).
+  </Card>
+  <Card title="Document" icon="file">
+    PDF, Word, Excel, and other formats. The original file name is preserved on send.
+  </Card>
+</CardGroup>
+
+## Creating a Quick Reply
+
+<Steps>
+  <Step title="Open the manager">
+    In the sidebar, go to **Settings → Quick Replies** or access it from the Inbox by clicking the lightning icon in the reply field.
+  </Step>
+  <Step title="Click '+ New Reply'">
+    The creation form opens with the fields: **shortcut**, **type**, **content**, and **visibility**.
+  </Step>
+  <Step title="Set the shortcut">
+    The shortcut is the text you type after `/`. It is normalized automatically: lowercase letters, no spaces (spaces become `-`). E.g., `initial-greeting` → `/initial-greeting`.
+  </Step>
+  <Step title="Write the content">
+    For text, write the message. For media, upload the file or paste the URL. The file is stored in the `media-files` bucket in Supabase Storage.
+  </Step>
+  <Step title="Choose visibility">
+    - **workspace** — available to all Workspace attendants
+    - **private** — visible only to you
+  </Step>
+  <Step title="Save">
+    Click **Create**. The reply will appear in the Inbox autocomplete the next time you type `/`.
+  </Step>
+</Steps>
+
+## Using in chat with autocomplete
+
+When you type `/` in the Inbox reply field, autocomplete activates automatically. It filters Quick Replies as you type the shortcut.
+
+<Tabs>
+  <Tab title="Keyboard">
+    - `↑` / `↓` — navigate between results
+    - `Enter` — select and insert the reply
+    - `Esc` — close the autocomplete
+  </Tab>
+  <Tab title="Mouse">
+    Click directly on the desired item in the autocomplete list. The reply is inserted immediately into the text field or sent directly (for media).
+  </Tab>
+</Tabs>
+
+<Note>
+  The shortcut is normalized before searching: `/Initial Greeting` and `/initial-greeting` find the same template. The search is case-insensitive via `ilike` in the database.
+</Note>
+
+## Dynamic variables
+
+Text replies support variables that are substituted at send time:
+
+| Variable | Substituted value |
+|----------|-----------------|
+| `{{nome}}` | Contact name from the Conversation |
+| `{{empresa}}` | Contact's company |
+| `{{agente}}` | Name of the attendant sending the reply |
+| `{{data}}` | Current date in `dd/mm/yyyy` format |
+
+Example template with a variable:
+
+```
+Hi, {{nome}}! We received your message and will get back to you shortly. Best regards, {{agente}}.
+```
+
+<Tip>
+  Combine variables with follow-up messages for a personal touch without manual effort. Attendants who use Quick Replies with variables reduce their average response time by up to 60%.
+</Tip>
+
+## Managing the library
+
+- **Edit**: click the three dots next to the reply and select **Edit**. The shortcut can be changed without affecting other replies.
+- **Delete**: permanently removes the reply. Deleted shortcuts can be reused by other replies.
+- **Filter by type**: use the filters at the top of the list to view only images, documents, or text.
+- **Visibility**: `private` replies appear with a lock icon. Other attendants cannot see them.
+
+<Note>
+  Only **owners**, **managers**, and the original creator can edit or delete a Quick Reply. Attendants with the `attendant` Role can create private replies but cannot edit workspace replies created by others.
+</Note>

@@ -1,0 +1,48 @@
+---
+title: "Settings Overview"
+description: "Map of Timely.ai Settings subsections, with fields, subscription links, and actions available by role."
+---
+
+The **Settings** section brings together all administrative and customization controls for the workspace. Access to each subsection is determined by the logged-in user's role — some subsections are restricted to the `owner`, while others are accessible to operational roles such as `manager` and `trainer`.
+
+## Workspace information
+
+The main Settings panel displays a summary of the active workspace before any subsection:
+
+| Field | Description |
+|---|---|
+| **Company name** | Workspace identifier displayed in the panel and reports |
+| **Active plan** | Name of the contracted plan and subscription status |
+| **Billing cycle** | Monthly or annual, with the next billing date |
+| **Period credits** | Total credits included in the plan and remaining balance |
+| **Active members** | Number of users with access to the workspace |
+| **Configured providers** | Number of registered LLM providers |
+
+This information is read-only in the overview. To edit each field, access the corresponding subsection.
+
+## Link between workspace and subscription
+
+Each workspace has exactly one linked subscription. This relationship determines the platform usage limits:
+
+The active plan controls the maximum number of members, the volume of credits per period, the available agent executions, and access to advanced features such as voice synthesis and Tyme CRM. All these limits apply to the entire workspace — not per user.
+
+When a subscription enters `past_due` status (pending payment), the workspace continues to function for a grace period. If the status changes to `canceled`, the service channels stop processing new messages until the subscription is reactivated or a new one is contracted.
+
+<Note>
+  Accounts with multiple workspaces have a separate subscription per workspace. Credits and limits are not shared between different workspaces.
+</Note>
+
+## Available actions
+
+Workspace administration actions are grouped at the bottom of the Settings panel:
+
+| Action | Description |
+|---|---|
+| **Change plan** | Opens the plan change modal with comparison and billing preview |
+| **Manage subscription** | Redirects to the Stripe portal to update card, download invoices, and cancel |
+| **Export data** | Generates a CSV file with the workspace's usage history for the selected period |
+| **Transfer ownership** | Transfers the `owner` role to another member (irreversible action without support) |
+
+<Warning>
+  The **Transfer ownership** action permanently removes `owner` permissions from the current user and grants them to the selected member. Confirm carefully — this action cannot be undone via the panel itself.
+</Warning>

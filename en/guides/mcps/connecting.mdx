@@ -1,0 +1,69 @@
+---
+title: "How to connect a new MCP"
+description: "Step-by-step guide to adding an MCP server to the agent, syncing tools, and activating them individually."
+---
+
+## Step-by-step
+
+Connecting an MCP server to the agent involves registering the server, establishing the connection, syncing the available tools, and individually activating the ones the agent can use.
+
+<Steps>
+  <Step title="Open the agent's MCP section">
+    In the Timely.ai panel, open the desired agent and go to the settings tab. Select **MCP** in the sidebar. You will see the list of servers already connected to the agent. Click **New MCP connection** to start.
+  </Step>
+  <Step title="Enter the server data">
+    In the new connection form, fill in:
+
+    - **Server name** — a descriptive label to identify the server (e.g., "Internal Stock API").
+    - **URL** — the MCP server endpoint. Can be SSE (`/sse`) or HTTP.
+    - **Authentication** — if the server requires it, select the type (Bearer Token or API Key) and enter the value. The credential is stored securely and is never visible in the interface after saving.
+
+    Click **Add** to register the server.
+  </Step>
+  <Step title="Connect to the server">
+    After registering, click **Connect** on the server card. Timely.ai opens a session with the MCP server and verifies that communication is working. The status changes to "Connected" when successful — or displays an error message indicating the cause of the failure (incorrect URL, server down, invalid credential).
+  </Step>
+  <Step title="Sync the available tools">
+    With the server connected, click **Sync tools**. Timely.ai queries the server and imports the list of available tools. Each tool appears with its name (slug), the description provided by the server, and the accepted parameters.
+
+    <Note>
+    Repeat the sync whenever the MCP server is updated with new tools or when descriptions and parameters are changed. Timely.ai does not sync automatically — it must be triggered manually.
+    </Note>
+  </Step>
+  <Step title="Activate the desired tools">
+    By default, all imported tools are deactivated. Individually activate the ones the agent can use. For each tool, you can edit the description shown to the model and add a usage instruction — a text injected into the system prompt that guides the agent on when and how to trigger the tool.
+  </Step>
+  <Step title="Save and test in the Playground">
+    Save the settings and open the agent's Playground. Ask questions or simulate scenarios that should trigger the activated tools. Verify that the agent calls the correct tools and that the result is adequately incorporated into the response.
+  </Step>
+</Steps>
+
+## Making MCP tools available to an agent
+
+If you already have an MCP server registered in the workspace and want to connect it to a different agent, the process is simplified:
+
+<Steps>
+  <Step title="Open the target agent">
+    Access the desired agent and go to the **MCP** section in settings. Click **New MCP connection**.
+  </Step>
+  <Step title="Select the existing server">
+    Choose the MCP server already registered in the workspace from the list of available servers. Previously synced tools are available immediately — there is no need to sync again unless the server has been updated.
+  </Step>
+  <Step title="Activate the tools for this agent">
+    Individually activate the tools that make sense for this specific agent's context. The same server can have tools activated differently across different agents — each agent controls which tools it can see.
+  </Step>
+</Steps>
+
+## Internal testing (recommended)
+
+Before putting the agent with MCP tools into production, perform internal tests to validate the behavior:
+
+- Use the Playground with real scenarios from your service flow — include cases where the tool should be triggered and cases where it should not, to verify that the model distinguishes correctly.
+- Confirm that the results returned by the server are correctly interpreted and formatted by the agent before exposing the channel to end users.
+
+## Troubleshooting
+
+If the connection or tools do not work as expected, check the most common issues:
+
+- **Connection failure** — confirm that the server is running, the URL is correct, and the authentication credential is valid and has not expired.
+- **No tools appear after syncing** — the server may be returning an empty list; check the server implementation and confirm that it exposes at least one tool with a valid schema.

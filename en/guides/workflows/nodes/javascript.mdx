@@ -1,0 +1,302 @@
+---
+title: "JavaScript Code Node"
+description: "Run custom JavaScript in an isolated runtime to transform, validate, or combine data within the workflow."
+---
+
+## What It Does
+
+The **JavaScript Code** node executes a JS snippet in an isolated environment with no access to the network or file system. Use it when data transformations become too complex for `{{ }}` expressions, or when you need conditional logic, iteration, or string manipulation that other nodes do not cover natively.
+
+Typical use cases:
+
+- Transform the structure of a JSON returned by an external API
+- Validate fields and throw descriptive errors when data is missing
+- Calculate derived values (discount, due date, hash)
+- Combine data from multiple upstream nodes into a single object
+- Format strings: masked IDs, localized dates, URL slugs
+
+---
+
+## Input and Output
+
+**Variables available in the code scope:**
+
+| Variable | Type | Description |
+|---|---|---|
+| `input` | `any` | Output of the immediately preceding node (`$json`) |
+| `trigger` | `object` | Full trigger payload (`body`, `headers`, `query`, `method`) |
+| `vars` | `object` | Workflow variables defined by Set Variable nodes |
+
+**Output:** the value returned via `return` is exposed as `$json` to downstream nodes. It can be an object, array, string, number, or boolean.
+
+---
+
+## Configuration
+
+<Steps>
+  <Step title="Add the node to the flow">
+    In the component palette, select **Actions > JavaScript Code** and drag it onto the canvas.
+  </Step>
+  <Step title="Write the code in the editor">
+    The editor accepts modern JavaScript (ES2020+). Use `return` to define the node's output.
+
+    Auto-generated starter template:
+
+    ```javascript
+    // Access input data via 'input'
+    // Return the result with 'return'
+
+    const data = input;
+
+    const result = {
+      processed: true,
+      original:  data,
+      timestamp: new Date().toISOString()
+    };
+
+    return result;
+    ```
+  </Step>
+  <Step title="Reference flow variables">
+    Do not use `{{ }}` expressions inside JS code — access data through the global variables:
+
+    ```javascript
+    // Correct
+    const nome = trigger.body.cliente.nome;
+    const plano = vars.plano_selecionado;
+
+    // Incorrect — {{ }} is not interpolated inside the JS editor
+    const nome = "{{ $trigger.body.cliente.nome }}";
+    ```
+  </Step>
+  <Step title="Use console.log for debugging">
+    `console.log()` is available and logs appear in the node's execution panel during tests. In production, logs are discarded.
+  </Step>
+  <Step title="Test the node">
+    Click **Test** in the node panel. The runtime executes the code with the pinned output data from upstream nodes and displays the result and execution duration.
+  </Step>
+</Steps>
+
+---
+
+## Available APIs
+
+The runtime is isolated — there is no access to the network, file system, or environment variables. The available JavaScript APIs are:
+
+| API | Available |
+|---|---|
+| `JSON.parse()` / `JSON.stringify()` | yes |
+| `Math.*` | yes |
+| `Date` | yes |
+| `RegExp` | yes |
+| `Array.*` / `Object.*` / `String.*` | yes |
+| `console.log()` | yes (debug only) |
+| `fetch()` / `XMLHttpRequest` | no |
+| `fs` / `path` / Node.js modules | no |
+| `setTimeout` / `setInterval` | no |
+| `require()` / `import` | no |
+
+---
+
+## Examples
+
+### Transform API response structure
+
+The external API returns a format different from what downstream nodes expect.
+
+<CodeGroup>
+```json Input (input — output of the preceding HTTP node)
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "customer_id":    "C-4821",
+      "full_name":      "Ana Lima",
+      "contact_email":  "ana@empresa.com",
+      "is_premium":     true,
+      "created_at":     "2025-01-15T10:30:00Z"
+    }
+  }
+}
+```
+
+```javascript Code
+const raw = input.body.data;
+
+return {
+  id:         raw.customer_id,
+  nome:       raw.full_name,
+  email:      raw.contact_email,
+  premium:    raw.is_premium,
+  membro_desde: new Date(raw.created_at).toLocaleDateString('pt-BR')
+};
+```
+
+```json Node output ($json)
+{
+  "id":           "C-4821",
+  "nome":         "Ana Lima",
+  "email":        "ana@empresa.com",
+  "premium":      true,
+  "membro_desde": "15/01/2025"
+}
+```
+</CodeGroup>
+
+---
+
+### Format and validate a CPF
+
+<CodeGroup>
+```javascript Code
+const cpfRaw = trigger.body.cpf || '';
+const numeros = cpfRaw.replace(/\D/g, '');
+
+if (numeros.length !== 11) {
+  return { valido: false, cpf: null, erro: 'CPF deve ter 11 dígitos' };
+}
+
+const cpfFormatado = numeros.replace(
+  /(\d{3})(\d{3})(\d{3})(\d{2})/,
+  '$1.$2.$3-$4'
+);
+
+return { valido: true, cpf: cpfFormatado, erro: null };
+```
+
+```json Output — valid CPF
+{ "valido": true, "cpf": "123.456.789-09", "erro": null }
+```
+
+```json Output — invalid CPF
+{ "valido": false, "cpf": null, "erro": "CPF deve ter 11 dígitos" }
+```
+</CodeGroup>
+
+The downstream Condition node checks `{{ $json.valido }}` and routes to the error path when `false`.
+
+---
+
+### Calculate a due date
+
+<CodeGroup>
+```javascript Code
+const diasParaVencer = vars.prazo_dias || 30;
+const hoje = new Date();
+hoje.setDate(hoje.getDate() + Number(diasParaVencer));
+
+return {
+  vencimento_iso: hoje.toISOString().split('T')[0],
+  vencimento_br:  hoje.toLocaleDateString('pt-BR'),
+  dias_restantes: Number(diasParaVencer)
+};
+```
+
+```json Output
+{
+  "vencimento_iso": "2026-05-19",
+  "vencimento_br":  "19/05/2026",
+  "dias_restantes": 30
+}
+```
+</CodeGroup>
+
+---
+
+### Combine data from multiple nodes
+
+When you need to assemble an object with fields coming from different nodes (HTTP, LLM, and trigger), use the JavaScript node as a consolidation point before sending.
+
+```javascript
+// Data from the trigger
+const cliente = trigger.body.cliente;
+
+// Output of the HTTP node (saved to a variable via Set Variable node)
+const pedido = vars.dados_pedido;
+
+// Output of the LLM node (output of the preceding node)
+const classificacao = input.result;
+
+return {
+  cliente_nome:   cliente.nome,
+  cliente_email:  cliente.email,
+  pedido_id:      pedido.id,
+  pedido_valor:   pedido.valor,
+  intencao:       classificacao.intencao,
+  prioridade:     classificacao.confianca > 0.8 ? 'alta' : 'normal',
+  gerado_em:      new Date().toISOString()
+};
+```
+
+---
+
+### Filter and sort an array
+
+<CodeGroup>
+```javascript Code
+const itens = input.body.itens || [];
+
+const ativos = itens
+  .filter(item => item.ativo === true)
+  .sort((a, b) => b.valor - a.valor)
+  .slice(0, 5);
+
+return {
+  total_recebidos: itens.length,
+  total_ativos:    ativos.length,
+  top5:            ativos
+};
+```
+
+```json Output
+{
+  "total_recebidos": 42,
+  "total_ativos":    18,
+  "top5": [
+    { "id": "P-01", "nome": "Produto A", "valor": 499.90, "ativo": true },
+    { "id": "P-07", "nome": "Produto B", "valor": 399.00, "ativo": true }
+  ]
+}
+```
+</CodeGroup>
+
+---
+
+## Error Handling
+
+If the code throws an uncaught exception, the node marks the execution as failed and the error appears in the execution logs. To handle errors in a controlled way, use `try/catch`:
+
+```javascript
+try {
+  const dados = JSON.parse(trigger.body.payload_raw);
+  return { sucesso: true, dados };
+} catch (err) {
+  return { sucesso: false, erro: err.message, dados: null };
+}
+```
+
+---
+
+## Limits
+
+| Parameter | Value |
+|---|---|
+| Execution timeout | 10 seconds |
+| Network access | Not allowed |
+| File system access | Not allowed |
+| `require()` / external modules | Not supported |
+| Maximum script size | No documented limit |
+| Maximum output size | 10 MB |
+
+<Warning>
+  Infinite loops or very heavy synchronous operations cause a timeout after 10 seconds. Prefer array processing with `Array.map()` and `Array.filter()` instead of `while` loops without a clear exit condition.
+</Warning>
+
+---
+
+## Next Steps
+
+- [Variables Node](/en/guides/workflows/nodes/variables) — store the code output for use in multiple nodes
+- [LLM Node](/en/guides/workflows/nodes/llm) — use AI before JavaScript to extract unstructured data
+- [HTTP Request Node](/en/guides/workflows/nodes/http) — send the object built by JavaScript to an external API
+- [Nodes overview](/en/guides/workflows/nodes/overview) — see all available node types

@@ -1,0 +1,77 @@
+---
+title: "Agent Capabilities"
+description: "Optional features you can enable per agent in Timely.ai: planning, reasoning, and automatic date and time."
+---
+
+Capabilities are optional features you activate per agent to extend how it processes and formulates responses. Each capability has specific use cases and may impact the cost and latency of executions. Enable only what the agent truly needs.
+
+## Planning
+
+Planning makes the agent decompose complex tasks into subtasks before executing any action. Instead of responding directly to the message, the agent first outlines the steps that need to be taken — then executes them in sequence.
+
+When planning helps:
+
+- Flows with three or more tools called in dependent sequence
+- Tasks where the order of actions matters (e.g., checking availability before creating an event)
+- Diagnostics that need to cross-reference multiple data sources before concluding
+- Cases where the agent tends to skip steps or execute tools in the wrong order
+
+When to keep disabled:
+
+- Simple support conversations with zero or one tool
+- FAQ and direct knowledge base responses
+- High-frequency agents where the additional latency of planning is unacceptable
+- Cases where the prompt already defines the flow explicitly and linearly
+
+<Tip>
+Enable planning incrementally: turn it on, test with the most complex scenarios of the use case, and only keep it active if you notice real improvement in the quality of multi-step executions.
+</Tip>
+
+## Reasoning
+
+Reasoning allows the model to "think out loud" before formulating the final response. Available only in models that support the feature — Claude Sonnet 4.6, Claude Opus 4.6, Gemini 3.x, and Kimi K2.5.
+
+When reasoning improves quality:
+
+- Questions with multiple simultaneous criteria (e.g., "which plan is best for me given X, Y, and Z?")
+- Diagnostics where the cause must be inferred from ambiguous symptoms
+- Comparisons with pros and cons requiring weighing before recommending
+
+When reasoning does not significantly help:
+
+- Direct FAQ responses with a single, objective answer
+- Confirmations and greetings
+- Simple knowledge base queries without ambiguity
+
+Technical limitations of reasoning:
+
+- Anthropic models with active reasoning have temperature forced to 1.0 via the API — the temperature slider has no effect
+- Increases token consumption and latency per execution
+- Models without support for the feature silently ignore the setting
+
+<Warning>
+Do not enable reasoning on high-volume FAQ agents. The token cost and additional latency are rarely justified for questions with a direct answer in the knowledge base.
+</Warning>
+
+## Date and time
+
+When this capability is active, the agent automatically receives the current date and time in the workspace's configured timezone in the context of each execution. This allows it to respond to questions like "what times are available tomorrow?" or "are we open now?" without you needing to manually include this data in the prompt.
+
+When automatic date and time is necessary:
+
+- Scheduling agents that need to compare requested times with current availability
+- Service with dynamic business hours that vary by day of the week
+- Responses referencing relative deadlines ("today," "this week," "in 3 business days")
+
+When it can be omitted:
+
+- FAQ agents without any temporal reference
+- Responses based purely on static documents
+- Cases where the date information is provided by the customer in their own message
+
+## Best practices
+
+- Enable capabilities one at a time and test thoroughly before enabling the next
+- Active planning and reasoning simultaneously significantly increase the cost per execution — evaluate whether the combination is necessary for the use case
+- Monitor latency in the execution canvas after enabling any heavy-processing capability
+- If the agent is "over-thinking" simple responses with high latency, disable planning and reasoning before adjusting other parameters

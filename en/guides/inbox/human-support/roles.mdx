@@ -1,0 +1,66 @@
+---
+title: "Roles and Permissions"
+description: "Complete Role matrix in Timely.ai and what each level can do within the Inbox and the Workspace."
+---
+
+Timely.ai's access control is based on Roles assigned per Workspace. Each member receives a single Role that determines what they can view and perform in the Inbox and other areas of the platform.
+
+## Available Roles
+
+| Role | Access level | Description |
+|------|----------------|-----------|
+| `owner` | Unrestricted | Full Workspace access, including billing, data deletion, and ownership transfer |
+| `manager` | High | Visibility of all Conversations, Team creation, SLA reports, and member invitations |
+| `trainer` | Intermediate | `attendant` support capabilities plus Agent editing and review of all Conversations for audit purposes |
+| `attendant` | Operational | Front-line support on Conversations assigned to their Team; no access to settings or reports |
+| `member` | Minimal | View explicitly assigned Conversations; no action capability |
+
+## Role behavior in the Inbox
+
+| Action | owner / manager | trainer | attendant | member |
+|------|:--------------:|:-------:|:---------:|:------:|
+| View all Workspace Conversations | Yes | Yes | — | — |
+| View unassigned Team Conversations | Yes | Yes | Yes | — |
+| Claim Conversation (self-assign) | Yes | Yes | Yes | — |
+| Activate Takeover (pause AI) | Yes | Yes | Yes | — |
+| Transfer Conversation | Yes | Yes | Yes | — |
+| Assign Conversation to another member | Yes | — | — | — |
+| Create and edit Teams | Yes | — | — | — |
+| View SLA reports | Yes | — | — | — |
+
+## Operational Role: attendant
+
+The `attendant` has scope restricted to their Team and assigned Conversations:
+
+- Views Conversations assigned to them and unassigned Conversations from the Team(s) they belong to.
+- Can claim, reply, transfer, close, and add Notes on Conversations within their scope.
+
+## Administrative Roles in the Inbox
+
+Managers and owners have global visibility and control over Teams and members:
+
+- Access and interact with any Workspace Conversation, regardless of assignment.
+
+> Owners are the only ones with `manage_billing`. Managers have `manage_team`, `view_reports`, `invite_users`, and `manage_company` — enough to operate the Workspace without needing billing access.
+
+## Usage examples
+
+| Scenario | Ideal Role |
+|---------|-----------|
+| Support attendant responding to customers on WhatsApp | `attendant` |
+| Quality analyst reviewing Conversations and adjusting prompts | `trainer` |
+| Team manager creating Teams and monitoring SLA | `manager` |
+| Founder with access to plan and billing | `owner` |
+| External stakeholder following a specific case | `member` |
+
+## Summary
+
+| Category | owner | manager | trainer | attendant | member |
+|-----------|:-----:|:-------:|:-------:|:---------:|:------:|
+| Billing | Yes | — | — | — | — |
+| Company configuration | Yes | Yes | — | — | — |
+| Manage Agents | Yes | Yes | Yes | — | — |
+| Access Conversations | Yes | Yes | Yes | Yes | Yes |
+| Invite members | Yes | Yes | — | — | — |
+| View reports | Yes | Yes | — | — | — |
+| Manage Teams | Yes | Yes | — | — | — |
