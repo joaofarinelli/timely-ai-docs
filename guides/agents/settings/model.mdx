@@ -1,128 +1,86 @@
 ---
-title: "Modelos de IA"
-description: "Provedores suportados, comparativo de modelos, capacidades e custo em créditos para escolher o LLM certo para cada agente."
+title: "Seleção de modelo"
+description: "Como escolher o provedor e o modelo de LLM para cada agente na Timely.ai, comparativo de capacidades, custo em créditos e boas práticas de seleção."
 ---
 
-O modelo de linguagem define a inteligência e o custo de cada execução do agente. A Timely.ai suporta quatro provedores com modelos atualizados — você escolhe o mais adequado para cada caso de uso.
+O modelo de linguagem define a inteligência, a velocidade e o custo de cada execução do agente. A Timely.ai suporta quatro provedores com acesso a múltiplos modelos — cada agente pode usar um modelo diferente.
 
-## Visão geral
+## Onde selecionar o modelo
 
-Acesse a aba **Modelo** nas configurações do agente para alterar o provedor e o modelo a qualquer momento. A mudança entra em vigor imediatamente na próxima execução.
+<Steps>
+  <Step title="Acesse as configurações do agente">
+    Na lista de agentes, clique no agente que deseja configurar.
+  </Step>
+  <Step title="Abra a aba de Modelo">
+    Clique na aba **Modelo** nas configurações do agente. O diálogo de configuração exibe três colunas: provedores, modelos disponíveis e parâmetros de comportamento.
+  </Step>
+  <Step title="Selecione o provedor">
+    Na coluna da esquerda, escolha o provedor: OpenAI, Anthropic, Google ou OpenRouter. A coluna central atualiza com os modelos disponíveis para o provedor selecionado.
+  </Step>
+  <Step title="Selecione o modelo e salve">
+    Clique no modelo desejado na lista central. Ajuste temperatura e effort na seção inferior e clique em **Salvar configurações**. A mudança entra em vigor na próxima execução.
+  </Step>
+</Steps>
 
-<Frame caption="Seletor de modelo — provedores e lista de modelos disponíveis">
-  <img src="/images/screenshots/placeholder-agent-models.png" alt="Configuração de modelo do agente" />
-</Frame>
+## Como funcionam os provedores
 
-## Provedores suportados
+A Timely.ai disponibiliza dois modos de acesso aos modelos: usando os créditos da plataforma (acesso via Timely) ou conectando sua própria chave de API de um provedor externo.
 
-<Tabs>
-  <Tab title="OpenAI">
-    Os modelos GPT da OpenAI são referência em capacidade agentica e raciocínio. Ideais para agentes que precisam executar múltiplas ferramentas em sequência.
+### Opção 1 — Usando os créditos da Timely
 
-    | Modelo | Custo | Velocidade | Créditos/execução |
-    |---|---|---|---|
-    | GPT-5.2 | Alto | Médio | 5 |
-    | GPT-5.1 | Alto | Médio | 4 |
+Cada modelo consome um número fixo de créditos por execução. Você não precisa criar contas nos provedores — a Timely gerencia a autenticação e o faturamento.
 
-    <Note>
-    Modelos GPT-5 não suportam ajuste de temperatura — o parâmetro de temperatura é ignorado e a API opera no modo padrão.
-    </Note>
-  </Tab>
-  <Tab title="Anthropic">
-    Os modelos Claude se destacam em instruções longas e complexas, raciocínio estruturado e segurança de conteúdo. Melhor opção para agentes de suporte com regras detalhadas.
+<Steps>
+  <Step title="Selecione qualquer modelo disponível">
+    Todos os modelos listados na interface estão disponíveis imediatamente se você tiver créditos no workspace.
+  </Step>
+  <Step title="Verifique o custo em créditos">
+    Cada modelo exibe o custo estimado por execução. O consumo real varia conforme o tamanho do prompt, histórico da conversa e número de chamadas a ferramentas na mesma execução.
+  </Step>
+  <Step title="Monitore o consumo">
+    Acompanhe o consumo de créditos em **Configurações > Faturamento** para ajustar o modelo conforme o volume de conversas cresce.
+  </Step>
+  <Step title="Recarregue créditos quando necessário">
+    Créditos podem ser recarregados a qualquer momento pelo painel de faturamento. Agentes sem créditos disponíveis pausam automaticamente as respostas.
+  </Step>
+</Steps>
 
-    | Modelo | Custo | Velocidade | Créditos/execução | Recomendado |
-    |---|---|---|---|---|
-    | Claude Opus 4.6 | Alto | Médio | 20 | — |
-    | Claude Sonnet 4.6 | Médio | Rápido | 4 | Sim |
-    | Claude Haiku 4.5 | Baixo | Muito rápido | 3 | — |
+### Opção 2 — Conectando seu próprio provedor
 
-    <Warning>
-    Quando o raciocínio (thinking) está ativado em modelos Anthropic, a temperatura é forçada para 1.0 pela API — o controle de temperatura na interface não tem efeito nesses casos.
-    </Warning>
-  </Tab>
-  <Tab title="Google">
-    Os modelos Gemini são multimodais — processam texto, imagens e documentos. Indicados para agentes que recebem arquivos ou imagens dos clientes.
+Workspaces no plano Enterprise podem configurar provedores customizados, conectando modelos com chaves de API próprias ou modelos open source hospedados em infraestrutura interna.
 
-    | Modelo | Custo | Velocidade | Créditos/execução |
-    |---|---|---|---|
-    | Gemini 3.1 Pro Preview | Alto | Médio | 6 |
-    | Gemini 3.0 Pro Preview | Alto | Médio | 6 |
-    | Gemini 2.5 Pro | Alto | Médio | 4 |
-    | Gemini 2.5 Flash | Médio | Rápido | 2 |
-  </Tab>
-  <Tab title="OpenRouter">
-    OpenRouter é um gateway que dá acesso a modelos de múltiplos provedores através de uma única API. Ideal para experimentar modelos alternativos de menor custo.
-
-    | Modelo | Custo | Velocidade | Créditos/execução |
-    |---|---|---|---|
-    | Kimi K2.5 (Moonshot AI) | Baixo | Rápido | 1 |
-  </Tab>
-</Tabs>
-
-## Parâmetros de configuração
-
-Além do modelo, você ajusta dois parâmetros que afetam o comportamento das respostas:
-
-### Temperatura
-
-Controla a variabilidade das respostas. Escala de 0 a 1:
-
-- **Próximo de 0** — respostas mais determinísticas e consistentes. Ideal para suporte técnico, FAQ e cenários onde a precisão é crítica.
-- **Próximo de 1** — respostas mais criativas e variadas. Ideal para agentes de marketing, copywriting ou interações mais humanas.
-
-### Passos máximos
-
-Define o número máximo de etapas de raciocínio que o agente pode executar por mensagem (incluindo chamadas a tools). Padrão: 25.
-
-- Aumente para fluxos complexos com múltiplas ferramentas encadeadas.
-- Reduza para economizar créditos em casos de uso simples como FAQ.
-
-## Como escolher o modelo certo
-
-<AccordionGroup>
-  <Accordion title="Atendimento ao cliente e FAQ">
-    **Claude Haiku 4.5** ou **Gemini 2.5 Flash** — baixo custo, resposta rápida, suficiente para a maioria das perguntas frequentes.
-  </Accordion>
-  <Accordion title="Agente comercial com múltiplas tools">
-    **Claude Sonnet 4.6** (recomendado) ou **GPT-5.1** — equilíbrio entre inteligência, velocidade e custo. Suporta uso intenso de ferramentas.
-  </Accordion>
-  <Accordion title="Raciocínio complexo e análise de dados">
-    **Claude Opus 4.6** ou **Gemini 3.1 Pro Preview** — máxima capacidade analítica. Use quando a qualidade da resposta é mais importante que o custo.
-  </Accordion>
-  <Accordion title="Processamento de imagens e documentos">
-    **Gemini 2.5 Pro** ou **Gemini 3.1 Pro Preview** — capacidade multimodal nativa para análise de imagens, PDFs e planilhas enviados pelo cliente.
-  </Accordion>
-  <Accordion title="Alto volume com orçamento limitado">
-    **Kimi K2.5** via OpenRouter — custo muito baixo (1 crédito/execução) para casos de uso de texto simples com alto volume de mensagens.
-  </Accordion>
-</AccordionGroup>
-
-## Workspace LLM providers
-
-Além dos provedores nativos, workspaces no plano Enterprise podem configurar **provedores customizados** — conectando modelos hospedados em infraestrutura própria (ex.: modelos open source via API compatível com OpenAI).
-
-<Info>
-A configuração de provedores customizados está disponível em **Configurações do Workspace > Modelos de IA**. Entre em contato com o suporte para habilitar esse recurso.
-</Info>
-
-## Limites e boas práticas
+<Steps>
+  <Step title="Acesse as configurações do workspace">
+    Vá para **Configurações do Workspace > Modelos de IA** no menu de administração.
+  </Step>
+  <Step title="Adicione as credenciais do provedor">
+    Insira a API key do provedor (OpenAI, Anthropic ou Google). A chave é armazenada com criptografia e usada exclusivamente para as execuções do seu workspace.
+  </Step>
+  <Step title="Selecione o provedor customizado no agente">
+    Ao configurar o modelo do agente, o provedor customizado aparece como opção adicional na coluna de provedores.
+  </Step>
+  <Step title="Confirme a conexão com um teste">
+    Use o Chat interno para enviar uma mensagem de teste e confirmar que o provedor customizado está respondendo corretamente antes de publicar o agente em produção.
+  </Step>
+</Steps>
 
 <Note>
-O custo em créditos por execução é uma estimativa. O consumo real varia conforme o tamanho do prompt, histórico da conversa e quantidade de chamadas a tools na mesma execução.
+A configuração de provedores customizados requer plano Enterprise. Entre em contato com o suporte para habilitar esse recurso no seu workspace.
 </Note>
 
-- Comece com **Claude Sonnet 4.6** — é o modelo recomendado para a maioria dos casos de uso.
-- Monitore o consumo de créditos em **Configurações > Faturamento** para ajustar o modelo conforme o volume cresce.
-- Teste o agente no [Playground](/guides/agents/settings/internal-chat) antes de publicar ao alterar o modelo.
+## Trocando o modelo por agente
 
-## Próximos passos
+Cada agente pode usar um modelo diferente dentro do mesmo workspace. Isso permite otimizar custo e performance por caso de uso:
 
-<CardGroup cols={2}>
-  <Card title="Editor de prompt" href="/guides/agents/settings/prompt">
-    Saiba como escrever um prompt eficiente para o modelo escolhido.
-  </Card>
-  <Card title="Testar o agente" href="/guides/agents/settings/internal-chat">
-    Use o Playground para validar o comportamento antes de publicar.
-  </Card>
-</CardGroup>
+- Agentes de FAQ de alto volume usam modelos mais baratos (Kimi K2.5 ou Gemini 2.5 Flash)
+- Agentes de análise complexa usam modelos de alta capacidade (Claude Opus 4.6 ou Gemini 3.1 Pro)
+- Agentes de suporte geral usam modelos de equilíbrio (Claude Sonnet 4.6, marcado como recomendado)
+- Modelos GPT-5.x da OpenAI desabilitam temperatura — o slider fica inativo automaticamente
+- Modelos Anthropic com raciocínio ativo forçam temperatura para 1,0 — o controle de temperatura não tem efeito
+
+## Boas práticas
+
+- Comece sempre com **Claude Sonnet 4.6** — é o modelo recomendado pela plataforma para a maioria dos casos de uso, com bom equilíbrio entre qualidade (4 créditos/execução), velocidade e suporte a ferramentas
+- Teste qualquer troca de modelo no Chat interno com perguntas representativas antes de aplicar em produção
+- Monitore a latência após trocar para modelos maiores — modelos como Claude Opus 4.6 e Gemini 3.1 Pro têm latência mais alta que pode afetar a experiência em canais de mensageria
+- Não troque o modelo baseado apenas no custo — compare a qualidade das respostas nos cenários reais do seu caso de uso antes de migrar

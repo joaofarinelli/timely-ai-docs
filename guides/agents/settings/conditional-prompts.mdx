@@ -1,101 +1,43 @@
 ---
 title: "Prompts condicionais"
-description: "Como usar prompts condicionais para adaptar o comportamento do agente com base em variáveis da conversa ou do contato, sem precisar criar múltiplos agentes."
+description: "Como usar prompts condicionais na Timely.ai para adaptar o comportamento do agente por segmento de cliente, canal ou estágio no funil sem criar múltiplos agentes."
 ---
 
-## Visão geral
+Prompts condicionais permitem que um único agente se comporte de maneiras diferentes dependendo do contexto da conversa. Em vez de criar um agente separado para cada segmento de cliente ou canal de atendimento, você define blocos de instrução que o agente usa apenas quando certas condições são verdadeiras.
 
-Prompts condicionais permitem que um único agente se comporte de maneiras diferentes dependendo do contexto da conversa. Em vez de criar um agente separado para cada segmento de cliente ou estágio do funil, você define blocos de instrução que o agente usa apenas quando certas condições são verdadeiras.
+## O que é um prompt condicional?
 
-Um exemplo prático: o mesmo agente de suporte pode ser mais formal com contatos corporativos (identificados pelo campo `contact.company`) e mais descontraído com pessoas físicas. Ou pode adotar um tom urgente quando o campo `contact.stage` indica que o lead está "quente". Tudo isso acontece em tempo de execução, sem intervenção manual.
+Um prompt condicional é um bloco de instrução vinculado a uma condição sobre variáveis da conversa ou do contato. Quando a condição é verdadeira, as instruções do bloco são concatenadas ao prompt base — não substituem o prompt principal, apenas o complementam com contexto adicional.
 
-Condicionais funcionam com variáveis injetadas automaticamente pelo sistema — dados do perfil do contato, propriedades do CRM, canal de origem e estágio na jornada do cliente.
+Variáveis disponíveis para condicionais:
 
-## Variáveis disponíveis
+- `contact.stage` — estágio do contato no funil (ex.: `lead_quente`, `cliente`, `inativo`)
+- `contact.plan` — plano contratado pelo contato (ex.: `enterprise`, `starter`)
+- `channel` — canal de origem da conversa (ex.: `whatsapp`, `widget`, `instagram`)
+- `contact.language` — idioma preferido do contato (ex.: `pt-BR`, `es`)
 
-As condicionais podem usar variáveis do contexto da conversa. As mais comuns são:
+## Como os prompts condicionais funcionam
 
-| Variável | Descrição | Exemplo de valor |
-|----------|-----------|-----------------|
-| `contact.stage` | Estágio do contato no funil | `lead_quente`, `cliente`, `inativo` |
-| `contact.company` | Empresa do contato | `"Acme Corp"` |
-| `contact.plan` | Plano contratado | `"enterprise"`, `"starter"` |
-| `channel` | Canal de origem da conversa | `"whatsapp"`, `"widget"`, `"instagram"` |
-| `contact.language` | Idioma preferido do contato | `"pt-BR"`, `"es"` |
-| `contact.tags` | Tags aplicadas ao contato | `["vip", "churning"]` |
+1. A cada execução, o sistema avalia todas as condições configuradas para o agente.
+2. Para cada condição verdadeira, o bloco de instrução correspondente é adicionado ao contexto enviado ao modelo.
+3. Se múltiplas condições forem verdadeiras simultaneamente, todos os blocos correspondentes são incluídos — por isso é importante que as instruções não se contradigam.
 
-## Como configurar
+## Exemplos de uso
 
-<Steps>
-  <Step title="Acesse a aba de Prompt do agente">
-    Clique no agente na lista e vá para a aba **Prompt**. Role até a seção **Prompts condicionais**.
-  </Step>
+Situações comuns onde prompts condicionais resolvem problemas sem a necessidade de criar múltiplos agentes:
 
-  <Step title="Clique em 'Adicionar condição'">
-    Um formulário vai aparecer com campos para definir a variável, o operador de comparação e o valor, além do bloco de instrução condicional.
-  </Step>
-
-  <Step title="Defina a condição">
-    Escolha a variável (ex.: `contact.stage`), o operador (`igual a`, `contém`, `diferente de`) e o valor que dispara a condição (ex.: `lead_quente`).
-  </Step>
-
-  <Step title="Escreva o bloco de instrução condicional">
-    No campo de texto, escreva as instruções adicionais que o agente deve seguir quando a condição for verdadeira. Essas instruções são concatenadas ao prompt base — não substituem o prompt principal, apenas o complementam.
-  </Step>
-
-  <Step title="Defina a prioridade (se houver múltiplas condições)">
-    Quando mais de uma condição for verdadeira simultaneamente, as instruções de todas elas são incluídas. Ordene as condições da mais específica para a mais geral para evitar conflitos de instrução.
-  </Step>
-
-  <Step title="Salve e teste com dados reais">
-    Use o Chat interno com um contato que atenda às condições configuradas para verificar se o bloco condicional está sendo aplicado corretamente.
-  </Step>
-</Steps>
-
-## Exemplos / Casos de uso
-
-**Segmentação por estágio no funil:**
-```
-SE contact.stage = "lead_quente"
-  INSTRUÇÃO: O contato demonstrou interesse recente. Priorize entender o cronograma de decisão e ofereça uma chamada com o time comercial. Use um tom proativo e evite desvios para temas de suporte.
-```
-
-**Diferenciação por canal:**
-```
-SE channel = "instagram"
-  INSTRUÇÃO: Responda de forma mais curta e visual. Use emojis com moderação. Evite listas longas — prefira respostas de 1 a 3 frases.
-```
-
-**Personalização por plano:**
-```
-SE contact.plan = "enterprise"
-  INSTRUÇÃO: Este contato tem SLA prioritário. Confirme o número do ticket aberto e garanta que a escalada para o especialista sênior aconteça em menos de 2 horas se o problema não for resolvido.
-```
-
-**Atendimento multilíngue:**
-```
-SE contact.language = "es"
-  INSTRUÇÃO: Responda em espanhol neutro. Não mude para português mesmo que o contato escreva em português misturado.
-```
+- Canal Instagram: resposta mais curta, até 3 frases, sem listas longas, emojis com moderação
+- Contato no plano enterprise: confirmar número de ticket, SLA prioritário, escalar em menos de 2 horas se não resolvido
+- Lead quente: foco no cronograma de decisão, oferecer chamada com o time comercial, evitar desvios para suporte
+- Idioma espanhol: responder em espanhol neutro independentemente do idioma usado na mensagem
 
 ## Boas práticas
 
+- Escreva blocos condicionais pequenos e focados — 2 a 4 instruções claras por bloco funcionam muito melhor do que blocos longos que tentam cobrir todos os cenários
+- Teste cada condição isoladamente com o Chat interno usando um contato que atenda à condição antes de combinar múltiplas
+- Não replique no bloco condicional instruções que já estão no prompt base — isso aumenta o tamanho do contexto sem benefício real
+- Se uma condição específica está sendo ativada em quase todas as conversas, mova a instrução para o prompt base — ela provavelmente não é tão condicional quanto parece
+
 <Tip>
-Escreva blocos condicionais pequenos e focados. Um bloco com 2 a 4 instruções claras funciona muito melhor do que um bloco com 15 regras que tentam cobrir todos os cenários possíveis.
+Mantenha os valores das variáveis sincronizados com os dados reais do CRM. Uma condição que nunca é verdadeira por inconsistência de dados entre sistemas é invisível e difícil de diagnosticar.
 </Tip>
-
-- Teste cada condição isoladamente antes de combinar múltiplas. Condições sobrepostas com instruções contraditórias geram comportamento imprevisível.
-- Não replique no bloco condicional instruções que já estão no prompt base — isso apenas aumenta o tamanho do contexto sem benefício.
-- Se você perceber que quase toda conversa está disparando um bloco condicional específico, considere mover aquela instrução para o prompt base — ela provavelmente não é tão condicional assim.
-- Mantenha os valores das variáveis sincronizados com os dados reais do CRM. Uma condição que nunca é verdadeira por inconsistência de dados é inútil.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Capacidades do agente" href="/guides/agents/settings/capacities">
-    Habilite ferramentas e funcionalidades para expandir o escopo de ação do agente.
-  </Card>
-  <Card title="Squads" href="/guides/squads/overview">
-    Combine múltiplos agentes com roteamento inteligente usando squads.
-  </Card>
-</CardGroup>

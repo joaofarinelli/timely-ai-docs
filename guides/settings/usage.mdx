@@ -1,143 +1,83 @@
 ---
-title: "Dashboard de Uso"
-description: "Como monitorar o consumo de mensagens por canal, tokens por provedor de LLM, créditos utilizados, picos de uso e filtrar por período e workspace."
+title: "Uso"
+description: "Como monitorar créditos, métricas renováveis mensalmente e limites permanentes do plano, além de inspecionar o consumo por agente e usar provedores próprios para reduzir custos."
 ---
 
 ## Visão geral
 
-O **Dashboard de Uso** mostra em detalhes quanto o workspace está consumindo dos recursos incluídos no plano. É o painel que você consulta para entender tendências de crescimento, identificar canais com maior volume e antecipar a necessidade de upgrade antes de ultrapassar os limites.
+A seção **Uso** exibe o consumo real do workspace em relação aos limites do plano ativo. Use esse painel para acompanhar tendências, identificar agentes ou canais com alto volume e antecipar a necessidade de upgrade antes de atingir os limites.
 
-O acesso ao dashboard é restrito a membros com role `manager` ou `owner`. Acesse em **Configurações → Uso**.
+O acesso é restrito a membros com role `manager` ou `owner`. Acesse em **Configurações > Uso**.
 
-## Métricas disponíveis
+Os dados são atualizados em tempo quase real — o atraso típico entre uma mensagem processada e a contabilização no painel é de alguns minutos. Filtros de período (7 dias, 30 dias, mês atual, mês anterior e intervalo customizado) permitem isolar janelas específicas de análise.
 
-### Mensagens por canal
+## Uso renovável (reseta mensalmente)
 
-Total de mensagens processadas (enviadas e recebidas) agrupadas por canal de origem:
+Métricas renováveis são reiniciadas no início de cada ciclo de faturamento. O consumo do período corrente é comparado ao limite incluído no plano:
 
-- WhatsApp (por número conectado)
-- Instagram
-- Widget Web
-- Telegram
-- Slack
+| Métrica | Descrição |
+|---|---|
+| **Créditos de IA consumidos** | Total de créditos usados por mensagens processadas pelos agentes no período. O custo por mensagem varia conforme o modelo LLM: Claude Haiku 4.5 = 3 créditos, Claude Sonnet 4.6 = 4 créditos, GPT-5.1 = 4 créditos, Gemini 2.5 Flash = 2 créditos, Kimi K2.5 = 1 crédito |
+| **Execuções de agente** | Número de vezes que um agente foi acionado por uma mensagem de entrada no período |
+| **Mensagens processadas** | Total de mensagens que passaram pelo pipeline de IA (entrada + saída) em todos os canais |
+| **Membros ativos** | Usuários com acesso ao workspace no período (comparado ao limite do plano) |
 
-O gráfico de barras exibe o volume diário ou mensal (dependendo do filtro de período selecionado). Passe o cursor sobre as barras para ver os valores exatos de cada dia.
+## Uso permanente (limites baseados no plano)
+
+Limites permanentes não se renovam mensalmente — são determinados pelo plano contratado e se mantêm enquanto o plano estiver ativo:
+
+| Limite | Descrição |
+|---|---|
+| **Agentes de IA** | Número máximo de agentes ativos que podem ser criados no workspace |
+| **Squads** | Número máximo de squads que podem ser criados e vinculados a canais |
+| **Canais conectados** | Total de canais de atendimento ativos (WhatsApp, Instagram, widget, etc.) |
+| **Integrações Composio** | Acesso às integrações externas via Composio (disponível em todos os planos) |
+
+## Inspecionando o consumo de créditos por agente
+
+A visão agregada do painel mostra o consumo total do workspace. Para identificar quais agentes são responsáveis pelo maior volume de créditos:
+
+- Na seção **Créditos por agente**, cada agente aparece com seu total consumido no período filtrado.
+- Clique no nome do agente para ver o detalhamento por dia e por conversa.
+- O modelo LLM associado a cada agente aparece ao lado do nome — use essa informação para avaliar se um modelo mais econômico atenderia ao caso de uso.
 
 <Note>
-  "Mensagem processada" conta cada mensagem que passou pelo pipeline do agente de IA — incluindo as enviadas pelo agente em resposta. Mensagens de atendimento humano (takeover) também são contabilizadas pois passam pela infraestrutura da plataforma.
+  Agentes em squads consomem créditos individualmente. Um handoff entre dois agentes dentro de um squad conta como duas execuções separadas — uma para o agente que recebeu e uma para o agente que respondeu.
 </Note>
 
-### Tokens por provedor de LLM
+## Provedores próprios
 
-Consumo de tokens separado por provedor configurado no workspace:
+Ao conectar uma chave própria de provedor (OpenAI, Anthropic, Google ou OpenRouter), o consumo de tokens é cobrado diretamente na sua conta do provedor — não nos créditos incluídos no plano da Timely.ai:
 
-- OpenAI (GPT-4o, GPT-4.1, GPT-4o mini etc.)
-- Anthropic (Claude Sonnet, Claude Haiku)
-- Google (Gemini Pro, Gemini Flash)
-- Outros provedores configurados
-
-Os tokens são exibidos separadamente como **tokens de entrada** (prompt) e **tokens de saída** (completion), já que provedores cobram taxas diferentes para cada tipo. O custo estimado em créditos aparece ao lado de cada linha.
-
-### Créditos consumidos
-
-Resumo do consumo de créditos no período selecionado:
-
-| Campo | Descrição |
-|-------|-----------|
-| **Incluído no plano** | Total de créditos disponíveis no período |
-| **Consumido** | Créditos utilizados até o momento |
-| **Disponível** | Saldo restante para o período |
-| **Projeção** | Estimativa de consumo até o fim do período, com base na tendência atual |
-
-A barra de progresso muda de cor conforme o consumo se aproxima do limite:
-
-- Verde: até 70% consumido
-- Amarelo/laranja: entre 70% e 90%
-- Vermelho: acima de 90%
-
-Se a projeção indicar que você vai ultrapassar o limite antes do fim do período, um alerta aparece no topo do dashboard com sugestão de upgrade.
-
-### Picos de uso
-
-O gráfico de picos exibe a distribuição do volume de mensagens ao longo do dia (por hora) e da semana (por dia da semana). Útil para:
-
-- Identificar horários de maior demanda e dimensionar a equipe de atendimento humano nesses períodos.
-- Verificar se o volume cresce de forma consistente ou tem picos isolados (ex.: campanhas de marketing que geram spike de mensagens).
-- Planejar manutenções e atualizações de agentes nos horários de menor tráfego.
-
-## Filtros disponíveis
-
-### Filtro por período
-
-Selecione o intervalo de tempo para análise:
-
-- **7 dias** — últimos 7 dias corridos
-- **30 dias** — mês corrido atual
-- **Este mês** — do dia 1 até hoje
-- **Mês anterior** — mês civil anterior completo
-- **Intervalo customizado** — selecione datas de início e fim no calendário
-
-O período selecionado afeta todos os gráficos e totais exibidos no dashboard simultaneamente.
-
-### Filtro por workspace
-
-Se a sua conta tem múltiplos workspaces, você pode visualizar o consumo de cada workspace separadamente ou ver o total consolidado. O seletor de workspace fica no topo do dashboard.
+- Agentes configurados com um provedor próprio aparecem na seção **Provedores externos** do painel de Uso.
+- O volume de tokens (entrada e saída) processado por esses agentes é exibido para fins de monitoramento, mas não deduz do saldo de créditos do plano.
+- O custo real fica visível no painel de faturamento do provedor (ex.: platform.openai.com ou console.anthropic.com).
 
 <Tip>
-  Para acompanhar o consumo de uma campanha específica, use o filtro de intervalo customizado com as datas da campanha. Você verá exatamente quantas mensagens e tokens foram gerados naquele período.
+  Workspaces com alto volume de mensagens em modelos premium (como Claude Opus 4.6 com 20 créditos/msg) podem reduzir significativamente o custo por mensagem migrando para um provedor próprio com contrato de volume. Compare o custo por token do provedor com o custo equivalente em créditos do plano antes de decidir.
 </Tip>
-
-## Alertas de uso
-
-Quando o consumo de créditos atinge determinados thresholds, alertas automáticos são enviados por e-mail para membros com role `manager` e `owner`:
-
-| Threshold | Alerta |
-|-----------|--------|
-| 70% do limite | Notificação informativa |
-| 90% do limite | Alerta de atenção com sugestão de upgrade |
-| 100% do limite | Alerta crítico — novas mensagens podem ser bloqueadas |
-
-Para configurar ou desativar alertas, acesse as preferências de notificação em **Configurações → Perfil → Notificações**.
-
-## Exportando dados
-
-Para análise avançada fora da plataforma, exporte os dados de uso em CSV:
-
-1. No dashboard, configure o período e workspace desejados.
-2. Clique em **Exportar CSV** no canto superior direito.
-3. O arquivo gerado inclui: data, canal, mensagens_recebidas, mensagens_enviadas, tokens_entrada, tokens_saida, creditos_consumidos.
-
-## Relação com a assinatura
-
-O dashboard de uso está diretamente relacionado aos limites do plano ativo. Para ver os limites do seu plano atual, acesse [Configurações → Assinatura](/guides/settings/subscriptions).
-
-Quando o consumo mensal excede o incluído no plano, o comportamento depende da configuração do plano:
-
-- **Planos com excedente pago**: as mensagens continuam sendo processadas e o custo adicional é cobrado na próxima fatura.
-- **Planos com limite rígido**: novas mensagens são enfileiradas ou bloqueadas até o reinício do ciclo ou upgrade do plano.
-
-Consulte os termos do seu plano para entender qual comportamento se aplica.
 
 ## Boas práticas
 
-- Acesse o dashboard **ao menos uma vez por semana** em períodos de crescimento. Consumo que parece controlado pode dobrar rapidamente com o aumento de volume em canais.
-- Monitore separadamente os tokens de provedores mais caros (como modelos GPT-4 da OpenAI). Se um agente está usando um modelo premium para conversas simples, considere migrar para um modelo mais econômico em [Configurações → Provedores](/guides/settings/providers).
-- Use o gráfico de picos para identificar se há conversas não resolvidas que estão gerando muitas mensagens de retentativa — um sinal de que o agente pode precisar de ajustes no prompt.
-- Se a projeção indicar ultrapassagem do limite, faça o upgrade com antecedência para evitar interrupção no atendimento.
+- Acesse o painel de Uso pelo menos uma vez por semana em períodos de crescimento. Consumo que parece controlado pode dobrar rapidamente com um aumento de volume em canais.
+- Monitore separadamente os agentes que usam modelos com alto custo em créditos. Se um agente usa Claude Opus 4.6 (20 créditos/msg) para tarefas simples, migre para Claude Haiku 4.5 (3 créditos/msg) ou Kimi K2.5 (1 crédito/msg).
+- Use o filtro de intervalo customizado para isolar o impacto de campanhas de marketing ou broadcasts — picos de volume nesses períodos podem distorcer as projeções mensais.
+- Se a projeção indicar ultrapassagem do limite de créditos antes do fim do ciclo, faça o upgrade com antecedência para evitar bloqueio de mensagens.
+- Configure alertas de uso em **Configurações > Perfil > Notificações** para receber e-mails automáticos quando o consumo atingir 70%, 90% e 100% do limite.
 
-## Próximos passos
+## Perguntas frequentes
 
-<CardGroup cols={2}>
-  <Card title="Assinatura" href="/guides/settings/subscriptions">
-    Gerencie o plano e faça upgrade quando necessário.
-  </Card>
-  <Card title="Provedores LLM" href="/guides/settings/providers">
-    Ajuste os modelos de IA para otimizar o consumo de tokens.
-  </Card>
-  <Card title="Visão geral de Configurações" href="/guides/settings/overview">
-    Mapa completo de todas as subseções de Configurações.
-  </Card>
-  <Card title="Analytics" href="/guides/analytics">
-    Relatórios de atendimento: SLA, volume e qualidade das conversas.
-  </Card>
-</CardGroup>
+**O que acontece quando os créditos do plano acabam no meio do mês?**
+Depende da configuração do plano. Planos com excedente pago continuam processando mensagens e o custo adicional é cobrado na próxima fatura. Planos com limite rígido enfileiram ou bloqueiam novas mensagens até o reinício do ciclo ou upgrade.
+
+**Workers consume créditos do plano?**
+Sim. Mensagens enviadas em sessões de Workers são processadas pelo mesmo pipeline dos agentes e consomem créditos normalmente.
+
+**Agentes em squads consomem créditos separados?**
+Sim. Cada agente dentro de um squad consome créditos de forma independente conforme o modelo LLM configurado para ele.
+
+**Posso ver o consumo de um workspace específico se tiver múltiplos?**
+Sim. O seletor de workspace no topo do painel de Uso permite alternar entre workspaces e ver o consumo de cada um individualmente.
+
+**Créditos não usados acumulam para o próximo mês?**
+Não. Créditos renováveis não acumulam — o saldo restante ao fim do ciclo é zerado na renovação. Apenas planos anuais recebem o crédito completo do ano de uma vez, sem renovação mensal.

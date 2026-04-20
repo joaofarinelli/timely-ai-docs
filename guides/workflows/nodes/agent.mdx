@@ -1,174 +1,27 @@
 ---
-title: "Nó Agente"
-description: "Chame um agente IA dentro do seu workflow para classificar, resumir, responder ou enriquecer dados."
+title: "Nó Agente (Requisição do Agente)"
+description: "Exponha um workflow como ferramenta para agentes IA da Timely.ai."
 ---
-
-## O que faz
-
-O nó **Requisição do Agente** opera em dois contextos distintos, mas complementares:
-
-1. **Como trigger** — um agente IA configurado na Timely pode disparar um workflow como se fosse uma ferramenta. O agente monta os parâmetros, o workflow executa e pode devolver uma resposta estruturada de volta ao agente dentro da mesma conversa.
-
-2. **Como ação** — dentro de um workflow já em execução, você invoca um agente para processar um texto ou conjunto de dados e receber a resposta como output para os nós seguintes.
-
-Esta página cobre principalmente o **trigger Requisição do Agente** — o ponto de entrada que expõe o workflow como uma ferramenta para agentes IA.
-
----
-
-## Entrada e saída
-
-**Entrada:** parâmetros enviados pelo agente no momento da chamada, conforme o schema definido no nó.
-
-**Output exposto para nós seguintes:**
-
-```json
-{
-  "parameters": {
-    "nome_param_1": "valor_enviado_pelo_agente",
-    "nome_param_2": 42
-  }
-}
-```
-
-Acesse qualquer parâmetro via `{{ $trigger.parameters.nome_param }}`.
-
----
-
-## Configuração
-
-<Steps>
-  <Step title="Adicione o trigger Requisição do Agente">
-    No canvas, abra a paleta de componentes, selecione **Triggers** e adicione **Requisição do Agente**.
-  </Step>
-  <Step title="Defina os parâmetros">
-    Clique em **Adicionar** para criar cada parâmetro que o agente precisará passar:
-
-    - **Nome** — identificador do parâmetro (ex.: `telefone`, `pedido_id`)
-    - **Tipo** — `string`, `number` ou `boolean`
-    - **Descrição** — explique ao agente o que colocar neste campo; esta descrição é exposta diretamente na definição da ferramenta
-    - **Obrigatório** — o agente só chamará o workflow se todos os parâmetros obrigatórios estiverem presentes
-
-    Arraste as linhas para reordenar os parâmetros conforme a lógica da ferramenta.
-  </Step>
-  <Step title="Escolha o modo de resposta">
-    - **Imediata** — o workflow confirma o início da execução imediatamente e o agente continua sem aguardar o resultado.
-    - **Aguardar Nó de Resposta** — o agente fica suspenso até o workflow terminar e recebe o output do nó Retornar Resposta como resposta da ferramenta.
-  </Step>
-  <Step title="Defina o formato da resposta">
-    Escolha entre `JSON` (para dados estruturados que o agente pode interpretar) ou `Texto` (para respostas que o agente vai repassar diretamente ao usuário).
-  </Step>
-  <Step title="Conecte o workflow ao agente">
-    Depois de publicar o workflow, acesse as configurações do agente em [Agentes > Ferramentas](/guides/agents/overview) e adicione o workflow como uma ferramenta disponível. O nome e a descrição do workflow viram a assinatura da ferramenta exposta ao modelo.
-  </Step>
-</Steps>
-
----
-
-## Exemplos
-
-### Consultar status de pedido durante conversa
-
-O cliente pergunta "qual o status do meu pedido 9821?" O agente identifica a intenção, chama o workflow com o `pedido_id` e devolve a resposta ao usuário.
-
-**Parâmetros definidos no nó:**
-
-| Nome | Tipo | Descrição | Obrigatório |
-|---|---|---|---|
-| `pedido_id` | string | Número do pedido informado pelo cliente | sim |
-
-<CodeGroup>
-```json Chamada feita pelo agente (internamente)
-{
-  "parameters": {
-    "pedido_id": "ORD-9821"
-  }
-}
-```
-
-```json Output disponível nos nós seguintes
-{
-  "parameters": {
-    "pedido_id": "ORD-9821"
-  }
-}
-```
-</CodeGroup>
-
-O nó HTTP seguinte usa `{{ $trigger.parameters.pedido_id }}` para consultar a API do ERP e o nó Retornar Resposta devolve algo como:
-
-```json
-{
-  "status": "em_transporte",
-  "previsao": "2026-04-21",
-  "transportadora": "Correios"
-}
-```
-
-O agente recebe esse JSON e formula a resposta ao usuário naturalmente.
-
----
-
-### Enriquecer contato com dados externos
-
-O agente captura o e-mail do usuário durante a conversa e chama um workflow para buscar dados adicionais em uma API de enriquecimento.
-
-**Parâmetros:**
-
-| Nome | Tipo | Descrição | Obrigatório |
-|---|---|---|---|
-| `email` | string | E-mail capturado na conversa | sim |
-| `nome` | string | Nome informado pelo usuário | não |
-
-**Fluxo do workflow:**
-1. Trigger recebe `email` e `nome`
-2. Nó HTTP chama API de enriquecimento com `{{ $trigger.parameters.email }}`
-3. Nó Atualizar Contato salva os dados no CRM
-4. Nó Retornar Resposta devolve ao agente as informações enriquecidas
-
----
-
-### Classificar intenção e rotear atendimento
-
-O agente passa a última mensagem do usuário para um workflow que usa um nó LLM para classificar a intenção e retorna a categoria.
-
-**Parâmetros:**
-
-| Nome | Tipo | Descrição | Obrigatório |
-|---|---|---|---|
-| `mensagem` | string | Texto da última mensagem do usuário | sim |
-
-**Resposta esperada:**
-
-```json
-{
-  "intencao": "suporte_tecnico",
-  "confianca": 0.94,
-  "departamento": "TI"
-}
-```
-
-O agente usa essa resposta para transferir o atendimento ao departamento correto.
-
----
-
-## Limites
-
-| Parâmetro | Valor |
-|---|---|
-| Máximo de parâmetros por trigger | 20 |
-| Timeout no modo Aguardar Resposta | 30 segundos |
-| Tipos de parâmetro suportados | `string`, `number`, `boolean` |
-| Workflows simultâneos por agente | Sem limite configurado por padrão |
 
 <Note>
-  O agente só consegue chamar este workflow se o workflow estiver **publicado**. Rascunhos não são expostos como ferramentas.
+  O agente só aciona este workflow se ele estiver **publicado**. Rascunhos não são expostos como ferramentas.
 </Note>
 
----
+## Como Funciona
 
-## Próximos passos
+O trigger **Requisição do Agente** transforma um workflow em uma ferramenta que agentes IA configurados na Timely podem acionar durante uma conversa. Quando o agente identifica que precisa executar o workflow, monta os parâmetros definidos no nó e dispara a chamada.
 
-- [Visão geral dos agentes](/guides/agents/overview) — configurar o agente para usar o workflow como ferramenta
-- [Nó HTTP Request](/guides/workflows/nodes/http) — chamar APIs externas dentro do workflow
-- [Nó LLM](/guides/workflows/nodes/llm) — usar IA para processar os dados recebidos do agente
-- [Visão geral dos nós](/guides/workflows/nodes/overview) — ver todos os tipos de nó disponíveis
+- Os parâmetros chegam via `{{ $trigger.parameters.nome_do_param }}`
+- O workflow consulta APIs externas, processa dados e pode retornar resposta estruturada ao agente
+- O modo `node` mantém o agente suspenso até o fluxo atingir um nó Retornar Resposta
+
+## Opções de Configuração
+
+- **Parâmetros** — campos que o agente enviará; cada um tem nome, tipo (`string`, `number` ou `boolean`), descrição e flag de obrigatoriedade
+- **Modo de resposta** — `immediate` (agente não aguarda o resultado) ou `node` (agente fica suspenso até o nó Retornar Resposta)
+
+## Casos de Uso Comuns
+
+- **Consulta em tempo real** — agente captura número do pedido na conversa, workflow busca status na API do ERP e retorna o resultado
+- **Enriquecimento de contato** — agente coleta e-mail do usuário, workflow consulta API de enriquecimento e salva dados no CRM
+- **Classificação e roteamento** — agente passa última mensagem para workflow com nó LLM que classifica a intenção e retorna a categoria

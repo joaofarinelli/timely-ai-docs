@@ -1,84 +1,65 @@
 ---
-title: "Planos"
-description: "Compare os planos Starter, Professional e Enterprise e saiba como fazer upgrade ou downgrade da sua assinatura."
+title: "Faturamento"
+description: "Visão geral do plano ativo, métodos de pagamento, extrato de cobranças e vínculo entre workspace e assinatura."
 ---
 
-A Timely.ai oferece três planos de assinatura. Todos incluem acesso aos agentes de IA, canais de atendimento e a base de créditos mensais. A diferença principal está nos recursos avançados, nos limites de uso e no suporte incluído.
+## Visão geral
 
-## Comparativo de planos
+A página de **Faturamento** centraliza tudo relacionado ao ciclo financeiro do workspace: plano contratado, status da assinatura, créditos consumidos e histórico de cobranças. O acesso é restrito ao `owner` do workspace — apenas essa role tem a permissão `manage_billing`.
 
-| Recurso | Starter | Professional | Enterprise |
-|---|---|---|---|
-| **Preço mensal** | R$ 97/mês | R$ 397/mês | R$ 1.497/mês |
-| **Preço anual** | R$ 1.047,60/ano | R$ 4.285,20/ano | R$ 16.167,60/ano |
-| **Créditos mensais** | 1.500 | 7.500 | 50.000 |
-| **Execuções de agente/mês** | 1.000 | 5.000 | Ilimitadas |
-| **Agentes de IA** | Ilimitados | Ilimitados | Ilimitados |
-| **Squads** | Ilimitados | Ilimitados | Ilimitados |
-| **Usuários** | 1 | Ilimitados | Ilimitados |
-| **Token de API personalizado** | Sim | Sim | Sim |
-| **Disparos inteligentes com IA** | Não | Sim | Sim |
-| **Follow-ups automáticos** | Não | Sim | Sim |
-| **Envio de áudios com IA (TTS)** | Não | Sim (5.000 chars/mês) | Sim (ilimitado) |
-| **Clonagem de voz** | Não | Sim | Sim |
-| **Tyme CRM** | Não | Sim | Sim |
-| **Integrações Composio** | Sim | Sim | Sim |
-| **Suporte** | Comunidade | Prioritário | Premium |
-| **SLA** | Melhor esforco | 48 h | 24 h |
+| Campo | Descrição |
+|---|---|
+| **Plano ativo** | Nome e status da assinatura contratada |
+| **Ciclo** | Mensal ou anual, com data da próxima renovação |
+| **Créditos do período** | Total incluído no plano vs. consumido até o momento |
+| **Status da assinatura** | `active`, `past_due`, `pending` ou `canceled` |
 
 <Note>
-  Os preços anuais representam uma economia de aproximadamente 10% em relação ao plano mensal equivalente. O valor é cobrado em parcela única no início do ciclo anual.
+  O status `past_due` indica que a última cobrança falhou. O workspace continua funcionando durante o período de carência, mas o acesso pode ser suspenso se o pagamento não for regularizado. Atualize o cartão para acionar uma nova tentativa automática.
 </Note>
 
-## Detalhes por plano
-
-### Starter — R$ 97/mês
-
-Indicado para profissionais autônomos e pequenos negócios que estão começando com automação de atendimento. Inclui um único usuário com acesso completo à plataforma, 1.500 créditos mensais e token de API para integrações básicas.
-
-### Professional — R$ 397/mês
-
-Para empresas em crescimento que precisam de mais volume, equipe com múltiplos usuários e recursos de automação avançada. Inclui disparos inteligentes, follow-ups automáticos, síntese de voz, Tyme CRM e suporte prioritário.
-
-### Enterprise — R$ 1.497/mês
-
-Para operações de grande escala com alto volume de atendimento. Execuções ilimitadas, 50.000 créditos mensais, TTS ilimitado, clonagem de voz sem restrições e suporte premium com SLA de 24 horas.
-
-## Período de teste (trial)
-
-Novos usuários têm acesso a um período de teste gratuito com recursos limitados. O trial expira automaticamente ao final do período — não é necessário cancelar manualmente. Ao expirar, você pode escolher um plano para continuar usando a plataforma.
-
-## Como trocar de plano
+## Adicionando ou atualizando um método de pagamento
 
 <Steps>
-  <Step title="Acesse Configurações → Billing">
-    No menu lateral, vá em **Configurações** e clique em **Billing**.
+  <Step title="Acesse Configurações > Faturamento">
+    No menu lateral, clique em **Configurações** e selecione **Faturamento**.
   </Step>
-  <Step title="Clique em Trocar plano">
-    Na seção do seu plano atual, clique em **Ver planos** ou **Trocar plano**.
+  <Step title="Clique em Atualizar método de pagamento">
+    O botão fica na seção **Pagamento** da página.
   </Step>
-  <Step title="Selecione o novo plano e período">
-    Escolha entre cobrança mensal ou anual. O valor exibido já reflete o desconto do ciclo anual.
+  <Step title="Preencha os dados do cartão">
+    Um formulário seguro é exibido. Insira número do cartão, validade, CVV e nome do titular. Os dados são transmitidos diretamente ao processador — a Timely.ai não armazena dados de cartão em seus servidores.
   </Step>
-  <Step title="Confirme a alteração">
-    - **Upgrade**: cobrança proporcional imediata. O novo plano entra em vigor na hora.
-    - **Downgrade**: o plano atual continua até o fim do ciclo contratado. A partir da próxima renovação, o novo plano passa a valer.
+  <Step title="Confirme e salve">
+    Clique em **Salvar cartão**. Uma cobrança de verificação de R$ 1,00 pode ser feita e estornada automaticamente para validar o instrumento.
   </Step>
 </Steps>
 
-<Warning>
-  Para trocar de plano sem uma assinatura ativa, você será redirecionado ao checkout do Stripe para informar o método de pagamento. Para contas com assinatura ativa, a troca ocorre sem novo checkout — o cartão já cadastrado é usado.
-</Warning>
+<Tip>
+  Se a assinatura está com status `past_due`, atualizar o cartão aciona automaticamente uma nova tentativa de cobrança. Não é necessário nenhuma ação adicional — o sistema tentará processar o pagamento pendente em seguida.
+</Tip>
 
-## Gerenciando a assinatura
+## Extrato de pagamentos
 
-Clique em **Gerenciar assinatura** na página de Billing para abrir o portal do Stripe. Por lá você pode:
+A tabela de extrato lista todas as cobranças realizadas na assinatura:
 
-- Atualizar o cartão de crédito
-- Visualizar e baixar faturas anteriores
-- Cancelar a assinatura (entra em vigor ao final do ciclo atual)
-- Reativar uma assinatura cancelada antes do vencimento
+| ID do extrato | Data de cobrança | Status | Valor |
+|---|---|---|---|
+| Identificador único da transação | Data em que a cobrança foi processada | Pago, Pendente ou Falhou | Valor em reais (BRL) |
 
-## Reativação
+Clique em **Baixar recibo** em qualquer linha para obter o documento em PDF. Os recibos podem ser usados para reembolso, comprovação fiscal ou lançamentos contábeis internos.
 
-Se você cancelou a assinatura e mudou de ideia antes do prazo final, é possível reativar diretamente na página de Billing clicando em **Reativar assinatura**. O plano continua sem interrupção.
+## Vínculo entre workspace e assinatura
+
+Cada workspace tem exatamente uma assinatura vinculada. Compreender esse vínculo é importante para gestão de múltiplos workspaces:
+
+- Créditos, limites de membros e execuções de agente são contabilizados **por workspace** — não são compartilhados entre workspaces distintos da mesma conta.
+- O plano do workspace A não interfere no plano do workspace B, mesmo que ambos estejam vinculados ao mesmo cartão de crédito.
+
+## Boas práticas
+
+- Configure o e-mail de faturamento para uma caixa de grupo financeira (ex.: financeiro@empresa.com) para garantir que as faturas cheguem mesmo com troca de colaboradores.
+- Baixe e arquive os recibos mensalmente para facilitar a conciliação contábil no encerramento do exercício.
+- Monitore o consumo de créditos na aba **Uso** antes de decidir sobre upgrade — upgrades retroativos não são aplicados.
+- Mantenha o cartão de crédito sempre atualizado. Cartões vencidos causam `past_due` e podem interromper o atendimento nos canais conectados.
+- Revise o plano a cada trimestre comparando o uso real com os limites contratados — workspaces em crescimento frequentemente subutilizam planos superiores por tempo demais.

@@ -1,21 +1,16 @@
 ---
-title: "Editor de prompt"
-description: "Como usar o editor de prompt da Timely.ai — histórico de versões, melhoria automática por IA, análise de qualidade e prompts condicionais."
+title: "Prompt do sistema"
+description: "Como usar o editor de prompt da Timely.ai: estrutura recomendada, análise de qualidade em tempo real, melhoria automática por IA e histórico de versões."
 ---
 
-O prompt de sistema é a instrução mais importante de um agente. Ele define quem o agente é, como ele se comunica, o que pode e o que não pode fazer. O editor de prompt da Timely.ai vai além de um campo de texto simples — ele tem histórico de versões, melhoria automática por IA e análise de qualidade em tempo real.
+O prompt de sistema é a instrução mais importante do agente. Ele define identidade, tom, restrições e comportamento esperado. O editor de prompt da Timely.ai vai além de um campo de texto — oferece análise de qualidade em tempo real, melhoria automática por IA e histórico de versões com restauração com um clique.
 
-## Visão geral
+Um prompt eficiente cobre quatro aspectos:
 
-O editor fica na aba **Prompt** das configurações do agente. Você escreve o prompt no painel principal e as ferramentas de IA ficam disponíveis na barra lateral.
-
-<Frame caption="Editor de prompt com análise de qualidade e sugestões">
-  <img src="/images/screenshots/placeholder-agent-prompt-editor.png" alt="Editor de prompt do agente" />
-</Frame>
-
-## Estrutura recomendada de prompt
-
-Um bom prompt de agente tem quatro seções principais:
+- **Identidade** — quem o agente é e qual empresa representa
+- **Tom e estilo** — como ele deve se comunicar, com exemplos quando necessário
+- **O que pode fazer** — capacidades e ações permitidas
+- **O que não deve fazer** — restrições explícitas para evitar respostas indesejadas
 
 ```
 # Identidade
@@ -23,122 +18,18 @@ Você é [Nome], assistente de [empresa/área].
 Seu objetivo é [objetivo principal].
 
 # Tom e estilo
-- [Bullet com regras de comunicação]
-- Exemplos: "seja direto", "não use gírias", "use bullet points quando listar itens"
+- Seja direto e objetivo
+- Use linguagem acessível, sem jargão técnico desnecessário
+- Responda em português do Brasil
 
 # O que você pode fazer
 - [Lista de capacidades permitidas]
 
 # O que você NÃO deve fazer
-- [Lista de restrições claras]
-- Exemplo: "Nunca mencione concorrentes"
-- Exemplo: "Nunca invente preços — consulte sempre a ferramenta X"
+- Nunca mencione concorrentes
+- Nunca invente preços — consulte sempre a ferramenta de catálogo
 ```
 
-<Tip>
-Inclua exemplos de respostas ideais dentro do prompt quando precisar de um estilo de comunicação muito específico. O modelo aprende por analogia.
-</Tip>
+> Um bom prompt não tenta cobrir todos os cenários — ele define o comportamento padrão com clareza e confia nas ferramentas e na base de conhecimento para os detalhes específicos.
 
-## Análise de qualidade em tempo real
-
-Conforme você escreve, o editor analisa o prompt e exibe um painel de sugestões priorizadas. A análise verifica:
-
-- Clareza da identidade do agente
-- Presença de restrições explícitas
-- Completude das instruções de comportamento
-- Possíveis ambiguidades que podem causar alucinações
-
-As sugestões são ordenadas por impacto. Aplique-as clicando no botão ao lado de cada item.
-
-## Melhoria automática por IA
-
-O botão **Melhorar com IA** envia o prompt atual para um modelo especializado que reescreve e otimiza o texto mantendo a intenção original.
-
-<Steps>
-  <Step title="Abra o painel de melhoria">
-    Clique em **Melhorar com IA** na barra de ferramentas do editor.
-  </Step>
-  <Step title="Aguarde a sugestão">
-    O modelo analisa o prompt e gera uma versão melhorada. O texto sugerido aparece em um painel de comparação.
-  </Step>
-  <Step title="Aceite ou descarte">
-    Clique em **Aceitar** para substituir o prompt atual ou em **Descartar** para manter o original.
-  </Step>
-</Steps>
-
-<Note>
-A melhoria automática preserva as regras de negócio e restrições que você escreveu. Se o resultado não refletir suas intenções, adicione mais contexto ao prompt e tente novamente.
-</Note>
-
-## Histórico de versões
-
-Toda vez que você salva o prompt, uma nova versão é criada automaticamente. O histórico fica acessível pelo botão **Histórico** no editor.
-
-<Frame caption="Dialog de histórico de versões do prompt">
-  <img src="/images/screenshots/placeholder-agent-prompt-history.png" alt="Histórico de versões do prompt" />
-</Frame>
-
-No histórico você pode:
-
-- Visualizar qualquer versão anterior completa
-- Comparar a versão selecionada com a atual
-- Restaurar uma versão anterior com um clique
-
-<Warning>
-Restaurar uma versão anterior substitui o prompt ativo imediatamente. Essa ação não pode ser desfeita — mas o prompt atual é salvo como uma nova versão antes da restauração, então nenhum texto é perdido.
-</Warning>
-
-## Limite de caracteres
-
-O prompt tem um limite máximo definido pela constante `PROMPT_MAX_LENGTH` da plataforma. O contador de caracteres fica visível no canto inferior do editor. Prompts muito longos aumentam o custo de tokens por execução.
-
-<Tip>
-Se precisar de muita informação contextual, prefira adicionar documentos na aba **Treinamento** em vez de colocar tudo no prompt. O sistema RAG injeta apenas os trechos relevantes para cada mensagem, economizando tokens.
-</Tip>
-
-## Prompts condicionais
-
-Você pode usar blocos condicionais no prompt para adaptar o comportamento do agente conforme variáveis de contexto, como o canal de atendimento ou informações do contato.
-
-Exemplo de prompt condicional por canal:
-
-```
-{{#if channel == "whatsapp"}}
-Use mensagens curtas, máximo 3 linhas por bloco.
-Prefira bullet points a parágrafos longos.
-{{else}}
-Você pode escrever respostas mais detalhadas no widget.
-{{/if}}
-```
-
-<Info>
-As variáveis disponíveis para condicionais variam conforme o canal e o plano. Consulte a [referência de variáveis de prompt](/api-reference/introduction) para a lista completa.
-</Info>
-
-## Casos de uso comuns
-
-<CardGroup cols={2}>
-  <Card title="Agente de suporte">
-    Inclua no prompt: lista de categorias de problemas que o agente resolve, instrução de quando escalar para humano e tom empático mas objetivo.
-  </Card>
-  <Card title="Agente comercial">
-    Inclua no prompt: produtos/serviços que pode apresentar, como qualificar o lead (perguntas chave), o que fazer quando o cliente pede desconto.
-  </Card>
-  <Card title="Agente de agendamento">
-    Inclua no prompt: horários disponíveis, como confirmar disponibilidade via ferramenta de calendário e mensagem de confirmação padrão.
-  </Card>
-  <Card title="Agente de e-commerce">
-    Inclua no prompt: política de troca e devolução, como consultar status de pedido via API e limites do que pode resolver sem escalar.
-  </Card>
-</CardGroup>
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Treinar o agente" href="/guides/agents/training">
-    Adicione documentos e Q&A para complementar o prompt com conhecimento específico.
-  </Card>
-  <Card title="Testar o agente" href="/guides/agents/settings/internal-chat">
-    Valide o prompt no Playground antes de publicar em produção.
-  </Card>
-</CardGroup>
+O editor analisa o prompt em tempo real e exibe sugestões priorizadas por impacto: clareza da identidade, presença de restrições explícitas, completude das instruções e possíveis ambiguidades. O botão **Melhorar com IA** reescreve e otimiza o texto mantendo a intenção original. O histórico de versões registra cada salvamento automaticamente — restaure qualquer versão anterior com um clique sem perder o conteúdo atual.

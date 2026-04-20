@@ -1,156 +1,60 @@
 ---
-title: "Criando uma Tabela"
-description: "Como criar uma tabela (datagrid) na Timely.ai: nome, descrição, tipos de coluna, campo obrigatório, busca semântica e permissões de acesso."
+title: "Criando Tabelas"
+description: "Como criar uma tabela (datagrid) na Timely.ai: nome, descrição, tipos de coluna, busca semântica, campos obrigatórios e gerenciamento de linhas."
 ---
 
-## Visão geral
+## Passo 1 — Crie uma Nova Tabela
 
-**Tabelas** (chamadas internamente de datagrids) são estruturas de dados que o agente pode consultar, filtrar e preencher durante as conversas. Diferente de uma base de conhecimento — que armazena texto não estruturado para busca semântica — uma tabela armazena dados estruturados em colunas e linhas, como um banco de dados leve acessível pelo agente.
+No menu lateral, acesse **Tabelas** (ou **Datagrids**). A tela exibe todas as tabelas existentes no workspace. Para criar uma nova:
 
-Casos de uso típicos:
+- Clique em **+ Adicionar tabela** no canto superior direito
+- Um modal de criação será exibido com dois campos obrigatórios
+- **Nome**: até 50 caracteres. Escolha um nome descritivo — o agente usa o nome para identificar qual tabela consultar quando há múltiplas disponíveis. Exemplos: "Catálogo de Produtos", "Agenda Outubro 2025", "Leads WhatsApp".
 
-- Catálogo de produtos com preço e disponibilidade
-- Agenda de eventos com data, horário e vagas
-- Registro de leads coletados pelo agente
-- Inventário de itens com controle de estoque
-- Base de clientes para consulta durante o atendimento
+## Passo 2 — Adicione Colunas
 
-Consulte [Visão Geral das Tabelas](/guides/tables/overview) para entender o modelo de dados completo antes de criar a primeira tabela.
+Com a tabela criada, adicione as colunas que estruturam os dados. Clique em **+ Adicionar coluna** na tela da tabela. O formulário de criação de coluna é aberto.
 
-## Pré-requisitos
+### Para adicionar uma coluna:
 
-- Role `manager`, `trainer` ou `owner` no workspace (permissão `manage_agents`).
-- Um workspace ativo.
+Preencha os campos do formulário:
 
-## Como criar uma tabela
+| Campo | Descrição | Requisitos |
+|-------|-----------|------------|
+| **Nome** | Identificador da coluna. O agente usa o nome para entender o que cada campo representa. | Máximo 50 caracteres. Use nomes claros: `preco_reais`, `disponivel`, `descricao_produto`. |
+| **Descrição** | Explicação do propósito da coluna para o agente. Quanto mais específica, melhor o agente entende quando e como preencher o campo. | Mínimo 3 caracteres, máximo 250. |
+| **Tipo** | Define qual valor a coluna aceita. Não pode ser alterado após a criação. | `String`, `Number` ou `Boolean`. |
+| **Busca semântica** | Quando ativada, vetoriza os valores para busca por linguagem natural. Disponível apenas para colunas `String`. | Opcional. Recomendado para colunas com texto descritivo. |
 
-<Steps>
-  <Step title="Acesse a seção de Tabelas">
-    No menu lateral, clique em **Tabelas** (ou **Datagrids**). A tela exibe todas as tabelas existentes no workspace, organizadas por data de criação.
-  </Step>
-  <Step title="Crie uma nova tabela">
-    Clique em **+ Adicionar tabela** no canto superior direito. Um modal de criação será exibido.
-  </Step>
-  <Step title="Preencha o nome">
-    Informe o nome da tabela (máximo 50 caracteres). Seja descritivo — o agente usa o nome para decidir qual tabela consultar quando há múltiplas disponíveis.
+<Note>
+  O tipo da coluna é permanente. Planeje os tipos antes de criar as colunas — se precisar mudar de `Number` para `String` depois, será necessário criar uma nova coluna e migrar os dados manualmente.
+</Note>
 
-    Bons exemplos: "Catálogo de Produtos", "Agenda de Eventos Outubro 2025", "Leads WhatsApp".
-  </Step>
-  <Step title="Escreva a descrição">
-    A descrição (mínimo 3 caracteres, máximo 250) é o campo mais importante para o agente. Ela é injetada diretamente no contexto do LLM como explicação de alto nível sobre o propósito da tabela.
+## Tipos de Coluna Suportados
 
-    Escreva em linguagem natural, explicando para que a tabela serve e quando o agente deve consultá-la. Exemplo:
+| Tipo | Descrição | Exemplos |
+|------|-----------|---------|
+| `String` | Texto livre de qualquer comprimento. Suporta busca semântica quando ativada. | nome do produto, descrição, status, URL, categoria |
+| `Number` | Valor numérico, inteiro ou decimal. Permite comparações numéricas pelo agente. | preço em reais, quantidade em estoque, nota de 1 a 5, capacidade |
+| `Boolean` | Verdadeiro ou falso. Ideal para flags e condições binárias. | disponível, ativo, destaque, aceita parcelamento |
 
-    > "Contém o catálogo completo de produtos disponíveis para venda, com nome, descrição, preço e quantidade em estoque. Consulte esta tabela sempre que o usuário perguntar sobre disponibilidade, preço ou características de produtos."
-  </Step>
-  <Step title="Clique em Criar tabela">
-    Clique em **Criar tabela**. A tabela é criada vazia e você é redirecionado para a tela de gerenciamento, onde pode adicionar colunas e linhas.
-  </Step>
-</Steps>
+## Passo 3 — Adicione e Edite Linhas
 
-## Adicionando colunas
+Com as colunas definidas, popule a tabela com dados. Há três formas de adicionar linhas:
 
-Com a tabela criada, adicione as colunas que estruturam os dados. Clique em **+ Adicionar coluna** na tela da tabela.
+- **Adição manual**: clique em **+ Adicionar linha** na grade de dados e preencha os valores célula a célula diretamente na interface. Útil para tabelas pequenas ou para registros individuais.
+- **Importação via CSV**: na tela da tabela, clique em **Importar CSV**. O arquivo deve ter cabeçalhos correspondentes exatamente aos nomes das colunas criadas. Valores de tipo incompatível geram erros de importação.
 
-### Campos de uma coluna
+O editor de grade funciona como uma planilha — clicar em uma célula abre o editor inline, Tab avança para a próxima célula e as alterações são salvas individualmente por célula de forma imediata.
 
-**Nome** (máximo 50 caracteres)
-Identificador da coluna. O agente usa o nome da coluna para entender o que cada campo representa ao inserir ou consultar dados. Use nomes claros: "preco_reais", "disponivel", "data_evento".
+## Passo 4 — Atualize ou Exclua Tabelas
 
-**Descrição** (mínimo 3 caracteres, máximo 250)
-Explicação do propósito da coluna para o agente. Quanto mais específica, melhor o agente entende quando e como preencher o campo. Exemplo: "Preço do produto em reais, sem vírgula, apenas número inteiro. Ex.: 4990 para R$ 49,90."
+Tabelas podem ser editadas a qualquer momento: adicione novas colunas, renomeie colunas existentes ou ajuste as descrições. Para excluir uma tabela:
 
-**Tipo**
-O tipo define qual valor a coluna aceita. O tipo **não pode ser alterado** após a criação da coluna — planeje antes.
+1. Na lista de tabelas, clique no menu de opções da tabela desejada.
+2. Selecione **Excluir tabela**.
+3. Confirme a exclusão na caixa de diálogo.
 
-| Tipo | Aceita | Exemplos |
-|------|--------|---------|
-| `String` | Texto livre | nome, descrição, status |
-| `Number` | Número decimal ou inteiro | preço, quantidade, nota |
-| `Boolean` | Verdadeiro ou falso | disponível, ativo, destaque |
-
-**Busca semântica** (apenas para colunas do tipo `String`)
-Quando ativada, os valores desta coluna são vetorizados e indexados para busca por similaridade usando o modelo `text-embedding-3-small`. Isso permite que o agente encontre linhas com base em linguagem natural, não apenas correspondência exata.
-
-Ative para colunas com texto descritivo (descrição do produto, observações, categorias em formato de texto). Não ative para colunas com identificadores únicos, códigos ou dados estruturados onde a busca exata é suficiente.
-
-**Campo obrigatório**
-Quando marcado, o agente só executa a ação de inserção após coletar um valor para este campo na conversa. Útil para garantir que dados críticos não fiquem em branco (ex.: nome do lead, e-mail de contato).
-
-## Tipos de coluna em detalhe
-
-### String
-
-Armazena qualquer texto. Exemplos de uso:
-
-- Nome do produto ou cliente
-- Descrição longa
-- Status em formato de texto ("disponível", "esgotado", "sob consulta")
-- URL ou link
-
-Quando a busca semântica está ativada, o agente pode buscar por "produtos para cabelo seco" e encontrar linhas cuja descrição menciona "hidratação" ou "nutrição capilar" — sem precisar da palavra exata.
-
-### Number
-
-Armazena valores numéricos (inteiros ou decimais). Exemplos de uso:
-
-- Preço (em centavos ou reais)
-- Quantidade em estoque
-- Nota de avaliação (1 a 5)
-- Idade ou capacidade
-
-O agente pode comparar valores numéricos em filtros (ex.: "produtos com preço abaixo de 100").
-
-### Boolean
-
-Armazena `true` ou `false`. Exemplos de uso:
-
-- Disponível (sim/não)
-- Destaque na vitrine
-- Aceita pagamento parcelado
-- Item ativo no catálogo
-
-## Importando dados
-
-Após criar a tabela e as colunas, você pode popular os dados de duas formas:
-
-**Importação de CSV**
-Na tela da tabela, clique em **Importar CSV**. O arquivo deve ter cabeçalhos correspondentes exatamente aos nomes das colunas criadas. Tipos incompatíveis (texto numa coluna numérica, por exemplo) geram erros de importação.
-
-**Adição manual linha a linha**
-Clique em **+ Adicionar linha** na grade de dados. Preencha os valores célula a célula diretamente na interface. Útil para tabelas pequenas ou para adicionar registros individuais.
-
-**Inserção pelo agente**
-Quando a tabela está conectada a um agente com a ferramenta de inserção ativa, o próprio agente insere novas linhas durante as conversas (ex.: registrando leads coletados). Consulte [Integrando Tabelas com Agentes](/guides/tables/integrating-agents).
-
-## Permissões
-
-As tabelas seguem as permissões do workspace:
-
-- **`manage_agents`** (owner, manager, trainer) — pode criar, editar e excluir tabelas e colunas.
-- **Agentes de IA** — acessam as tabelas via ferramentas internas durante as conversas, sem restrição por role de usuário.
-- Membros com role `attendant` ou `member` **não têm acesso** à interface de tabelas — elas são recursos de configuração, não de atendimento.
-
-## Boas práticas
-
-- Descreva a tabela pensando em quem não a criou. O agente lê a descrição para decidir quando consultá-la — seja específico sobre casos de uso.
-- Ative busca semântica apenas em colunas onde a linguagem natural faz sentido. Colunas de ID, SKU ou código de produto não se beneficiam da busca semântica.
-- Marque como obrigatório apenas os campos verdadeiramente críticos. Campos obrigatórios em excesso tornam a coleta de dados pelo agente mais difícil e podem frustrar o usuário.
-- Para tabelas com muitas linhas (mais de 500), prefira importação via CSV em vez de adição manual.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Busca semântica" href="/guides/tables/semantic-search">
-    Como funciona a indexação e a busca por linguagem natural em tabelas.
-  </Card>
-  <Card title="Integrando com agentes" href="/guides/tables/integrating-agents">
-    Configure o agente para consultar, filtrar e inserir dados na tabela.
-  </Card>
-  <Card title="Visão geral" href="/guides/tables/overview">
-    Modelo de dados e arquitetura das tabelas na Timely.ai.
-  </Card>
-  <Card title="Agentes" href="/guides/agents/overview">
-    Como configurar agentes que usam tabelas como ferramentas.
-  </Card>
-</CardGroup>
+<Warning>
+  A exclusão de uma tabela é permanente e irreversível. Todos os dados (linhas e colunas) são apagados, e os agentes que usavam a tabela deixam de ter acesso a ela imediatamente. Desconecte a tabela dos agentes antes de excluí-la para evitar erros nas conversas em andamento.
+</Warning>

@@ -1,124 +1,57 @@
 ---
 title: "Conectando uma KB ao Agente"
-description: "Como ativar uma base de conhecimento num agente, configurar prioridade entre múltiplas bases, ajustar o top-k de retrieval e o threshold de similaridade."
+description: "Como ativar uma base de conhecimento num agente, configurar os parâmetros de retrieval e boas práticas para múltiplas bases."
 ---
 
-## Visão geral
+## Como Funciona a Conexão
 
-Criar uma base de conhecimento não é suficiente para que o agente a use — é preciso conectar explicitamente a base ao agente. Essa conexão é feita na aba de treinamento do agente e pode ser configurada com parâmetros de busca que controlam quantos e quão relevantes precisam ser os resultados retornados.
+Criar uma base de conhecimento não é suficiente para que o agente a utilize — é necessário conectar explicitamente a base ao agente. Essa conexão é estabelecida na aba de treinamento do agente e ativa o pipeline de retrieval para todas as conversas atendidas por ele.
 
-Um agente pode ter múltiplas bases conectadas simultaneamente. Nesse caso, a busca é realizada em todas as bases e os resultados são mesclados antes de serem injetados no contexto do LLM.
+Quando a conexão está ativa, o agente executa automaticamente uma busca semântica na base a cada mensagem recebida. Os chunks com similaridade acima do threshold configurado são incluídos no contexto enviado ao LLM junto com a mensagem do usuário. A resposta é então formulada com base nesses trechos recuperados.
 
-## Pré-requisitos
+Um agente pode ter múltiplas bases conectadas simultaneamente. Nesse caso, a busca é executada em todas as bases ao mesmo tempo. Os resultados são ordenados por similaridade e os melhores chunks do conjunto total são selecionados — não um top-k por base.
 
-- Uma [base de conhecimento criada](/guides/knowledge/creating) com ao menos um documento no status **Indexado**.
-- Role `manager`, `trainer` ou `owner` no workspace.
-- Um agente criado no workspace.
-
-## Como conectar
+## Conectando uma Base de Conhecimento
 
 <Steps>
   <Step title="Abra o agente">
     No menu lateral, acesse **Agentes** e clique no agente que receberá a base de conhecimento.
   </Step>
   <Step title="Acesse a aba Treinamento">
-    Dentro da tela do agente, clique na aba **Treinamento** (ou **Knowledge**, dependendo da versão da interface). Esta aba centraliza todas as fontes de conhecimento do agente.
+    Dentro da tela do agente, clique na aba **Treinamento** (ou **Knowledge**). Esta aba centraliza todas as fontes de conhecimento do agente.
   </Step>
-  <Step title="Adicione a base de conhecimento">
+  <Step title="Adicione a base">
     Na seção **Bases de conhecimento**, clique em **+ Adicionar base**. Uma lista das bases disponíveis no workspace será exibida. Selecione a base desejada e confirme.
   </Step>
   <Step title="Configure os parâmetros de retrieval">
-    Após adicionar a base, os parâmetros de busca ficam disponíveis para edição:
+    Após adicionar, os parâmetros ficam disponíveis para edição:
 
     - **Top-k** — número máximo de chunks retornados por consulta. Padrão: `5`. Valores maiores trazem mais contexto, mas aumentam o tamanho do prompt enviado ao LLM.
-    - **Threshold** — limiar mínimo de similaridade coseno (0 a 1). Padrão: `0.7`. Chunks com similaridade abaixo desse valor são descartados. Valores mais baixos retornam mais resultados (mais abrangente); valores mais altos exigem maior proximidade semântica (mais preciso).
-  </Step>
-  <Step title="Salve a configuração">
-    Clique em **Salvar**. A base passa a ser consultada automaticamente em toda conversa atendida por esse agente a partir desse momento.
+    - **Threshold** — limiar mínimo de similaridade coseno (0 a 1). Padrão: `0.7`. Chunks com similaridade abaixo desse valor são descartados automaticamente.
   </Step>
 </Steps>
 
-## Parâmetros de retrieval em detalhe
+## Conectando a um Squad
 
-### Top-k
+Um squad é um grupo de agentes especializados que colaboram numa mesma conversa. Quando uma base de conhecimento é conectada ao squad (em vez de a um agente específico), todos os agentes do squad passam a consultá-la durante suas interações.
 
-O `top-k` define quantos chunks (fragmentos de texto) são recuperados da base e injetados no contexto do LLM antes de cada resposta do agente.
+Acesse a configuração do squad, abra a aba de **Bases de conhecimento** e adicione a base da mesma forma que faria para um agente individual. A base fica compartilhada entre todos os membros do squad sem duplicação — o conteúdo é indexado uma única vez e consultado por todos.
 
-| Top-k | Efeito |
-|-------|--------|
-| 3 | Respostas mais focadas, menor custo de tokens, risco de perder contexto relevante |
-| 5 | Equilíbrio padrão entre abrangência e custo |
-| 10 | Mais contexto disponível para perguntas complexas, mas aumenta o tamanho do prompt |
+Use essa abordagem quando o conhecimento é transversal a todos os agentes do squad (ex.: políticas gerais da empresa). Para conhecimento especializado de um agente específico (ex.: catálogo de produtos consultado apenas pelo agente de vendas), conecte a base diretamente ao agente, não ao squad.
 
-<Tip>
-  Para bases de Q&A com respostas curtas e objetivas, um top-k de 3 é suficiente. Para bases com documentos técnicos longos onde o contexto pode estar distribuído em múltiplos trechos, use top-k de 7 a 10.
-</Tip>
+## Cenário de Exemplo
 
-### Threshold de similaridade
+Uma empresa de e-commerce tem três agentes: Suporte, Vendas e Financeiro. Cada um usa bases específicas:
 
-O `threshold` é o critério de qualidade mínima para que um chunk seja incluído na resposta. É um valor de similaridade coseno entre 0 e 1:
+- **Suporte**: base "Perguntas Frequentes" + base "Políticas de Troca e Devolução"
+- **Vendas**: base "Catálogo de Produtos 2025" + base "Promoções Vigentes"
+- **Financeiro**: base "Condições de Parcelamento" + base "FAQ Pagamentos"
 
-- **0.9** — apenas resultados muito próximos semanticamente. Poucos falsos positivos, mas pode retornar zero resultados se o conteúdo não for exato.
-- **0.7** — equilíbrio padrão recomendado para a maioria das bases.
-- **0.5** — mais abrangente; inclui resultados vagamente relacionados. Útil para bases com linguagem variada onde a exatidão semântica é menor.
+Quando um cliente pergunta sobre prazo de entrega, o agente de Suporte busca nas duas bases conectadas a ele, recupera os trechos relevantes da base "Políticas de Troca e Devolução" e responde com os prazos reais da empresa.
 
-Se o agente "não sabe" algo que deveria saber, o primeiro ajuste é reduzir o threshold. Se o agente traz informações tangencialmente relacionadas que confundem a resposta, aumente o threshold.
+## Boas Práticas
 
-## Múltiplas bases por agente
-
-Um agente pode ter várias bases conectadas. O comportamento nesse caso:
-
-- A busca é executada em **todas as bases simultaneamente**.
-- Os resultados de cada base são ordenados por similaridade.
-- Os `top-k` chunks mais relevantes do conjunto total são selecionados (não top-k por base).
-- Não há diferenciação de fonte nos chunks injetados no contexto — o LLM recebe o texto, não o nome da base.
-
-### Prioridade entre bases
-
-Na aba de treinamento, você pode reordenar as bases conectadas. A ordem define a prioridade quando dois chunks de bases diferentes têm similaridade idêntica — o chunk da base com maior prioridade é preferido no desempate.
-
-Para separar conhecimentos com propósitos muito distintos (ex.: FAQ de suporte vs. catálogo de produtos), prefira conectar bases separadas ao invés de misturar tudo numa base única. Isso facilita a manutenção e permite desconectar uma base sem afetar a outra.
-
-## Desconectando uma base
-
-Para remover uma base de um agente sem excluir a base:
-
-1. Acesse a aba **Treinamento** do agente.
-2. Encontre a base na lista.
-3. Clique no ícone de remoção (lixeira ou X) ao lado da base.
-4. Confirme a remoção.
-
-A base continua existindo no workspace e pode ser reconectada ao mesmo agente ou a outros agentes a qualquer momento. Nenhum dado de indexação é perdido.
-
-## Testando a conexão
-
-Após conectar a base, use o chat de teste do agente para verificar se o retrieval está funcionando:
-
-1. Abra o agente e acesse a aba **Testar** (ou o chat de preview).
-2. Faça uma pergunta diretamente relacionada a um conteúdo indexado na base.
-3. Se a resposta for precisa e baseada no conteúdo da base, o retrieval está funcionando.
-4. Se o agente responder de forma genérica ou errada, verifique o status dos documentos (devem estar **Indexados**) e tente reduzir o threshold.
-
-## Boas práticas
-
-- Sempre verifique o status de processamento dos documentos antes de fazer o primeiro teste. Documentos em status **Processando** ainda não contribuem para as buscas.
-- Ajuste o threshold de forma incremental — reduza em 0.05 por vez e reavalie após cada ajuste em vez de fazer mudanças drásticas.
-- Para bases com conteúdo muito específico (ex.: tabela de preços com números exatos), prefira adicionar esse conteúdo como Q&A em vez de documento — Q&As são indexados com mais controle sobre a granularidade.
-- Monitore os misses de retrieval usando o [painel de analytics](/guides/analytics) para identificar perguntas frequentes que a base não consegue responder.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Boas práticas" href="/guides/knowledge/best-practices">
-    Dicas de granularidade, limpeza e monitoramento de bases de conhecimento.
-  </Card>
-  <Card title="Criando uma KB" href="/guides/knowledge/creating">
-    Como criar e popular uma nova base de conhecimento.
-  </Card>
-  <Card title="Website Crawler" href="/guides/knowledge/website-crawler">
-    Indexe páginas do seu site automaticamente.
-  </Card>
-  <Card title="Agentes" href="/guides/agents/overview">
-    Visão geral do painel de agentes e configurações disponíveis.
-  </Card>
-</CardGroup>
+- Antes de conectar a base ao agente, verifique se os documentos estão com status **Indexado**. Documentos em **Processando** ainda não contribuem para as buscas e podem gerar a impressão de que a base não funciona.
+- Ajuste o threshold de forma incremental: reduza em 0.05 por vez e reavalie o comportamento do agente após cada ajuste. Mudanças drásticas tornam difícil isolar o efeito.
+- Separe conhecimentos com propósitos muito distintos em bases diferentes. Uma base "FAQ de Suporte" e uma base "Catálogo de Produtos" devem ser bases separadas — facilita a manutenção e permite desconectar uma sem afetar a outra.
+- Para bases com conteúdo técnico e denso, aumente o top-k para 7 a 10. Para bases de Q&A com respostas curtas, top-k de 3 é suficiente e reduz o custo de tokens.

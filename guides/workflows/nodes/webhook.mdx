@@ -1,186 +1,111 @@
 ---
 title: "Nó Webhook"
-description: "Receba requisições HTTP externas e use o payload como ponto de entrada do seu workflow."
+description: "Receba requisições HTTP externas e use o payload como ponto de entrada do seu workflow na Timely.ai."
 ---
 
-## O que faz
+## Como Funciona
 
-O nó Webhook cria um endpoint HTTP dedicado para o seu workflow. Qualquer sistema externo — um e-commerce, um formulário, um ERP ou outro serviço — pode enviar uma requisição para essa URL e disparar a execução imediatamente.
+O nó Webhook gera um endpoint HTTP dedicado ao seu workflow. Quando um sistema externo — um e-commerce, um formulário, um ERP ou qualquer serviço — envia uma requisição para essa URL, a Timely valida a chamada e inicia a execução imediatamente.
 
-Ele opera em dois modos de resposta:
+O payload completo da requisição fica disponível para todos os nós seguintes via `{{ $trigger }}`. Isso inclui o corpo da requisição (`$trigger.body`), os headers enviados (`$trigger.headers`), os parâmetros de query string (`$trigger.query`) e o método HTTP utilizado (`$trigger.method`).
 
-- **Imediata** — o workflow aceita a requisição e retorna um body fixo configurado no próprio nó, sem aguardar o processamento completo.
-- **Aguardar Nó de Resposta** — a requisição fica suspensa até o workflow alcançar um nó [Retornar Resposta](/guides/workflows/nodes/webhook#nó-retornar-resposta), que define o status code e o body dinamicamente.
+O nó opera em dois modos de resposta distintos. No modo **immediate**, o endpoint responde ao chamador assim que recebe a requisição, com um body fixo que você define — o workflow continua executando em paralelo sem bloquear a chamada. No modo **node**, a requisição fica suspensa até o fluxo atingir um nó Retornar Resposta, que define o status code e o corpo da resposta de forma dinâmica com base nos dados processados.
 
----
+<Note>
+  Salve o workflow pelo menos uma vez antes de tentar copiar a URL do webhook. A URL só é gerada após o primeiro salvamento.
+</Note>
 
-## Entrada e saída
+## Opções de Configuração
 
-**Entrada:** requisição HTTP enviada por um sistema externo para a URL gerada automaticamente.
+| Campo | Descrição |
+|---|---|
+| URL gerada | Endpoint exclusivo do workflow — copie e envie ao sistema externo |
+| Método HTTP | `GET`, `POST`, `PUT`, `PATCH` ou `DELETE` — padrão `POST` |
+| Autenticação | `none` ou `bearer` — controla validação do header `Authorization` |
+| Token Bearer | Segredo usado para validar chamadas quando autenticação está ativa |
+| Origens CORS | Domínios autorizados a chamar o webhook via browser — vazio aceita `*` |
+| Modo de resposta | `immediate` (resposta fixa imediata) ou `node` (aguarda nó de resposta) |
 
-**Output exposto para nós seguintes:**
+## Opções de Autenticação
+
+### Nenhuma
+
+Quando definida como **Nenhuma**, o endpoint aceita qualquer requisição sem validar credenciais. Use apenas para integrações internas, redes privadas ou casos em que a segurança é garantida por outro mecanismo — como um IP allowlist no sistema chamador.
+
+Requisições sem autenticação são adequadas para callbacks entre serviços dentro de uma mesma infraestrutura controlada, onde expor o endpoint publicamente sem proteção não representa risco.
+
+### Bearer Authentication
+
+Quando definida como **Bearer Token**, a Timely valida o header `Authorization` em cada requisição recebida. Requisições que não incluam o header ou que apresentem um token diferente do configurado recebem `401 Unauthorized` automaticamente, sem acionar a execução do workflow.
+
+| Campo | Detalhe |
+|---|---|
+| Header esperado | `Authorization: Bearer {seu-token-secreto}` |
+| Comportamento sem token | Retorna `401 Unauthorized` e bloqueia a execução |
+
+Use uma string aleatória longa como token — pelo menos 32 caracteres — e nunca exponha esse valor em logs ou interfaces públicas. O campo exibe o token mascarado por padrão; clique no ícone de olho para revelar temporariamente.
+
+## Modo de Teste do Nó
+
+O painel do nó Webhook oferece um modo de teste integrado que permite capturar uma requisição real antes de publicar o workflow.
+
+<Note>
+  O modo de teste fica disponível apenas após salvar o workflow. Clique em **Salvar** para gerar a URL e habilitar o botão **Iniciar Teste**.
+</Note>
+
+Para testar o webhook:
+
+1. Clique em **Iniciar Teste** — o sistema começa a escutar na URL do webhook por até 60 segundos.
+2. Envie uma requisição de teste do sistema externo (ou use curl, Postman ou similar).
+3. O payload capturado aparece em tempo real no painel, incluindo body, headers, query params e método.
+4. Clique em **Fixar Output** para usar os dados reais como valores de exemplo ao configurar os nós seguintes.
+
+Exemplo de payload capturado após o teste:
 
 ```json
 {
-  "body":    { ... },
-  "headers": { "content-type": "application/json", ... },
-  "query":   { "param": "valor" },
-  "method":  "POST"
-}
-```
-
-Acesse qualquer campo via `{{ $trigger.body.campo }}`, `{{ $trigger.headers.authorization }}` ou `{{ $trigger.query.page }}`.
-
----
-
-## Configuração
-
-<Steps>
-  <Step title="Copie a URL gerada">
-    Após salvar o workflow pela primeira vez, a URL aparece no painel do nó no formato:
-    ```
-    https://app.timely.ai/api/webhooks/{workspace-id}/{workflow-id}
-    ```
-    Clique no ícone de cópia para enviá-la ao sistema externo.
-  </Step>
-  <Step title="Escolha o método HTTP">
-    O padrão é `POST`. Altere para `GET`, `PUT`, `PATCH` ou `DELETE` se o sistema externo exigir.
-  </Step>
-  <Step title="Configure a autenticação">
-    Selecione **Bearer Token** e defina um token secreto. A Timely valida o header `Authorization: Bearer {token}` a cada requisição recebida. Requisições sem o token ou com token inválido recebem `401 Unauthorized`.
-
-    Se nenhuma autenticação for necessária, deixe o campo como **Nenhuma** — mas só faça isso para integrações internas ou em ambientes controlados.
-  </Step>
-  <Step title="Defina origens CORS permitidas">
-    Opcional. Adicione domínios como `https://meusite.com` para restringir quais origens podem chamar o webhook a partir de browsers. Deixe vazio para aceitar `*`.
-  </Step>
-  <Step title="Escolha o modo de resposta">
-    - **Imediata:** configure o status code (ex.: `200`), o formato (`JSON` ou texto) e o corpo fixo da resposta.
-    - **Aguardar Nó de Resposta:** adicione um nó [Retornar Resposta](/guides/workflows/nodes/webhook#nó-retornar-resposta) ao final do fluxo para controlar a resposta dinamicamente.
-  </Step>
-  <Step title="Teste o webhook">
-    Clique em **Iniciar Teste** no painel do nó. O sistema fica escutando na URL por até 60 segundos. Envie uma requisição de teste e o payload capturado aparece em tempo real. Clique em **Fixar Output** para usar os dados reais nos campos dos nós seguintes durante a configuração.
-  </Step>
-</Steps>
-
----
-
-## Exemplos
-
-### Receber notificação de pagamento aprovado
-
-<CodeGroup>
-```bash Requisição de entrada
-curl -X POST https://app.timely.ai/api/webhooks/ws_abc123/wf_xyz789 \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer meu-token-secreto" \
-  -d '{
-    "evento": "pagamento.aprovado",
-    "pedido_id": "ORD-9821",
-    "valor": 299.90,
-    "cliente": {
-      "nome": "Ana Lima",
-      "email": "ana@empresa.com",
-      "telefone": "5511999887766"
-    }
-  }'
-```
-
-```json Output disponível para nós seguintes
-{
   "body": {
-    "evento": "pagamento.aprovado",
-    "pedido_id": "ORD-9821",
-    "valor": 299.90,
-    "cliente": {
-      "nome": "Ana Lima",
-      "email": "ana@empresa.com",
-      "telefone": "5511999887766"
-    }
+    "evento": "pedido.criado",
+    "pedido_id": "ORD-5521",
+    "cliente_id": "C-881"
   },
   "headers": {
     "content-type": "application/json",
-    "authorization": "Bearer meu-token-secreto"
+    "authorization": "Bearer meu-token"
   },
   "query": {},
   "method": "POST"
 }
 ```
-</CodeGroup>
 
-No nó seguinte você referencia os dados assim:
+## Comportamento de Resposta
 
-| Expressão | Valor |
+| Modo | Comportamento |
 |---|---|
-| `{{ $trigger.body.evento }}` | `pagamento.aprovado` |
-| `{{ $trigger.body.cliente.email }}` | `ana@empresa.com` |
-| `{{ $trigger.body.valor }}` | `299.90` |
+| `immediate` | Responde ao chamador imediatamente com o body fixo configurado; o workflow continua em segundo plano |
+| `node` | Mantém a conexão aberta até o nó Retornar Resposta ser alcançado; timeout de 30000ms |
 
----
+## Casos de Uso Comuns
 
-### Resposta dinâmica com Nó Retornar Resposta
-
-Quando o modo é **Aguardar Nó de Resposta**, o fluxo processa os dados e o nó de resposta devolve ao chamador:
-
-<CodeGroup>
-```json Corpo do nó Retornar Resposta (template)
-{
-  "status": "processado",
-  "pedido_id": "{{ $trigger.body.pedido_id }}",
-  "mensagem": "Pagamento de R$ {{ $trigger.body.valor }} confirmado."
-}
-```
-
-```json Resposta HTTP enviada ao chamador
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-  "status": "processado",
-  "pedido_id": "ORD-9821",
-  "mensagem": "Pagamento de R$ 299.90 confirmado."
-}
-```
-</CodeGroup>
-
----
-
-## Nó Retornar Resposta
-
-Este nó terminal encerra o workflow e envia uma resposta HTTP estruturada de volta ao chamador. É necessário apenas quando o trigger Webhook está configurado no modo **Aguardar Nó de Resposta**.
-
-**Campos configuráveis:**
-
-| Campo | Opções | Descrição |
-|---|---|---|
-| Código de Status | 200, 201, 202, 204, 400, 401, 403, 404, 500 | Código HTTP da resposta |
-| Content-Type | `application/json`, `text/plain`, `text/html` | Formato do corpo |
-| Corpo | Template com `{{ }}` | Conteúdo da resposta |
-
-**Variáveis disponíveis no corpo:**
-
-| Expressão | Fonte |
+| Cenário | Configuração recomendada |
 |---|---|
-| `{{ $trigger }}` | Payload original do webhook |
-| `{{ $json }}` | Output do último nó executado |
-| `{{ $vars.nome }}` | Variáveis do workflow |
-| `{{ node_key.campo }}` | Output de um nó específico |
+| Notificação de pagamento aprovado | POST com Bearer Token, modo `immediate` |
+| Consulta síncrona de dados via API | POST com Bearer Token, modo `node` com Retornar Resposta |
 
----
+## Boas Práticas
 
-## Limites
+- Sempre configure Bearer Token em endpoints expostos à internet — nunca deixe webhooks públicos sem autenticação
+- Use o modo `node` apenas quando o sistema chamador esperar a resposta de forma síncrona
+- Adicione um nó Definir Variável logo após o trigger para extrair e renomear os campos do payload
+- Valide o campo `$trigger.method` em fluxos que aceitam mais de um método HTTP
+- Documente a URL e o token do webhook em um local seguro — a URL não muda após a criação, mas o token pode ser rotacionado recriando o campo
 
-| Parâmetro | Valor |
+## Resumo
+
+| Capacidade | Detalhe |
 |---|---|
-| Tamanho máximo do body | 5 MB |
-| Timeout aguardando resposta (modo node) | 30 segundos |
-| Requisições simultâneas por workflow | Sem limite configurado por padrão |
-| Autenticação suportada | Bearer Token |
-
----
-
-## Próximos passos
-
-- [Visão geral dos nós](/guides/workflows/nodes/overview) — ver todos os tipos de nó disponíveis
-- [Nó HTTP Request](/guides/workflows/nodes/http) — chamar uma API externa como próximo passo após receber o webhook
-- [Nó Variáveis](/guides/workflows/nodes/variables) — extrair e armazenar campos do payload para uso posterior
+| Métodos suportados | GET, POST, PUT, PATCH, DELETE |
+| Autenticação | Nenhuma ou Bearer Token |
+| Modos de resposta | `immediate` ou `node` (timeout 30000ms) |
+| Payload disponível | `$trigger.body`, `$trigger.headers`, `$trigger.query`, `$trigger.method` |
+| Teste integrado | Captura requisição real e permite fixar output para configuração |

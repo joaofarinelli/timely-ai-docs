@@ -1,76 +1,67 @@
 ---
 title: "Criando um agente do zero"
-description: "Passo a passo para criar um agente manualmente na Timely: escolher modelo, definir nome, role, prompt e salvar."
+description: "Passo a passo para criar um agente manualmente na Timely.ai: escolher o modelo, definir nome, role, prompt e salvar com controle total desde o início."
 ---
 
-## Visão geral
+A criação manual dá a você controle direto sobre cada parâmetro do agente. Em vez de passar por um fluxo conversacional guiado, você preenche os campos de identidade, escolhe o modelo de linguagem e escreve o prompt inicial diretamente nos formulários da plataforma.
 
-A criação manual dá a você controle total sobre cada parâmetro do agente desde o primeiro momento. Em vez de responder perguntas guiadas, você preenche diretamente os campos de identidade, escolhe o modelo de linguagem e escreve o prompt inicial. Essa rota é ideal quando você já sabe exatamente o que o agente precisa fazer — por exemplo, ao replicar uma configuração que já funciona em outro workspace ou ao criar agentes com instruções muito específicas.
+Essa rota é recomendada quando você já tem clareza sobre o que o agente precisa fazer — por exemplo, ao replicar uma configuração que já funciona em outro workspace, ao criar agentes com instruções muito específicas, ou quando a velocidade de configuração é mais importante do que a orientação passo a passo.
 
-Use a criação manual quando precisar de precisão imediata, sem querer passar pela etapa conversacional. Qualquer campo pode ser ajustado depois, então não existe comprometimento definitivo ao salvar.
+Qualquer campo pode ser ajustado depois da criação. Não existe comprometimento definitivo ao salvar — o agente fica em status **Rascunho** até você publicá-lo em um canal.
 
-## Como configurar
+## Como criar
 
 <Steps>
-  <Step title="Abra o painel de Agentes e clique em Novo agente">
-    No menu lateral, acesse **Agentes**. Clique no botão **+ Novo agente** no canto superior direito. Um diálogo vai aparecer perguntando como você quer criar o agente.
+  <Step title="Acesse a seção de Agentes">
+    No menu lateral da Timely.ai, clique em **Agentes**. Clique no botão **+ Novo agente** no canto superior da página.
   </Step>
 
-  <Step title="Escolha a opção de criação manual">
-    Selecione **Criar manualmente**. Você será levado direto ao formulário de configuração, sem passar pelo fluxo conversacional.
+  <Step title="Selecione a criação manual">
+    No diálogo de escolha que aparece, clique em **Criar manualmente**. Você será levado diretamente ao formulário de configuração, sem passar pelo fluxo conversacional.
   </Step>
 
-  <Step title="Defina o nome interno do agente">
-    No campo **Nome**, escreva o identificador interno — esse é o nome que aparece para sua equipe na UI da Timely, não para o usuário final. Use algo descritivo como "Suporte Técnico L1" ou "Vendas Inbound".
+  <Step title="Defina o nome interno">
+    No campo **Nome**, escreva o identificador interno do agente. Esse nome aparece para sua equipe nos logs, relatórios e na lista de agentes — não é exibido para o cliente final. Use algo descritivo como "Suporte Técnico L1" ou "Vendas Inbound BR".
   </Step>
 
-  <Step title="Escolha o modelo de linguagem">
-    Clique no seletor de modelo. Os provedores disponíveis são OpenAI, Anthropic, Google e OpenRouter. Cada modelo exibe o custo em créditos por mensagem. Para começar, o **Claude Sonnet 4.6** (4 créditos/msg) oferece boa relação entre qualidade e custo para a maioria dos casos de suporte.
+  <Step title="Defina o objetivo do agente">
+    No campo **Objetivo**, descreva em uma ou duas frases o que o agente deve fazer. Esse texto alimenta o prompt inicial gerado automaticamente pela plataforma como ponto de partida.
+
+    Exemplos:
+    - "Atender clientes no pós-venda, responder sobre status de pedidos e iniciar processos de troca."
+    - "Qualificar leads inbound, coletar nome, e-mail e orçamento antes de passar para o time comercial."
   </Step>
 
-  <Step title="Defina a role do agente">
-    No campo **Role**, descreva a função principal — por exemplo "assistente de suporte ao cliente", "qualificador de leads" ou "agendador de consultas". A role influencia o tom e o escopo do agente.
+  <Step title="Configure as opções básicas">
+    Três opções de comportamento estão disponíveis no formulário de criação:
+
+    | Opção | O que faz |
+    |-------|-----------|
+    | Transferência para humano | Permite que o agente encaminhe conversas para um atendente |
+    | Usar emojis | O agente pode incluir emojis nas respostas |
+    | Dividir respostas | Mensagens longas são quebradas em blocos menores (recomendado para WhatsApp) |
   </Step>
 
-  <Step title="Escreva o prompt inicial">
-    No campo **Prompt do sistema**, escreva as instruções base. Um bom prompt mínimo contém: identidade do agente, objetivo principal, restrições e tom de voz. Você pode usar o botão **Time AI** depois para melhorar iterativamente via IA.
-  </Step>
-
-  <Step title="Ajuste temperatura e effort (opcional)">
-    Expanda a seção de configurações avançadas para ajustar a **Temperatura** (criatividade das respostas) e o **Effort** (profundidade de raciocínio). Para suporte, valores conservadores funcionam bem — temperatura em torno de 0,2 e effort em balanced.
-  </Step>
-
-  <Step title="Salve o agente">
-    Clique em **Criar agente**. O agente aparece na sua lista e já pode ser testado via **Chat interno** antes de vincular a qualquer canal.
+  <Step title="Crie o agente">
+    Clique em **Criar agente**. O agente é criado com status **Rascunho** e aparece na lista de agentes. A partir daqui você acessa todas as abas de configuração avançada.
   </Step>
 </Steps>
 
-## Exemplos / Casos de uso
+## Próximos passos após a criação
 
-**Agente de suporte técnico:** Nome "Suporte Técnico", modelo Claude Sonnet 4.6, temperatura 0,15. Prompt começa com identidade da empresa, lista os produtos suportados, define que o agente nunca deve prometer prazos de resolução sem antes consultar o status do ticket.
-
-**Qualificador de leads:** Nome "Pré-Vendas", modelo Gemini 2.5 Flash (2 créditos, rápido), temperatura 0,30. Prompt instrui o agente a perguntar empresa, porte, orçamento e urgência antes de encaminhar para um humano.
-
-**Agendador de consultas:** Nome "Agenda Clínica", modelo Claude Haiku 4.5 (3 créditos, muito rápido), temperatura 0,10. Prompt com lista de especialidades, horários disponíveis e instrução explícita para nunca dar diagnósticos.
-
-## Boas práticas
-
-<Tip>
-Escreva o prompt na mesma língua que seus clientes usam. Se o atendimento é em português, o prompt deve ser em português — isso reduz inconsistências de tradução interna do modelo.
-</Tip>
-
-- Comece com um prompt enxuto (5 a 10 linhas) e vá adicionando regras conforme identificar gaps nos testes.
-- Use o **Chat interno** para validar o comportamento antes de ativar o agente em produção.
-- Evite duplicar informações no prompt que já estão na base de conhecimento vinculada — mantenha o prompt focado em comportamento e tom, não em dados factuais.
-- Dê um nome interno descritivo. Se você tiver 10 agentes, "Agente 3" vai causar confusão na equipe.
-
-## Próximos passos
+Com o agente criado, configure os detalhes nas abas disponíveis:
 
 <CardGroup cols={2}>
-  <Card title="Configurações do agente" href="/guides/agents/settings/overview">
-    Veja todas as opções disponíveis: modelo, temperatura, capacidades e prompts condicionais.
+  <Card title="Modelo e parâmetros" href="/guides/agents/settings/model">
+    Escolha o provedor, o modelo de LLM e ajuste temperatura e effort para o caso de uso.
   </Card>
-  <Card title="Treinamento e base de conhecimento" href="/guides/agents/training">
-    Adicione documentos, FAQs e fontes de dados ao agente para respostas mais precisas.
+  <Card title="Prompt do sistema" href="/guides/agents/settings/prompt">
+    Escreva ou refine o prompt com o editor avançado, histórico de versões e melhoria por IA.
+  </Card>
+  <Card title="Treinamento" href="/guides/agents/training">
+    Adicione documentos, sites e Q&A à base de conhecimento do agente.
+  </Card>
+  <Card title="Chat interno" href="/guides/agents/settings/internal-chat">
+    Teste o agente antes de publicá-lo em qualquer canal externo.
   </Card>
 </CardGroup>

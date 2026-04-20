@@ -1,181 +1,138 @@
 ---
-title: "Gerenciar Assinatura"
-description: "Como visualizar o plano atual, fazer upgrade ou downgrade, alterar o ciclo de faturamento, atualizar o método de pagamento, consultar o histórico de faturas e cancelar a assinatura."
+title: "Assinaturas"
+description: "Planos disponíveis, comparativo de recursos, limites por plano e como gerenciar sua assinatura na Timely.ai."
 ---
 
-## Visão geral
+## Planos disponíveis
 
-A seção **Assinatura** mostra o plano ativo do workspace, os recursos incluídos e todas as opções de gerenciamento do ciclo de vida da sua assinatura. O acesso é restrito ao `owner` do workspace — apenas essa role tem a permissão `manage_billing`.
+A Timely.ai oferece três planos de assinatura com cobrança mensal ou anual. Todos incluem acesso aos agentes de IA, canais de atendimento, squads e créditos mensais de IA:
 
-Acesse em **Configurações → Assinatura** (ou **Faturamento**, dependendo da versão da interface).
+| Plano | Descrição |
+|---|---|
+| **Starter** | Para profissionais autônomos e pequenos negócios que estão iniciando com automação de atendimento. Inclui um único usuário com acesso completo e 1.500 créditos mensais. |
+| **Professional** | Para empresas em crescimento que precisam de mais volume, múltiplos usuários e recursos avançados como disparos inteligentes, follow-ups automáticos, Tyme CRM e síntese de voz. Inclui 7.500 créditos mensais. |
+| **Enterprise** | Para operações de grande escala com alto volume de atendimento. Execuções ilimitadas, 50.000 créditos mensais, TTS ilimitado, clonagem de voz e suporte premium com SLA de 24 horas. |
 
-## Plano atual
+## Comparativo de planos
 
-O card de plano exibe as informações da assinatura ativa:
+| Recurso | Starter | Professional | Enterprise |
+|---|---|---|---|
+| **Créditos mensais de IA** | 1.500 | 7.500 | 50.000 |
+| **Execuções de agente/mês** | 1.000 | 5.000 | Ilimitadas |
+| **Membros (seats)** | 1 | Ilimitados | Ilimitados |
+| **Agentes de IA** | Ilimitados | Ilimitados | Ilimitados |
+| **Squads** | Ilimitados | Ilimitados | Ilimitados |
+| **Integrações Composio** | Sim | Sim | Sim |
+| **Disparos com IA** | Não | Sim | Sim |
+| **Follow-ups automáticos** | Não | Sim | Sim |
+| **Síntese de voz (TTS)** | Não | Sim (5.000 chars/mês) | Sim (ilimitado) |
+| **Tyme CRM** | Não | Sim | Sim |
+| **Suporte** | Comunidade | Prioritário | Premium |
 
-| Campo | Descrição |
-|-------|-----------|
-| **Nome do plano** | Identificador do plano contratado |
-| **Status** | Ativa, Pagamento pendente, Processando ou Cancelada |
-| **Ciclo** | Mensal ou anual |
-| **Próxima cobrança** | Data e valor da próxima fatura |
-| **Recursos incluídos** | Limites de mensagens, agentes, membros e créditos de IA |
+<Note>
+  Planos anuais têm desconto em relação ao equivalente mensal. O valor é cobrado em parcela única no início do ciclo anual e o saldo de créditos do período inteiro (12 meses) é disponibilizado de uma vez — não renovado mês a mês.
+</Note>
 
-A barra de uso de créditos mostra o consumo do período atual em relação ao limite do plano. As cores seguem o padrão: verde (até 70%), laranja (70–90%) e vermelho (acima de 90%).
+## Entendendo cada limite
 
-### Status da assinatura
+### Créditos de IA da Timely.ai
 
-| Status | Descrição | Ação recomendada |
-|--------|-----------|-----------------|
-| **Ativa** | Tudo funcionando normalmente | — |
-| **Pagamento pendente** | Cobrança falhou — tentativas automáticas em andamento | Atualizar cartão |
-| **Processando** | Pagamento recebido, plano sendo ativado | Aguardar (geralmente minutos) |
-| **Cancelada** | Assinatura encerrada | Reativar ou contratar novo plano |
+Créditos são a unidade de consumo de processamento de IA na plataforma. Cada mensagem processada por um agente consome créditos de acordo com o modelo LLM selecionado:
+
+| Modelo | Créditos por mensagem |
+|---|---|
+| Kimi K2.5 (OpenRouter) | 1 |
+| Gemini 2.5 Flash (Google) | 2 |
+| Claude Haiku 4.5 (Anthropic) | 3 |
+| GPT-5.1 (OpenAI) | 4 |
+| Claude Sonnet 4.6 (Anthropic) | 4 |
+| Gemini 2.5 Pro (Google) | 4 |
+| GPT-5.2 (OpenAI) | 5 |
+| Gemini 3.0 / 3.1 Pro Preview (Google) | 6 |
+| Claude Opus 4.6 (Anthropic) | 20 |
+
+O custo por mensagem varia com o comprimento do contexto e o número de ferramentas chamadas — tabela acima reflete o custo base por interação simples. Créditos renováveis são reiniciados no início de cada ciclo. Créditos não usados não acumulam para o período seguinte.
 
 <Warning>
-  Quando o status é **Pagamento pendente**, o workspace continua funcionando por um período de carência. Se o pagamento não for regularizado dentro do prazo, o acesso a novos agentes e canais pode ser suspenso.
+  Agentes configurados com provedores próprios (chave de API do cliente) não consomem créditos da Timely.ai — o custo é cobrado diretamente na conta do provedor. Os créditos do plano se aplicam apenas a agentes usando as credenciais gerenciadas da plataforma.
 </Warning>
 
-## Fazendo upgrade ou downgrade
+### Execuções de agente
+
+Uma execução é contabilizada cada vez que um agente é acionado por uma mensagem de entrada — seja de um canal de atendimento ou de uma sessão de Workers. Handoffs dentro de um squad contam como execuções separadas para cada agente envolvido:
+
+| Plano | Execuções mensais |
+|---|---|
+| Starter | 1.000 |
+| Professional | 5.000 |
+| Enterprise | Ilimitadas |
+
+### Execuções de workflow
+
+Workflows são fluxos automatizados disparados por eventos (mensagem recebida, horário agendado, tag adicionada, etc.). Cada disparo de um workflow conta como uma execução:
+
+| Plano | Execuções simultâneas de workflow |
+|---|---|
+| Starter | 3 |
+| Professional | 10 |
+| Enterprise | Ilimitadas |
+
+<Note>
+  Execuções de workflow são concorrentes — o limite se refere à quantidade de workflows rodando ao mesmo tempo, não ao total mensal. Disparos que excedem o limite de concorrência são enfileirados e executados quando uma vaga abrir.
+</Note>
+
+### Membros e seats
+
+Um seat é um usuário ativo com acesso ao workspace. Membros desativados não contam para o limite:
+
+| Plano | Membros/seats |
+|---|---|
+| Starter | 1 |
+| Professional | Ilimitados |
+| Enterprise | Ilimitados |
+
+<Note>
+  O plano Starter é projetado para uso individual — um único usuário com acesso completo ao workspace. Para equipes com dois ou mais colaboradores, o Professional é o mínimo recomendado.
+</Note>
+
+## Gerenciando sua assinatura
 
 <Steps>
+  <Step title="Acesse Configurações > Assinatura">
+    No menu lateral, clique em **Configurações** e selecione **Assinatura** (ou **Faturamento**, dependendo da versão da interface).
+  </Step>
   <Step title="Clique em Alterar plano">
-    No card do plano atual, clique em **Alterar plano** (ou **Ver planos disponíveis**). O modal de planos é exibido com todos os planos disponíveis e seus recursos.
+    No card do plano atual, clique em **Alterar plano** para abrir o modal de comparativo.
   </Step>
-  <Step title="Selecione o ciclo de faturamento">
-    No topo do modal, escolha entre **Mensal** e **Anual**. Planos anuais têm desconto em relação ao equivalente mensal. O preço mensal equivalente é exibido em ambos os modos para facilitar a comparação.
-  </Step>
-  <Step title="Escolha o plano desejado">
-    Compare os planos disponíveis. Cada plano exibe:
-
-    - Preço mensal (ou anual)
-    - Limite de mensagens por mês
-    - Número máximo de agentes
-    - Número máximo de membros
-    - Créditos de IA incluídos
-    - Recursos exclusivos (se houver)
-
-    Clique em **Selecionar** no plano desejado.
+  <Step title="Escolha o ciclo e o plano desejado">
+    Selecione entre cobrança **Mensal** e **Anual** no topo do modal. Depois escolha o plano e clique em **Selecionar**.
   </Step>
   <Step title="Confirme a mudança">
-    Um modal de confirmação exibe o **preview da mudança**: valor a pagar hoje (crédito proporcional do plano atual aplicado), novo valor mensal e data de início do novo ciclo.
-
-    Leia os detalhes e clique em **Confirmar mudança** para aplicar.
+    O modal de confirmação exibe o preview: valor a pagar hoje, crédito proporcional do plano atual e data de início do novo ciclo. Leia e clique em **Confirmar mudança**.
   </Step>
 </Steps>
 
-### Upgrade
+<Note>
+  **Upgrade:** aplicado imediatamente, com cobrança proporcional do período restante. Acesso aos novos recursos liberado na hora. **Downgrade:** aplicado no início do próximo ciclo. Você mantém o plano atual até o fim do período pago.
+</Note>
 
-Upgrades são aplicados **imediatamente**. O sistema calcula o valor proporcional do período restante do plano atual e deduz do primeiro pagamento do novo plano. Você tem acesso imediato aos recursos do novo plano.
+## Comportamento do plano
 
-### Downgrade
+| Aspecto | Comportamento |
+|---|---|
+| **Upgrade** | Imediato, com crédito proporcional do plano atual |
+| **Downgrade** | Agendado para o início do próximo ciclo |
+| **Cancelamento** | O acesso permanece até o fim do período pago |
+| **Reativação** | Disponível até o fim do período de carência pós-cancelamento |
 
-Downgrades são aplicados no **início do próximo ciclo de faturamento** — não imediatamente. Você continua no plano atual até o fim do período pago e passa para o plano inferior na renovação. Um aviso de "mudança agendada" aparece no card do plano atual durante esse período.
+## Conclusão
 
-Para cancelar um downgrade agendado antes de ele entrar em vigor, clique em **Cancelar mudança agendada** no card do plano.
+Escolher o plano certo impacta diretamente a capacidade operacional do workspace:
 
-## Ciclo de faturamento
+- Monitore o consumo de créditos e execuções na aba **Uso** antes de decidir entre upgrade e downgrade.
+- Leve em conta o modelo LLM dos seus agentes ao projetar o consumo mensal — modelos como Claude Opus 4.6 (20 créditos/msg) esgotam o saldo do Starter em 75 mensagens.
+- Planos anuais oferecem desconto e disponibilizam o crédito do ano inteiro de uma vez — vantajoso para workspaces com volume previsível.
 
-O ciclo determina com que frequência a assinatura é cobrada:
-
-- **Mensal**: cobrado todo mês na data de início da assinatura. Mais flexibilidade para cancelar ou mudar de plano.
-- **Anual**: cobrado uma vez por ano. Desconto significativo em relação ao ciclo mensal.
-
-Para alterar o ciclo sem mudar o plano (ex.: de mensal para anual no mesmo plano), use o fluxo de **Alterar plano** descrito acima — o ciclo pode ser mudado durante o processo de confirmação.
-
-<Tip>
-  Se você está satisfeito com o plano atual e projeta uso consistente por mais de 6 meses, a migração para o ciclo anual costuma ser mais econômica. O modal de confirmação exibe a economia estimada antes de você confirmar.
-</Tip>
-
-## Método de pagamento
-
-### Consultando o método atual
-
-Na seção **Pagamento**, o método cadastrado é exibido de forma mascarada (ex.: Visa •••• 4242, válido até 12/27). O nome do titular e o tipo de cartão também são exibidos.
-
-### Atualizando o cartão
-
-<Steps>
-  <Step title="Clique em Atualizar cartão">
-    Na seção de pagamento, clique em **Atualizar método de pagamento** (ou **Trocar cartão**).
-  </Step>
-  <Step title="Insira os novos dados">
-    Um formulário seguro de captura de cartão é exibido. Preencha número do cartão, data de validade, CVV e nome do titular. Os dados são transmitidos diretamente ao processador de pagamentos — a Timely.ai não armazena dados do cartão em seus servidores.
-  </Step>
-  <Step title="Confirme">
-    Clique em **Salvar cartão**. Uma cobrança de verificação de R$ 1,00 pode ser feita e estornada automaticamente para validar o cartão.
-  </Step>
-</Steps>
-
-Se o status da assinatura está como **Pagamento pendente** por falha no cartão anterior, atualizar o método de pagamento aciona uma nova tentativa de cobrança automaticamente.
-
-## Dados de faturamento
-
-Na seção **Dados de cobrança**, você pode manter atualizado o e-mail para recebimento de faturas e o CPF ou CNPJ que aparece nos documentos fiscais. Clique em **Editar** para atualizar os campos e em **Salvar** para confirmar.
-
-## Histórico de faturas
-
-A tabela de histórico lista todas as cobranças realizadas na assinatura:
-
-| Coluna | Descrição |
-|--------|-----------|
-| **Data** | Data da cobrança |
-| **Descrição** | Plano e período de referência |
-| **Valor** | Valor cobrado em reais |
-| **Status** | Pago, Pendente ou Falhou |
-| **Recibo** | Link para download do PDF |
-
-Clique em **Baixar recibo** em qualquer linha para obter o documento em PDF. Os recibos podem ser usados para reembolso ou lançamentos contábeis.
-
-## Reativando uma assinatura cancelada
-
-Se a assinatura foi cancelada e você deseja reativar:
-
-1. Acesse **Configurações → Assinatura**.
-2. No card do plano, clique em **Reativar assinatura**.
-3. Selecione o plano desejado (pode ser diferente do anterior).
-4. Confirme o método de pagamento e clique em **Reativar**.
-
-A reativação cria uma nova assinatura a partir da data atual. O histórico de conversas, agentes e configurações do workspace é preservado durante o período cancelado.
-
-## Cancelando a assinatura
-
-<Steps>
-  <Step title="Acesse Configurações → Assinatura">
-    Role até o fim da página ou localize o link **Cancelar assinatura** no card do plano.
-  </Step>
-  <Step title="Clique em Cancelar assinatura">
-    Um modal de confirmação é exibido, informando a data em que o acesso expira (fim do período pago atual) e o que acontece com os dados após o cancelamento.
-  </Step>
-  <Step title="Confirme o cancelamento">
-    Leia os termos e confirme. O cancelamento é imediato no sistema, mas o acesso ao workspace permanece ativo até o fim do período pago.
-  </Step>
-</Steps>
-
-<Warning>
-  O cancelamento não exclui os dados do workspace. As conversas, agentes e contatos ficam armazenados pelo período definido nos termos de serviço. Se você reativar a assinatura dentro desse período, tudo estará disponível.
-</Warning>
-
-## Boas práticas
-
-- Configure o e-mail de faturamento para uma caixa de grupo (ex.: financeiro@suaempresa.com) em vez de um e-mail pessoal. Isso garante que as faturas cheguem mesmo se o owner mudar.
-- Faça upgrade **antes** de ultrapassar os limites do plano. Upgrades retroativos não são aplicados — se o limite for atingido durante o mês, algumas mensagens podem ser bloqueadas.
-- Baixe os recibos mensalmente e armazene em local seguro para facilitar a conciliação contábil no fim do ano.
-- Revise o plano a cada 3 meses comparando o uso real com os limites. Workspaces em crescimento rápido frequentemente subutilizam planos superiores por tempo demais.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Dashboard de Uso" href="/guides/settings/usage">
-    Monitore o consumo antes de decidir sobre upgrade ou downgrade.
-  </Card>
-  <Card title="Planos disponíveis" href="/guides/billing/plans">
-    Compare todos os planos e recursos disponíveis na Timely.ai.
-  </Card>
-  <Card title="Visão geral de Configurações" href="/guides/settings/overview">
-    Mapa completo de todas as subseções de Configurações.
-  </Card>
-  <Card title="Chaves de API" href="/guides/team/api-keys">
-    Gerencie as chaves de acesso para integrações externas.
-  </Card>
-</CardGroup>
+<Note>
+  Créditos não usados ao fim de um ciclo mensal são zerados. Para workspaces com consumo irregular, o plano anual pode resultar em saldo subutilizado. Avalie o histórico de consumo antes de migrar para o ciclo anual.
+</Note>

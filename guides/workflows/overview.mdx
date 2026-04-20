@@ -1,101 +1,30 @@
 ---
-title: "Workflows"
-description: "Crie fluxos de automação visuais com o editor drag-and-drop da Timely.ai — conecte triggers, condições e ações em minutos."
+title: "Workflows: Visão Geral"
+description: "Orquestre automações complexas conectando triggers, ações e lógica em um editor visual — sem escrever código."
 ---
 
-Workflows são a forma mais poderosa de orquestrar automações na Timely.ai. Com o editor visual drag-and-drop, você monta fluxos completos sem escrever uma linha de código: arrasta componentes no canvas, configura cada nó com um duplo clique e publica com um botão.
+Workflows são sequências de nós conectados que executam automações na Timely.ai. Cada fluxo começa em um trigger, percorre nós de ação e lógica configurados por você e pode retornar dados estruturados ao chamador quando necessário.
 
-<Frame>
-  <img src="/images/screenshots/placeholder-workflow-canvas.png" alt="Editor visual de Workflow" />
-</Frame>
+## Como os Workflows Funcionam
 
-## O que é um Workflow?
+Um workflow é montado no editor visual drag-and-drop: arraste componentes para o canvas, conecte os nós pelos handles de saída e configure cada um com um duplo clique. Toda publicação gera uma versão imutável — o rascunho em edição não afeta o fluxo em produção até você clicar em **Publicar**.
 
-Um Workflow é uma sequência de nós conectados por arestas. Cada execução começa em um **Trigger**, percorre os nós de lógica e ação e, opcionalmente, termina em um nó **Retornar Resposta**. Cada publicação gera uma versão imutável — você pode continuar editando o rascunho sem afetar a versão em produção.
+Cada execução gera um **Workflow Run** com status, log individual de cada nó, payload de entrada e saída e duração total. O histórico fica disponível em **Automações > Workflows > Ver execuções**.
 
-<Note>
-  Workflows ficam em modo **Rascunho** até você clicar em **Publicar**. Somente workflows publicados são executados automaticamente.
-</Note>
+## Nós Disponíveis
 
-## Criando seu primeiro Workflow
+O editor oferece três categorias de nós:
 
-<Steps>
-  <Step title="Abra a lista de Workflows">
-    Acesse **Automações > Workflows** no menu lateral e clique em **Novo Workflow**. Dê um nome descritivo e confirme.
-  </Step>
-  <Step title="Adicione um Trigger">
-    No canvas, clique no botão **+** (canto superior direito) para abrir a paleta de componentes. Escolha um trigger e ele aparece no canvas. Dê duplo clique para configurar.
-  </Step>
-  <Step title="Encadeie nós de ação e lógica">
-    Arraste um novo componente da paleta ou clique no handle de saída de um nó existente. Conecte os nós arrastando a aresta. Para inserir um nó no meio de uma conexão existente, solte-o sobre a aresta.
-  </Step>
-  <Step title="Configure cada nó">
-    Dê duplo clique em qualquer nó para abrir o modal de configuração. Preencha os campos e salve.
-  </Step>
-  <Step title="Salve e Publique">
-    Clique em **Salvar** para persistir o rascunho. Quando estiver pronto, clique em **Publicar** — o sistema valida todos os nós antes de aceitar.
-  </Step>
-</Steps>
+- **Webhook** — recebe requisição HTTP externa e expõe body, headers e query params para os nós seguintes
+- **Agendamento** — dispara em horário programado via expressão cron com fuso horário configurável
+- **Requisição do Agente** — permite que um agente IA acione o workflow como ferramenta, passando parâmetros estruturados
+- **Requisição HTTP** — chama qualquer API REST externa com suporte a GET, POST, PUT, PATCH e DELETE
+- **Definir Variável** — cria ou transforma variáveis acessíveis via `{{ $vars.nome }}`
+- **Código JavaScript** — executa lógica customizada em ambiente isolado com timeout de 10 segundos
+- **Transformação IA** — processa texto com modelo de linguagem para extrair, classificar ou reescrever dados
 
-## Tipos de nós
+## Por Que Usar Workflows
 
-### Triggers — ponto de entrada
+Workflows são a escolha certa quando você precisa integrar sistemas externos, processar dados antes de agir ou orquestrar passos que dependem uns dos outros. Diferente de instruções no prompt do agente, um workflow executa de forma determinística, rastreável e auditável — cada nó tem logs, status e tempo de execução registrados.
 
-| Tipo | Quando dispara |
-|---|---|
-| **Requisição do Agente** | Um agente IA chama este workflow via tool call |
-| **Webhook** | Requisição HTTP externa (POST) chega no endpoint gerado |
-| **Agendamento (Cron)** | Horário programado com expressão cron e fuso horário |
-
-### Ações
-
-| Tipo | O que faz |
-|---|---|
-| **Requisição HTTP** | Chama qualquer API externa (GET, POST, PUT, DELETE) |
-| **Definir Variável** | Cria ou transforma variáveis para uso nos próximos nós |
-| **Atualizar Contato** | Edita campos de um contato no CRM |
-| **Enviar Notificação** | Envia e-mail ou dispara um webhook de notificação |
-| **Chamar Agente** | Invoca outro agente IA para processar dados |
-| **Código JavaScript** | Executa JS customizado em runtime isolado |
-| **Transformação IA** | Usa LLM para reescrever, classificar ou extrair informações |
-
-### Lógica
-
-| Tipo | O que faz |
-|---|---|
-| **Condição (If/Else)** | Bifurca o fluxo com base em uma condição booleana |
-| **Switch** | Ramifica para múltiplos caminhos com base em valor |
-| **Loop** | Itera sobre uma lista de itens |
-| **Atraso** | Pausa o fluxo por um tempo configurável |
-| **Merge** | Aguarda múltiplos caminhos convergirem antes de continuar |
-
-### Resposta
-
-O nó **Retornar Resposta** encerra o workflow e devolve dados estruturados ao chamador (agente ou integração externa).
-
-## Workflow Runs
-
-Cada execução de um workflow gera um **Workflow Run** com status, logs de cada nó, payload de entrada e saída, e duração. Acesse via **Automações > Workflows > Ver execuções** no menu do workflow.
-
-<CardGroup cols={2}>
-  <Card title="Status de execucao" icon="circle-dot">
-    `pending`, `running`, `completed`, `failed`, `cancelled`
-  </Card>
-  <Card title="Logs por no" icon="list-tree">
-    Cada nó registra input, output, duração e eventuais erros individuais.
-  </Card>
-</CardGroup>
-
-## Validação antes de publicar
-
-Ao clicar em **Publicar**, o sistema verifica automaticamente:
-
-- Se todos os nós obrigatórios estão configurados.
-- Se não há nós soltos (sem conexão de entrada ou saída quando necessário).
-- Se as expressões de condição estão sintaticamente corretas.
-
-Nós inválidos ficam destacados em vermelho no canvas com a descrição do problema.
-
-<Tip>
-  Use o nó **Transformação IA** para normalizar dados vindos de webhooks externos antes de passá-los para outras ações — isso reduz a necessidade de código JavaScript.
-</Tip>
+Use workflows para automatizar notificações baseadas em eventos, sincronizar dados entre plataformas ou gerar relatórios periódicos sem intervenção manual.

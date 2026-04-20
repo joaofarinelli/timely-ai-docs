@@ -1,136 +1,29 @@
 ---
 title: "Instagram"
-description: "Receba e responda DMs do Instagram automaticamente conectando sua conta Business via Meta OAuth"
+description: "Conecte sua conta Instagram Business e atenda DMs automaticamente via Meta OAuth."
 ---
 
-O canal Instagram permite que seu agente atenda **Direct Messages** do Instagram em tempo real. A conexão usa o fluxo OAuth da Meta e exige uma conta Instagram Business vinculada a uma Página do Facebook.
+O canal Instagram permite que seu agente atenda **Direct Messages** do Instagram em tempo real. A conexão usa o fluxo OAuth da Meta e exige uma conta Instagram Business ou Creator vinculada a uma Página do Facebook.
 
-## Pré-requisitos
-
-- Conta **Instagram Business** ou **Creator** (contas pessoais não são suportadas pela API)
-- **Página do Facebook** vinculada à conta Instagram ([como vincular](https://help.instagram.com/1751222621721436))
-- **DMs habilitadas** nas configurações de privacidade do Instagram
-- Acesso de **administrador** à Página do Facebook associada
-- Um **agente** criado e ativo na Timely.ai
-
-<Warning>
-  A API de Mensagens do Instagram só funciona com contas Business ou Creator. Se sua conta for pessoal, converta em **Configurações do Instagram → Conta → Mudar para conta profissional** antes de continuar.
-</Warning>
-
-## Passo a passo de conexão
+## Fluxo de conexão
 
 <Steps>
   <Step title="Acesse Canais no dashboard">
     No menu lateral, clique em **Canais** e depois em **Adicionar canal**. Selecione **Instagram**.
   </Step>
-
-  <Step title="Inicie o fluxo OAuth">
-    Clique em **Conectar com Instagram**. Um popup da Meta será aberto. Certifique-se de que popups estão habilitados no seu navegador.
-
-    <Frame>
-      ![Botão de conexão com Instagram](/images/screenshots/placeholder-instagram-connect.png)
-    </Frame>
-
-    <Note>
-      O botão fica disponível apenas se o seu workspace tiver um agente ativo criado. Se o botão estiver desabilitado, crie um agente primeiro.
-    </Note>
+  <Step title="Clique em Conectar com Instagram">
+    Um popup da Meta abre. Certifique-se de que popups estão habilitados no navegador antes de clicar.
   </Step>
-
-  <Step title="Autorize as permissões">
-    Dentro do popup, faça login com o Facebook que administra a Página vinculada ao Instagram. Selecione:
-
-    - A **Página do Facebook** associada ao Instagram Business
-    - A **conta Instagram** que você quer conectar
-
-    Conceda todas as permissões solicitadas — especialmente `instagram_manage_messages` e `pages_messaging`.
+  <Step title="Faça login e selecione as contas">
+    Dentro do popup, faça login com o Facebook que administra a Página vinculada ao Instagram. Selecione a Página do Facebook e a conta Instagram correspondente. Conceda todas as permissões solicitadas — especialmente `instagram_manage_messages` e `pages_messaging`.
   </Step>
-
   <Step title="Aguarde a confirmação">
-    Após autorizar, o popup fecha automaticamente. A Timely.ai verifica o status em segundo plano via Realtime. Quando a conexão for estabelecida, o badge muda para **Conectado** e o username `@suaconta` aparece na tela.
-
-    <Tip>
-      O processo leva em média 5–10 segundos. Se o badge não mudar após 30 segundos, clique em **Verificar status**.
-    </Tip>
+    Após autorizar, o popup fecha e a Timely.ai verifica o status em segundo plano. Quando a conexão for estabelecida, o badge muda para **Conectado** e o username `@suaconta` aparece na tela.
   </Step>
-
   <Step title="Vincule ao agente">
-    Confirme que o agente correto está selecionado para este canal. Acesse **Agentes → [seu agente] → Canais** e verifique se o Instagram aparece como ativo.
+    Confirme que o agente correto está selecionado para este canal em **Agentes → [agente] → Canais**.
+  </Step>
+  <Step title="Teste o recebimento">
+    Envie uma DM para a conta Instagram conectada a partir de outro perfil. A mensagem deve aparecer na Inbox dentro de alguns segundos.
   </Step>
 </Steps>
-
-## Recursos suportados
-
-### Tipos de mídia
-
-| Tipo | Receber | Enviar |
-|---|---|---|
-| Texto | Sim | Sim |
-| Imagem (JPG, PNG) | Sim | Sim |
-| Áudio | Sim | — |
-| Vídeo | Sim | — |
-| Stories (menção/reply) | Sim | — |
-| Reações | Sim | — |
-
-<Note>
-  A API do Instagram não permite que bots enviem áudio ou vídeo ativamente. Você pode receber mídias do cliente, mas o agente só pode responder com texto e imagem.
-</Note>
-
-### Janela de mensagens
-
-Assim como o WhatsApp, o Instagram tem uma **janela de 24 horas** contada a partir da última mensagem do cliente. Após esse período, não é possível enviar mensagens proativas — o cliente precisa reiniciar a conversa.
-
-## Webhook de recebimento
-
-Mensagens do Instagram chegam via:
-
-```
-POST https://[SEU-SUPABASE].supabase.co/functions/v1/instagram-webhook
-```
-
-A Timely.ai registra o webhook automaticamente durante o fluxo OAuth. Você não precisa configurar manualmente na Meta. Para detalhes sobre o payload e eventos suportados, veja [Webhooks externos → Instagram](/webhooks/external/instagram).
-
-### Eventos recebidos
-
-- `messages` — nova DM do cliente
-- `message_reads` — confirmação de leitura
-- `messaging_referrals` — click em anúncio com DM
-
-## Limites e boas práticas
-
-- **1 conta Instagram por workspace** — cada workspace suporta uma conta Instagram conectada por vez.
-- **Janela de 24h** — garanta que o agente responda dentro da janela. Configurar respostas automáticas de boas-vindas ajuda a manter a janela aberta.
-- **Consistência de conta** — não desconecte a Página do Facebook do Instagram enquanto a integração estiver ativa. Isso invalida o token de acesso.
-- **Permissões de página** — se outro administrador remover as permissões da Página, a integração para de funcionar. Monitore o status na aba **Canais**.
-- **Menções em Stories** — quando um cliente menciona sua conta em um Story, a Timely.ai recebe o evento e o agente pode responder na DM. Ative esse comportamento nas configurações do agente.
-
-<Tip>
-  Crie uma mensagem de boas-vindas automática para novas conversas no Instagram. Ela serve como confirmação de recebimento e mantém a janela de 24h aberta enquanto o agente processa a solicitação.
-</Tip>
-
-## Troubleshooting
-
-<AccordionGroup>
-  <Accordion title="Popup bloqueado pelo navegador">
-    O fluxo OAuth usa um popup. Se o navegador bloquear, clique no ícone de popup bloqueado na barra de endereços e permita para `app.timelyai.com.br`. Depois clique em **Conectar com Instagram** novamente.
-  </Accordion>
-
-  <Accordion title="Conta Instagram não aparece no popup da Meta">
-    Isso acontece quando a conta Instagram não está vinculada à Página do Facebook correta, ou quando o usuário que está fazendo login não tem papel de administrador na Página. Acesse as configurações do Instagram → **Conta** → **Compartilhamento entre contas** e vincule a Página.
-  </Accordion>
-
-  <Accordion title="Badge fica em 'Conectando' por mais de 1 minuto">
-    O sistema monitora mudanças via Realtime do Supabase. Se o Realtime não estiver disponível, a Timely.ai faz polling a cada 30 segundos. Aguarde até 2 minutos ou recarregue a página e clique em **Verificar status** manualmente.
-  </Accordion>
-
-  <Accordion title="Integração conectada mas mensagens não chegam">
-    Verifique se as **DMs estão habilitadas** nas configurações de privacidade do Instagram (Configurações → Privacidade → Mensagens → Permitir de todos). Contas novas às vezes têm DMs desabilitadas por padrão.
-  </Accordion>
-
-  <Accordion title="Token expirado — integração desconectada automaticamente">
-    Tokens do Instagram expiram após 60 dias sem uso ou quando as permissões da Página são alteradas. Clique em **Reconectar** na tela do canal para iniciar um novo fluxo OAuth e gerar um token novo.
-  </Accordion>
-
-  <Accordion title="Erro 'App não tem permissão para enviar mensagens'">
-    O app da Timely.ai na Meta precisa estar em modo **Live** (não Development) para acessar contas reais. Se você estiver usando uma conta de teste, adicione-a como conta de teste no painel Meta for Developers.
-  </Accordion>
-</AccordionGroup>

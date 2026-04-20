@@ -1,74 +1,81 @@
 ---
-title: "Visão Geral — Knowledge Base"
-description: "Entenda como a Knowledge Base funciona internamente com RAG, embeddings e busca semântica, e como ela se conecta aos seus agentes."
+title: "Knowledge Base — Visão Geral"
+description: "Entenda os conceitos centrais da Knowledge Base da Timely.ai, como o pipeline RAG funciona e quais tipos de conteúdo são suportados."
 ---
 
-A Knowledge Base é o repositório de conhecimento dos seus agentes IA. Em vez de depender apenas do que está no prompt de sistema, o agente consulta a base durante a conversa e recupera trechos altamente relevantes antes de formular a resposta — uma arquitetura chamada **RAG (Retrieval-Augmented Generation)**.
+A Knowledge Base é o repositório de conhecimento dos seus agentes. Em vez de depender exclusivamente do prompt de sistema, o agente consulta a base durante cada conversa e recupera trechos relevantes antes de formular a resposta. Essa arquitetura é chamada de **RAG (Retrieval-Augmented Generation)**.
 
-<Frame>
-  <img src="/images/screenshots/placeholder-knowledge-overview.png" alt="Pipeline RAG da Knowledge Base" />
-</Frame>
+## Conceitos Centrais
 
-## Pipeline RAG passo a passo
+| Conceito | Descrição |
+|----------|-----------|
+| **Base de Conhecimento** | Coleção independente de documentos e conteúdos que um agente pode consultar. Cada base é isolada — os documentos de uma base nunca aparecem nas buscas de outra. |
+| **Chunk** | Fragmento de texto gerado pelo processo de divisão de documentos longos. O chunker divide o conteúdo em pedaços de ~4.000 caracteres com sobreposição de ~400 caracteres entre chunks consecutivos para preservar o contexto nas fronteiras. |
+| **Embedding** | Representação vetorial de um chunk gerada pelo modelo `text-embedding-3-small`. Cada embedding tem 1.536 dimensões e captura o significado semântico do texto. |
+| **Retrieval** | Processo de busca por similaridade coseno que compara o embedding da pergunta do usuário com os embeddings armazenados e retorna os chunks mais próximos semanticamente. |
+| **RAG** | Retrieval-Augmented Generation — os chunks recuperados são injetados no contexto do LLM junto com a mensagem do usuário, permitindo que o agente responda com base em informação específica indexada, não em memória de treinamento genérico. |
+
+## Por Que Isso Importa
+
+1. **Respostas baseadas em dados reais**: o agente responde com o conteúdo exato que você indexou — políticas, preços, catálogos — e não com inferências genéricas do modelo base.
+2. **Atualização sem reprogramação**: basta atualizar o conteúdo na base de conhecimento. O agente passa a usar a nova informação imediatamente nas próximas conversas, sem necessidade de modificar o prompt de sistema.
+3. **Escopo controlado**: a busca é sempre filtrada por `knowledge_base_id` e `company_id`, garantindo que dados de um cliente nunca apareçam para outro e que bases distintas permaneçam isoladas mesmo quando um agente acessa múltiplas bases simultaneamente.
+
+## Como Funciona
 
 <Steps>
-  <Step title="Ingestao de conteudo">
-    Você adiciona conteúdo à base — PDFs, pares de Q&A, páginas de site ou vídeos do YouTube. Cada conteúdo é armazenado como documento na tabela `knowledge_base_documents`.
+  <Step title="Ingestão de conteúdo">
+    Você adiciona conteúdo à base — documentos, pares de Q&A, páginas de site ou vídeos do YouTube. O conteúdo é armazenado como documento na tabela `knowledge_base_documents`.
   </Step>
   <Step title="Chunking">
-    O processador (`knowledge-process-document`) divide o texto em pedaços de ~4.000 caracteres com sobreposição de ~400 caracteres entre chunks consecutivos. Essa sobreposição preserva o contexto nas fronteiras.
+    A função `knowledge-process-document` divide o texto em pedaços de ~4.000 caracteres. Uma sobreposição de ~400 caracteres é mantida entre chunks consecutivos para que o contexto não se perca nas fronteiras.
   </Step>
-  <Step title="Embeddings">
-    Cada chunk é convertido em um vetor numérico de alta dimensão pela API de embeddings da OpenAI (enviados em lotes de até 100 por requisição). Os vetores são armazenados na tabela `knowledge_chunks`.
+  <Step title="Geração de embeddings">
+    Cada chunk é convertido em um vetor de 1.536 dimensões pelo modelo `text-embedding-3-small` da OpenAI, enviado em lotes de até 100 chunks por requisição. Os vetores são armazenados na tabela `knowledge_chunks`.
   </Step>
-  <Step title="Busca semantica">
-    Quando o agente precisa de informação, a função `knowledge-search` converte a pergunta do usuário em vetor e executa uma busca por similaridade coseno no banco. Os chunks mais próximos semanticamente são retornados.
+  <Step title="Busca semântica">
+    Quando o agente precisa de informação, a função `knowledge-search` converte a pergunta do usuário em um vetor e executa busca por similaridade coseno. Os chunks mais próximos semanticamente são retornados, ordenados por relevância.
   </Step>
-  <Step title="Geracao aumentada">
-    Os trechos recuperados são injetados no contexto do LLM junto com a mensagem do usuário. O agente responde com base nessa informação específica — não em memória de treinamento genérico.
+  <Step title="Geração aumentada">
+    Os chunks recuperados são injetados no contexto do LLM junto com a mensagem do usuário. O agente formula a resposta com base nessa informação específica, não em conhecimento genérico de pré-treinamento.
   </Step>
 </Steps>
 
-## Relação entre bases e agentes
+## Tipos de Conteúdo Suportados
 
-Cada **base de conhecimento** é uma coleção independente de documentos. Você pode ter múltiplas bases e associar bases diferentes a agentes diferentes.
+| Tipo | Descrição |
+|------|-----------|
+| **Documentos** | PDFs, arquivos de texto e documentos enviados por upload. O processador extrai o texto, divide em chunks e gera embeddings. |
+| **Q&A** | Pares de pergunta e resposta adicionados manualmente. Indexados instantaneamente, sem pipeline assíncrono. Alta precisão porque você controla exatamente o que será recuperado. |
+| **Website** | URLs rastreadas pelo crawler. O sistema percorre as páginas, extrai o conteúdo textual e indexa como documentos. Útil para manter a base sincronizada com documentação pública. |
+| **YouTube** | URLs de vídeos. O sistema baixa a transcrição automática, divide em chunks e indexa. Útil para bases de tutoriais em vídeo. |
 
-<CardGroup cols={2}>
-  <Card title="Isolamento por base" icon="database">
-    Documentos de uma base nunca aparecem na busca de outra base — escopo controlado.
-  </Card>
-  <Card title="Multiplas fontes" icon="layer-group">
-    Uma mesma base pode conter PDFs, Q&As, sites e vídeos combinados.
-  </Card>
-  <Card title="Busca por agente" icon="robot">
-    A busca semântica é sempre filtrada por `knowledge_base_id` + `company_id`.
-  </Card>
-  <Card title="Threshold configuravel" icon="sliders">
-    O parâmetro `similarity_threshold` controla o quão similar um chunk precisa ser para ser incluído na resposta.
-  </Card>
-</CardGroup>
+## Ciclo de Vida do Conhecimento
 
-## Parâmetros da busca semântica
+<Steps>
+  <Step title="Criação da base">
+    Uma base de conhecimento é criada no módulo de Knowledge, recebe um nome e fica associada ao workspace. Começa vazia, sem documentos.
+  </Step>
+  <Step title="Adição de conteúdo">
+    Documentos, Q&As, URLs e vídeos são adicionados à base. Cada fonte passa pelo pipeline de processamento correspondente ao seu tipo.
+  </Step>
+  <Step title="Processamento e indexação">
+    O conteúdo é processado de forma assíncrona: chunking, vetorização e armazenamento. O status muda de **Processando** para **Indexado** quando concluído.
+  </Step>
+  <Step title="Conexão ao agente">
+    A base é conectada a um ou mais agentes na aba de Treinamento. Os parâmetros de retrieval — top-k e threshold de similaridade — são configurados por base.
+  </Step>
+  <Step title="Uso em produção">
+    O agente consulta a base automaticamente em cada conversa. Quando a pergunta do usuário tem correspondência semântica acima do threshold, os chunks relevantes são incluídos no contexto da resposta.
+  </Step>
+</Steps>
 
-| Parâmetro | Descrição | Padrão |
-|---|---|---|
-| `similarity_threshold` | Limiar mínimo de similaridade coseno (0 a 1) | `0.7` |
-| `limit` | Número máximo de chunks retornados | `5` |
-| `document_ids` | Filtrar por documentos específicos dentro da base | Todos |
+## Exemplo
 
-<Note>
-  Chunks com similaridade abaixo do `similarity_threshold` são descartados mesmo que o agente pergunte sobre o assunto. Se o agente "não sabe" algo que deveria saber, tente diminuir esse threshold ou revisar a qualidade do conteúdo indexado.
-</Note>
+Uma empresa de software conecta três bases ao mesmo agente de suporte:
 
-## Tipos de conteúdo suportados
+- Base "FAQ Produto" com respostas para as perguntas mais frequentes sobre funcionalidades
+- Base "Documentação Técnica" com manuais e guias de integração
+- Base "Políticas Comerciais" com regras de cancelamento, reembolso e contratos
 
-| Tipo | Como adicionar | Processamento |
-|---|---|---|
-| Documento (PDF, texto) | Upload de arquivo | Extração de texto + chunking + embeddings |
-| Q&A manual | Interface de perguntas e respostas | Vetorização direta da pergunta e resposta |
-| Site | URL para crawler | Firecrawl → chunking → embeddings |
-| Vídeo YouTube | URL do vídeo | Transcrição automática → chunking → embeddings |
-
-<Tip>
-  Comece com Q&As manuais para os tópicos mais frequentes. Eles são indexados instantaneamente e têm alta precisão porque você controla exatamente o que será recuperado.
-</Tip>
+Quando um usuário pergunta "como cancelo minha assinatura?", o agente busca nas três bases simultaneamente, recupera os chunks mais relevantes da base "Políticas Comerciais" e formula uma resposta precisa com base nas regras reais da empresa.

@@ -1,115 +1,22 @@
 ---
-title: "Bem-vindo à Timely.ai"
-description: "Visão geral da plataforma e estrutura da API REST"
+title: "O que é a Timely.ai?"
+description: "Plataforma de automação de atendimento com IA para WhatsApp, Instagram, widget web e outros canais."
 ---
 
-A Timely.ai é uma plataforma SaaS para automação de atendimento com IA. Você cria agentes conversacionais que atendem no WhatsApp, Instagram, widget web e outros canais — sem escrever um prompt do zero, sem precisar de infra, sem dor de cabeça.
+A Timely.ai é uma plataforma SaaS que transforma o atendimento ao cliente com agentes de IA conversacional. Você configura agentes com personalidade, base de conhecimento e integrações externas — e eles respondem nos seus canais 24 horas por dia, sem precisar de infraestrutura própria ou código de linha zero.
 
-A plataforma tem dois ângulos: o **produto** (dashboard, configuração visual, CRM, analytics) e a **API REST** (integração, automação, leitura/escrita de dados via código).
+## Por que usar a Timely.ai?
 
-Esta documentação cobre os dois.
+A plataforma foi construída para empresas que precisam escalar o atendimento sem escalar o time na mesma proporção. Os três pilares que diferenciam a experiência:
 
-## O que você pode fazer
+- **Configuração visual, sem código:** agentes, canais, squads e fluxos são criados pelo painel — não por APIs.
+- **Provedores de LLM flexíveis:** escolha entre OpenAI, Anthropic, Google e OpenRouter. Troque o modelo por agente, sem bloquear o workspace inteiro em um único contrato.
+- **Dados completamente seus:** histórico de conversas, contatos e arquivos ficam no seu workspace. A plataforma não mistura dados entre empresas.
 
-<CardGroup cols={2}>
-  <Card title="Agentes de IA" href="/guides/agents/creating/overview">
-    Configure agentes com personalidade, modelo LLM, base de conhecimento e ferramentas. Cada agente responde em um ou mais canais.
-  </Card>
-  <Card title="Canais de atendimento" href="/guides/channels/overview">
-    Conecte WhatsApp oficial (WABA), Instagram, widget web, Telegram e Slack. Um agente pode operar em múltiplos canais.
-  </Card>
-  <Card title="CRM e contatos" href="/guides/crm/contacts">
-    Gerencie contatos, conversas, funil de vendas e campos customizados. Tudo acessível via API.
-  </Card>
-  <Card title="Automação e workflows" href="/guides/workflows/overview">
-    Crie fluxos visuais disparados por eventos, follow-ups automáticos e broadcasts para campanhas.
-  </Card>
-</CardGroup>
+## Diferenciais principais
 
-## Estrutura da API
-
-Todas as requisições apontam para:
-
-```
-https://api.timelyai.com.br/v1
-```
-
-A autenticação é feita via header em toda chamada:
-
-```http
-x-api-key: SUA_CHAVE_AQUI
-```
-
-### Formato de resposta
-
-Toda resposta bem-sucedida segue o envelope:
-
-```json
-{
-  "data": { ... },
-  "meta": {
-    "page": 1,
-    "per_page": 20,
-    "total": 134
-  }
-}
-```
-
-O campo `meta` aparece apenas em rotas de listagem com paginação. Rotas que retornam um único recurso respondem direto no `data`.
-
-### Formato de erro
-
-Qualquer erro retorna o mesmo formato, independente do status HTTP:
-
-```json
-{
-  "error": {
-    "code": "AGENT_NOT_FOUND",
-    "message": "O agente informado não existe ou não pertence ao seu workspace.",
-    "status": 404
-  }
-}
-```
-
-Consulte a lista completa de códigos em [Rate Limits e Erros](/start/rate-limits).
-
-### Paginação
-
-Rotas de listagem aceitam `page` e `per_page` como query params:
-
-```
-GET /v1/agents?page=2&per_page=50
-```
-
-O padrão é `page=1` e `per_page=20`. O máximo aceito para `per_page` é `100`.
-
-## Base URL
-
-A API da Timely.ai expõe todos os endpoints a partir de:
-
-```
-https://api.timelyai.com.br/v1
-```
-
-Para isolar testes, crie um **workspace** dedicado (ex.: "Desenvolvimento") e gere uma API key escopada nele. Dados de workspaces não se misturam.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Primeiros 10 minutos no produto" href="/start/quickstart-product">
-    Configure conta, workspace, agente e canal sem tocar em código.
-  </Card>
-  <Card title="Primeira requisição via API" href="/start/quickstart-api">
-    Gere sua chave e faça a primeira chamada em menos de 5 minutos.
-  </Card>
-  <Card title="Autenticação e escopos" href="/start/authentication">
-    Entenda como funcionam as API keys e os 20+ escopos disponíveis.
-  </Card>
-  <Card title="Referência completa da API" href="/api-reference/introduction">
-    Explore todos os endpoints com exemplos interativos.
-  </Card>
-</CardGroup>
-
-<Note>
-  Ficou com dúvida? Chama a gente em **contato@timelyai.com.br**. Respondemos em até 24h.
-</Note>
+1. **Squads de agentes:** agrupe múltiplos agentes em um squad com roteamento inteligente. Um agente gerente triagem enquanto especialistas resolvem — sem configurar fluxos manuais de handoff.
+2. **Workers assíncronos:** delegue tarefas longas (análise de dados, pesquisa, geração de conteúdo em lote) a agentes que processam em segundo plano. Você acompanha o progresso e consulta o resultado quando quiser.
+3. **CRM integrado:** contatos, conversas e funil de vendas em um só lugar. Campos customizados, tags e segmentação disponíveis para agentes e times humanos.
+4. **Integrações nativas:** conecte Google Calendar, Sheets, Meet, Slack, Notion, HubSpot, Stripe e dezenas de outras ferramentas via Composio — sem código de cola.
+5. **Controle de acesso granular:** roles hierárquicos (owner, manager, trainer, attendant, member) com matriz de permissões que garante que cada pessoa veja exatamente o que deve ver.

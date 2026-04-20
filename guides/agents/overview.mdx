@@ -1,95 +1,212 @@
 ---
-title: "Anatomia de um agente"
-description: "Entenda os blocos que compõem um agente de IA na Timely.ai — de perfil e modelo até canais, voz e treinamento."
+title: "O que é um agente?"
+description: "Entenda a estrutura completa de um agente na Timely.ai — identidade, comportamento, capacidades, ferramentas e onde ele opera."
 ---
 
-Um agente é a unidade central da Timely.ai. Ele conversa com seus clientes, executa tarefas, acessa ferramentas externas e pode transferir o atendimento para outro agente ou para um humano — tudo de forma autônoma.
+Um agente é a entidade central da Timely.ai. Ele recebe mensagens dos seus clientes, processa essas mensagens com um modelo de linguagem, consulta bases de conhecimento, aciona ferramentas externas e devolve respostas — tudo de forma autônoma, nos canais que você configurar.
 
-## Visão geral
+## Identidade do agente
 
-Todo agente é composto por seis blocos interdependentes. Você pode configurá-los na ordem que quiser, mas cada bloco impacta diretamente o comportamento final do agente.
+A identidade define quem o agente é antes de qualquer instrução de comportamento. Ela estabelece o enquadramento que o modelo de linguagem usa para interpretar qualquer mensagem recebida.
 
-<CardGroup cols={3}>
-  <Card title="Perfil" icon="user">
-    Nome, avatar, objetivo e configurações básicas de comportamento (emojis, divisão de resposta, transferência para humano).
-  </Card>
-  <Card title="Modelo" icon="cpu">
-    O provedor de LLM e o modelo específico que o agente usa para raciocinar — OpenAI, Anthropic, Google ou OpenRouter.
-  </Card>
-  <Card title="Prompt" icon="file-text">
-    Instrução de sistema que define personalidade, tom, limites e fluxo de conversa. Editável com histórico de versões e melhoria automática por IA.
-  </Card>
-  <Card title="Treinamento" icon="book-open">
-    Base de conhecimento do agente: documentos, sites, textos livres, pares de Q&A e vídeos do YouTube.
-  </Card>
-  <Card title="Tools" icon="wrench">
-    Integrações com apps externos via Composio — Google Calendar, Notion, HubSpot, Stripe e mais 25 apps disponíveis.
-  </Card>
-  <Card title="Voz" icon="mic">
-    Síntese de voz com Cartesia, ElevenLabs ou Fish Audio, incluindo clonagem de voz personalizada.
-  </Card>
-</CardGroup>
+### Papel (Role)
 
-## Canais suportados
+O papel é uma descrição curta da função principal do agente dentro da sua operação. Exemplos:
 
-Um agente pode ser publicado em múltiplos canais ao mesmo tempo:
+- "assistente de suporte ao cliente"
+- "qualificador de leads inbound"
+- "agendador de consultas médicas"
+- "especialista em cobrança"
 
-- **WhatsApp** — via integração com a API oficial Meta
-- **Instagram Direct** — respostas automáticas a mensagens diretas
-- **Widget de site** — chat incorporado via snippet JavaScript
-- **API** — consumo direto via endpoints REST para integrações customizadas
-
-## Regras de transferência
-
-Além dos seis blocos principais, cada agente pode ter até 10 **regras de transferência**. Uma regra define uma condição em linguagem natural (ex.: "quando o cliente solicitar falar com um humano") e um destino: outro agente ou um atendente da equipe.
-
-## Execuções e rastreabilidade
-
-Cada conversa processada pelo agente gera um **registro de execução** com todos os passos: chamadas ao modelo, ferramentas acionadas, erros e latências. Você pode inspecionar essas execuções no canvas visual em tempo real.
-
-## Como os blocos se conectam
-
-```
-Mensagem do cliente
-        ↓
-   [Canais] recebem e roteiam
-        ↓
-   [Modelo + Prompt] raciocinam
-        ↓
-   [Treinamento] fornece contexto via RAG
-        ↓
-   [Tools] executam ações externas
-        ↓
-   [Voz] converte a resposta (se necessário)
-        ↓
-   [Regras de Transferência] decidem handoff
-        ↓
-  Resposta ao cliente
-```
+O papel não é apenas um rótulo — ele comunica ao modelo o contexto de atuação esperado. Um agente com papel "assistente financeiro" interpreta ambiguidades de forma diferente de um agente com papel "vendedor consultivo", mesmo que o prompt base seja similar.
 
 <Note>
-Você não precisa configurar todos os blocos para publicar um agente. Um agente com apenas perfil, modelo e prompt já é funcional. Adicione treinamento e tools conforme a complexidade do seu caso de uso.
+Mantenha o papel alinhado com o nome interno do agente. Divergências entre nome e papel dificultam a gestão em workspaces com múltiplos agentes.
 </Note>
 
-## Limites e boas práticas
+### Prompt
 
-- Cada workspace pode ter múltiplos agentes ativos simultaneamente.
-- Um agente sem prompt configurado usa um prompt padrão genérico — sempre escreva um prompt customizado para melhores resultados.
-- Tools e treinamento aumentam o custo em créditos por execução; calibre o modelo de acordo com o orçamento.
+O prompt do sistema é a instrução mais importante do agente. Ele define personalidade, tom de voz, restrições, fluxo de conversa e exemplos de comportamento esperado. Um bom prompt tem quatro blocos:
 
-## Próximos passos
+- **Identidade** — quem o agente é e qual empresa representa
+- **Tom e estilo** — como ele deve se comunicar
+- **O que pode fazer** — lista de capacidades permitidas
+- **O que não deve fazer** — restrições explícitas para evitar respostas indesejadas
 
-<CardGroup cols={2}>
-  <Card title="Criar um agente" href="/guides/agents/creating/overview">
-    Siga o passo a passo para criar seu primeiro agente — via wizard ou com a criação conversacional do Time AI.
-  </Card>
-  <Card title="Escolher o modelo certo" href="/guides/agents/settings/model">
-    Compare provedores, capacidades e custo em créditos para escolher o modelo ideal.
-  </Card>
-  <Card title="Escrever o prompt" href="/guides/agents/settings/prompt">
-    Aprenda a usar o editor de prompt com histórico de versões e melhoria automática.
-  </Card>
-  <Card title="Treinar o agente" href="/guides/agents/training">
-    Adicione documentos, sites, Q&A e vídeos à base de conhecimento.
-  </Card>
-</CardGroup>
+O editor de prompt da Timely oferece análise de qualidade em tempo real, sugestões priorizadas de melhoria, histórico de versões automático e melhoria por IA com um clique. O limite de caracteres é controlado pela constante `PROMPT_MAX_LENGTH` da plataforma.
+
+<Note>
+Prompts longos aumentam o custo de tokens por execução. Use a base de conhecimento para informações específicas do negócio e mantenha o prompt focado em comportamento e tom.
+</Note>
+
+## Configurações que moldam o comportamento
+
+Além da identidade, quatro parâmetros controlam como o agente processa e formula suas respostas.
+
+### Temperatura
+
+A temperatura é um valor numérico de 0,00 a 1,00 que controla a variabilidade das respostas. Valores baixos produzem respostas consistentes e previsíveis; valores altos produzem respostas mais variadas e criativas. A Timely usa quatro faixas com rótulos:
+
+- **0,00–0,15** — Metódico: respostas quase idênticas para a mesma pergunta
+- **0,16–0,35** — Conservador: variação mínima na formulação
+- **0,36–0,60** — Equilibrado: variação moderada para uso geral
+- **0,61–1,00** — Criativo/Muito criativo: respostas visivelmente diferentes a cada interação
+
+Para suporte ao cliente, a faixa conservadora (0,20–0,40) produz os melhores resultados na maioria dos casos.
+
+### Effort
+
+O effort define a profundidade de raciocínio do agente, controlado por um slider de 10 a 100 passos máximos. Mais passos significam respostas mais elaboradas, maior latência e maior consumo de créditos. Os quatro níveis são:
+
+- **10–20 passos** — Rápido: FAQs, saudações, confirmações simples
+- **21–40 passos** — Equilibrado: suporte geral, qualificação de leads
+- **41–70 passos** — Detalhado: análises técnicas, diagnósticos
+- **71–100 passos** — Máximo: raciocínio multi-etapa, decisões críticas
+
+### Planejamento
+
+O modo de planejamento define se o agente decompõe tarefas complexas em subtarefas antes de executar. Quando ativado, o agente planeja os passos antes de agir — útil para fluxos com múltiplas ferramentas encadeadas.
+
+**Quando ativar:**
+
+- Agentes que precisam chamar 3 ou mais ferramentas em sequência
+- Fluxos onde a ordem das ações importa
+- Tarefas que exigem verificação intermediária de resultados
+- Diagnósticos que dependem de múltiplas fontes de dados
+
+**Quando manter desativado:**
+
+- Conversas de suporte simples com uma ferramenta ou nenhuma
+- FAQ e respostas diretas de base de conhecimento
+- Agentes de alta frequência onde latência é crítica
+- Casos onde o prompt já define o fluxo de maneira explícita
+
+<Note>
+Planejamento ativo aumenta a latência e o consumo de créditos. Use apenas quando o fluxo realmente exigir coordenação entre múltiplas ações.
+</Note>
+
+### Raciocínio
+
+O raciocínio (reasoning) é uma capacidade disponível em modelos específicos — como Claude Sonnet 4.6, Claude Opus 4.6, Gemini 3.x e Kimi K2.5 — que permite ao modelo "pensar em voz alta" antes de formular a resposta final. Isso melhora significativamente a qualidade em perguntas que exigem lógica, comparações ou inferências.
+
+**Quando o raciocínio ajuda:**
+
+- Perguntas que envolvem múltiplos critérios simultâneos
+- Comparações entre opções com prós e contras
+- Diagnósticos onde a causa precisa ser inferida a partir de sintomas
+
+**Limitações importantes:**
+
+- Modelos Anthropic com raciocínio ativo forçam a temperatura para 1,0 na API — o slider de temperatura fica desabilitado
+- Modelos OpenAI (GPT-5.1, GPT-5.2) usam raciocínio interno sem suporte a temperatura externa
+- O custo de tokens por execução aumenta significativamente com raciocínio ativo
+
+<Warning>
+Ativar raciocínio em modelos que não suportam o recurso não tem efeito. Verifique a compatibilidade do modelo selecionado antes de configurar fluxos que dependam de raciocínio ativo.
+</Warning>
+
+## Expandindo as capacidades do agente
+
+Além do processamento de linguagem base, cada agente pode ser equipado com recursos adicionais que ampliam o que ele consegue fazer numa conversa.
+
+### Memória
+
+A memória permite que o agente retenha informações de conversas anteriores com o mesmo contato. Com memória ativa, o agente reconhece clientes recorrentes, recorda contexto de interações passadas e evita solicitar informações que já foram fornecidas.
+
+- Ideal para relacionamentos de longo prazo onde o histórico importa
+- Requer que o contato esteja identificado no CRM da Timely
+
+### Bases de conhecimento
+
+A base de conhecimento conecta o agente a documentos, FAQs, manuais e fontes de dados indexados. Usando recuperação semântica (RAG), o sistema injeta automaticamente os trechos mais relevantes do conhecimento disponível em cada pergunta — sem precisar colocar toda essa informação no prompt.
+
+- Suporta documentos em PDF, DOCX, TXT, URLs e pares de Q&A
+- A recuperação é semântica: o agente encontra respostas mesmo quando a pergunta usa palavras diferentes das do documento
+- Atualize os documentos regularmente — conhecimento desatualizado gera respostas incorretas com alta confiança
+
+### Tabelas
+
+Tabelas permitem que o agente consulte e escreva dados estruturados em tempo real — preços, estoques, cronogramas, configurações por cliente. Ao contrário de documentos estáticos, tabelas suportam leitura e escrita durante a conversa.
+
+- Úteis para catálogos de produtos com preços dinâmicos
+- Permitem registrar dados coletados na conversa (qualificação de leads, formulários)
+- Integram com ferramentas externas via Composio para sincronização automática
+
+### Fluxos de trabalho (Workflows)
+
+Workflows definem sequências de ações que o agente executa de forma autônoma — por exemplo, verificar disponibilidade no calendário, criar um evento, enviar uma confirmação por e-mail e atualizar o CRM, tudo numa única conversa.
+
+- Definidos como grafos de ações com condicionais e ramificações
+- Podem combinar múltiplas ferramentas em sequência
+- Reduzem a necessidade de instruções detalhadas no prompt para fluxos repetitivos
+
+### MCPs (Model Context Protocol)
+
+MCPs são servidores de contexto que expõem ferramentas e dados para o agente em tempo de execução, seguindo o padrão aberto Model Context Protocol. Eles permitem conectar o agente a sistemas internos ou fontes de dados customizadas sem depender das integrações pré-construídas.
+
+- Compatíveis com qualquer sistema que implemente o protocolo MCP
+- Permitem integrações com sistemas legados, bancos de dados internos ou APIs proprietárias
+- Requerem configuração técnica do servidor MCP na infraestrutura do cliente
+
+<Note>
+MCPs são um recurso avançado voltado para equipes técnicas. Para a maioria dos casos de uso, as integrações via Composio cobrem as necessidades sem necessidade de configuração de servidor.
+</Note>
+
+## Agindo por meio de ferramentas
+
+Um agente na Timely não é apenas uma interface de chat — ele pode executar ações reais em sistemas externos. As ferramentas (tools) são a ponte entre a conversa e o mundo real.
+
+As ferramentas disponíveis via Composio incluem:
+
+- **Google Calendar** — criar, ler e atualizar eventos de agenda
+- **Google Sheets** — ler e escrever dados em planilhas
+- **Slack** — enviar mensagens em canais e DMs
+- **HubSpot** — criar e atualizar contatos e negócios no CRM
+- **Gmail** — ler e enviar e-mails
+- **Notion** — criar e atualizar páginas de banco de dados
+- **Stripe** — consultar cobranças e assinaturas
+- **Google Meet** — criar links de reunião e consultar gravações
+- **Meta Ads** — gerenciar campanhas e audiências
+
+O agente decide automaticamente quando e como chamar cada ferramenta com base no contexto da conversa e nas instruções do prompt. O canvas de execuções registra cada chamada com parâmetros enviados, resposta recebida e latência — permitindo auditoria completa.
+
+<Note>
+Para cada ferramenta utilizada, o usuário precisa autorizar a conexão via OAuth ou API key dentro das configurações de integrações Composio do workspace.
+</Note>
+
+## Prompts condicionais (Avançado)
+
+Prompts condicionais permitem que um único agente se comporte de formas diferentes dependendo de variáveis da conversa. Em vez de criar múltiplos agentes para cada segmento de cliente, você define blocos de instrução que se ativam apenas quando certas condições são verdadeiras.
+
+Variáveis disponíveis para condicionais incluem `contact.stage`, `contact.plan`, `channel`, `contact.language` e `contact.tags`. As instruções do bloco condicional são concatenadas ao prompt base — não o substituem.
+
+Exemplos de uso:
+
+- Tom mais formal para contatos do plano enterprise
+- Instruções de urgência quando o contato está na fase "lead quente"
+- Respostas em espanhol quando `contact.language = "es"`
+- Mensagens mais curtas quando `channel = "instagram"`
+
+<Warning>
+Blocos condicionais com instruções que contradizem o prompt base geram comportamento imprevisível. Teste cada condição isoladamente antes de combinar múltiplas.
+</Warning>
+
+## Onde o agente opera
+
+Um agente pode ser publicado simultaneamente em múltiplos canais:
+
+- **WhatsApp** — via integração com a API oficial Meta Business
+- **Instagram Direct** — respostas automáticas a mensagens diretas
+- **Widget de site** — chat incorporado via snippet JavaScript
+- **API REST** — consumo direto por integrações customizadas
+
+O mesmo agente pode atender em todos os canais com o mesmo prompt base, diferenciando o comportamento por canal via prompts condicionais quando necessário.
+
+## Por que agentes da Timely são diferentes
+
+A Timely não é um chatbot de fluxo fixo nem um assistente genérico. Cada agente combina raciocínio adaptativo com acesso a ferramentas reais, base de conhecimento semântica e rastreabilidade completa de cada execução.
+
+- Cada mensagem é processada com contexto completo da conversa, do contato e das instruções configuradas
+- Ferramentas são chamadas de forma autônoma com base no conteúdo da mensagem — não por palavras-chave fixas
+- O canvas de execuções registra cada passo com input, output e latência para auditoria e debugging
+- Qualquer configuração alterada entra em vigor imediatamente na próxima execução — sem necessidade de redeploy

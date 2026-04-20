@@ -1,70 +1,18 @@
 ---
-title: "Canais — Visão geral"
-description: "Compare os 5 canais suportados pela Timely.ai e escolha o mais adequado para cada caso de uso"
+title: "Canais — Visão Geral"
+description: "Conecte seu agente aos canais onde seus clientes estão: WhatsApp, Instagram, Widget, Telegram e Slack."
 ---
 
-A Timely.ai conecta seu agente aos canais onde seus clientes já estão. Cada canal tem características próprias de setup, recursos e limites — esta página resume tudo numa visão única para você decidir por onde começar.
+Um **canal** é a ponte entre o agente de IA e a plataforma de mensagens usada pelo cliente. A Timely.ai suporta múltiplos canais simultâneos — todas as conversas chegam centralizadas na Inbox, independentemente da origem.
 
-## Canais disponíveis
+## Visão geral
 
-<CardGroup cols={2}>
-  <Card title="WhatsApp WABA" icon="whatsapp" href="/guides/channels/types/whatsapp-waba">
-    API oficial Meta. Suporta templates HSM, alta volumetria e múltiplos números por workspace.
-  </Card>
-  <Card title="Instagram" icon="instagram" href="/guides/channels/types/instagram">
-    DMs do Instagram via Meta OAuth. Ideal para marcas com forte presença na rede social.
-  </Card>
-  <Card title="Widget Web" icon="browser" href="/guides/channels/types/widget">
-    Snippet JS embeddable. Suporte a voz, personalização completa e múltiplos domínios.
-  </Card>
-  <Card title="Telegram" icon="telegram" href="/guides/channels/types/telegram">
-    Bot Telegram com token próprio. Setup simples, sem aprovação de conta comercial.
-  </Card>
-  <Card title="Slack" icon="slack" href="/guides/channels/types/slack">
-    Integração bidirecional para equipes internas. Suporte a @mentions, DMs e slash commands.
-  </Card>
-</CardGroup>
+A Timely.ai oferece cinco tipos de canal, cada um com características próprias de configuração e recursos.
 
-## Matriz de recursos
+### Principais funcionalidades
 
-| Canal | Setup | Templates | Mídia | Voz | Embedded |
-|---|---|---|---|---|---|
-| **WhatsApp WABA** | Meta Embedded Signup | Sim — obrigatório fora de 24h | Sim | — | — |
-| **Instagram** | Meta OAuth | — | Sim | — | — |
-| **Widget** | JS snippet | — | Sim | Sim (voice call) | Sim |
-| **Telegram** | Bot token | — | Sim | — | — |
-| **Slack** | OAuth + App | — | Sim | — | — |
-
-<Note>
-  "Templates" no contexto do WhatsApp refere-se às mensagens HSM (Highly Structured Messages) aprovadas pela Meta. São obrigatórias para iniciar conversas fora da janela de 24 horas.
-</Note>
-
-## Como escolher o canal certo
-
-**WhatsApp WABA** — primeira escolha para atendimento ao cliente em escala. Exige conta Business verificada na Meta e aprovação de templates, mas oferece a maior taxa de abertura de mensagens.
-
-**Instagram** — complemento natural se sua empresa usa Instagram como canal de aquisição. Clientes que mandam DM são atendidos pelo agente sem sair da rede.
-
-**Widget** — melhor opção para começar rápido e testar o agente sem burocracia. Basta colar um snippet no site e o chat aparece em segundos. Único canal com suporte a voz.
-
-**Telegram** — canal técnico e de nicho. Ótimo para comunidades, bots de suporte a desenvolvedores ou integrações internas. Setup em 5 minutos com um token do BotFather.
-
-**Slack** — canal voltado para equipes internas. Use para automatizar triagem de chamados, responder perguntas frequentes de colaboradores ou integrar o agente a fluxos de trabalho no Slack.
-
-## Múltiplos canais simultâneos
-
-Um mesmo agente pode estar conectado a vários canais ao mesmo tempo. As conversas ficam centralizadas no **Inbox** da Timely.ai, independentemente do canal de origem. Você pode filtrar por canal, atribuir conversas a atendentes e ver o histórico completo em um único lugar.
-
-<Tip>
-  Para operações de alto volume no WhatsApp, considere criar múltiplas configurações WABA com números diferentes — cada uma pode ter limites de rate independentes.
-</Tip>
-
-## Próximos passos
-
-Escolheu o canal? Siga o guia específico:
-
-- [WhatsApp WABA](/guides/channels/types/whatsapp-waba)
-- [Instagram](/guides/channels/types/instagram)
-- [Widget Web](/guides/channels/types/widget)
-- [Telegram](/guides/channels/types/telegram)
-- [Slack](/guides/channels/types/slack)
+- Inbox unificada com conversas de todos os canais em uma única fila
+- Filtros por canal na Inbox para segmentar atendimentos
+- Suporte a mídia (imagem, áudio, vídeo e documento) em todos os canais
+- Um mesmo agente pode estar conectado a múltiplos canais ao mesmo tempo
+- Histórico completo de cada conversa preservado independentemente do canal de origem

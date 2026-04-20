@@ -1,82 +1,85 @@
 ---
-title: Membros do Time
-description: Como convidar pessoas para sua conta, gerenciar membros ativos e entender o fluxo de aceite de convite.
+title: "Membros"
+description: "Como adicionar membros ao workspace, gerenciar roles e permissões, remover acessos e aplicar boas práticas de gestão de time."
 ---
 
-A gestão de membros permite adicionar colaboradores à sua conta da Timely.ai, atribuir roles e controlar quem tem acesso a quais funcionalidades. Toda a gestão é feita em **Configurações > Time**.
+A gestão de membros permite adicionar colaboradores ao workspace da Timely.ai, atribuir roles com permissões específicas e controlar quem tem acesso a cada recurso. Toda a gestão é feita em **Configurações > Time**. Apenas `owner` e `manager` têm acesso a essa subseção.
 
-## Roles disponíveis
-
-A plataforma tem cinco roles principais, cada uma com um conjunto específico de permissões:
-
-| Role | Descrição |
-|---|---|
-| **owner** | Acesso total. Pode gerenciar billing, configurações e todos os membros. Apenas um por empresa. |
-| **manager** | Pode gerenciar agentes, time, configurações da empresa e ver relatórios. Não acessa billing. |
-| **trainer** | Pode criar e editar agentes. Acessa conversas e relatórios, mas não gerencia membros. |
-| **attendant** | Acessa conversas para atendimento humano. Não vê relatórios nem gerencia configurações. |
-| **member** | Acesso mínimo. Pode visualizar conversas sem interagir com configurações. |
-
-Para detalhes completos sobre o que cada role pode fazer, veja [Permissões](/guides/team/permissions).
-
-## Convidando um novo membro
+## Adicionando membros
 
 <Steps>
   <Step title="Acesse Configurações > Time">
     No menu lateral, clique em **Configurações** e selecione a aba **Time**.
   </Step>
   <Step title="Clique em Convidar membro">
-    O botão fica no canto superior direito da lista de membros.
+    O botão fica no canto superior direito da lista de membros ativos.
   </Step>
   <Step title="Informe o e-mail">
-    Digite o endereço de e-mail da pessoa que você quer convidar. O e-mail não precisa ter cadastro prévio na Timely.ai.
+    Digite o endereço de e-mail do colaborador. Não é necessário que ele já tenha cadastro na Timely.ai.
   </Step>
   <Step title="Selecione a role">
-    Escolha a role adequada: **Manager**, **Trainer** ou **Attendant**. O owner não pode ser convidado — ele é transferido manualmente pela equipe de suporte.
-  </Step>
-  <Step title="Envie o convite">
-    Clique em **Enviar convite**. O sistema dispara um e-mail de convite para o endereço informado.
+    Escolha a role adequada para o nível de acesso que o colaborador deve ter. O convite é enviado imediatamente após a confirmação.
   </Step>
 </Steps>
 
-<Frame>
-  <img src="/images/invite-user-dialog.png" alt="Diálogo de convite com campo de e-mail e seletor de role" />
-</Frame>
+O convidado recebe um e-mail com link de aceite válido por 7 dias. Ao clicar, ele cria uma conta (ou faz login se já tiver) e é adicionado ao workspace com a role selecionada. O status do convite pode ser acompanhado na aba **Time**:
 
-## Fluxo de aceite do convite
+| Status | Descrição |
+|---|---|
+| **Pendente** | Convite enviado, aguardando aceite do destinatário |
+| **Aceito** | Colaborador entrou no workspace e está ativo |
+| **Expirado** | O link de convite venceu após 7 dias sem aceite |
 
-Quando o convidado recebe o e-mail:
+Convites expirados podem ser reenviados clicando em **Reenviar** na lista de convites pendentes.
 
-1. Ele clica no link de convite (válido por 7 dias).
-2. Se não tiver conta, é direcionado para criar uma com e-mail e senha.
-3. Se já tiver conta, faz login e o convite é aceito automaticamente.
-4. Após aceitar, o convidado aparece na lista de membros com a role atribuída.
+## Atualizando ou removendo membros
 
-<Info>
-  Convites expirados podem ser reenviados. Na lista de convites pendentes, clique em **Reenviar** ao lado do convite que expirou.
-</Info>
+Na aba **Time**, a lista de membros ativos permite ações individuais para cada colaborador:
 
-## Gerenciando membros ativos
-
-Na aba **Time**, você vê duas listas:
-
-- **Membros ativos** — todos os usuários com acesso à conta.
-- **Convites pendentes** — convites enviados que ainda não foram aceitos.
-
-Para cada membro ativo, você pode:
-
-- **Alterar a role** — clique no seletor de role ao lado do nome do membro.
-- **Desativar** — remove o acesso sem deletar o histórico de atividades. O membro pode ser reativado depois.
-- **Remover** — remove permanentemente o membro da conta.
+- **Alterar role:** clique no seletor de role ao lado do nome do membro e escolha a nova role. A mudança entra em vigor imediatamente.
+- **Desativar:** remove o acesso do membro sem apagar o histórico de atividades. O membro pode ser reativado posteriormente pelo mesmo painel.
+- **Remover:** exclui permanentemente o vínculo do membro com o workspace. O histórico de ações e conversas é preservado, mas um novo convite será necessário para restaurar o acesso.
 
 <Warning>
-  Remover um membro é irreversível. O histórico de conversas e ações dele é mantido, mas ele perde acesso imediatamente e precisará de um novo convite para voltar.
+  A remoção de um membro é imediata e irreversível pelo painel. Se o membro for o único com acesso a alguma configuração crítica, garanta que outro colaborador com permissão equivalente já esteja cadastrado antes de remover.
 </Warning>
 
-## Quem pode gerenciar membros?
+## Roles e permissões
 
-Apenas **owner** e **manager** têm permissão para convidar e gerenciar membros. Trainers e attendants não veem a aba Time nas configurações.
+A Timely.ai usa um sistema hierárquico de roles. Cada role herda um conjunto fixo de permissões que não pode ser personalizado individualmente:
 
-## Limite de membros por plano
+| Role | Nível de acesso | Descrição |
+|---|---|---|
+| **owner** | Total | Acesso a todos os recursos, incluindo billing, assinatura e transferência de ownership. Apenas um por workspace. |
+| **manager** | Alto | Gerencia agentes, time, configurações da empresa e visualiza relatórios. Não acessa billing. |
+| **trainer** | Médio | Cria e edita agentes, acessa conversas e relatórios. Não gerencia membros nem configurações administrativas. |
+| **attendant** | Operacional | Acessa conversas para atendimento humano. Não visualiza relatórios nem altera configurações. |
+| **member** | Mínimo | Visualiza conversas sem permissão de interação com configurações ou relatórios. |
 
-O número máximo de membros ativos varia conforme o plano da sua empresa. Caso atinja o limite, o botão de convite ficará desabilitado até que você faça upgrade do plano ou remova membros inativos.
+<Note>
+  O `owner` não pode ser convidado pelo painel — a role de owner é transferida diretamente para outro membro via a ação **Transferir ownership** em Configurações. Em caso de perda de acesso ao owner, entre em contato com o suporte.
+</Note>
+
+## Removendo acesso
+
+Para remover completamente o acesso de um colaborador ao workspace:
+
+<Steps>
+  <Step title="Acesse Configurações > Time">
+    Localize o membro na lista de membros ativos.
+  </Step>
+  <Step title="Clique no menu de opções do membro">
+    Use o botão de três pontos ou o menu de contexto ao lado do nome do colaborador.
+  </Step>
+  <Step title="Selecione Remover e confirme">
+    Leia o aviso de confirmação e clique em **Confirmar remoção**. O acesso é revogado imediatamente.
+  </Step>
+</Steps>
+
+## Boas práticas
+
+- Mantenha pelo menos dois membros com role `owner` para evitar perda de acesso às configurações de assinatura e billing em caso de saída de um colaborador.
+- Atribua a role mais restritiva que atenda às necessidades do colaborador. Roles amplas desnecessárias ampliam a superfície de risco operacional.
+- Use a role `trainer` para colaboradores responsáveis pela qualidade dos agentes — eles têm acesso às configurações de agentes sem poder alterar dados financeiros ou de time.
+- Revise a lista de membros ativos mensalmente. Colaboradores que saíram da empresa mas ainda têm acesso representam um risco de segurança que pode ser mitigado com desativação imediata.
+- Configure o e-mail de convite para uma caixa de grupo (ex.: ti@empresa.com) ao convidar perfis de integração ou bots — isso evita dependência de e-mail pessoal de colaboradores.

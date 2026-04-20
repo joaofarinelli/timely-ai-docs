@@ -1,112 +1,37 @@
 ---
-title: "Live Chat — Atendimento ao Vivo"
-description: "Interface central de conversas da Timely.ai: filtros, atribuição de atendentes e visualização em tempo real"
+title: "Histórico de Conversas"
+description: "Acesse e inspecione o histórico completo de mensagens de qualquer conversa para auditar atendimentos e aprimorar os agentes."
 ---
 
-A Inbox é onde o atendimento acontece. Todas as conversas de WhatsApp, Instagram e Widget chegam aqui, organizadas em abas, com filtros e atribuição para que cada mensagem chegue ao atendente certo na hora certa.
+O histórico de conversas da Timely.ai registra cada interação — mensagens do contato, respostas do agente de IA, notas internas e ações de atendimento humano — em ordem cronológica, preservado indefinidamente no workspace.
 
-<img
-  src="/images/screenshots/placeholder-live-chat-overview.png"
-  alt="Visão geral da Inbox"
-  className="rounded-lg border"
-/>
+## Inspeção de mensagens
 
-## Estrutura da interface
+Abrir uma conversa carrega o histórico completo na coluna central da Inbox. Cada entrada exibe os seguintes parâmetros:
 
-A tela é dividida em três colunas:
-
-- **Lista de conversas** (esquerda) — todas as threads com status, nome do contato, canal e prévia da última mensagem
-- **Chat principal** (centro) — thread completa com histórico, campo de resposta e ações da conversa
-- **Painel de contexto** (direita) — dados do contato, campos customizados e histórico de atividades
-
-<Note>
-  Em dispositivos móveis, as colunas se alternam em telas distintas. Toque na conversa para abrir o chat e use a seta para voltar à lista.
-</Note>
-
-## Abas e filtros
-
-<Tabs>
-  <Tab title="Abas padrão">
-    | Aba | O que mostra |
-    |-----|-------------|
-    | **Todas** | Toda conversa aberta ou em andamento |
-    | **Minhas** | Apenas conversas atribuídas a você |
-    | **Em espera** | Conversas aguardando handover humano |
-    | **Encerradas** | Threads finalizadas (somente leitura) |
-  </Tab>
-  <Tab title="Filtros avançados">
-    Clique no ícone de filtro no canto superior da lista para combinar:
-
-    - **Agente de IA** — filtra por agente responsável
-    - **Canal** — WhatsApp, Instagram, Widget
-    - **Squad** — agrupa conversas por time
-    - **Busca por texto** — pesquisa no nome do contato ou no conteúdo da última mensagem (debounce de 500 ms)
-  </Tab>
-</Tabs>
-
-## Atribuindo conversas
-
-Por padrão, o agente de IA gerencia as conversas automaticamente. Quando um humano precisa intervir, você pode atribuir manualmente:
-
-<Steps>
-  <Step title="Abra a conversa">
-    Clique na thread na lista à esquerda para carregá-la no painel central.
-  </Step>
-  <Step title="Clique em 'Assumir atendimento'">
-    No cabeçalho da conversa, use o botão de atribuição. Você pode atribuir para si mesmo ou para outro atendente do workspace.
-  </Step>
-  <Step title="Confirme a assignação">
-    O status da conversa muda para **Em Atendimento** e ela aparece na aba **Minhas** do atendente designado.
-  </Step>
-</Steps>
-
-<Tip>
-  Conversas com atribuição recente sobem automaticamente para o topo da lista, ordenadas por atividade. Assim você nunca perde o contexto de uma thread quente.
-</Tip>
-
-## Enviando mensagens
-
-Com a conversa aberta, o campo de resposta fica na parte inferior do chat. Você pode:
-
-- Digitar texto e pressionar **Enter** (ou Shift+Enter para quebra de linha)
-- Usar `/` para acionar o autocomplete de [Respostas Rápidas](/guides/inbox/quick-replies)
-- Anexar imagens, vídeos e documentos pelo ícone de clipe
-- Gravar áudio diretamente pelo ícone de microfone
-
-<CardGroup cols={2}>
-  <Card title="Resposta Rápida" icon="bolt">
-    Digite `/` seguido do atalho para inserir templates instantaneamente. Veja [Respostas Rápidas](/guides/inbox/quick-replies).
-  </Card>
-  <Card title="Responder mensagem específica" icon="reply">
-    Passe o mouse sobre qualquer mensagem e clique em **Responder** para criar uma citação encadeada — funciona no WhatsApp e Widget.
-  </Card>
-  <Card title="Áudio" icon="microphone">
-    Grave e envie áudio diretamente da Inbox. O arquivo fica armazenado no Supabase Storage e é enviado como mensagem de voz.
-  </Card>
-  <Card title="Mídia em massa" icon="image">
-    Arraste múltiplas imagens para a área de chat — cada uma vira uma mensagem separada na ordem do drag-and-drop.
-  </Card>
-</CardGroup>
-
-## Indicadores de status em tempo real
-
-A Timely usa subscriptions Realtime do Supabase para atualizar a lista de conversas sem precisar recarregar a página. Os indicadores visuais que você vê são:
-
-- **Ponto verde** — conversa com mensagem não lida
-- **Badge de contagem** — número de mensagens novas na aba
-- **Ícone de canal** — WhatsApp, Instagram ou Widget ao lado do nome do contato
-- **Label do agente de IA** — badge roxo indicando qual agente está ativo nessa thread
+| Parâmetro | Descrição |
+|-----------|-----------|
+| **Remetente** | Contato (cliente), agente de IA ativo ou atendente humano responsável |
+| **Timestamp** | Data e hora exata de envio, no fuso do workspace |
+| **Canal** | Ícone do canal de origem (WhatsApp, Instagram, Widget, Telegram, Slack) |
+| **Tipo de conteúdo** | Texto, imagem, áudio, vídeo, documento ou nota interna |
+| **Status de entrega** | Enviado, entregue e lido — disponível para canais que suportam recibos |
+| **Agente ativo** | Badge indicando qual agente de IA processou a mensagem |
 
 <Note>
-  A ordenação padrão é por atividade mais recente. Conversas com reply novo do contato sobem instantaneamente para o topo, mesmo que não estejam atribuídas a você.
+  Notas internas adicionadas por atendentes aparecem no histórico com destaque visual diferente das mensagens enviadas ao contato. Elas não são visíveis para o cliente.
 </Note>
 
-## Encerrando uma conversa
+## Otimização dos agentes
 
-Para encerrar, clique em **Finalizar atendimento** no cabeçalho. Isso:
+O histórico é a principal fonte de informação para aprimorar o comportamento dos agentes. Dois usos diretos:
 
-1. Marca a conversa como `closed` no banco
-2. Registra o `end_time` no registro de atendimento
-3. Opcionalmente devolve o controle ao agente de IA (configurável via `returnToAI`)
+- **Identificar lacunas na base de conhecimento** — mensagens em que o agente respondeu de forma imprecisa ou incompleta indicam tópicos que devem ser adicionados ao treinamento.
+- **Revisar tom e linguagem** — conversas concluídas com avaliação negativa do contato revelam padrões de resposta que precisam de ajuste no prompt de sistema.
 
-Conversas encerradas ficam visíveis na aba **Encerradas** e podem ser reabertas a qualquer momento se o contato enviar uma nova mensagem.
+Para aplicar melhorias:
+
+- Copie trechos de conversa problemáticos e use-os como exemplos negativos no prompt de sistema do agente.
+- Crie entradas de Q&A na base de conhecimento com base em perguntas frequentes identificadas no histórico.
+- Use filtros de tag para segmentar conversas por assunto e revisar lotes temáticos.
+- Exporte históricos via API de conversas para análise em ferramentas externas de BI.

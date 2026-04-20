@@ -1,65 +1,18 @@
 ---
 title: "Role do agente"
-description: "Como a role define a função e a persona do agente, influenciando tom, escopo e comportamento padrão nas conversas."
+description: "Como a role define a função e a persona do agente na Timely.ai, influenciando o enquadramento que o modelo usa para interpretar ambiguidades e tomar decisões."
 ---
 
-## Visão geral
+A role é uma descrição curta da função principal do agente — pense nela como o cargo que ele ocupa dentro da sua operação. Ela não é apenas um rótulo organizacional: a role é injetada no contexto do modelo de linguagem como o enquadramento de atuação esperado, complementando o prompt do sistema.
 
-A role é uma descrição curta da função principal do agente — pense nela como o "cargo" que ele ocupa dentro da sua operação de atendimento. Ela não é apenas um rótulo: a role comunica ao modelo de linguagem o contexto de atuação esperado, complementando o prompt do sistema ao definir o enquadramento geral do agente.
-
-Enquanto o prompt detalha regras, restrições e exemplos específicos, a role funciona como o chapéu que o agente veste antes de ler qualquer instrução. Um agente com role "qualificador de leads" vai naturalmente interpretar ambiguidades de maneira mais comercial; um agente com role "suporte técnico nível 1" vai priorizar diagnóstico e solução de problemas.
-
-## Como configurar
-
-<Steps>
-  <Step title="Acesse as configurações do agente">
-    Na lista de agentes, clique no agente desejado para abrir suas configurações.
-  </Step>
-
-  <Step title="Localize o campo Role">
-    O campo **Role** fica na seção de identidade, logo abaixo do nome interno. Ele aceita texto livre.
-  </Step>
-
-  <Step title="Escreva a role">
-    Use uma frase curta que descreva a função do agente. Inclua o domínio de atuação e, se relevante, o nível de especialização. Exemplos: "assistente de suporte técnico", "vendedor consultivo de planos SaaS", "triador de atendimentos de saúde".
-  </Step>
-
-  <Step title="Alinhe com o prompt">
-    Revise o prompt do sistema para garantir que as instruções sejam consistentes com a role definida. Conflitos entre role e prompt geram comportamento inconsistente.
-  </Step>
-
-  <Step title="Salve e teste">
-    Salve as alterações e use o Chat interno para validar se o agente adota o comportamento esperado para a role configurada.
-  </Step>
-</Steps>
-
-## Exemplos / Casos de uso
-
-**Assistente de suporte ao cliente:** Role "assistente de suporte ao cliente" combinada com um prompt que lista os produtos suportados e as perguntas mais frequentes. O agente prioriza resolução rápida e encaminhamento correto.
-
-**Vendedor consultivo:** Role "consultor de vendas" com prompt que instrui o agente a qualificar o lead antes de apresentar qualquer proposta. O modelo interpreta perguntas abertas como oportunidades de descoberta, não de suporte.
-
-**Triador de leads:** Role "triador de leads inbound" combinada com prompt que define critérios de qualificação (porte da empresa, orçamento, urgência). O agente conduz a conversa como uma entrevista estruturada e transfere leads qualificados para um humano.
-
-**Agendador de consultas:** Role "agendador de consultas médicas" com prompt que lista especialidades, horários e instrução de nunca fornecer orientações de saúde. A role reforça o foco em agendamento e evita que o agente extrapole para outros temas.
+Enquanto o prompt detalha regras, restrições e exemplos específicos, a role funciona como o chapéu que o agente veste antes de ler qualquer instrução. Um agente com role "qualificador de leads" interpreta ambiguidades com viés comercial; um agente com role "suporte técnico nível 1" prioriza diagnóstico e solução de problemas. A mesma pergunta pode receber respostas muito diferentes dependendo da role configurada.
 
 ## Boas práticas
 
-<Tip>
-Mantenha a role alinhada com o nome interno do agente. Se o nome é "Suporte Técnico L1", a role deveria ser algo como "assistente de suporte técnico nível 1", não "vendedor" — a coerência facilita o entendimento da equipe e o comportamento do modelo.
-</Tip>
+- Seja específico: "suporte técnico de software SaaS" é mais útil para o modelo do que "suporte"
+- Alinhe a role com o nome interno — se o nome é "Suporte Técnico L1", a role deve ser consistente com essa função, não "vendedor"
+- Não use a role para incluir instruções detalhadas — isso pertence ao prompt. A role é o contexto; o prompt é o roteiro
 
-- Seja específico na role: "suporte técnico de software" é melhor que "suporte"; "vendedor de planos anuais" é melhor que "vendedor".
-- Se o agente faz parte de um squad hierárquico, a role deve refletir a posição dele no squad — "gerente de triagem" para o agente líder, "especialista em cobrança" para os membros.
-- Não use a role para incluir instruções detalhadas — isso vai no prompt. A role é o contexto; o prompt é o roteiro.
+## Exemplo
 
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Prompt do sistema" href="/guides/agents/settings/prompt">
-    Escreva e refine as instruções detalhadas de comportamento do agente.
-  </Card>
-  <Card title="Temperatura" href="/guides/agents/settings/temperature">
-    Ajuste o grau de criatividade vs consistência das respostas.
-  </Card>
-</CardGroup>
+> assistente de suporte ao cliente especializado em planos de assinatura e cancelamentos, responsável por resolver dúvidas e escalar casos críticos para o time de retenção

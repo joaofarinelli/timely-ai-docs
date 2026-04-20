@@ -1,270 +1,69 @@
 ---
-title: "Conectar um servidor MCP"
-description: "Passo a passo para adicionar um servidor MCP ao agente, sincronizar ferramentas e ativá-las individualmente — com referência aos endpoints da API."
+title: "Como conectar um novo MCP"
+description: "Passo a passo para adicionar um servidor MCP ao agente, sincronizar ferramentas e ativá-las individualmente."
 ---
 
-## Visão geral
+## Passo a passo
 
-Conectar um servidor MCP ao agente é um processo de quatro etapas: registrar o servidor, estabelecer a conexão, sincronizar as ferramentas disponíveis e ativar as que o agente pode usar. Você pode fazer tudo pelo painel da Timely.ai ou via API.
-
-## Pré-requisitos
-
-Antes de começar, certifique-se de que:
-
-- O servidor MCP está em operação e acessível via HTTPS.
-- Você tem a URL do endpoint SSE ou HTTP do servidor (ex.: `https://mcp.suaempresa.com/sse`).
-- Se o servidor exigir autenticação, você tem o token Bearer ou a API key.
-- O servidor implementa corretamente o protocolo MCP — teste com um cliente MCP local antes de conectar ao agente.
-
-## Conectar pelo painel
+Conectar um servidor MCP ao agente envolve registrar o servidor, estabelecer a conexão, sincronizar as ferramentas disponíveis e ativar individualmente as que o agente pode usar.
 
 <Steps>
   <Step title="Abra a seção MCP do agente">
-    No painel da Timely.ai, abra o agente desejado e vá até a aba de configurações. Selecione **MCP** no menu lateral esquerdo.
-
-    Você verá a lista de servidores MCP já conectados ao agente (se houver). Clique em **Nova conexão MCP**.
+    No painel da Timely.ai, abra o agente desejado e acesse a aba de configurações. Selecione **MCP** no menu lateral. Você verá a lista de servidores já conectados ao agente. Clique em **Nova conexão MCP** para iniciar.
   </Step>
-  <Step title="Preencha os dados do servidor">
-    No formulário de nova conexão, informe:
+  <Step title="Informe os dados do servidor">
+    No formulário de nova conexão, preencha:
 
-    - **Nome do servidor**: um rótulo descritivo para identificar o servidor (ex.: "API de Estoque Interno").
-    - **URL**: o endpoint do servidor MCP. Pode ser SSE (`/sse`) ou HTTP.
-    - **Autenticação**: se o servidor exigir, selecione o tipo (Bearer Token ou API Key) e informe o valor. Esse valor é armazenado de forma segura e nunca é exposto na interface.
+    - **Nome do servidor** — um rótulo descritivo para identificar o servidor (ex.: "API de Estoque Interno").
+    - **URL** — o endpoint do servidor MCP. Pode ser SSE (`/sse`) ou HTTP.
+    - **Autenticação** — se o servidor exigir, selecione o tipo (Bearer Token ou API Key) e informe o valor. A credencial é armazenada de forma segura e nunca fica visível na interface após salvar.
 
-    Clique em **Adicionar**.
+    Clique em **Adicionar** para registrar o servidor.
   </Step>
   <Step title="Conecte ao servidor">
-    Após adicionar, clique em **Conectar** no card do servidor. A Timely.ai abre uma sessão com o servidor MCP e verifica se a comunicação está funcionando.
-
-    - **Conexão bem-sucedida**: o status muda para "Conectado" e o botão de sincronização fica disponível.
-    - **Falha na conexão**: uma mensagem de erro indica o problema — geralmente URL incorreta, servidor fora do ar ou credenciais inválidas.
+    Após registrar, clique em **Conectar** no card do servidor. A Timely.ai abre uma sessão com o servidor MCP e verifica se a comunicação está funcionando. O status muda para "Conectado" quando bem-sucedido — ou exibe uma mensagem de erro indicando a causa da falha (URL incorreta, servidor fora do ar, credencial inválida).
   </Step>
-  <Step title="Sincronize as ferramentas">
-    Com o servidor conectado, clique em **Sincronizar tools**. A Timely.ai consulta o servidor e importa a lista de ferramentas disponíveis.
-
-    Cada ferramenta aparece com:
-    - **Nome** (slug da ferramenta no servidor).
-    - **Descrição** fornecida pelo servidor.
-    - **Parâmetros** aceitos, com tipos e se são obrigatórios.
+  <Step title="Sincronize as ferramentas disponíveis">
+    Com o servidor conectado, clique em **Sincronizar tools**. A Timely.ai consulta o servidor e importa a lista de ferramentas disponíveis. Cada ferramenta aparece com seu nome (slug), a descrição fornecida pelo servidor e os parâmetros aceitos.
 
     <Note>
-    Repita a sincronização sempre que o servidor MCP for atualizado com novas ferramentas ou quando as descrições/parâmetros forem alterados. A Timely.ai não sincroniza automaticamente.
+    Repita a sincronização sempre que o servidor MCP for atualizado com novas ferramentas ou quando as descrições e parâmetros forem alterados. A Timely.ai não sincroniza automaticamente — é necessário acionar manualmente.
     </Note>
   </Step>
   <Step title="Ative as ferramentas desejadas">
-    Por padrão, todas as ferramentas importadas vêm **desativadas**. Ative individualmente as que o agente pode usar.
-
-    Para cada ferramenta, você pode editar:
-    - **Descrição**: reescreva para dar mais contexto ao modelo sobre quando usar a ferramenta.
-    - **Instrução de uso**: texto injetado no prompt do sistema com orientações específicas (ex.: "Sempre confirme o código do produto antes de chamar esta ferramenta").
-
-    Ferramentas desativadas não são expostas ao modelo — o agente não sabe que elas existem.
+    Por padrão, todas as ferramentas importadas ficam desativadas. Ative individualmente as que o agente pode usar. Para cada ferramenta, você pode editar a descrição exibida ao modelo e adicionar uma instrução de uso — um texto injetado no prompt do sistema que orienta o agente sobre quando e como acionar a ferramenta.
+  </Step>
+  <Step title="Salve e teste no Playground">
+    Salve as configurações e abra o Playground do agente. Faça perguntas ou simule cenários que devem acionar as ferramentas ativadas. Verifique se o agente chama as ferramentas corretas e se o resultado é incorporado adequadamente à resposta.
   </Step>
 </Steps>
 
-## Conectar via API
+## Disponibilizar ferramentas MCP para um agente
 
-Você pode gerenciar servidores MCP programaticamente usando a API da Timely.ai. Todos os endpoints requerem autenticação com sua API key no header `x-api-key`.
+Se você já tem um servidor MCP registrado no workspace e quer conectá-lo a um agente diferente, o processo é simplificado:
 
-### 1. Adicionar o servidor
+<Steps>
+  <Step title="Abra o agente de destino">
+    Acesse o agente desejado e vá até a seção **MCP** nas configurações. Clique em **Nova conexão MCP**.
+  </Step>
+  <Step title="Selecione o servidor existente">
+    Escolha o servidor MCP já registrado no workspace na lista de servidores disponíveis. As ferramentas previamente sincronizadas ficam disponíveis imediatamente — não é necessário sincronizar novamente, a menos que o servidor tenha sido atualizado.
+  </Step>
+  <Step title="Ative as ferramentas para este agente">
+    Ative individualmente as ferramentas que fazem sentido para o contexto deste agente específico. Um mesmo servidor pode ter ferramentas ativadas de forma diferente em agentes distintos — cada agente controla quais ferramentas enxerga.
+  </Step>
+</Steps>
 
-```http
-POST /v1/agent/{id}/mcp/add
-Content-Type: application/json
-x-api-key: tml_sua_api_key
+## Teste interno (recomendado)
 
-{
-  "name": "API de Estoque Interno",
-  "url": "https://mcp.suaempresa.com/sse",
-  "auth": {
-    "type": "bearer",
-    "token": "seu_token_aqui"
-  }
-}
-```
+Antes de colocar o agente com ferramentas MCP em produção, realize testes internos para validar o comportamento:
 
-**Resposta de sucesso (201):**
-```json
-{
-  "success": true,
-  "data": {
-    "id": "mcp_server_uuid",
-    "name": "API de Estoque Interno",
-    "url": "https://mcp.suaempresa.com/sse",
-    "status": "disconnected",
-    "created_at": "2026-04-19T10:00:00Z"
-  }
-}
-```
-
-### 2. Conectar ao servidor
-
-```http
-POST /v1/agent/{id}/mcp/connect
-Content-Type: application/json
-x-api-key: tml_sua_api_key
-
-{
-  "server_id": "mcp_server_uuid"
-}
-```
-
-**Resposta de sucesso (200):**
-```json
-{
-  "success": true,
-  "data": {
-    "server_id": "mcp_server_uuid",
-    "status": "connected"
-  }
-}
-```
-
-### 3. Sincronizar as ferramentas
-
-```http
-POST /v1/agent/{id}/mcp/sync-tools
-Content-Type: application/json
-x-api-key: tml_sua_api_key
-
-{
-  "server_id": "mcp_server_uuid"
-}
-```
-
-**Resposta de sucesso (200):**
-```json
-{
-  "success": true,
-  "data": {
-    "server_id": "mcp_server_uuid",
-    "tools_synced": 5,
-    "tools": [
-      {
-        "name": "consultar_estoque",
-        "description": "Consulta o estoque atual de um produto pelo código SKU.",
-        "parameters": {
-          "sku": { "type": "string", "required": true }
-        },
-        "active": false
-      },
-      {
-        "name": "registrar_lead",
-        "description": "Registra um novo lead no sistema interno com nome, e-mail e interesse.",
-        "parameters": {
-          "nome": { "type": "string", "required": true },
-          "email": { "type": "string", "required": true },
-          "interesse": { "type": "string", "required": false }
-        },
-        "active": false
-      }
-    ]
-  }
-}
-```
-
-### Ativar ou desativar ferramentas individualmente
-
-Após sincronizar, você pode ativar ou desativar ferramentas individualmente via API:
-
-```http
-PATCH /v1/agent/{id}/mcp/tools/{tool_name}
-Content-Type: application/json
-x-api-key: tml_sua_api_key
-
-{
-  "server_id": "mcp_server_uuid",
-  "active": true,
-  "instruction": "Use esta ferramenta quando o cliente perguntar sobre disponibilidade de um produto específico. Sempre peça o código SKU antes de chamar."
-}
-```
-
-## Fluxo completo em um script
-
-```bash
-API_KEY="tml_sua_api_key"
-AGENT_ID="uuid-do-agente"
-BASE_URL="https://api.timely.ai/v1"
-
-# 1. Adicionar servidor
-SERVER=$(curl -s -X POST "$BASE_URL/agent/$AGENT_ID/mcp/add" \
-  -H "x-api-key: $API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Estoque Interno","url":"https://mcp.empresa.com/sse","auth":{"type":"bearer","token":"tok_xyz"}}')
-
-SERVER_ID=$(echo $SERVER | jq -r '.data.id')
-
-# 2. Conectar
-curl -s -X POST "$BASE_URL/agent/$AGENT_ID/mcp/connect" \
-  -H "x-api-key: $API_KEY" \
-  -H "Content-Type: application/json" \
-  -d "{\"server_id\":\"$SERVER_ID\"}"
-
-# 3. Sincronizar ferramentas
-curl -s -X POST "$BASE_URL/agent/$AGENT_ID/mcp/sync-tools" \
-  -H "x-api-key: $API_KEY" \
-  -H "Content-Type: application/json" \
-  -d "{\"server_id\":\"$SERVER_ID\"}"
-```
-
-## Gerenciar servidores existentes
-
-### Desconectar um servidor
-
-Para remover um servidor MCP do agente, clique em **Desconectar** no card do servidor no painel, ou use:
-
-```http
-POST /v1/agent/{id}/mcp/disconnect
-Content-Type: application/json
-x-api-key: tml_sua_api_key
-
-{
-  "server_id": "mcp_server_uuid"
-}
-```
-
-Desconectar remove o servidor e todas as ferramentas associadas do agente. O agente para de usar as ferramentas imediatamente.
-
-### Verificar status da conexão
-
-```http
-GET /v1/agent/{id}/mcp/servers
-x-api-key: tml_sua_api_key
-```
-
-Retorna a lista de servidores MCP configurados no agente com seus status e número de ferramentas ativas.
+- Use o Playground com cenários reais do seu fluxo de atendimento — inclua casos em que a ferramenta deve ser acionada e casos em que não deve, para verificar se o modelo distingue corretamente.
+- Confirme que os resultados retornados pelo servidor são interpretados e formatados corretamente pelo agente antes de expor o canal aos usuários finais.
 
 ## Solução de problemas
 
-| Sintoma | Causa provável | Solução |
-|---|---|---|
-| Conexão recusada | Servidor MCP fora do ar ou URL incorreta | Verifique se o servidor está em operação e a URL está correta |
-| Erro 401 na conexão | Token de autenticação inválido ou expirado | Atualize o token nas configurações do servidor |
-| Nenhuma ferramenta sincronizada | Servidor retornou lista vazia | Verifique a implementação do servidor — ele deve expor ao menos uma ferramenta |
-| Agente não aciona a ferramenta | Ferramenta desativada ou descrição vaga | Ative a ferramenta e melhore a descrição para o modelo entender quando usá-la |
-| Erro de timeout na execução | Ferramenta leva mais de 30s para responder | Otimize o servidor ou divida a operação em ferramentas menores |
+Se a conexão ou as ferramentas não funcionarem como esperado, verifique os pontos mais comuns:
 
-## Boas práticas
-
-- Sempre teste o servidor com um cliente MCP local antes de conectar ao agente em produção.
-- Mantenha um ambiente de staging do servidor MCP para testar atualizações de ferramentas sem impactar o agente em produção.
-- Documente cada ferramenta com exemplos de quando deve ser acionada — isso facilita escrever boas instruções de uso.
-- Use nomes de ferramentas em snake_case descritivos (ex.: `consultar_disponibilidade_produto` em vez de `check`).
-- Implemente circuit breaker no servidor para evitar que erros em cascata impactem o tempo de resposta do agente.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="O que é MCP" href="/guides/mcps/overview">
-    Entenda o protocolo, sua arquitetura e por que ele existe.
-  </Card>
-  <Card title="Ferramentas via MCP" href="/guides/tools/mcp">
-    Como configurar e ativar ferramentas MCP no painel do agente.
-  </Card>
-  <Card title="Referência da API MCP" href="/api-reference/mcp-servers/referencia">
-    Documentação completa dos endpoints de gerenciamento de servidores MCP.
-  </Card>
-  <Card title="Visão geral das ferramentas" href="/guides/tools/overview">
-    Compare todos os tipos de ferramentas disponíveis na Timely.ai.
-  </Card>
-</CardGroup>
+- **Falha na conexão** — confirme que o servidor está em operação, a URL está correta e a credencial de autenticação é válida e não expirou.
+- **Nenhuma ferramenta aparece após sincronizar** — o servidor pode estar retornando uma lista vazia; verifique a implementação do servidor e confirme que ele expõe ao menos uma ferramenta com schema válido.

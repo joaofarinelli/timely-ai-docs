@@ -1,85 +1,41 @@
 ---
-title: Squads
-description: Agrupe múltiplos agentes em squads com roteamento inteligente e handoff automático entre eles.
+title: "O que são Squads"
+description: "Entenda como squads agrupam agentes especializados com roteamento automático e handoff inteligente entre eles."
 ---
 
-Squads permitem combinar agentes especializados em um único ponto de entrada para o usuário. A plataforma cuida do roteamento e das transferências automaticamente, sem necessidade de configuração manual de regras de fluxo.
+Squads são grupos de agentes que colaboram para atender uma conversa. Em vez de expor agentes separados em cada canal, você cria um squad e conecta esse squad ao WhatsApp, Instagram ou widget. A partir daí, a plataforma decide qual agente responde em cada momento — e quando transferir a conversa para outro dentro do grupo.
 
-## O que é um squad?
+## Conceitos fundamentais
 
-Um squad é um grupo de agentes que trabalham juntos para atender uma conversa. Em vez de expor vários agentes separados em um canal, você cria um squad e o conecta ao seu WhatsApp, Instagram ou widget. O squad decide qual agente responde — e quando transferir para outro.
+- **Squad:** conjunto de dois ou mais agentes com um propósito compartilhado de atendimento.
+  - Cada agente do squad mantém sua própria configuração de modelo LLM, personalidade e ferramentas.
+  - O limite é de **20 agentes ativos** por squad.
+  - Um canal só pode ser vinculado a um squad por vez.
+- **Papel do agente no squad:** define a função que o agente exerce dentro do grupo.
+  - `manager` — lidera o roteamento no modo hierárquico. Ponto central de triagem.
+  - `principal` — coordena sem hierarquia rígida no modo horizontal.
+  - `member` — agente especialista que recebe tarefas delegadas ou roteadas.
+  - `specialist` — variante de membro com competências declaradas para roteamento por critério.
+- **Handoff:** transferência de uma conversa de um agente para outro. Registrado com agente de origem, destino e motivo.
+- **Squad ID:** identificador único do squad, usado ao vincular canais programaticamente via API.
 
-Existem dois modos de operação:
+## Modos de operação
 
-<AccordionGroup>
-  <Accordion title="Modo Hierárquico">
-    Um agente líder recebe todas as mensagens e delega tarefas para os demais agentes do squad conforme o contexto da conversa. O usuário final interage apenas com o líder, enquanto os especialistas trabalham nos bastidores ou assumem trechos específicos do atendimento.
+O modo determina como o roteamento acontece dentro do squad. A escolha é feita na criação e afeta a estrutura de papéis necessária.
 
-    **Ideal para:** atendimento com triagem centralizada, fluxos com escalonamento gradual.
-  </Accordion>
-  <Accordion title="Modo Horizontal">
-    Todos os agentes do squad têm o mesmo nível de autoridade. A plataforma roteia cada mensagem para o agente mais adequado com base nas capacidades declaradas de cada um.
+- **Hierárquico (`hierarchical`):**
+  - Um agente `manager` recebe todas as mensagens e decide para qual membro encaminhar.
+  - O usuário final interage com um ponto de entrada único — a triagem acontece nos bastidores.
+  - Exige exatamente um `manager` definido antes de o squad ser ativado.
+  - Ideal para: suporte com filas especializadas, atendimento com escalonamento gradual.
+- **Horizontal (`horizontal`):**
+  - Um agente `principal` coordena, mas todos os membros podem ser acionados diretamente.
+  - O roteamento usa critérios como idioma, canal, horário ou tags do contato.
+  - Exige exatamente um `principal` definido antes de o squad ser ativado.
+  - Ideal para: times com competências similares, distribuição de carga por critério.
 
-    **Ideal para:** times especializados onde qualquer agente pode ser o primeiro a responder.
-  </Accordion>
-</AccordionGroup>
+## Por que usar squads?
 
-## Criar um squad
-
-<Steps>
-  <Step title="Acesse a seção Squads">
-    No menu lateral, clique em **Squads**. Na lista vazia, clique em **Novo Squad**.
-  </Step>
-  <Step title="Preencha nome e descrição">
-    Dê um nome claro ao squad (ex.: "Suporte + Vendas") e uma descrição opcional que ajuda a identificar o propósito do grupo.
-  </Step>
-  <Step title="Escolha o modo de operação">
-    Selecione **Hierárquico** ou **Horizontal** de acordo com a estrutura do seu time de agentes.
-  </Step>
-  <Step title="Adicione agentes">
-    Clique em **Adicionar agente** e selecione os agentes ativos da sua empresa. Cada agente mantém sua própria configuração de LLM, personalidade e ferramentas.
-  </Step>
-  <Step title="Salve e conecte a um canal">
-    Salve o squad. Para conectá-lo a um canal de atendimento, acesse as configurações do canal e selecione o squad como agente responsável.
-  </Step>
-</Steps>
-
-<Frame>
-  <img src="/images/squads-list.png" alt="Lista de squads com cards de cada grupo" />
-</Frame>
-
-## Painel de detalhes
-
-Ao clicar em um squad na lista, você vê o painel dividido em duas colunas:
-
-- **Esquerda:** informações do squad, agentes membros e configurações.
-- **Direita:** chat de teste em tempo real para simular conversas sem usar créditos de produção.
-
-Use o chat de teste para verificar se o roteamento está funcionando como esperado antes de publicar o squad em um canal real.
-
-## Handoff entre agentes
-
-O handoff é a transferência de uma conversa de um agente para outro dentro do squad. A plataforma registra cada transferência no histórico da sessão, incluindo o agente de origem, o agente de destino e o motivo da transferência.
-
-<Info>
-  O histórico de handoff fica visível na aba **Histórico** dentro do painel do squad. Use essa visualização para identificar gargalos e ajustar a distribuição de tarefas.
-</Info>
-
-## Métricas do squad
-
-Cada squad tem um conjunto de métricas acessíveis no painel de detalhes:
-
-| Métrica | Descrição |
-|---|---|
-| Conversas ativas | Sessões em andamento no momento |
-| Taxa de handoff | % de conversas que passaram por transferência |
-| Tempo médio de resposta | Média entre mensagens do usuário e resposta do squad |
-| Agente mais acionado | Agente que recebeu mais transferências no período |
-
-## Deletar um squad
-
-<Warning>
-  Deletar um squad é uma ação irreversível. As conversas associadas ao squad não são apagadas, mas o squad deixa de existir e os canais vinculados a ele param de responder até serem reconfigurados.
-</Warning>
-
-Para deletar, abra o menu de opções na lista de squads e clique em **Deletar**. Confirme a ação no diálogo de confirmação.
+- Resolver conversas complexas que exigem mais de uma especialidade sem escalar o prompt de um único agente.
+- Criar pontos de entrada únicos por canal enquanto múltiplos especialistas trabalham em paralelo.
+- Registrar e auditar cada handoff, identificando gargalos no fluxo de atendimento com dados reais.

@@ -1,59 +1,20 @@
 ---
-title: "Visão geral das configurações do agente"
-description: "Resumo de todas as opções de configuração disponíveis para um agente na Timely: modelo, nome, role, prompt, temperatura, effort, capacidades, prompts condicionais e chat interno."
+title: "Configurações do agente"
+description: "Resumo de todas as seções de configuração disponíveis para um agente na Timely.ai e para que cada uma serve."
 ---
 
-## Visão geral
+Cada agente possui um conjunto de configurações que você acessa clicando no agente na lista e navegando pelas abas disponíveis. Alterações entram em vigor imediatamente para novas conversas — conversas já abertas não são afetadas.
 
-Cada agente na Timely tem um conjunto de configurações que determinam como ele se comporta, qual modelo de linguagem usa e quais recursos tem acesso. Você acessa essas configurações clicando no agente na lista e navegando pelas abas disponíveis.
+## Resumo
 
-As configurações estão organizadas em dois grupos: configurações de identidade (quem o agente é) e configurações de comportamento (como ele age). Alterações entram em vigor imediatamente para novas conversas — conversas já abertas não são afetadas.
-
-## Configurações disponíveis
-
-### Modelo de linguagem
-
-O modelo define qual LLM processa as mensagens do agente. A Timely suporta modelos da OpenAI (GPT-5.1, GPT-5.2), Anthropic (Claude Haiku 4.5, Claude Sonnet 4.6, Claude Opus 4.6), Google (Gemini 2.5 Flash, Gemini 2.5 Pro, Gemini 3.x) e OpenRouter (Kimi K2.5). Cada modelo tem custo em créditos por mensagem, velocidade e capacidades diferentes. Veja a página de [configurações de modelo](/guides/agents/settings/model) para comparações detalhadas.
-
-### Nome interno
-
-O nome interno identifica o agente dentro da plataforma Timely. Ele aparece nas listas, relatórios e logs, mas não é exibido para o usuário final. Use nomes descritivos que facilitem a gestão quando você tiver múltiplos agentes. Veja mais em [Nome interno](/guides/agents/settings/internal-name).
-
-### Role
-
-A role descreve a função e a persona do agente — por exemplo, "assistente de suporte técnico", "qualificador de leads" ou "agendador de consultas". Ela influencia o tom padrão e o escopo de atuação esperado. Saiba mais em [Role do agente](/guides/agents/settings/role).
-
-### Prompt do sistema
-
-O prompt é o conjunto de instruções que define o comportamento do agente. É o elemento mais poderoso da configuração. A Timely oferece um editor com suporte a IA (Time AI) que analisa o prompt atual e sugere melhorias com base em critérios como clareza, restrições e exemplos. O histórico de versões permite restaurar qualquer versão anterior. Veja a página de [Prompt](/guides/agents/settings/prompt).
-
-### Temperatura
-
-A temperatura controla o grau de criatividade vs determinismo nas respostas. Valores baixos (0,00–0,35) tornam o agente mais previsível e consistente; valores altos (0,60–1,00) produzem respostas mais variadas. Alguns modelos de raciocínio desabilitam a temperatura automaticamente. Saiba mais em [Temperatura](/guides/agents/settings/temperature).
-
-### Effort
-
-O effort define a profundidade de raciocínio do agente, controlado pelo número máximo de passos de processamento (de 10 a 100). Valores mais altos produzem respostas mais elaboradas mas consomem mais créditos e aumentam a latência. Veja detalhes em [Effort](/guides/agents/settings/effort).
-
-### Capacidades
-
-Capacidades são funcionalidades opcionais que você habilita por agente: atendimento por voz, uso de ferramentas externas (Composio), agendamento, transferência para humanos e acesso à base de conhecimento. Cada capacidade tem pré-requisitos de configuração. Veja em [Capacidades](/guides/agents/settings/capacities).
-
-### Prompts condicionais
-
-Prompts condicionais permitem que o agente use instruções diferentes dependendo de variáveis da conversa ou do contato — como estágio no funil, canal de origem ou propriedades do perfil. São úteis para personalizar o comportamento sem criar múltiplos agentes separados. Saiba mais em [Prompts condicionais](/guides/agents/settings/conditional-prompts).
-
-### Chat interno
-
-O chat interno é uma interface de teste onde sua equipe pode conversar com o agente diretamente, sem precisar passar por um canal externo como WhatsApp ou Instagram. É o ambiente ideal para validar o comportamento após mudanças no prompt ou nas configurações. Veja mais em [Chat interno](/guides/agents/settings/internal-chat).
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Criação do agente" href="/guides/agents/creating/from-scratch">
-    Ainda não criou seu agente? Veja o passo a passo completo.
-  </Card>
-  <Card title="Treinamento" href="/guides/agents/training">
-    Adicione bases de conhecimento para que o agente responda com dados reais do seu negócio.
-  </Card>
-</CardGroup>
+| Seção | O que configura |
+|-------|----------------|
+| [Modelo](/guides/agents/settings/model) | Provedor de LLM (OpenAI, Anthropic, Google, OpenRouter), modelo específico, temperatura e effort |
+| [Nome interno](/guides/agents/settings/internal-name) | Identificador do agente dentro da plataforma — visível para a equipe, não para o cliente |
+| [Role](/guides/agents/settings/role) | Função e persona do agente — o "cargo" que ele ocupa na operação |
+| [Prompt](/guides/agents/settings/prompt) | Instruções de sistema com editor de IA, histórico de versões e análise de qualidade em tempo real |
+| [Temperatura](/guides/agents/settings/temperature) | Grau de criatividade vs consistência das respostas (0,00 a 1,00) |
+| [Effort](/guides/agents/settings/effort) | Profundidade de raciocínio controlada por número máximo de passos (10 a 100) |
+| [Capacidades](/guides/agents/settings/capacities) | Funcionalidades opcionais: planejamento, raciocínio, data e hora automática |
+| [Prompts condicionais](/guides/agents/settings/conditional-prompts) | Blocos de instrução ativados por variáveis da conversa ou do contato |
+| [Chat interno](/guides/agents/settings/internal-chat) | Interface de teste direto com o agente sem passar por canal externo |

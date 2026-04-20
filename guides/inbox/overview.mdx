@@ -1,104 +1,21 @@
 ---
 title: "Inbox — Visão Geral"
-description: "Entenda a Inbox da Timely.ai: fila unificada de conversas de todos os canais, filtros, atribuição e métricas em tempo real."
+description: "Fila unificada de conversas de todos os canais conectados ao workspace: estrutura, abas e ações disponíveis."
 ---
 
-## Visão geral
+A **Inbox** é o centro operacional da Timely.ai. Todas as conversas ativas — de WhatsApp, Instagram, Widget Web, Telegram e Slack — chegam a um único lugar, organizadas e prontas para atendimento.
 
-A **Inbox** é o centro de operações de atendimento da Timely.ai. Ela agrega em uma única fila todas as conversas ativas provenientes de qualquer canal conectado ao workspace — WhatsApp, Instagram, Widget Web, Telegram e Slack. Em vez de abrir cada plataforma separadamente, sua equipe vê tudo num só lugar e pode agir com velocidade.
+## Estrutura principal
 
-Cada conversa na Inbox representa um contato que interagiu com um agente ou foi transferida para um atendente humano. O estado e o histórico de cada conversa são mantidos independentemente do canal de origem.
+| Seção | Finalidade |
+|-------|-----------|
+| **Lista de conversas** | Exibe threads filtradas com nome do contato, canal de origem, tempo desde a última mensagem e status atual |
+| **Chat ativo** | Histórico completo da conversa selecionada, campo de resposta e ações (encerrar, transferir, notas) |
+| **Painel de contexto** | Dados do contato, tags atribuídas, campos customizados e atividades anteriores |
 
-## Estrutura da interface
+## Navegação rápida
 
-A Inbox é dividida em três painéis principais:
-
-**Painel esquerdo — lista de conversas**
-Exibe as conversas filtradas de acordo com os critérios selecionados. Cada item mostra o nome do contato, o canal de origem (ícone), o tempo desde a última mensagem e o status atual. Conversas com mensagens não lidas aparecem destacadas.
-
-**Painel central — chat ativo**
-Ao selecionar uma conversa, o histórico completo de mensagens é carregado. Você pode responder, enviar mídia, adicionar notas internas e acionar ações como transferência ou encerramento.
-
-**Painel direito — detalhes do contato**
-Exibe os dados do contato, tags atribuídas, notas e o histórico de interações anteriores. As informações são atualizadas em tempo real via Realtime do Supabase.
-
-## Filtros disponíveis
-
-Use os filtros no topo da lista para segmentar as conversas que você quer ver:
-
-| Filtro | Opções |
-|--------|--------|
-| **Status** | Aberta, Aguardando, Em atendimento humano, Encerrada |
-| **Canal** | WhatsApp, Instagram, Widget, Telegram, Slack |
-| **Agente IA** | Selecionar por nome do agente configurado |
-| **Atendente** | Atribuída a mim, Não atribuída, Por membro específico |
-| **Tag** | Qualquer tag criada no workspace |
-
-Os filtros são combinados com lógica AND — quanto mais filtros ativos, mais específica é a lista resultante. O estado dos filtros é mantido na URL, então você pode salvar uma view específica como favorito no navegador.
-
-## Abas de navegação
-
-A Inbox organiza conversas em três abas principais:
-
-- **Todas** — todas as conversas do workspace visíveis para seu role
-- **Minhas** — apenas conversas atribuídas ao seu usuário
-- **Não atribuídas** — conversas sem atendente responsável, prontas para assumir
-
-<Note>
-  Atendentes com role `attendant` visualizam apenas conversas atribuídas a eles ou não atribuídas. Managers e owners têm visibilidade de todas as conversas do workspace.
-</Note>
-
-## Atribuição de conversas
-
-Conversas podem ser atribuídas de três formas:
-
-<Steps>
-  <Step title="Atribuição manual">
-    Na lista ou no painel de detalhes, clique em **Atribuir** e selecione o atendente. Funciona para qualquer conversa visível ao seu role.
-  </Step>
-  <Step title="Auto-atribuição">
-    Clique em **Assumir** para se atribuir diretamente à conversa. Útil quando você quer tratar um caso sem esperar pelo processo de triagem.
-  </Step>
-  <Step title="Distribuição automática via times">
-    Se o workspace usa [times (teams)](/guides/inbox/human-support/teams), novas conversas podem ser distribuídas automaticamente entre os membros do time pelo modo round-robin ou por menor carga.
-  </Step>
-</Steps>
-
-## Métricas em tempo real
-
-O cabeçalho da Inbox exibe contadores atualizados em tempo real:
-
-- **Abertas** — total de conversas em andamento no workspace
-- **Aguardando** — conversas que aguardam resposta do atendente ou do agente
-- **Em atendimento** — conversas com takeover ativo (humano respondendo)
-- **Encerradas hoje** — conversas finalizadas nas últimas 24 horas
-
-Para relatórios históricos com filtros de período, acesse [Analytics](/guides/analytics).
-
-## Busca
-
-O campo de busca no topo da lista filtra conversas pelo nome do contato ou pelo conteúdo de mensagens recentes. A busca é executada localmente sobre as conversas já carregadas — para busca indexada em históricos antigos, use a seção de relatórios.
-
-## Boas práticas
-
-- Defina um SLA de resposta para conversas "Não atribuídas" — utilize a view de filtro correspondente para monitorar o tempo de espera.
-- Use tags para categorizar conversas por assunto ou prioridade. Tags aplicadas na Inbox aparecem nos relatórios de Analytics.
-- Configure notificações de atribuição em [Configurações → Perfil](/guides/settings/profile) para receber alertas quando uma nova conversa for atribuída a você.
-- Para operações de alto volume, ative [times](/guides/inbox/human-support/teams) e distribua a carga entre múltiplos atendentes de forma automática.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Atendimento humano" href="/guides/inbox/human-support/overview">
-    Modelo completo de takeover, tickets e times de atendimento.
-  </Card>
-  <Card title="Times" href="/guides/inbox/human-support/teams">
-    Crie times, adicione membros e configure a distribuição automática de conversas.
-  </Card>
-  <Card title="Roles e permissões" href="/guides/inbox/human-support/roles">
-    Veja o que cada role pode fazer dentro da Inbox.
-  </Card>
-  <Card title="Tags e notas" href="/guides/inbox/tags-and-notes">
-    Organize conversas com tags e registre contexto com notas internas.
-  </Card>
-</CardGroup>
+- Aba **Todas** — conversas visíveis conforme o role do usuário no workspace
+- Aba **Minhas** — apenas threads atribuídas ao usuário logado
+- Aba **Não atribuídas** — conversas sem responsável, disponíveis para assumir
+- Filtros combinados por canal, agente, atendente, tag e status

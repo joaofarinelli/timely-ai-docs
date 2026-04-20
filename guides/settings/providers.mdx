@@ -1,91 +1,166 @@
 ---
-title: Provedores LLM
-description: Configure credenciais próprias de OpenAI, Anthropic, Google AI e OpenRouter por workspace para usar seus próprios contratos e limites de API.
+title: "Provedores"
+description: "Conecte e gerencie as chaves de API dos provedores de modelos de IA para uso nos agentes do workspace."
 ---
 
-Por padrão, a Timely.ai usa as credenciais de LLM gerenciadas pela plataforma. Com os Provedores LLM customizados, você conecta suas próprias chaves de API dos provedores de modelos e os agentes do seu workspace passam a usar essas credenciais — aproveitando seus contratos de volume, limites de rate e organizações privadas.
+## Conecte e gerencie seus provedores de modelos de IA
 
-## Provedores suportados
+Por padrão, a Timely.ai usa créditos gerenciados pela plataforma para rodar os modelos de linguagem. Ao conectar uma chave própria de provedor, os agentes do workspace passam a usar suas credenciais — aproveitando seus contratos de volume e limites de rate privados. Provedores configurados ficam disponíveis para todos os agentes do workspace.
 
-| Provedor | Prefixo da chave | Onde obter a chave |
-|---|---|---|
-| OpenAI | `sk-` | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
-| Anthropic | `sk-ant-` | [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) |
-| Google AI | `AI` | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
-| OpenRouter | `sk-or-` | [openrouter.ai/keys](https://openrouter.ai/keys) |
-
-## Configurando um provedor
+## OpenAI (GPT-5.1, GPT-5.2, etc.)
 
 <Steps>
-  <Step title="Acesse as configurações de LLM Providers">
-    No menu lateral, clique em **Configurações**, selecione a aba **Workspace** e role até a seção **Provedores LLM**.
+  <Step title="Acesse platform.openai.com/api-keys">
+    Faça login na sua conta OpenAI e acesse a seção de chaves de API.
   </Step>
-  <Step title="Clique em Adicionar provedor">
-    Clique no botão **+ Adicionar provedor**. O limite máximo é de 5 provedores por workspace.
+  <Step title="Crie uma nova chave">
+    Clique em **Create new secret key**. Dê um nome descritivo (ex.: "Timely.ai Produção") para identificar a origem das chamadas.
   </Step>
-  <Step title="Preencha o formulário">
-    - **Nome:** identificação interna do provedor (ex.: "OpenAI Produção", "Anthropic Testes").
-    - **Tipo de provedor:** selecione OpenAI, Anthropic, Google AI ou OpenRouter.
-    - **Chave de API:** cole a chave gerada no painel do provedor. O campo mascara os caracteres após inserção.
-    - **Descrição (opcional):** notas sobre o uso dessa chave.
+  <Step title="Copie a chave">
+    Copie a chave imediatamente — ela não será exibida novamente após fechar o modal.
   </Step>
-  <Step title="Valide a chave">
-    Clique em **Validar chave** antes de salvar. A plataforma faz uma chamada de teste à API do provedor para confirmar que a chave é válida e tem permissões suficientes. O resultado aparece imediatamente: válida (verde) ou inválida (vermelho) com o erro retornado pelo provedor.
+  <Step title="Acesse Configurações > Provedores na Timely.ai">
+    No menu lateral, clique em **Configurações** e selecione a subseção **Provedores**.
   </Step>
-  <Step title="Salve o provedor">
-    Com a chave validada, clique em **Salvar**. O provedor aparece na lista com o status de validação e um dot de cor indicando se está ativo e funcional.
+  <Step title="Clique em Adicionar provedor e selecione OpenAI">
+    Preencha o nome interno, selecione o tipo **OpenAI** e cole a chave no campo correspondente.
+  </Step>
+  <Step title="Salve e valide">
+    Clique em **Validar chave** para confirmar que as credenciais estão funcionando. Com a validação positiva, clique em **Salvar**.
   </Step>
 </Steps>
 
-<Frame>
-  <img src="/images/llm-providers-config.png" alt="Diálogo de configuração de provedor LLM com campos de tipo, nome e chave de API" />
-</Frame>
-
-## Status dos provedores
-
-Cada provedor na lista exibe um indicador de status:
-
-| Dot | Status | Significado |
-|---|---|---|
-| Verde | Ativo e válido | Chave funcionando corretamente |
-| Vermelho | Ativo mas inválido | Chave expirou ou teve permissões revogadas |
-| Cinza | Inativo | Provedor desabilitado manualmente |
-
 <Warning>
-  Um provedor com status inválido ainda associado a agentes pode causar falhas no atendimento. Revalide ou substitua a chave assim que identificar o status vermelho.
+  Chaves OpenAI começam com `sk-`. Verifique se a organização associada à chave tem acesso aos modelos GPT-5.1 e GPT-5.2 — modelos novos exigem aprovação de acesso no painel da OpenAI.
 </Warning>
 
-## Provedor padrão
+## Anthropic (Claude)
 
-Você pode marcar um provedor como **padrão** para o workspace. O provedor padrão é usado automaticamente pelos agentes que não têm um provedor específico configurado. Apenas um provedor pode ser o padrão por vez — marcar um novo como padrão remove automaticamente o status do anterior.
+<Steps>
+  <Step title="Acesse console.anthropic.com/settings/keys">
+    Faça login na sua conta Anthropic e vá até a seção de chaves.
+  </Step>
+  <Step title="Crie uma nova chave de API">
+    Clique em **Create Key**. Defina um nome que identifique o uso (ex.: "Timely Workspace").
+  </Step>
+  <Step title="Copie a chave">
+    A chave tem o prefixo `sk-ant-`. Copie antes de fechar o modal.
+  </Step>
+  <Step title="Acesse Configurações > Provedores na Timely.ai">
+    Navegue até a subseção **Provedores** em Configurações.
+  </Step>
+  <Step title="Adicione o provedor Anthropic">
+    Selecione o tipo **Anthropic**, nomeie o provedor e cole a chave.
+  </Step>
+  <Step title="Salve e valide">
+    Clique em **Validar** e, com confirmação positiva, em **Salvar**. Modelos disponíveis: Claude Haiku 4.5 (3 créditos), Claude Sonnet 4.6 (4 créditos) e Claude Opus 4.6 (20 créditos).
+  </Step>
+</Steps>
 
-## Associando um provedor a um agente
+<Warning>
+  Garanta que a conta Anthropic tem saldo de API suficiente. Chaves de contas sem crédito retornam erro 429 mesmo com a chave válida.
+</Warning>
 
-Após criar um provedor, acesse as configurações do agente desejado e selecione o provedor no campo **Provedor de LLM**. O agente passa a usar as credenciais desse provedor para todas as chamadas de modelo.
+## Google Gemini (Google AI Studio)
 
-Agentes sem provedor específico configurado usam o provedor padrão do workspace. Se não houver provedor padrão, a plataforma usa as credenciais gerenciadas da Timely.ai.
+<Steps>
+  <Step title="Acesse aistudio.google.com/app/apikey">
+    Faça login com sua conta Google e vá até a seção de chaves de API do Google AI Studio.
+  </Step>
+  <Step title="Crie uma chave para o projeto desejado">
+    Selecione o projeto Google Cloud associado e clique em **Create API key**.
+  </Step>
+  <Step title="Copie a chave">
+    Chaves do Google AI começam com `AI`. Copie antes de sair da tela.
+  </Step>
+  <Step title="Acesse Configurações > Provedores na Timely.ai">
+    Navegue até a subseção **Provedores**.
+  </Step>
+  <Step title="Adicione o provedor Google">
+    Selecione o tipo **Google**, nomeie e cole a chave.
+  </Step>
+  <Step title="Salve e valide">
+    Valide e salve. Modelos disponíveis: Gemini 2.5 Flash (2 créditos), Gemini 2.5 Pro (4 créditos), Gemini 3.0 Pro Preview (6 créditos) e Gemini 3.1 Pro Preview (6 créditos).
+  </Step>
+</Steps>
 
-## Gerenciando provedores existentes
+## OpenRouter (Em breve)
 
-<AccordionGroup>
-  <Accordion title="Editar nome e descrição">
-    Clique no menu de opções do provedor e selecione **Editar**. Você pode alterar o nome, a descrição e a chave de API. Após alterar a chave, revalide antes de salvar.
-  </Accordion>
-  <Accordion title="Revalidar chave">
-    Clique em **Revalidar** para forçar uma nova verificação da chave com o provedor. Útil quando a chave foi rotacionada no painel do provedor e você quer confirmar que a nova chave está funcionando.
-  </Accordion>
-  <Accordion title="Ativar / Desativar">
-    Desativar um provedor não deleta a chave — apenas pausa o uso. Agentes associados a um provedor inativo vão usar o provedor padrão como fallback.
-  </Accordion>
-  <Accordion title="Deletar provedor">
-    Clique em **Deletar** para remover permanentemente o provedor. A plataforma exibe um aviso se houver agentes associados a ele. Reassocie os agentes antes de deletar para evitar interrupções.
-  </Accordion>
-</AccordionGroup>
+<Steps>
+  <Step title="Acesse openrouter.ai/keys">
+    Faça login na sua conta OpenRouter e vá até a seção de chaves de API.
+  </Step>
+  <Step title="Crie uma nova chave">
+    Clique em **Create Key** e dê um nome descritivo.
+  </Step>
+  <Step title="Copie a chave">
+    Chaves OpenRouter começam com `sk-or-`. Copie antes de fechar o modal.
+  </Step>
+  <Step title="Acesse Configurações > Provedores na Timely.ai">
+    Navegue até a subseção **Provedores**.
+  </Step>
+  <Step title="Adicione o provedor OpenRouter">
+    Selecione o tipo **OpenRouter**, nomeie e cole a chave.
+  </Step>
+  <Step title="Salve e valide">
+    Valide e salve. Modelo disponível via OpenRouter: Kimi K2.5 da Moonshot AI (1 crédito por mensagem — melhor custo-benefício do catálogo).
+  </Step>
+</Steps>
 
-## Isolamento por workspace
+<Warning>
+  A integração com OpenRouter está em fase de liberação gradual. Se o tipo ainda não aparecer no seletor de provedores, o acesso ainda não foi liberado para o seu workspace.
+</Warning>
 
-Os provedores LLM são configurados por workspace. Um provedor criado em um workspace não fica disponível em outros. Isso permite usar chaves distintas com orçamentos separados entre workspaces.
+## Como configurar o provedor dentro da Timely.ai
 
-## Permissões necessárias
+Após criar a chave no painel do provedor, você tem duas formas de registrá-la na plataforma. Ambas têm o mesmo resultado — escolha a que for mais conveniente para o seu fluxo.
 
-Apenas **owner** e **manager** podem adicionar, editar e deletar provedores LLM.
+## Opção 1: Pela página principal do workspace
+
+<Steps>
+  <Step title="Acesse Configurações">
+    No menu lateral, clique em **Configurações**.
+  </Step>
+  <Step title="Abra a subseção Provedores">
+    Selecione **Provedores** na lista de subseções disponíveis.
+  </Step>
+  <Step title="Clique em Adicionar provedor">
+    O formulário de cadastro é exibido na tela.
+  </Step>
+</Steps>
+
+## Opção 2: Pela página de um agente
+
+<Steps>
+  <Step title="Acesse o painel do agente">
+    Abra o agente desejado em **Agentes de IA**.
+  </Step>
+  <Step title="Localize o seletor de provedor e modelo">
+    Na seção de configurações do agente, clique em **Provedor de LLM**.
+  </Step>
+  <Step title="Selecione ou adicione um provedor">
+    Se o provedor desejado não estiver listado, clique em **Adicionar novo provedor** para abrir o mesmo formulário de cadastro.
+  </Step>
+</Steps>
+
+## Configurar o provedor
+
+Com o formulário aberto — seja pela página de workspace ou pela página do agente — siga estas etapas:
+
+<Steps>
+  <Step title="Preencha o nome interno">
+    Use um nome que identifique o uso (ex.: "OpenAI Produção", "Anthropic Testes"). Esse nome aparece nos seletores de agente.
+  </Step>
+  <Step title="Selecione o tipo de provedor">
+    Escolha entre OpenAI, Anthropic, Google ou OpenRouter.
+  </Step>
+  <Step title="Cole a chave de API">
+    O campo mascara os caracteres após a inserção por segurança.
+  </Step>
+  <Step title="Valide a chave">
+    Clique em **Validar chave**. A plataforma faz uma chamada de teste ao provedor e exibe o resultado imediatamente — válida (verde) ou inválida (vermelho com a mensagem de erro do provedor).
+  </Step>
+  <Step title="Salve o provedor">
+    Com validação positiva, clique em **Salvar**. O provedor aparece na lista com um indicador de status e fica disponível para seleção nos agentes do workspace.
+  </Step>
+</Steps>

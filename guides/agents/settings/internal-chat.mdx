@@ -1,152 +1,81 @@
 ---
-title: "Testando o agente"
-description: "Use o Playground, o test chat e o canvas de execuções para validar o comportamento do agente antes e depois de publicar."
+title: "Chat interno"
+description: "Como usar o chat interno da Timely.ai para testar o agente diretamente na plataforma, inspecionar execuções e validar o comportamento antes de publicar."
 ---
 
-Antes de publicar um agente em produção, você precisa validar que ele responde corretamente, usa as tools adequadas e obedece às regras de transferência. A Timely.ai oferece três ferramentas complementares para isso.
+O chat interno é a interface de teste nativa do agente dentro da Timely.ai. Ele permite que você — e qualquer membro da equipe com acesso — converse com o agente diretamente na plataforma, sem precisar publicar em nenhum canal externo como WhatsApp, Instagram ou widget de site.
 
-## Visão geral
+É o primeiro lugar onde você deve ir depois de qualquer alteração no prompt, no modelo, nas ferramentas ou nas configurações de temperatura e effort.
 
-<CardGroup cols={3}>
-  <Card title="Playground" icon="play">
-    Chat interativo dentro da plataforma para testar o agente em tempo real com qualquer input.
-  </Card>
-  <Card title="Test Chat" icon="message-square">
-    Simulação do canal real (widget, WhatsApp) para validar a experiência do cliente final.
-  </Card>
-  <Card title="Canvas de Execuções" icon="git-branch">
-    Visualização gráfica de cada passo de uma execução — raciocínio do modelo, tools chamadas, erros e latências.
-  </Card>
-</CardGroup>
+## O que você pode fazer com o chat interno
 
-## Playground
+O chat interno concentra várias capacidades de teste em uma única interface:
 
-O Playground está disponível dentro das configurações do agente. É o ambiente mais rápido para testar mudanças incrementais no prompt, nas tools e no comportamento.
+- Enviar mensagens de texto e iniciar conversas de teste com contexto real do workspace
+- Simular diferentes perfis de cliente para ativar prompts condicionais
+- Inspecionar cada passo de raciocínio e chamada a ferramentas na execução
+- Visualizar o consumo de créditos da conversa em tempo real
+- Limpar o histórico da conversa para reiniciar o contexto do agente
 
-<Frame caption="Playground — chat de teste com histórico de execução">
-  <img src="/images/screenshots/placeholder-agent-playground.png" alt="Playground do agente" />
-</Frame>
+### Testando o comportamento real do agente
 
-<Steps>
-  <Step title="Abra o Playground">
-    Nas configurações do agente, clique em **Testar** ou acesse a aba **Playground**.
-  </Step>
-  <Step title="Inicie uma conversa">
-    Digite uma mensagem como um cliente faria. O agente responde usando o modelo, prompt e treinamento configurados.
-  </Step>
-  <Step title="Observe o raciocínio">
-    Ao lado da resposta, um painel lateral mostra:
-    - Quais chunks de treinamento foram recuperados pelo RAG
-    - Se alguma tool foi chamada e qual foi o retorno
-    - Tokens consumidos nessa execução
-    - Latência do modelo
-  </Step>
-  <Step title="Itere rapidamente">
-    Edite o prompt, salve e volte ao Playground. A próxima mensagem já usa a versão atualizada.
-  </Step>
-</Steps>
+O chat interno executa o agente com a mesma configuração que estará em produção — mesmo modelo, mesmo prompt, mesma base de conhecimento, mesmas ferramentas conectadas. Não há modo simplificado ou cache: cada mensagem gera uma execução real completa.
 
-<Tip>
-Crie um conjunto de cenários de teste fixo que você executa sempre que alterar o prompt ou adicionar treinamento. Isso garante que nenhuma mudança quebre comportamentos já validados.
-</Tip>
+Isso significa que mudanças no prompt são refletidas imediatamente na próxima mensagem após salvar. Você consegue iterar rapidamente — alterar, salvar, testar — sem sair da interface.
 
-## Canvas de Execuções
+Cenários essenciais para testar antes de publicar qualquer agente:
 
-O canvas é a ferramenta de rastreabilidade mais completa. Ele exibe o grafo visual de cada execução do agente — em produção ou em testes.
+- A jornada principal: o cliente pergunta exatamente o que o agente foi configurado para responder. A resposta está correta, no tom certo, no formato esperado?
+- Pergunta fora do escopo: o agente recusa ou redireciona educadamente sem inventar informações?
+- Acionamento de ferramentas: cada ferramenta configurada é chamada quando deveria?
+- Gatilho de transferência: a transferência para humano é disparada no momento correto?
 
-Acesse em: **Agentes > [Nome do agente] > Execuções**
+### Enviando inputs ricos
 
-<Frame caption="Canvas de execução com grafo de steps e painel de detalhes">
-  <img src="/images/screenshots/placeholder-agent-execution-canvas.png" alt="Canvas de execuções do agente" />
-</Frame>
+Além de texto, o chat interno suporta o envio de arquivos e imagens quando o agente está configurado com um modelo multimodal (Gemini 2.5 Pro, Gemini 3.x). Isso permite testar fluxos onde o cliente envia documentos, fotos de produtos ou screenshots para análise.
 
-### Sidebar de execuções
+<Warning>
+O envio de arquivos no chat interno consome créditos da mesma forma que em produção. Fique atento ao custo por execução em testes com modelos multimodais de alto consumo como Gemini 3.1 Pro.
+</Warning>
 
-A sidebar esquerda lista todas as execuções do agente, ordenadas por data. Você pode filtrar por:
+### Inspecionando cada mensagem e passo de execução
 
-- **Status**: `running`, `success`, `error`, `timeout`
-- **Trigger**: `message`, `api`, `test`
+Ao lado de cada resposta do agente, o chat interno exibe um painel de detalhes da execução com:
 
-Clique em qualquer execução para carregar o grafo no canvas central.
+- Quais trechos da base de conhecimento foram recuperados pelo sistema RAG e com qual score de relevância
+- Quais ferramentas foram chamadas, com os parâmetros enviados e a resposta recebida
+- O número de tokens consumidos na execução (prompt + resposta)
+- A latência total da execução em milissegundos
+- Erros ocorridos em qualquer passo, com mensagem completa
 
-### Grafo visual
+Esses detalhes são essenciais para diagnosticar por que o agente deu uma resposta incorreta ou por que uma ferramenta não foi chamada como esperado. Em vez de adivinhar, você vê exatamente o que aconteceu em cada etapa.
 
-Cada nó no grafo representa um step da execução:
+Para inspecionar o grafo visual completo da execução com todos os passos representados como nós conectados, acesse **Agentes > [Nome do agente] > Execuções** e selecione a execução correspondente no canvas.
 
-| Tipo de nó | O que representa |
-|---|---|
-| Entrada | A mensagem original do usuário |
-| LLM | Uma chamada ao modelo de linguagem |
-| Tool | Uma chamada a uma ferramenta externa (Composio) |
-| Transferência | Um handoff para agente ou humano |
-| Saída | A resposta final entregue ao usuário |
+### Visualizando o consumo de créditos
 
-As arestas mostram a sequência e as dependências entre os steps. Você pode alternar entre layout **horizontal (LR)** e **vertical (TB)** para melhor visualização conforme o número de steps.
+O chat interno exibe o consumo acumulado de créditos da sessão de teste ativa. Esse número inclui o custo base do modelo mais o custo adicional de ferramentas e passos de raciocínio quando aplicável.
 
-### Painel de detalhes do step
+Use essa informação para:
 
-Ao clicar em qualquer nó do grafo, o painel lateral direito exibe:
+- Comparar o custo real de diferentes modelos com o mesmo caso de uso
+- Identificar se o effort configurado está gerando custo desproporcional para a complexidade das perguntas
+- Estimar o custo médio por conversa antes de escalar o agente para produção com alto volume
 
-- **Input e output** completos do step
-- **Duração** do step em milissegundos
-- **Status** (success, error, skipped)
-- Para steps de tool: parâmetros enviados e resposta da API externa
-- Para steps de LLM: prompt completo enviado ao modelo e tokens consumidos
-- Para erros: mensagem de erro completa e stack trace quando disponível
+### Gerenciando o histórico da conversa
 
-<Frame caption="Painel de detalhes de um step de tool no canvas">
-  <img src="/images/screenshots/placeholder-agent-step-detail.png" alt="Detalhes de step de execução" />
-</Frame>
+O chat interno mantém o histórico da sessão ativa como contexto para o agente — exatamente como funciona em produção. Para testar o comportamento em uma conversa nova e sem contexto anterior, clique em **Limpar conversa**. O histórico é apagado e o agente começa a próxima mensagem sem memória da sessão anterior.
 
-## Cenários de teste recomendados
+Isso é especialmente útil quando você quer testar:
 
-Antes de publicar um agente, valide estes cenários no Playground:
+- Como o agente lida com a primeira mensagem de um novo contato
+- Se o agente faz as perguntas de qualificação corretas sem depender de contexto anterior
+- Comportamento após mudança de prompt — conversas antigas podem ter contexto que interfere na avaliação
 
-<AccordionGroup>
-  <Accordion title="Caso de uso principal">
-    Simule a jornada ideal — o cliente pergunta exatamente o que o agente foi configurado para responder. Valide que a resposta está correta, no tom certo e com o formato esperado.
-  </Accordion>
-  <Accordion title="Pergunta fora do escopo">
-    Pergunte algo que o agente não deve responder. Valide que ele recusa ou redireciona educadamente, sem inventar informações.
-  </Accordion>
-  <Accordion title="Acionamento de tool">
-    Para cada tool configurada, simule uma mensagem que deveria acionar aquela tool. Verifique no canvas que a tool foi chamada e que o retorno foi usado na resposta.
-  </Accordion>
-  <Accordion title="Disparo de regra de transferência">
-    Simule cada condição de transferência configurada. Valide que a transferência é disparada no momento correto e para o destino correto.
-  </Accordion>
-  <Accordion title="Conversa longa">
-    Simule uma conversa com 10 ou mais trocas. Verifique se o agente mantém o contexto correto e não repete informações que já foram dadas.
-  </Accordion>
-  <Accordion title="Input malformado ou incomum">
-    Envie mensagens curtas ("ok", "sim", "?"), emojis isolados ou frases muito longas. Valide que o agente responde graciosamente sem erros.
-  </Accordion>
-</AccordionGroup>
+## Por que o chat interno importa
 
-## Auto-seleção de execução em andamento
+Publicar um agente sem testá-lo no chat interno é o equivalente a colocar um atendente novo para falar com clientes sem nenhum treinamento prévio. A diferença é que, com o chat interno, você tem visibilidade completa de cada decisão que o agente toma antes que ela chegue ao cliente real.
 
-O canvas monitora execuções em tempo real. Se uma execução com status `running` existir, ela é selecionada e exibida automaticamente — você vê o grafo crescendo à medida que o agente processa.
+Equipes que usam o chat interno sistematicamente — com um conjunto fixo de cenários de teste executados após cada mudança significativa de configuração — identificam problemas antes da produção e constroem agentes mais confiáveis em menos iterações.
 
-Isso é útil para depurar problemas em produção: abra o canvas enquanto uma conversa real está acontecendo e acompanhe cada step em tempo real.
-
-## Limites e boas práticas
-
-<Note>
-O histórico de execuções fica disponível por 30 dias. Execuções mais antigas são removidas automaticamente. Se precisar auditar execuções por períodos mais longos, considere exportar os logs via API.
-</Note>
-
-- Use o filtro de status `error` no sidebar para encontrar rapidamente execuções com problemas.
-- Execuções de teste no Playground são identificadas com o trigger `test` no sidebar — você pode diferenciá-las de execuções reais de clientes.
-- O canvas suporta zoom e pan — use o scroll do mouse para navegar em grafos grandes.
-- Mudanças no prompt só são refletidas no Playground após salvar. Não esqueça de salvar antes de testar.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Visão geral do agente" href="/guides/agents/overview">
-    Revise todos os blocos de configuração do agente para garantir que nada foi esquecido.
-  </Card>
-  <Card title="Introdução à API" href="/api-reference/introduction">
-    Integre o agente diretamente via API para casos de uso customizados.
-  </Card>
-</CardGroup>
+O chat interno é também o ambiente correto para treinar novos membros da equipe que precisam entender como o agente se comporta em diferentes situações, sem o risco de interromper conversas reais de clientes.

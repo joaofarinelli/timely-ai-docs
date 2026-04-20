@@ -1,93 +1,77 @@
 ---
 title: "Capacidades do agente"
-description: "Quais funcionalidades você pode habilitar por agente na Timely: voz, ferramentas externas, agendamento, transferência para humanos e base de conhecimento."
+description: "Funcionalidades opcionais que você pode habilitar por agente na Timely.ai: planejamento, raciocínio e data e hora automática."
 ---
 
-## Visão geral
+Capacidades são funcionalidades opcionais que você ativa por agente para ampliar a forma como ele processa e formula respostas. Cada capacidade tem casos de uso específicos e pode impactar o custo e a latência das execuções. Habilite apenas o que o agente realmente precisa.
 
-Capacidades são funcionalidades opcionais que você ativa por agente. Por padrão, um agente recém-criado só processa texto. À medida que você habilita capacidades, ele ganha acesso a recursos adicionais — desde responder por voz até executar ações em ferramentas externas como Google Calendar ou Sheets.
+## Planejamento
 
-Cada capacidade tem pré-requisitos de configuração e pode aumentar o consumo de créditos por conversa. Habilite apenas o que o agente realmente precisa: capacidades desnecessárias aumentam custo e complexidade sem benefício.
+O planejamento faz o agente decompor tarefas complexas em subtarefas antes de executar qualquer ação. Em vez de responder diretamente à mensagem, o agente primeiro esboça os passos que precisam ser dados — depois os executa em sequência.
 
-## Capacidades disponíveis
+Quando o planejamento ajuda:
 
-### Voz
+- Fluxos com três ou mais ferramentas chamadas em sequência dependente
+- Tarefas onde a ordem das ações importa (ex.: verificar disponibilidade antes de criar um evento)
+- Diagnósticos que precisam cruzar múltiplas fontes de dados antes de concluir
+- Casos onde o agente costuma pular etapas ou executar ferramentas na ordem errada
 
-Permite que o agente processe e responda mensagens de áudio. Quando habilitada, o agente transcreve mensagens de voz recebidas, processa o conteúdo e pode enviar respostas em texto ou, se configurado, em áudio sintetizado.
+Quando manter desativado:
 
-**Pré-requisito:** Canal compatível com voz configurado (WhatsApp suporta nativamente).
+- Conversas de suporte simples com zero ou uma ferramenta
+- FAQ e respostas diretas da base de conhecimento
+- Agentes de alta frequência onde a latência adicional do planejamento é inaceitável
+- Casos onde o prompt já define o fluxo de forma explícita e linear
 
-**Quando usar:** Atendimentos onde os clientes preferem mandar áudio, como negócios com público que usa muito WhatsApp em contextos de mobilidade.
+<Tip>
+Ative o planejamento de forma incremental: ligue, teste com os cenários mais complexos do caso de uso, e só mantenha ativo se perceber melhora real na qualidade das execuções multi-etapa.
+</Tip>
 
-### Ferramentas externas (Composio)
+## Raciocínio
 
-Permite que o agente execute ações em aplicativos externos integrados via Composio — como criar eventos no Google Calendar, ler dados de uma planilha do Google Sheets, enviar mensagens no Slack ou consultar registros no HubSpot.
+O raciocínio (reasoning) permite que o modelo "pense em voz alta" antes de formular a resposta final. Disponível apenas em modelos que suportam o recurso — Claude Sonnet 4.6, Claude Opus 4.6, Gemini 3.x e Kimi K2.5.
 
-**Pré-requisito:** Integração Composio configurada e pelo menos um aplicativo conectado ao agente. Veja o guia de [ferramentas Composio](/guides/tools/composio).
+Quando o raciocínio melhora a qualidade:
 
-**Quando usar:** Agentes que precisam ir além da conversa e realizar ações concretas — agendar reuniões, registrar leads em CRM, enviar notificações para a equipe.
+- Perguntas com múltiplos critérios simultâneos (ex.: "qual plano é melhor para mim dado X, Y e Z?")
+- Diagnósticos onde a causa precisa ser inferida a partir de sintomas ambíguos
+- Comparações com prós e contras que exigem ponderação antes de recomendar
 
-### Agendamento
+Quando o raciocínio não ajuda significativamente:
 
-Habilita capacidades nativas de agendamento da Timely — o agente pode verificar disponibilidade e propor horários com base na agenda configurada no módulo de scheduling.
+- Respostas diretas de FAQ com resposta única e objetiva
+- Confirmações e saudações
+- Consultas simples de base de conhecimento sem ambiguidade
 
-**Pré-requisito:** Agenda configurada no módulo de Agendamento da Timely.
+Limitações técnicas do raciocínio:
 
-**Quando usar:** Clínicas, consultórios, escritórios de serviços e qualquer negócio que precise marcar compromissos diretamente no chat.
+- Modelos Anthropic com raciocínio ativo têm temperatura forçada para 1,0 pela API — o slider de temperatura fica sem efeito
+- Aumenta o consumo de tokens e a latência por execução
+- Modelos sem suporte ao recurso ignoram a configuração silenciosamente
 
-### Transferência para humanos
+<Warning>
+Não ative raciocínio em agentes de FAQ de alto volume. O custo de tokens e a latência adicional raramente se justificam para perguntas com resposta direta na base de conhecimento.
+</Warning>
 
-Permite que o agente transfira uma conversa para um atendente humano com base em regras definidas — por solicitação do cliente, por limite de iterações sem resolução ou por detecção de frustração.
+## Data e hora
 
-**Pré-requisito:** Pelo menos um membro da equipe com perfil de atendente no workspace. Consulte as [regras de transferência](/guides/agents/transfer-rules) para a configuração completa.
+Quando esta capacidade está ativa, o agente recebe automaticamente no contexto de cada execução a data e a hora atuais no fuso horário configurado no workspace. Isso permite que ele responda a perguntas como "quais são os horários disponíveis amanhã?" ou "estamos abertos agora?" sem que você precise incluir esses dados manualmente no prompt.
 
-**Quando usar:** Qualquer agente que não deve resolver 100% dos casos sozinho — o que é a maioria. Transferência bem configurada é a diferença entre um agente que frustra e um que delega com inteligência.
+Quando a data e hora automática é necessária:
 
-### Base de conhecimento
+- Agentes de agendamento que precisam comparar horários solicitados com disponibilidade atual
+- Atendimentos com horário de funcionamento dinâmico que variam por dia da semana
+- Respostas que referenciam prazos relativos ("hoje", "esta semana", "em 3 dias úteis")
 
-Permite que o agente consulte documentos, FAQs e fontes de dados adicionados ao módulo de treinamento. Isso expande o conhecimento do agente além do que está no prompt, usando recuperação semântica (RAG) para trazer os trechos mais relevantes para cada pergunta.
+Quando pode ser ignorada:
 
-**Pré-requisito:** Pelo menos um documento ou fonte indexada na base de conhecimento do agente. Veja o guia de [treinamento](/guides/agents/training).
-
-**Quando usar:** Agentes que precisam responder com informações específicas da empresa — catálogos de produtos, políticas internas, manuais técnicos, contratos.
-
-## Como configurar
-
-<Steps>
-  <Step title="Acesse as configurações do agente">
-    Clique no agente na lista e navegue até a aba **Capacidades**.
-  </Step>
-
-  <Step title="Habilite a capacidade desejada">
-    Cada capacidade tem um toggle. Ative o toggle da capacidade que você quer habilitar.
-  </Step>
-
-  <Step title="Configure os pré-requisitos">
-    Se a capacidade exigir configuração adicional (como conectar uma integração ou criar uma agenda), um link de configuração aparecerá logo abaixo do toggle.
-  </Step>
-
-  <Step title="Salve e teste">
-    Salve as configurações e use o Chat interno para verificar se a capacidade está funcionando como esperado antes de ativar no canal de produção.
-  </Step>
-</Steps>
+- Agentes de FAQ sem qualquer referência temporal
+- Respostas puramente baseadas em documentos estáticos
+- Casos onde a informação de data é fornecida pelo cliente na própria mensagem
 
 ## Boas práticas
 
-<Tip>
-Habilite capacidades de forma incremental. Ative uma, teste exaustivamente, depois ative a próxima. Múltiplas capacidades novas ao mesmo tempo dificultam identificar a causa de um comportamento inesperado.
-</Tip>
-
-- A capacidade de ferramentas externas (Composio) aumenta o effort de processamento porque o agente precisa decidir quando e como chamar cada ferramenta. Ajuste o effort do agente para Detalhado ou Máximo se perceber que ele está usando as ferramentas de forma inconsistente.
-- Transferência para humanos deve sempre ter uma condição de gatilho clara no prompt — evite deixar o agente "adivinhar" quando transferir.
-- Base de conhecimento funciona melhor com documentos bem estruturados e atualizados. Um documento desatualizado vai gerar respostas incorretas com alta confiança.
-
-## Próximos passos
-
-<CardGroup cols={2}>
-  <Card title="Ferramentas Composio" href="/guides/tools/composio">
-    Configure integrações com Google Calendar, Sheets, Slack e outros aplicativos.
-  </Card>
-  <Card title="Prompts condicionais" href="/guides/agents/settings/conditional-prompts">
-    Personalize o comportamento do agente com base em variáveis da conversa.
-  </Card>
-</CardGroup>
+- Ative capacidades uma de cada vez e teste exaustivamente antes de habilitar a próxima
+- Planejamento e raciocínio ativos simultaneamente aumentam significativamente o custo por execução — avalie se a combinação é necessária para o caso de uso
+- Monitore a latência no canvas de execuções após ativar qualquer capacidade de processamento pesado
+- Se o agente estiver "sobre-pensando" respostas simples com latência alta, desative planejamento e raciocínio antes de ajustar outros parâmetros

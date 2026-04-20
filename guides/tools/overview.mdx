@@ -1,113 +1,98 @@
 ---
-title: "Ferramentas do agente"
-description: "Entenda os tipos de ferramentas disponíveis na Timely.ai — Composio, MCP, busca em base de conhecimento, Datagrid e agendamento — e como o agente decide qual acionar."
+title: "Ferramentas: Visão Geral"
+description: "Entenda o que são ferramentas na Timely.ai, quando usá-las e quais tipos estão disponíveis para o seu agente."
 ---
 
-## Visão geral
+## Entendendo as ferramentas e quando utilizá-las
 
-Ferramentas (tools) são capacidades extras que o agente pode acionar durante uma conversa para ir além de simplesmente responder texto. Com uma ferramenta ativa, o agente pode consultar um CRM, criar um evento no calendário, buscar um produto em uma planilha ou registrar um lead — tudo sem sair do fluxo da conversa.
+Ferramentas (tools) são capacidades extras que o agente pode acionar de forma autônoma durante uma conversa. Em vez de apenas gerar texto com base no que sabe, o agente passa a poder interagir com sistemas externos — buscar um registro, inserir um lead, criar um evento, consultar um documento — tudo dentro do fluxo natural da conversa.
 
-O agente decide **qual ferramenta chamar** e **quando chamá-la** de forma autônoma, usando o mecanismo de *tool calling* nativo dos grandes modelos de linguagem (LLMs). Quando o modelo identifica que uma ação externa é necessária para responder bem ao usuário, ele escolhe a ferramenta mais adequada, monta os argumentos e executa — sem necessidade de nenhuma lógica de roteamento manual.
+A decisão de usar ou não uma ferramenta pertence ao próprio modelo de linguagem. Ao receber uma mensagem do usuário, o LLM avalia o contexto, identifica se alguma ação externa é necessária para responder bem e, em caso afirmativo, escolhe a ferramenta mais adequada. Esse mecanismo é o *tool calling* nativo dos grandes modelos — não exige lógica de roteamento manual nem fluxos condicionais programados por você.
 
-## Tipos de ferramentas disponíveis
-
-A Timely.ai oferece cinco tipos de ferramentas, cada um com um propósito distinto:
-
-### 1. Composio (integrações com apps externos)
-
-O conjunto principal de integrações externas é fornecido via **Composio**, uma camada que gerencia autenticação OAuth e execução das ferramentas nos apps. São **29 apps prontos para conectar**, organizados em categorias:
-
-| Categoria | Apps |
-|---|---|
-| Produtividade | Notion, Google Sheets, ClickUp, Trello, Asana, Airtable, Canva |
-| Agendamento | Google Calendar, Google Meet |
-| Desenvolvimento | GitHub, Jira, Linear, Supabase, Neon |
-| CRM | HubSpot, Salesforce, Apollo.io, Kommo, Zendesk |
-| Pagamentos e E-commerce | Stripe, Shopify |
-| Comunicação | Slack, Gmail |
-| Redes Sociais | Twitter/X, LinkedIn, Meta Ads |
-| Automação | Browser Tool, Browse.ai, Apify |
-
-Cada app expõe um conjunto de *tools* individuais — por exemplo, o Google Calendar oferece mais de 40 ferramentas, desde `GOOGLECALENDAR_CREATE_EVENT` até `GOOGLECALENDAR_FIND_FREE_SLOTS`. Você pode ativar ou desativar cada ferramenta individualmente na configuração do agente.
-
-Para detalhes sobre como conectar apps Composio, veja [Tools e integrações](/guides/tools/composio).
-
-### 2. MCP (Model Context Protocol)
-
-O **MCP** é o padrão aberto da Anthropic para conectar agentes a servidores de ferramentas externos. Enquanto a Composio cobre apps populares com conectores prontos, o MCP permite que você plugue **qualquer servidor MCP** — interno, de terceiros ou desenvolvido pelo seu time — diretamente ao agente.
-
-Com MCP, você pode expor ferramentas proprietárias (consulta a APIs internas, ERP, sistemas legados) sem depender do catálogo da Composio. Cada servidor MCP pode expor múltiplas ferramentas, e você controla quais ficam ativas no agente.
-
-Para configurar servidores MCP, veja [Ferramentas via MCP](/guides/tools/mcp).
-
-### 3. Busca na base de conhecimento (Knowledge Search)
-
-Quando ativada, essa ferramenta permite que o agente consulte semanticamente a **base de conhecimento** do workspace ao responder. Funciona como um mecanismo RAG (*Retrieval-Augmented Generation*): o agente gera um embedding da pergunta do usuário e busca os trechos mais relevantes nos documentos, sites, textos e Q&As cadastrados.
-
-O resultado da busca é injetado no contexto do agente antes de ele formular a resposta, garantindo que informações específicas do seu negócio sejam consideradas — mesmo que não estejam no prompt.
-
-Para configurar essa ferramenta, veja [Busca na base de conhecimento](/guides/tools/knowledge-search).
-
-### 4. Datagrid (tabelas customizadas)
-
-A ferramenta Datagrid conecta o agente às **tabelas customizadas** (datasheets) que você cria na Timely.ai. Com ela, o agente pode:
-
-- **Buscar registros** semanticamente ou por similaridade de texto — útil para catálogos de produtos, listas de imóveis, tabelas de preços.
-- **Inserir novos registros** — por exemplo, registrar um lead captado na conversa.
-- **Atualizar registros existentes** — atualizar o status de um pedido, alterar uma disponibilidade.
-
-Para entender como funciona e configurar, veja [Ferramentas de Datagrid](/guides/tools/datagrid-tools).
-
-### 5. Agendamento embutido
-
-O sistema de agendamento nativo da Timely.ai também é exposto como uma ferramenta do agente. Com ela, o agente pode consultar disponibilidade, criar compromissos e gerenciar a agenda diretamente na conversa, sem precisar de um app externo de calendário.
-
-Essa ferramenta é configurada nas [Capacidades do agente](/guides/agents/settings/capacities).
-
-## Como o agente escolhe qual ferramenta usar
-
-O agente não segue um fluxo fixo de chamadas de ferramentas. O modelo de linguagem avalia o contexto da conversa e, quando identifica que precisa de informação externa ou precisa executar uma ação, ele:
-
-1. Seleciona a ferramenta mais adequada entre as disponíveis e ativas.
-2. Monta os argumentos com base no que foi dito na conversa.
-3. Executa a ferramenta e incorpora o resultado na resposta.
-
-Esse ciclo pode se repetir múltiplas vezes em uma mesma resposta (*tool chaining*) — por exemplo, o agente pode buscar um horário livre no Google Calendar e, em seguida, criar um evento com link do Google Meet, tudo em uma única interação.
+Ferramentas são indicadas quando a resposta ideal depende de informações que não estão no prompt e que mudam com frequência (preços, disponibilidade, histórico de um cliente), ou quando o agente precisa executar uma ação no mundo — registrar dados, agendar uma reunião, atualizar um status. Se a informação for estática e raramente mudar, basta incluí-la diretamente no prompt ou na base de conhecimento.
 
 <Note>
-Habilitar muitas ferramentas ao mesmo tempo aumenta a complexidade do raciocínio do modelo e pode aumentar o custo por resposta. Ative apenas as ferramentas que o agente realmente precisa para o seu caso de uso.
+Habilitar muitas ferramentas simultaneamente aumenta o espaço de raciocínio do modelo e pode elevar o custo por resposta. Prefira ativar apenas as ferramentas que o agente realmente precisa para o seu caso de uso específico.
 </Note>
 
-## Resumo comparativo
+## Como o agente usa ferramentas
 
-| Tipo | Conecta a | Casos de uso típicos |
-|---|---|---|
-| Composio | 29 apps populares | CRM, calendário, Slack, Notion, e-commerce |
-| MCP | Qualquer servidor MCP | APIs internas, sistemas proprietários |
-| Knowledge Search | Base de conhecimento do workspace | FAQ, documentação de produto, políticas |
-| Datagrid | Tabelas customizadas da Timely.ai | Catálogos, listas, registros de leads |
-| Agendamento embutido | Sistema nativo de agenda | Marcar, cancelar e consultar compromissos |
+O agente não segue uma ordem fixa de chamadas. A cada turno da conversa, o modelo avalia o contexto acumulado e decide se precisa acionar alguma ferramenta. O ciclo é:
+
+1. O modelo lê a mensagem do usuário e o histórico da conversa.
+2. Se identificar que precisa de dados externos ou precisa executar uma ação, seleciona a ferramenta mais adequada e monta os argumentos.
+3. A ferramenta é executada e o resultado retorna ao modelo.
+4. O modelo incorpora o resultado e gera a resposta ao usuário.
+
+Esse ciclo pode se repetir múltiplas vezes em uma única interação — o agente pode buscar um horário livre no Google Calendar e, na sequência, criar um evento com link do Google Meet, tudo antes de responder ao usuário.
+
+<Warning>
+Ferramentas com escrita (inserção, atualização, exclusão de registros) devem ser ativadas apenas quando o caso de uso exige — e sempre acompanhadas de um prompt bem orientado. O agente pode executar ações irreversíveis se as instruções forem ambíguas.
+</Warning>
+
+## Tipos de ferramentas na Timely.ai
+
+A Timely.ai oferece ferramentas de diferentes categorias, cada uma com um propósito específico:
+
+### Requisição HTTP
+
+Permite que o agente faça chamadas a APIs externas via HTTP. Você configura a URL, o método (GET, POST, PUT, PATCH, DELETE), os cabeçalhos e o corpo da requisição. O agente monta os parâmetros dinamicamente com base no contexto da conversa e injeta o retorno no contexto antes de responder.
+
+- Ideal para integrar sistemas que expõem uma API REST mas não têm suporte nativo na Timely.ai.
+- Suporta autenticação via header (Bearer token, API key) configurada na definição da ferramenta.
+
+### Execução de código
+
+Executa trechos de código gerados pelo próprio modelo em um ambiente isolado. Útil para cálculos complexos, transformações de dados e geração de relatórios dinâmicos que seriam difíceis de expressar apenas em linguagem natural.
+
+### Busca na web
+
+Permite que o agente pesquise informações atualizadas na internet durante uma conversa. O resultado da busca é incorporado ao contexto antes de o modelo formular a resposta — útil para perguntas sobre eventos recentes, preços de mercado ou qualquer dado que muda com frequência e não está na base de conhecimento.
+
+### Busca na base de conhecimento
+
+Aciona o mecanismo RAG da Timely.ai: a pergunta do usuário é convertida em um embedding vetorial (modelo `text-embedding-3-small`, 1.536 dimensões) e comparada com os chunks indexados na base de conhecimento do workspace. Os trechos mais relevantes são injetados no contexto antes da resposta.
+
+### Ferramentas de Datagrid
+
+Conectam o agente às tabelas customizadas do workspace. As ações disponíveis são:
+
+- `semantic_search` — busca por similaridade semântica nos registros da tabela.
+- `similarity_search` — busca por correspondência aproximada de texto.
+- `insert_row` — insere um novo registro com os campos informados pelo agente.
+- `update_row` — atualiza um registro existente identificado pelo `row_id`.
+
+### Execução de workflow
+
+Aciona um workflow interno da Timely.ai como parte da resposta do agente. O agente chama o workflow com os parâmetros definidos, aguarda a conclusão e usa o resultado na conversa.
+
+### Follow-up
+
+Agenda uma mensagem de acompanhamento para ser enviada ao usuário após um intervalo de tempo. O agente determina o conteúdo e o horário do follow-up com base no contexto da conversa — útil para lembretes, retomadas de contato e verificações pós-atendimento.
+
+### Memória contextual
+
+Permite que o agente persista informações sobre o contato entre conversas. O agente pode salvar preferências, histórico de interações ou qualquer dado relevante, e recuperar essas informações em sessões futuras sem que o usuário precise repetir o contexto.
+
+### Leitura de PDF
+
+Extrai e processa o conteúdo de documentos PDF enviados pelo usuário durante a conversa. O texto extraído é incorporado ao contexto para que o agente possa responder perguntas sobre o documento, resumir seu conteúdo ou executar ações baseadas nas informações presentes no arquivo.
+
+### Integrações Composio
+
+Conectam o agente a **29 apps externos** através da camada de autenticação e execução da Composio — Google Calendar, Google Meet, Notion, Slack, Gmail, HubSpot, Stripe, GitHub, LinkedIn, Twitter/X, Meta Ads, Google Sheets, Browser Tool, Browse.ai e mais. Cada app expõe um conjunto de tools individuais que você pode ativar ou desativar na configuração do agente.
+
+### MCP (Model Context Protocol)
+
+Protocolo aberto da Anthropic que permite conectar o agente a qualquer servidor MCP externo — interno, de terceiros ou desenvolvido pelo seu time. Enquanto a Composio cobre apps populares com conectores prontos, o MCP permite expor ferramentas proprietárias (consultas a APIs internas, ERP, sistemas legados) sem depender de nenhum catálogo.
 
 ## Boas práticas
 
-- Ative primeiro as ferramentas de leitura (busca, consulta) antes das de escrita (inserção, atualização, exclusão) para validar o comportamento do agente.
-- Use a descrição customizada de cada tool para orientar o modelo sobre quando — e quando não — usá-la.
-- Teste no Playground do agente após cada alteração no conjunto de ferramentas ativas.
-- Ferramentas MCP com instruções específicas são injetadas diretamente no prompt do sistema, o que torna o comportamento mais previsível.
+- Ative ferramentas de leitura antes de habilitar ferramentas de escrita e valide o comportamento no Playground.
+- Escreva descrições claras para cada ferramenta — o modelo usa esse texto para decidir quando acioná-la.
+- Ferramentas MCP e Composio injetam instruções de workflow no prompt do sistema, tornando o comportamento mais previsível.
+- Monitore o consumo de tokens por sessão ao adicionar múltiplas ferramentas — cada ferramenta ativa aumenta o tamanho do contexto.
 
-## Próximos passos
+## Ponto-chave
 
-<CardGroup cols={2}>
-  <Card title="Integrações Composio" href="/guides/tools/composio">
-    Conecte apps como Google Calendar, HubSpot, Slack e mais 26 outros ao seu agente.
-  </Card>
-  <Card title="Ferramentas via MCP" href="/guides/tools/mcp">
-    Plugue servidores MCP customizados para expor ferramentas proprietárias ao agente.
-  </Card>
-  <Card title="Busca na base de conhecimento" href="/guides/tools/knowledge-search">
-    Ative o RAG para que o agente consulte documentos e Q&As do workspace.
-  </Card>
-  <Card title="Ferramentas de Datagrid" href="/guides/tools/datagrid-tools">
-    Deixe o agente ler e escrever em tabelas customizadas da Timely.ai.
-  </Card>
-</CardGroup>
+Ferramentas transformam o agente de um sistema de respostas em um agente capaz de agir. A escolha de quais ferramentas ativar — e com quais instruções — determina diretamente a qualidade, o custo e a segurança do comportamento do agente em produção.

@@ -1,97 +1,81 @@
 ---
-title: "Busca na base de conhecimento"
+title: "Ferramenta de Busca na Base de Conhecimento"
 description: "Permita que o agente consulte semanticamente documentos, sites, Q&As e textos do workspace ao responder — usando busca vetorial com RAG."
 ---
 
-## Visão geral
+## O que é uma base de conhecimento?
 
-A ferramenta de **busca na base de conhecimento** (Knowledge Search) permite que o agente consulte automaticamente o conteúdo cadastrado na base de conhecimento do workspace durante uma conversa. Ao invés de depender apenas do que está no prompt, o agente passa a ter acesso dinâmico a documentos, sites rastreados, textos livres e pares de perguntas e respostas.
+Uma base de conhecimento é um repositório de conteúdo estruturado e indexado que o agente pode consultar durante uma conversa. Na Timely.ai, ela funciona como a memória de longo prazo do workspace: informações que não cabem ou não devem ficar no prompt do agente são cadastradas aqui e recuperadas apenas quando relevantes.
 
-Isso é o que chamamos de **RAG (Retrieval-Augmented Generation)**: antes de formular uma resposta, o agente busca os trechos mais relevantes da base de conhecimento e os incorpora como contexto adicional. O resultado é um agente que responde com precisão sobre o seu produto, políticas, preços ou qualquer informação que você tenha cadastrado — sem precisar colocar tudo isso manualmente no prompt.
+A base de conhecimento aceita diferentes tipos de conteúdo:
 
-## Como funciona tecnicamente
+- **Documentos** — arquivos PDF, Word ou texto importados diretamente.
+- **Sites rastreados** — URLs cujo conteúdo é indexado automaticamente pela plataforma.
+- **Textos livres** — blocos de texto inseridos manualmente, como políticas, scripts e procedimentos.
+- **Q&As** — pares de pergunta e resposta que o agente usa como referência direta.
+- **Dados estruturados** — tabelas e listas convertidas em chunks pesquisáveis.
 
-Quando o agente aciona a ferramenta de Knowledge Search, o processo é o seguinte:
+Todo o conteúdo cadastrado passa por um processo de segmentação em chunks e geração de embeddings vetoriais. Esse processamento acontece na ingestão e é o que torna a busca semântica possível.
 
-1. A pergunta ou intenção do usuário é convertida em um **embedding vetorial** usando o modelo `text-embedding-3-small` da OpenAI (1.536 dimensões).
-2. Esse embedding é comparado com os embeddings dos chunks de conteúdo já indexados na base de conhecimento.
-3. Os chunks com maior **similaridade semântica** são selecionados e retornados ao agente.
-4. O agente incorpora esses trechos no contexto antes de gerar a resposta.
+## Como a ferramenta funciona
 
-A busca é semântica — não é uma busca por palavras-chave. Isso significa que o agente encontra conteúdo relevante mesmo quando o usuário usa termos diferentes dos que estão nos documentos.
+Quando o agente aciona a ferramenta de busca na base de conhecimento, o processo segue três etapas:
 
-## Como ativar
+- A consulta do usuário é convertida em um embedding vetorial usando o modelo `text-embedding-3-small` da OpenAI (1.536 dimensões).
+- Esse embedding é comparado com os embeddings dos chunks já indexados na base, usando similaridade de cosseno.
+- Os chunks com maior pontuação de similaridade são retornados e injetados no contexto do agente antes da geração da resposta.
+
+A busca é semântica — não depende de correspondência exata de palavras. O agente encontra conteúdo relevante mesmo quando o usuário usa vocabulário diferente do que está nos documentos cadastrados.
+
+## Opções de execução
+
+Você pode controlar como e quando a ferramenta é acionada diretamente nas configurações da ferramenta no agente.
+
+### Executar sempre
+
+Quando a opção **Executar sempre** está ativada, o agente consulta a base de conhecimento em toda resposta, independentemente do conteúdo da mensagem do usuário.
+
+- Indicado para agentes cujo papel principal é responder perguntas sobre o produto ou empresa.
+- Garante que o agente sempre considera o conteúdo cadastrado, mas aumenta o custo por resposta.
+
+### Pré-selecionar documentos
+
+Quando a opção **Pré-selecionar documentos** está ativada, você define quais documentos específicos da base o agente deve consultar, em vez de buscar em todo o conteúdo disponível.
+
+- Útil quando a base de conhecimento é grande e o agente deve responder apenas sobre um escopo delimitado.
+- Reduz o risco de o agente recuperar conteúdo irrelevante de outros domínios cadastrados na mesma base.
+
+## Quando usar uma base de conhecimento
+
+Use a ferramenta de busca na base de conhecimento quando a resposta ideal depende de conteúdo específico do seu negócio que muda com frequência ou que é extenso demais para o prompt:
+
+- Documentação de produto com versões atualizadas frequentemente.
+- Políticas internas que variam por região ou tipo de cliente.
+- Catálogos de serviços com descrições detalhadas.
+
+<Note>
+A qualidade da busca depende diretamente da qualidade do conteúdo indexado. Documentos bem estruturados, com títulos e parágrafos claros, geram chunks melhores e resultados mais precisos do que textos corridos sem formatação.
+</Note>
+
+## Exemplo de configuração
 
 <Steps>
-  <Step title="Acesse as capacidades do agente">
-    Abra o agente desejado e vá em [Capacidades](/guides/agents/settings/capacities) no menu de configurações.
+  <Step title="Adicione e ative a ferramenta no agente">
+    No painel do agente, acesse a aba de ferramentas e clique em **Adicionar ferramenta**. Selecione **Busca na base de conhecimento** no catálogo. Na configuração da ferramenta, escolha a base de conhecimento do workspace que o agente deve consultar. Defina o número de resultados (top-k) — o padrão é 10 — e ajuste o limiar de similaridade se necessário.
   </Step>
-  <Step title="Ative a busca na base de conhecimento">
-    Localize a opção **Busca na base de conhecimento** e ative o toggle. A ferramenta fica disponível imediatamente — o agente passa a usá-la sempre que avaliar que a pergunta do usuário pode ser respondida com conteúdo da base.
-  </Step>
-  <Step title="Verifique a base de conhecimento">
-    Certifique-se de que a base de conhecimento do workspace tem conteúdo indexado. Acesse [Base de conhecimento](/guides/knowledge/overview) para adicionar documentos, sites, textos ou Q&As.
-
-    Documentos recém-adicionados são processados e indexados em alguns minutos. Até que o processamento conclua, o conteúdo não estará disponível para busca.
-  </Step>
-  <Step title="Teste no Playground">
-    Use o Playground do agente para fazer perguntas sobre o conteúdo cadastrado. Verifique se o agente recupera as informações corretas e se incorpora bem as respostas.
+  <Step title="Valide no Playground">
+    Com a ferramenta ativada, abra o Playground do agente e faça perguntas sobre o conteúdo indexado na base. Verifique se o agente recupera os trechos corretos e se a resposta incorpora as informações de forma coerente. Ajuste o top-k e o limiar de similaridade com base no que observar.
   </Step>
 </Steps>
 
-## Configuração de parâmetros
-
-Você pode ajustar o comportamento da busca diretamente nas configurações da ferramenta:
-
-### Top-k (número de resultados)
-
-O parâmetro **top-k** controla quantos trechos são retornados pela busca e incorporados ao contexto do agente. O valor padrão é **10**.
-
-- Valores mais altos (15–20) trazem mais contexto, mas aumentam o tamanho do prompt e o custo por resposta.
-- Valores mais baixos (3–5) são mais rápidos e baratos, mas podem perder trechos relevantes em bases de conhecimento grandes.
-
-Recomendamos começar com o padrão de 10 e ajustar com base no comportamento observado no Playground.
-
-### Limiar de similaridade
-
-O **limiar de similaridade** define o score mínimo que um chunk precisa atingir para ser incluído nos resultados. O valor padrão é **0.5** (em uma escala de 0 a 1).
-
-- Aumentar para 0.7 ou mais torna a busca mais conservadora — só retorna conteúdo muito próximo da pergunta.
-- Diminuir para 0.3 ou menos torna a busca mais ampla — útil quando a base de conhecimento usa terminologia diferente da usada pelos usuários.
-
-### Filtro por documentos específicos
-
-É possível configurar a ferramenta para buscar apenas em um subconjunto de documentos da base de conhecimento. Isso é útil quando você tem uma base grande e quer que o agente consulte apenas os documentos relevantes para o seu contexto de atendimento.
-
-## Casos de uso
-
-- **Atendimento ao cliente**: o agente responde dúvidas sobre produtos, políticas de devolução, prazos de entrega ou garantias consultando a documentação interna.
-- **Suporte técnico**: o agente recupera procedimentos, guias de configuração ou FAQs técnicos indexados na base.
-- **Vendas consultivas**: o agente acessa fichas de produtos, comparativos, tabelas de preços e argumentos de venda cadastrados como documentos.
-- **Onboarding**: novos colaboradores podem perguntar ao agente sobre processos, benefícios ou políticas da empresa, e ele responde com base na documentação cadastrada.
-- **Compliance e regulatório**: o agente consulta políticas internas antes de responder sobre temas sensíveis.
-
 ## Boas práticas
 
-- **Estruture bem o conteúdo**: documentos bem estruturados (com títulos, seções e parágrafos claros) geram chunks mais precisos e melhoram a qualidade dos resultados.
-- **Use Q&As para perguntas frequentes**: o formato de pergunta e resposta é o mais eficiente para a busca — o agente encontra exatamente o que o usuário perguntou.
-- **Evite documentos muito longos sem estrutura**: textos corridos e extensos tendem a gerar chunks genéricos de baixa qualidade.
-- **Revise o conteúdo indexado periodicamente**: documentos desatualizados podem fazer o agente responder com informações incorretas.
-- **Combine com o prompt**: use o prompt do agente para orientar quando ele deve consultar a base e quando deve pedir mais informações ao usuário antes de buscar.
+- Estruture o conteúdo com títulos e seções — chunks gerados de texto bem formatado têm melhor qualidade.
+- Use o formato Q&A para perguntas frequentes — a correspondência entre pergunta do usuário e pergunta indexada tende a ser mais precisa.
+- Evite documentos muito extensos sem estrutura — textos corridos geram chunks genéricos e resultados imprecisos.
+- Revise o conteúdo indexado periodicamente — documentos desatualizados fazem o agente responder com informações incorretas.
+- Combine a ferramenta com instruções no prompt — oriente o agente sobre quando buscar na base e quando pedir mais informações ao usuário antes de buscar.
 
-## Próximos passos
+## Ponto-chave
 
-<CardGroup cols={2}>
-  <Card title="Base de conhecimento" href="/guides/knowledge/overview">
-    Saiba como adicionar e gerenciar documentos, sites, textos e Q&As no workspace.
-  </Card>
-  <Card title="Ferramentas de Datagrid" href="/guides/tools/datagrid-tools">
-    Permita que o agente leia e escreva em tabelas customizadas da Timely.ai.
-  </Card>
-  <Card title="Visão geral das ferramentas" href="/guides/tools/overview">
-    Compare todos os tipos de ferramentas disponíveis na Timely.ai.
-  </Card>
-  <Card title="Capacidades do agente" href="/guides/agents/settings/capacities">
-    Configure todas as capacidades e comportamentos do agente.
-  </Card>
-</CardGroup>
+A ferramenta de busca na base de conhecimento transforma o agente em um especialista dinâmico sobre o seu negócio — sem precisar embutir todo o conteúdo no prompt. A chave para bons resultados está na qualidade do conteúdo indexado e na configuração cuidadosa do top-k e do limiar de similaridade.

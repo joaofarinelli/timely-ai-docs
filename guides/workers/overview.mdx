@@ -1,81 +1,120 @@
 ---
-title: Workers
-description: Sessões assíncronas para delegar tarefas longas a agentes e squads, como análises, pesquisas e processamentos em segundo plano.
+title: "Workers"
+description: "Sessões de trabalho direto com agentes e squads para tarefas longas, análises e processamentos que não cabem no fluxo de atendimento."
 ---
 
-Workers são sessões de trabalho assíncronas onde você delega tarefas demoradas a um agente ou squad e continua usando a plataforma normalmente enquanto o trabalho é processado. É diferente do chat de atendimento ao cliente: aqui, você está conversando diretamente com o agente como se fosse um colaborador interno.
+Workers é o espaço da Timely.ai onde você conversa diretamente com um agente ou squad como se fosse um colaborador interno. Enquanto o chat de atendimento ao cliente serve para sessões voltadas ao consumidor final, Workers serve para você — o operador — delegar trabalhos que o agente processará de forma autônoma.
+
+## O que é Workers
+
+Workers funciona como uma área de trabalho pessoal com sessões de conversa persistentes. Cada sessão é vinculada a um agente ou squad específico do seu workspace. O agente responde usando o mesmo modelo LLM, ferramentas e base de conhecimento que ele usa no atendimento real — a diferença é que a conversa é sua, privada, e não gera registros no CRM de clientes.
 
 ## Quando usar Workers
 
-<AccordionGroup>
-  <Accordion title="Análises longas">
-    Solicite ao agente que processe um grande volume de conversas, extraia padrões ou gere um relatório consolidado. O agente trabalha de forma autônoma e entrega o resultado quando termina.
-  </Accordion>
-  <Accordion title="Pesquisa e síntese">
-    Peça ao agente para pesquisar um tema, consolidar informações de múltiplas fontes e produzir um resumo estruturado. Útil para pesquisa de mercado, benchmarking e due diligence.
-  </Accordion>
-  <Accordion title="Geração de conteúdo em lote">
-    Delegue a criação de múltiplos textos, templates ou respostas de uma só vez. O agente processa a fila e entrega cada item conforme finaliza.
-  </Accordion>
-  <Accordion title="Tarefas com ferramentas externas">
-    Quando o agente precisa acessar integrações (Google Sheets, Notion, Slack, etc.), o processamento pode levar mais tempo. Workers garantem que a tarefa não seja interrompida por timeout.
-  </Accordion>
-</AccordionGroup>
+- **Análise de dados e conversas:** solicite ao agente que processe um volume grande de registros, extraia padrões ou consolide informações em um relatório estruturado.
+- **Pesquisa e síntese de informação:** peça ao agente para pesquisar um tema, comparar fontes e entregar um resumo pronto para uso.
+- **Geração de conteúdo em lote:** delegue a criação de múltiplos textos, scripts, templates ou respostas de uma só vez.
+- **Tarefas com integrações externas:** quando o agente precisa acessar Google Sheets, Notion, Slack ou outras ferramentas, o processamento pode levar mais tempo — Workers garante que a tarefa não seja interrompida.
 
-## Iniciando uma sessão
+## Como funciona
+
+A tela de Workers é dividida em dois painéis principais que você usará em conjunto durante o trabalho.
+
+### Painel esquerdo (histórico de conversas)
+
+A sidebar esquerda lista todas as suas sessões em ordem cronológica, com as mais recentes no topo. Cada item exibe:
+
+- Nome do agente ou squad executor
+- Prévia da última mensagem da sessão
+- Horário da última atividade
+
+As sessões são agrupadas por período: **Hoje**, **Ontem**, **Últimos 7 dias**, **Últimos 30 dias** e **Mais antigas**. Use a busca no topo da sidebar para localizar sessões por conteúdo.
+
+### Área principal de chat
+
+A área central exibe a conversa ativa com o agente selecionado. O campo de mensagem aceita texto e anexos (imagens, PDFs, documentos Office e CSVs) com limite de 25 MB por arquivo e 4.000 caracteres por mensagem.
+
+## Iniciando uma nova conversa
 
 <Steps>
-  <Step title="Acesse Workers no menu lateral">
-    Clique em **Workers** no menu. A tela é dividida em sidebar (lista de sessões) e área principal (chat ativo).
-  </Step>
-  <Step title="Crie uma nova sessão">
-    Clique em **Nova sessão**. Um diálogo abre com duas abas: **Agentes** e **Squads**.
+  <Step title="Clique no ícone de nova sessão">
+    No topo da sidebar, clique no botão **+** para abrir o diálogo de nova sessão.
   </Step>
   <Step title="Escolha o executor">
-    Selecione o agente ou squad que vai processar a tarefa. Cada opção mostra o modelo LLM associado e o avatar do agente. Para squads, o ícone reflete o avatar do primeiro agente ativo do grupo.
+    O diálogo exibe duas abas: **Agentes** e **Squads**. Selecione o agente ou squad que vai processar a tarefa. Cada opção mostra o nome e o avatar do executor.
   </Step>
-  <Step title="Descreva a tarefa">
-    Com a sessão aberta, escreva a tarefa no campo de chat. Seja específico: inclua contexto, formato esperado de saída e qualquer restrição relevante.
-  </Step>
-  <Step title="Acompanhe o progresso">
-    A sessão fica listada na sidebar com o status atual. Você pode navegar para outras partes da plataforma e voltar quando quiser verificar o andamento.
+  <Step title="Escreva a primeira mensagem">
+    Com a sessão aberta, descreva a tarefa no campo de chat. Seja específico sobre o contexto, o formato de saída esperado e qualquer restrição relevante.
   </Step>
 </Steps>
 
-<Frame>
-  <img src="/images/workers-chat.png" alt="Interface de Workers com sidebar de sessões e chat ativo" />
-</Frame>
+<Note>
+  O saldo de créditos disponível para o workspace aparece no rodapé do campo de mensagem. Cada mensagem processada consome créditos de acordo com o modelo LLM configurado no agente.
+</Note>
 
-## Sidebar de sessões
+## Continuando conversas
 
-A sidebar à esquerda lista todas as sessões em ordem cronológica (mais recentes primeiro). Cada item mostra:
+Sessões anteriores ficam na sidebar e podem ser retomadas a qualquer momento:
 
-- Nome do agente ou squad executor
-- Prévia da última mensagem
-- Horário da última atividade
+- Clique na sessão para abrir o histórico completo e continuar de onde parou.
+- O contexto da conversa é preservado entre sessões — o agente "lembra" do que foi dito anteriormente.
 
-Clique em qualquer sessão para abri-la e ver o histórico completo da conversa.
+## Renomeando conversas
 
-## Diferença entre Workers e Time AI
+Para facilitar a organização, você pode renomear qualquer sessão:
 
-| | Workers | Time AI |
+<Steps>
+  <Step title="Clique com o botão direito na sessão">
+    Na sidebar, clique com o botão direito sobre o item da sessão que deseja renomear.
+  </Step>
+  <Step title="Selecione Renomear">
+    Escolha a opção **Renomear** no menu de contexto exibido.
+  </Step>
+  <Step title="Digite o novo nome e confirme">
+    Edite o título diretamente no campo exibido e pressione **Enter** para salvar.
+  </Step>
+</Steps>
+
+## Busca
+
+O campo de busca no topo da sidebar filtra sessões por conteúdo em tempo real:
+
+- A busca considera o título da sessão e o conteúdo das mensagens.
+- Resultados aparecem instantaneamente conforme você digita.
+- Para limpar o filtro, apague o texto do campo ou clique no ícone de fechar.
+
+## Comportamento em produção
+
+Workers roda os mesmos agentes que estão ativos no atendimento real. Isso tem implicações importantes:
+
+- Mensagens enviadas em Workers consomem créditos reais do workspace.
+- Arquivos enviados ficam armazenados no bucket de armazenamento do workspace.
+- Integrações externas acionadas pelo agente (como Google Calendar ou Sheets) executam ações reais — não em ambiente de teste.
+
+<Warning>
+  Não use Workers para testar comportamentos de agentes em produção com dados fictícios. Use o **Chat de Teste** disponível no painel do agente ou no detalhe do squad para testes sem impacto em créditos ou integrações reais.
+</Warning>
+
+## Workers vs. Chat Interno
+
+| Funcionalidade | Workers | Chat Interno (Time AI) |
 |---|---|---|
-| **Foco** | Tarefas assíncronas e longas | Ações rápidas na plataforma |
-| **Executor** | Agente ou squad da sua conta | Copilot interno da Timely.ai |
-| **Histórico** | Sessões separadas por executor | Sessões de chat unificadas |
-| **Ideal para** | Processamento, análise, geração em lote | Criação de agentes, consultas, configuração |
-
-## Enviando arquivos
-
-No campo de mensagem, você pode anexar imagens e documentos clicando no ícone de clipe. O agente processa os arquivos como parte do contexto da tarefa — útil para análise de planilhas, revisão de documentos ou extração de dados de imagens.
-
-<Info>
-  Workers usam o mesmo agente configurado na sua conta. Certifique-se de que o agente escolhido tem as ferramentas e integrações necessárias para a tarefa antes de iniciar a sessão.
-</Info>
+| Executor | Agente ou squad da sua conta | Copilot interno da Timely.ai |
+| Histórico | Sessões separadas por executor | Sessões unificadas |
+| Consome créditos do plano | Sim | Não |
 
 ## Boas práticas
 
-- Escreva instruções claras e detalhadas na primeira mensagem da sessão para reduzir idas e vindas.
-- Se a tarefa envolver múltiplos arquivos, envie todos de uma vez na mesma mensagem.
-- Para tarefas recorrentes, salve o prompt como template no Time AI e cole na sessão do Worker conforme necessário.
-- Crie sessões separadas para tarefas distintas — não misture assuntos em uma mesma sessão para facilitar a consulta futura.
+- Escreva a primeira mensagem com instruções completas para reduzir idas e vindas com o agente.
+- Envie todos os arquivos relevantes em uma única mensagem quando possível — o agente processa o conjunto como contexto unificado.
+- Crie sessões separadas para tarefas distintas. Misturar assuntos em uma sessão dificulta a consulta futura e pode confundir o contexto do agente.
+- Use Workers para tarefas que levam mais de alguns minutos. Para consultas rápidas, o chat no painel do agente é mais ágil.
+
+## Conclusão
+
+Workers é o atalho para aproveitar o poder dos seus agentes além do atendimento ao cliente:
+
+- Produtividade pessoal com processamento autônomo de tarefas demoradas.
+- Histórico organizado por sessão, agente e período.
+- Suporte a arquivos e visão multimodal quando o modelo do agente suportar.
+- Contexto preservado entre sessões para trabalhos contínuos.
