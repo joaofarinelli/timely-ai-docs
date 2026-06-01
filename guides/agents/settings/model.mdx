@@ -1,86 +1,96 @@
 ---
-title: "Seleção de modelo"
-description: "Como escolher o provedor e o modelo de LLM para cada agente na Timely.ai, comparativo de capacidades, custo em créditos e boas práticas de seleção."
+title: "Model Selection"
+description: "In Timely.ai, each Agent can be powered by a specific **Provider** and **Model**. <br />
+This configuration defines:
+
+- Which **LLM** is used for reasoning
+
+- How **billing and credit consumption** are handled
+
+
+The model selection is part of the Agent configuration flow and is defined **after the Prompt**, ensuring that the Agent’s instructions are clear before choosing how it will reason."
 ---
 
-O modelo de linguagem define a inteligência, a velocidade e o custo de cada execução do agente. A Timely.ai suporta quatro provedores com acesso a múltiplos modelos — cada agente pode usar um modelo diferente.
+---
 
-## Onde selecionar o modelo
+## Where to Select the Model
 
-<Steps>
-  <Step title="Acesse as configurações do agente">
-    Na lista de agentes, clique no agente que deseja configurar.
-  </Step>
-  <Step title="Abra a aba de Modelo">
-    Clique na aba **Modelo** nas configurações do agente. O diálogo de configuração exibe três colunas: provedores, modelos disponíveis e parâmetros de comportamento.
-  </Step>
-  <Step title="Selecione o provedor">
-    Na coluna da esquerda, escolha o provedor: OpenAI, Anthropic, Google ou OpenRouter. A coluna central atualiza com os modelos disponíveis para o provedor selecionado.
-  </Step>
-  <Step title="Selecione o modelo e salve">
-    Clique no modelo desejado na lista central. Ajuste temperatura e effort na seção inferior e clique em **Salvar configurações**. A mudança entra em vigor na próxima execução.
-  </Step>
-</Steps>
+The **Provider** and **Model** selector is located **below the main Prompt field** in the Agent configuration screen.
 
-## Como funcionam os provedores
+This positioning reflects the recommended workflow:
 
-A Timely.ai disponibiliza dois modos de acesso aos modelos: usando os créditos da plataforma (acesso via Timely) ou conectando sua própria chave de API de um provedor externo.
+1. Define the Agent’s **Role**
+2. Write the **Prompt**
+3. Select the **Provider and Model**
+4. Adjust behavioral settings (Temperature, Effort, Planning, Reasoning)
 
-### Opção 1 — Usando os créditos da Timely
+## How Providers Work
 
-Cada modelo consome um número fixo de créditos por execução. Você não precisa criar contas nos provedores — a Timely gerencia a autenticação e o faturamento.
+There are two ways to connect LLMs to your Agents.
 
-<Steps>
-  <Step title="Selecione qualquer modelo disponível">
-    Todos os modelos listados na interface estão disponíveis imediatamente se você tiver créditos no workspace.
-  </Step>
-  <Step title="Verifique o custo em créditos">
-    Cada modelo exibe o custo estimado por execução. O consumo real varia conforme o tamanho do prompt, histórico da conversa e número de chamadas a ferramentas na mesma execução.
-  </Step>
-  <Step title="Monitore o consumo">
-    Acompanhe o consumo de créditos em **Configurações > Faturamento** para ajustar o modelo conforme o volume de conversas cresce.
-  </Step>
-  <Step title="Recarregue créditos quando necessário">
-    Créditos podem ser recarregados a qualquer momento pelo painel de faturamento. Agentes sem créditos disponíveis pausam automaticamente as respostas.
-  </Step>
-</Steps>
+<h3 style={{ marginTop: '1rem' }}>Option 1 — Using Timely.ai Provider</h3>
 
-### Opção 2 — Conectando seu próprio provedor
+When you select **Timely.ai** as the provider, your Agent uses models natively available on the platform (such as *Claude Sonnet* 4.6 or *GPT-5.4*).
 
-Workspaces no plano Enterprise podem configurar provedores customizados, conectando modelos com chaves de API próprias ou modelos open source hospedados em infraestrutura interna.
+In this mode:
 
-<Steps>
-  <Step title="Acesse as configurações do workspace">
-    Vá para **Configurações do Workspace > Modelos de IA** no menu de administração.
-  </Step>
-  <Step title="Adicione as credenciais do provedor">
-    Insira a API key do provedor (OpenAI, Anthropic ou Google). A chave é armazenada com criptografia e usada exclusivamente para as execuções do seu workspace.
-  </Step>
-  <Step title="Selecione o provedor customizado no agente">
-    Ao configurar o modelo do agente, o provedor customizado aparece como opção adicional na coluna de provedores.
-  </Step>
-  <Step title="Confirme a conexão com um teste">
-    Use o Chat interno para enviar uma mensagem de teste e confirmar que o provedor customizado está respondendo corretamente antes de publicar o agente em produção.
-  </Step>
-</Steps>
+- You've used up your **Timely.ai internal usage quota** per execution.
+- Authentication and billing are fully managed by Timely.ai
+- No API key configuration is required
 
-<Note>
-A configuração de provedores customizados requer plano Enterprise. Entre em contato com o suporte para habilitar esse recurso no seu workspace.
-</Note>
+This is the recommended option for most users who want a fully managed experience with instant access to multiple LLMs.
 
-## Trocando o modelo por agente
+<h3 style={{ marginTop: '1rem' }}>Option 2 — Adding a Custom Provider</h3>
 
-Cada agente pode usar um modelo diferente dentro do mesmo workspace. Isso permite otimizar custo e performance por caso de uso:
+You can also connect your **own LLM provider**, bypassing Timely.ai internal usage quota.
 
-- Agentes de FAQ de alto volume usam modelos mais baratos (Kimi K2.5 ou Gemini 2.5 Flash)
-- Agentes de análise complexa usam modelos de alta capacidade (Claude Opus 4.6 ou Gemini 3.1 Pro)
-- Agentes de suporte geral usam modelos de equilíbrio (Claude Sonnet 4.6, marcado como recomendado)
-- Modelos GPT-5.x da OpenAI desabilitam temperatura — o slider fica inativo automaticamente
-- Modelos Anthropic com raciocínio ativo forçam temperatura para 1,0 — o controle de temperatura não tem efeito
+To configure a custom provider, go to:
 
-## Boas práticas
+``Platform → Settings → Providers → Configure Provider``
 
-- Comece sempre com **Claude Sonnet 4.6** — é o modelo recomendado pela plataforma para a maioria dos casos de uso, com bom equilíbrio entre qualidade (4 créditos/execução), velocidade e suporte a ferramentas
-- Teste qualquer troca de modelo no Chat interno com perguntas representativas antes de aplicar em produção
-- Monitore a latência após trocar para modelos maiores — modelos como Claude Opus 4.6 e Gemini 3.1 Pro têm latência mais alta que pode afetar a experiência em canais de mensageria
-- Não troque o modelo baseado apenas no custo — compare a qualidade das respostas nos cenários reais do seu caso de uso antes de migrar
+In this panel, you can:
+
+- Set a **provider name** (e.g., "OpenAI Personal", "Anthropic Enterprise")
+- Select the **provider type** (Anthropic, OpenAI, Google AI, or OpenRouter)
+- Paste your **API key**
+- Optionally add an internal description for identification
+
+Once saved, the provider becomes available in the **Provider** dropdown inside the Agent configuration.
+
+When an Agent uses a custom provider:
+
+- It consumes your **own API credits**
+- Billing happens directly with the external provider
+- Timely.ai does not charge credits for model execution
+
+<Warning>
+**Security note**: API tokens are stored in encrypted form and are only used when invoking the selected model for your Agent.
+</Warning>
+
+---
+
+## Switching Models Per Agent
+
+Model selection is **Agent-specific**. <br />
+This allows you to:
+
+- Use lightweight models for FAQs or simple Agents
+- Assign more powerful models to complex, reasoning-heavy Agents
+- Optimize cost, latency, and accuracy across your workspace
+
+You can change the model at any time without modifying the Agent’s Prompt or logic.
+
+---
+
+## Best Practices
+
+- Always define the **Prompt first**, then select the model
+- Use **Timely.ai Provider** for faster setup and predictable billing
+- Use **custom providers** when you need:
+  - Cost optimization at scale
+  - Enterprise contracts
+  - Provider-specific features
+
+---
+
+👉 Choosing the right model ensures your Agent balances **performance, cost, and reasoning quality** according to its purpose.

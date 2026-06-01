@@ -1,34 +1,49 @@
 ---
-title: "O que são MCPs?"
-description: "Entenda o Model Context Protocol (MCP) — o padrão aberto da Anthropic para conectar agentes de IA a servidores de ferramentas externos — e por que ele importa."
+title: "What are MCPs?"
 ---
 
-**MCP (Model Context Protocol)** é um protocolo aberto criado pela Anthropic que padroniza a comunicação entre agentes de IA e servidores de ferramentas externos. Em vez de cada plataforma inventar seu próprio formato de integração, o MCP define um contrato comum: qualquer agente que implemente o protocolo como cliente sabe falar com qualquer servidor que o implemente como servidor — independentemente do que esse servidor oferece ou em que linguagem foi desenvolvido.
+MCPs **(Managed Connection Providers)** are **integrations** that connect your Agents and Workflows to external services and APIs.
 
-## Por que o MCP importa
+Think of MCPs as **packages of configurable HTTP requests** that:
 
-Antes do MCP, integrar ferramentas a um agente de IA era um trabalho manual e fragmentado: cada plataforma tinha seu próprio formato de tool calling, e o mesmo servidor de ferramentas precisava ser reescrito para funcionar com diferentes sistemas. O MCP elimina essa fragmentação com um protocolo único.
+- Share the same **authentication credentials** (OAuth, API Key, etc.).
+- Can expose multiple **tools** (e.g., “create event in Google Calendar”, “list emails from Gmail”, “send message in Slack”).
+- Are described in **natural language**, so your Agent knows when and how to use them.
 
-- Um servidor MCP desenvolvido uma vez funciona com qualquer cliente compatível — o agente da Timely.ai, Claude Desktop, editores de código com suporte a IA e outros.
-- O agente descobre automaticamente as ferramentas disponíveis no servidor via protocolo — sem documentação manual, sem mapeamento estático.
-- Servidores MCP públicos desenvolvidos pela comunidade podem ser conectados diretamente ao seu agente sem modificação.
-- Ferramentas proprietárias (APIs internas, ERPs, sistemas legados) ficam acessíveis ao agente sem expor uma API REST pública.
+---
 
-## MCPs em ação
+## 🚀 Why MCPs Matter
 
-Na prática, o MCP funciona como uma interface universal entre o agente e qualquer sistema externo que você queira conectar:
+Without MCPs, every integration would need to be created and authenticated separately. MCPs solve this by:
 
-- Um servidor MCP com queries específicas ao seu banco de dados interno — o agente consulta registros sem precisar de uma integração REST dedicada.
-- Um servidor MCP que agrega múltiplas APIs internas e expõe uma interface simplificada ao agente — o agente chama uma ferramenta e o servidor orquestra as chamadas necessárias.
-- Um servidor MCP público de busca na web, gerenciamento de arquivos ou controle de browser — conectado ao agente sem nenhuma adaptação.
+- Centralizing **authentication** → set credentials once, reuse across all tools inside that MCP.
+- Simplifying **configuration** → no need to craft raw HTTP requests every time.
+- Making Agents more **autonomous** → they can discover and call tools inside MCPs whenever relevant.
+- Unlocking **enterprise-grade integrations** → securely connect CRMs, calendars, databases, ticketing systems, and more.
 
-> O agente da Timely.ai atua como cliente MCP: mantém uma sessão com cada servidor configurado, descobre as ferramentas disponíveis e as registra no contexto do modelo. Quando o LLM decide acionar uma ferramenta do servidor, o cliente executa a chamada via SSE ou HTTP, recebe o resultado e o injeta no contexto antes da próxima iteração.
+In practice, MCPs are the **bridge between Timely.ai and the external world**, extending your Agents with almost limitless capabilities.
 
-## Características principais
+---
 
-O MCP foi projetado especificamente para o uso por agentes de IA — e isso se reflete em suas características fundamentais:
+## 🛠️ MCPs in Action
 
-- **Descoberta automática de ferramentas** — o agente lê o schema das ferramentas diretamente do servidor, sem intervenção manual.
-- **Comunicação via SSE ou HTTP** — compatível com qualquer linguagem e infraestrutura de servidor.
-- **Suporte a sessão com estado** — o protocolo permite que o servidor mantenha contexto entre chamadas na mesma sessão.
-- **Descrições legíveis pelo modelo** — cada ferramenta expõe nome, descrição e schema de parâmetros que o LLM usa para decidir quando e como acioná-la.
+For example, you can create an MCP for **Google Calendar**:
+
+- Authentication: Google OAuth.
+- Tools exposed:
+    - `listEvents` (list calendar events).
+    - `createEvent` (schedule a meeting).
+    - `deleteEvent` (cancel a meeting).
+
+Your Agent can then **choose the right tool** when a user asks:
+
+> “Book a meeting with John tomorrow at 10am.”
+
+---
+
+## 📌 Key Characteristics
+
+- **Authentication layer**: One connection, many tools.
+- **Multiple tools per MCP**: Each tool maps to an API endpoint or function.
+- **Natural language descriptions**: Agents pick the tool based on your description.
+- **Scalable**: You can create MCPs for any external system your business needs.

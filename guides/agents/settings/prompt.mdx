@@ -1,35 +1,25 @@
 ---
-title: "Prompt do sistema"
-description: "Como usar o editor de prompt da Timely.ai: estrutura recomendada, análise de qualidade em tempo real, melhoria automática por IA e histórico de versões."
+title: "Prompt"
+description: "The Prompt field defines the operational and communication logic of the Agent. <br />
+It determines how the Agent should behave, speak, and execute its tasks."
 ---
 
-O prompt de sistema é a instrução mais importante do agente. Ele define identidade, tom, restrições e comportamento esperado. O editor de prompt da Timely.ai vai além de um campo de texto — oferece análise de qualidade em tempo real, melhoria automática por IA e histórico de versões com restauração com um clique.
+Prompts can contain:
 
-Um prompt eficiente cobre quatro aspectos:
+- Behavioral instructions (tone, vocabulary, persona).
+- Operational logic (how to respond to certain topics).
+- Context about the target audience or environment.
+- Examples of expected responses or outputs.
 
-- **Identidade** — quem o agente é e qual empresa representa
-- **Tom e estilo** — como ele deve se comunicar, com exemplos quando necessário
-- **O que pode fazer** — capacidades e ações permitidas
-- **O que não deve fazer** — restrições explícitas para evitar respostas indesejadas
+**Example**:
+
+> “You are the virtual assistant of a premium dental clinic. Maintain a professional and empathetic tone. Always confirm client data before scheduling and avoid providing medical advice.”
+
+Markdown formatting is supported, allowing structured sections like:
 
 ```
-# Identidade
-Você é [Nome], assistente de [empresa/área].
-Seu objetivo é [objetivo principal].
-
-# Tom e estilo
-- Seja direto e objetivo
-- Use linguagem acessível, sem jargão técnico desnecessário
-- Responda em português do Brasil
-
-# O que você pode fazer
-- [Lista de capacidades permitidas]
-
-# O que você NÃO deve fazer
-- Nunca mencione concorrentes
-- Nunca invente preços — consulte sempre a ferramenta de catálogo
+## Voice & Tone
+## Procedures
+## Escalation Rules
+## Example Replies
 ```
-
-> Um bom prompt não tenta cobrir todos os cenários — ele define o comportamento padrão com clareza e confia nas ferramentas e na base de conhecimento para os detalhes específicos.
-
-O editor analisa o prompt em tempo real e exibe sugestões priorizadas por impacto: clareza da identidade, presença de restrições explícitas, completude das instruções e possíveis ambiguidades. O botão **Melhorar com IA** reescreve e otimiza o texto mantendo a intenção original. O histórico de versões registra cada salvamento automaticamente — restaure qualquer versão anterior com um clique sem perder o conteúdo atual.

@@ -1,134 +1,159 @@
 ---
-title: "Autenticação"
-description: "Como usar API keys, escopos de permissão e rotação de credenciais"
+title: "Platform Tour"
+icon: "compass"
+description: "Timely.ai is organized into clear and modular sections that guide how you navigate, build, and manage your AI ecosystem."
 ---
 
-A autenticação na API da Timely.ai é feita via **API key** enviada em todas as requisições no header `x-api-key`. Não há OAuth, não há sessões — só a chave.
+---
 
-## Enviando a chave
+## Workspaces
 
-```http
-GET /v1/agents HTTP/1.1
-Host: api.timelyai.com.br
-x-api-key: tly_live_xxxxxxxxxxxxxxxxxxxxxxxx
-```
+Each **workspace** represents an independent environment where you manage Agents, Teams, Channels, and Settings. <br />
+You can switch between workspaces from the top-left corner of the interface or create new ones as needed.
 
-Em variáveis de ambiente, sempre armazene a chave como `TIMELY_API_KEY` e referencie via `process.env` (Node), `os.environ` (Python) ou `os.Getenv` (Go). Nunca hardcode.
+---
 
-## Criando uma API key
+## Main Structure
 
-1. Acesse [app.timelyai.com.br](https://app.timelyai.com.br)
-2. Vá em **Configurações → API Keys → Nova chave**
-3. Dê um nome que identifique o uso (ex: `crm-integracao`, `n8n-automacoes`)
-4. Selecione os escopos necessários (princípio do menor privilégio)
-5. Copie a chave — ela aparece **uma única vez**
+The platform is divided into three main areas:
 
-<Warning>
-  Se perder a chave, não é possível recuperá-la. Você precisará revogar e criar uma nova. Planeje o rollout antes de revogar chaves em produção.
-</Warning>
+**Builder**
 
-## Escopos disponíveis
+The **Builder** is where creation happens. <br />
+It centralizes everything related to building and configuring your AI stack:
+- **Agents** and **Squads**
+- **Channels**
+- **Tables**
+- **Knowledge**
+- **Workflows**
+- **Broadcast**
 
-Cada API key tem um conjunto de escopos que define o que ela pode fazer. Conceda apenas o que o serviço precisa.
+This is where you define behavior, logic, tools, and data used by your Agents.
 
-<AccordionGroup>
-  <Accordion title="Agentes">
-    | Escopo | Permissão |
-    |---|---|
-    | `agents:read` | Listar e visualizar agentes |
-    | `agents:write` | Criar, editar e excluir agentes |
-  </Accordion>
+---
 
-  <Accordion title="Conversas e mensagens">
-    | Escopo | Permissão |
-    |---|---|
-    | `conversations:read` | Listar e ler conversas |
-    | `conversations:write` | Criar, atualizar e encerrar conversas |
-    | `messages:send` | Enviar mensagens via agente |
-    | `chats:manage` | Gerenciar threads de chat, incluindo histórico |
-  </Accordion>
+## Inbox
 
-  <Accordion title="Contatos">
-    | Escopo | Permissão |
-    |---|---|
-    | `contacts:read` | Listar e buscar contatos |
-    | `contacts:write` | Criar, editar e excluir contatos |
-    | `custom-fields:manage` | Gerenciar campos customizados do CRM |
-  </Accordion>
+The **Inbox** area centralizes conversations, support flows, and human handoff.
 
-  <Accordion title="Canais">
-    | Escopo | Permissão |
-    |---|---|
-    | `channels:read` | Listar canais conectados |
-    | `channels:write` | Configurar e desconectar canais |
-  </Accordion>
+It is divided into two distinct sections:
 
-  <Accordion title="Treinamento">
-    | Escopo | Permissão |
-    |---|---|
-    | `training:read` | Visualizar base de conhecimento |
-    | `training:write` | Adicionar e remover documentos do treinamento |
-  </Accordion>
+- **Chat** <br />
+Contains **all conversations**, including:
+  - Fully automated Agent interactions
+  - Conversations that were later transferred to humans.
+- **Workers** <br />
+Contains all conversations, including:
 
-  <Accordion title="Workspaces e time">
-    | Escopo | Permissão |
-    |---|---|
-    | `workspaces:read` | Visualizar workspaces |
-    | `workspaces:write` | Criar e configurar workspaces |
-  </Accordion>
+This separation helps teams clearly distinguish operational support from overall interaction history.
 
-  <Accordion title="Automação">
-    | Escopo | Permissão |
-    |---|---|
-    | `webhooks:manage` | Criar, listar e excluir endpoints de webhook |
-    | `followups:manage` | Gerenciar regras de follow-up automático |
-  </Accordion>
+---
 
-  <Accordion title="Agendamentos">
-    | Escopo | Permissão |
-    |---|---|
-    | `appointments:read` | Visualizar agendamentos |
-    | `appointments:write` | Criar e cancelar agendamentos |
-  </Accordion>
+## CRM
 
-  <Accordion title="Infraestrutura">
-    | Escopo | Permissão |
-    |---|---|
-    | `mcp-servers:manage` | Registrar e remover MCP servers externos |
-  </Accordion>
-</AccordionGroup>
+The **CRM** area centralizes contacts, sales tracking, audience targeting, and human team configuration.
 
-## Boas práticas de segurança
+It is divided into five distinct sections:
 
-**Use uma chave por serviço.** Se um serviço for comprometido, você revoga só a chave dele sem afetar o restante.
+- **Pipelines** <br />
+  Kanban boards that organize **leads and opportunities** by funnel stage, including:
+  - Manual drag-and-drop between stages
+  - Automatic transitions via Agents, workflows, or pipeline rules
+  - Qualification scores and metrics per stage
+- **Attendants** <br />
+  The registry of **human operators** who receive escalated conversations, including:
+  - Profiles linked to workspace roles and permissions
+  - Assignment to CRM Teams for ticket routing and distribution
+  - Visibility into active workload and conversation ownership
+- **Tags** <br />
+  Free-text labels applied to **contacts and conversations**, used to:
+  - Filter records in the CRM, Inbox, and Analytics
+  - Trigger automations (workflows, pipeline rules, follow-ups)
+  - Target audiences in Broadcasts and campaigns
+- **Segments** <br />
+  Saved filter combinations that define **contact audiences**, including:
+  - Criteria such as tags, custom fields, health score, and last interaction
+  - Reusable lists for Broadcasts, Follow-ups, and operational review
+  - AND logic across multiple conditions for precise targeting
+- **Groups** <br />
+  Static collections that bundle **contacts or attendants** for organization, including:
+  - Manual membership for curated lists
+  - Bulk actions across group members
+  - Separation by product line, region, or support scope
 
-**Escopos mínimos.** Um job que só lê conversas não precisa de `agents:write`. Quanto menor o escopo, menor o raio de impacto de um vazamento.
+This structure keeps sales tracking, audience targeting, and human handoff configuration in one place — separate from live conversation handling in the Inbox.
 
-**Rotação periódica.** Troque as chaves a cada 90 dias ou sempre que um membro do time que tinha acesso às credenciais sair.
+---
 
-**Monitore o uso.** Em **Configurações → API Keys**, você vê o volume de requisições por chave. Picos inesperados podem indicar uso não autorizado.
+## Analytics
 
-## Rotacionando uma chave
+The **Analytics** section provides visibility into how your workspace and Agents are performing.
 
-<Steps>
-  <Step title="Crie a nova chave">
-    Em **Configurações → API Keys → Nova chave**, crie a substituta com os mesmos escopos da chave atual.
-  </Step>
-  <Step title="Atualize os serviços">
-    Atualize a variável de ambiente em todos os serviços que usam a chave antiga. Faça o deploy ou reinicie os serviços.
-  </Step>
-  <Step title="Revogue a chave antiga">
-    Após confirmar que os serviços estão operacionais com a nova chave, clique em **Revogar** na chave antiga. A revogação é imediata — qualquer requisição com a chave antiga retorna `401`.
-  </Step>
-</Steps>
+From here, you can monitor metrics such as:
 
-## Erros comuns de autenticação
+- Usage by channel
+- Credits consumption per Agent
+- Message volume over time
+- Tickets created in a given period
+- Average messages per user
 
-| Status | Causa | Solução |
-|---|---|---|
-| `401 Unauthorized` | Chave ausente, inválida ou revogada | Verifique o header `x-api-key` |
-| `403 Forbidden` | Chave válida, mas sem o escopo necessário | Adicione o escopo faltante na chave |
+Analytics helps you understand adoption, optimize Agent behavior, and track operational efficiency.
 
-<Note>
-  API keys são isoladas por workspace. Uma chave criada no workspace "Suporte" não acessa dados do workspace "Vendas".
-</Note>
+--- 
+
+## Settings
+
+The **Settings** area contains all workspace-level configuration, billing, and integrations.
+
+Available sections include:
+
+- **Overview** — workspace information and identification.
+- **People** — manage users and permissions.
+- **Billing** — plan details, payment method, invoices, and subscription management.
+- **Usage** — detailed credit and consumption tracking.
+- **Providers** — available integration providers.
+- **Connections** — authentication for MCPs and Channels.
+- **API Keys** — create and manage keys for API access and external integrations.
+
+> ℹ️ Subscription management is fully integrated into the **Billing** section.
+
+--- 
+
+## Navigation
+
+
+- **Sidebar** — provides structured access to all modules in a clear hierarchy.
+- **Main Area** — updates dynamically based on the selected section.
+
+You can freely move between Builder, CRM, Analytics, and Settings using the sidebar.
+
+---
+
+## Command Palette
+
+Press **Ctrl + K** (Windows/Linux) or **Cmd + K** (macOS) to open the **Command Palette**.
+
+With it, you can:
+
+- Jump directly to any page or module.
+- Switch workspaces.
+- Search for Agents, Workflows, or Channels.
+
+This is the fastest way to navigate Timely.ai without leaving the keyboard.
+
+---
+
+## Summary
+
+The platform is organized into the following sections:
+
+| Section | Purpose |
+| --- | --- |
+| **Workspaces** | Manage independent environments for Agents, Teams, Channels, and Settings. |
+| **Builder** | Create and configure Agents, Squads, Channels, Tables, Knowledge, Workflows, and Broadcast. |
+| **Inbox** | Centralize conversations, support flows, and human handoff across Chat and Workers. |
+| **CRM** | Track leads and opportunities, manage attendants, and organize contacts with Tags, Segments, and Groups. |
+| **Analytics** | Monitor channel usage, credit consumption, message volume, and operational metrics. |
+| **Settings** | Configure workspace details, billing, usage, integrations, connections, and API keys. |
+| **Navigation** | Move between modules via the sidebar and dynamic main area. |
+| **Command Palette** | Jump to pages, switch workspaces, and search resources with **Ctrl + K** or **Cmd + K**. |

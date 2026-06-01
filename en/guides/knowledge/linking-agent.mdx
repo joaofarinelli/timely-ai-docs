@@ -5,7 +5,7 @@ description: "How to activate a Knowledge Base on an agent, configure retrieval 
 
 ## How the Connection Works
 
-Creating a Knowledge Base is not enough for the agent to use it — you must explicitly connect the base to the agent. This connection is established in the agent's training tab and activates the retrieval pipeline for all conversations handled by that agent.
+Creating a Knowledge Base is not enough for the agent to use it — you must explicitly connect the base to the agent. This connection is made in the agent's **Knowledge bases** section and activates the retrieval pipeline for all conversations handled by that agent.
 
 When the connection is active, the agent automatically runs a semantic search on the base for every incoming message. Chunks with similarity above the configured threshold are included in the context sent to the LLM alongside the user's message. The response is then formulated based on those retrieved excerpts.
 
@@ -17,8 +17,8 @@ An agent can have multiple bases connected simultaneously. In that case, the sea
   <Step title="Open the agent">
     In the sidebar, go to **Agents** and click the agent that will receive the Knowledge Base.
   </Step>
-  <Step title="Open the Training tab">
-    Inside the agent screen, click the **Training** (or **Knowledge**) tab. This tab centralizes all knowledge sources for the agent.
+  <Step title="Open Knowledge bases">
+    Inside the agent screen, open the **Knowledge bases** section. This is where you connect indexed sources to the agent.
   </Step>
   <Step title="Add the base">
     In the **Knowledge bases** section, click **+ Add base**. A list of available bases in the workspace will appear. Select the desired base and confirm.

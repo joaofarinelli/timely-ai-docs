@@ -22,7 +22,7 @@ A grouping of multiple agents with a configurable operating mode. Enables automa
 ## Agents and AI
 
 **Agent**
-A configurable AI assistant with a personality, language model, tools, knowledge base, and voice. An agent responds across one or more channels.
+A configurable AI assistant with a personality, language model, tools, and knowledge base. An agent responds across one or more channels.
 
 **Model / LLM Provider**
 The language engine powering the agent. We support OpenAI, Anthropic, Groq, and custom providers via your own credentials in the workspace.
@@ -30,14 +30,11 @@ The language engine powering the agent. We support OpenAI, Anthropic, Groq, and 
 **Prompt**
 The base instruction that defines how the agent behaves. Timely provides a visual editor, version history, automatic improvement, and support for **conditional prompts** (which change based on conversation variables).
 
-**Training**
-Content that becomes the agent's knowledge base: documents, Q&A, free text, indexed websites, and YouTube videos. All go through the **RAG** pipeline.
-
 **RAG (Retrieval-Augmented Generation)**
-A technique where the agent retrieves relevant excerpts from the knowledge base before responding, reducing hallucination. Timely indexes content via embeddings and performs semantic search.
+A technique where the agent retrieves relevant excerpts from the knowledge base before responding, reducing hallucination. Timely indexes content via embeddings and performs semantic search. See [Knowledge Base](/en/guides/knowledge/overview).
 
 **Handoff**
-The transfer of a conversation from the AI agent to a human attendant (or between agents). Can be triggered by a rule (e.g., keyword, intent, complexity) or manually.
+The transfer of a conversation from the AI agent to a human attendant (or between agents). Can be triggered by a conditional prompt or manually.
 
 **Takeover**
 A temporary pause of the AI agent so a human can take over the conversation. Different from a permanent handoff — the agent can resume responding once the human signals it.
@@ -51,7 +48,7 @@ The medium through which the agent communicates with the contact. Supported: Off
 WhatsApp Business API — Meta's official integration with support for approved templates, webhooks, and higher send limits. Configured via **embedded signup** in the dashboard.
 
 **Widget**
-An embeddable chat on your website. Generates a JavaScript snippet to paste into the page. Supports voice calls, appearance customization, and multiple agents.
+An embeddable chat on your website. Generates a JavaScript snippet to paste into the page. Supports appearance customization and multiple agents.
 
 **Template (Template Message)**
 A pre-approved WhatsApp message that can be sent outside the 24-hour window. Required for re-engagement or proactive notifications.
@@ -105,14 +102,6 @@ Internal currency consumed by variable actions (extra messages, TTS, tools). Rec
 
 **Trial**
 An initial free-of-charge test period. Expires automatically — check `check-trial-status` or the widget in the dashboard.
-
-## Voice and media
-
-**TTS (Text-to-Speech)**
-Voice synthesis for the agent. Supports Cartesia, ElevenLabs, and Fish Audio as providers.
-
-**Voice Clone**
-A custom synthetic voice trained from audio samples uploaded by the user.
 
 ## Internal copilot
 

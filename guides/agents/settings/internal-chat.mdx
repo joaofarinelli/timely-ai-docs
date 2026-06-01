@@ -1,81 +1,86 @@
 ---
-title: "Chat interno"
-description: "Como usar o chat interno da Timely.ai para testar o agente diretamente na plataforma, inspecionar execuções e validar o comportamento antes de publicar."
+title: "Internal Chat"
+description: "The **Internal Chat** is a live execution, testing, and inspection environment built directly into the Agent Builder. <br />
+It allows you to interact with your Agent using the **exact same configuration, reasoning engine, tools, and provider** that will be used in production. <br /> <br />
+More than a chat interface, the Internal Chat is designed for **debugging, validation, and deep inspection** of Agent behavior before deployment."
 ---
 
-O chat interno é a interface de teste nativa do agente dentro da Timely.ai. Ele permite que você — e qualquer membro da equipe com acesso — converse com o agente diretamente na plataforma, sem precisar publicar em nenhum canal externo como WhatsApp, Instagram ou widget de site.
+---
 
-É o primeiro lugar onde você deve ir depois de qualquer alteração no prompt, no modelo, nas ferramentas ou nas configurações de temperatura e effort.
+## What You Can Do With the Internal Chat
 
-## O que você pode fazer com o chat interno
+<h3 style={{ marginTop: '1rem' }}>Test Real Agent Behavior</h3>
 
-O chat interno concentra várias capacidades de teste em uma única interface:
+The Internal Chat runs your Agent exactly as it would run in production. <br />
+You can use it to:
 
-- Enviar mensagens de texto e iniciar conversas de teste com contexto real do workspace
-- Simular diferentes perfis de cliente para ativar prompts condicionais
-- Inspecionar cada passo de raciocínio e chamada a ferramentas na execução
-- Visualizar o consumo de créditos da conversa em tempo real
-- Limpar o histórico da conversa para reiniciar o contexto do agente
+- Validate how the **Prompt** behaves in real conversations
+- Test how **Temperature, Effort, Planning, and Reasoning** affect responses
+- Verify how **Conditional Prompts** are triggered
+- Adjust tone, flow, and instructions safely before publishing
 
-### Testando o comportamento real do agente
+---
 
-O chat interno executa o agente com a mesma configuração que estará em produção — mesmo modelo, mesmo prompt, mesma base de conhecimento, mesmas ferramentas conectadas. Não há modo simplificado ou cache: cada mensagem gera uma execução real completa.
+<h3 style={{ marginTop: '1rem' }}>Send Rich Inputs</h3>
 
-Isso significa que mudanças no prompt são refletidas imediatamente na próxima mensagem após salvar. Você consegue iterar rapidamente — alterar, salvar, testar — sem sair da interface.
+The Internal Chat supports full interaction testing, including:
 
-Cenários essenciais para testar antes de publicar qualquer agente:
+- Text messages
+- **Images**
+- **Audio files**
+- **Documents and attachments**
 
-- A jornada principal: o cliente pergunta exatamente o que o agente foi configurado para responder. A resposta está correta, no tom certo, no formato esperado?
-- Pergunta fora do escopo: o agente recusa ou redireciona educadamente sem inventar informações?
-- Acionamento de ferramentas: cada ferramenta configurada é chamada quando deveria?
-- Gatilho de transferência: a transferência para humano é disparada no momento correto?
+This allows you to simulate real-world user behavior and test how your Agent handles different input types.
 
-### Enviando inputs ricos
+---
 
-Além de texto, o chat interno suporta o envio de arquivos e imagens quando o agente está configurado com um modelo multimodal (Gemini 2.5 Pro, Gemini 3.x). Isso permite testar fluxos onde o cliente envia documentos, fotos de produtos ou screenshots para análise.
+<h3 style={{ marginTop: '1rem' }}>Inspect Every Message and Execution Step</h3>
+
+Each Agent response can be fully **inspected**.
+
+Using the inspection view, you can:
+
+- See the **execution timeline** of the response
+- Inspect every **iteration** performed by the Agent
+- View tool calls, inputs, and outputs
+- Understand how the Agent reasoned and which resources were used
+- Analyze the complete **execution pipeline** that generated the response
+
+---
+
+<h3 style={{ marginTop: '1rem' }}>View Internal usage quota Consumption</h3>
+
+The Internal Chat displays **credit usage per execution**, allowing you to:
+
+- See how many credits each response consumes
+- Compare different models, reasoning modes, or settings
+- Optimize cost before deploying to production
 
 <Warning>
-O envio de arquivos no chat interno consome créditos da mesma forma que em produção. Fique atento ao custo por execução em testes com modelos multimodais de alto consumo como Gemini 3.1 Pro.
+**Important**: Using the Internal Chat does consume internal usage quota, exactly like production conversations.
 </Warning>
 
-### Inspecionando cada mensagem e passo de execução
+---
 
-Ao lado de cada resposta do agente, o chat interno exibe um painel de detalhes da execução com:
+<h3 style={{ marginTop: '1rem' }}>Manage Conversation History</h3>
 
-- Quais trechos da base de conhecimento foram recuperados pelo sistema RAG e com qual score de relevância
-- Quais ferramentas foram chamadas, com os parâmetros enviados e a resposta recebida
-- O número de tokens consumidos na execução (prompt + resposta)
-- A latência total da execução em milissegundos
-- Erros ocorridos em qualquer passo, com mensagem completa
+The Internal Chat includes full conversation management tools:
 
-Esses detalhes são essenciais para diagnosticar por que o agente deu uma resposta incorreta ou por que uma ferramenta não foi chamada como esperado. Em vez de adivinhar, você vê exatamente o que aconteceu em cada etapa.
+- **Clear the current conversation** to start fresh tests
+- Access a **complete history** of past interactions
+- Restore previous conversations by date and time
 
-Para inspecionar o grafo visual completo da execução com todos os passos representados como nós conectados, acesse **Agentes > [Nome do agente] > Execuções** e selecione a execução correspondente no canvas.
+This allows you to revisit older tests, compare behaviors over time, and reproduce specific scenarios.
 
-### Visualizando o consumo de créditos
+---
 
-O chat interno exibe o consumo acumulado de créditos da sessão de teste ativa. Esse número inclui o custo base do modelo mais o custo adicional de ferramentas e passos de raciocínio quando aplicável.
+## Why the Internal Chat Matters
 
-Use essa informação para:
+The Internal Chat allows you to:
 
-- Comparar o custo real de diferentes modelos com o mesmo caso de uso
-- Identificar se o effort configurado está gerando custo desproporcional para a complexidade das perguntas
-- Estimar o custo médio por conversa antes de escalar o agente para produção com alto volume
+- Iterate safely without affecting users
+- Debug complex Agent logic with full transparency
+- Validate production behavior before publishing
+- Optimize performance, cost, and reliability
 
-### Gerenciando o histórico da conversa
-
-O chat interno mantém o histórico da sessão ativa como contexto para o agente — exatamente como funciona em produção. Para testar o comportamento em uma conversa nova e sem contexto anterior, clique em **Limpar conversa**. O histórico é apagado e o agente começa a próxima mensagem sem memória da sessão anterior.
-
-Isso é especialmente útil quando você quer testar:
-
-- Como o agente lida com a primeira mensagem de um novo contato
-- Se o agente faz as perguntas de qualificação corretas sem depender de contexto anterior
-- Comportamento após mudança de prompt — conversas antigas podem ter contexto que interfere na avaliação
-
-## Por que o chat interno importa
-
-Publicar um agente sem testá-lo no chat interno é o equivalente a colocar um atendente novo para falar com clientes sem nenhum treinamento prévio. A diferença é que, com o chat interno, você tem visibilidade completa de cada decisão que o agente toma antes que ela chegue ao cliente real.
-
-Equipes que usam o chat interno sistematicamente — com um conjunto fixo de cenários de teste executados após cada mudança significativa de configuração — identificam problemas antes da produção e constroem agentes mais confiáveis em menos iterações.
-
-O chat interno é também o ambiente correto para treinar novos membros da equipe que precisam entender como o agente se comporta em diferentes situações, sem o risco de interromper conversas reais de clientes.
+It is the **primary tool for building high-quality, predictable Agents** in Timely.ai.

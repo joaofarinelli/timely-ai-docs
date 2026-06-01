@@ -1,15 +1,12 @@
 ---
-title: "Temperatura"
-description: "Como o parâmetro de temperatura afeta a variabilidade das respostas do agente, as faixas recomendadas por caso de uso e como configurar o slider na Timely.ai."
+title: "Temperature"
 ---
 
-A temperatura é um valor numérico de 0,00 a 1,00 que controla o grau de variabilidade nas respostas do agente. Quanto mais baixo o valor, mais consistente e previsível o agente; quanto mais alto, mais criativo e variado. Para a maioria dos casos de atendimento ao cliente, consistência supera criatividade.
+**Temperature** defines the Agent’s level of creativity and variability. <br />
+It influences how deterministic or imaginative the responses will be.
 
-A Timely.ai usa rótulos por faixa para facilitar a escolha no slider (incrementos de 0,05). Modelos GPT-5.x da OpenAI desabilitam o slider automaticamente; modelos Anthropic com raciocínio ativo forçam temperatura 1,0 pela API.
-
-| Faixa | Comportamento | Uso recomendado |
+| Range | Behavior | Recommended Use |
 |-------|--------------|----------------|
-| 0,00 – 0,15 | Respostas altamente consistentes, quase idênticas para a mesma pergunta | Suporte técnico, agendamentos, confirmações, FAQ crítico |
-| 0,16 – 0,35 | Ligeira variação na formulação, conteúdo estável | Suporte geral, qualificação de leads, atendimento conversacional |
-| 0,36 – 0,60 | Variação moderada, tom natural sem ser previsível | Agentes de relacionamento, onboarding, uso geral |
-| 0,61 – 1,00 | Respostas visivelmente diferentes a cada interação | Copywriting assistido, conteúdo criativo, brainstorming interno |
+| 0.00 – 0.3 | Consistent, factual, analytical | Customer support, data analysis |
+| 0.4 – 0.7 | Balanced, adaptive | General-purpose assistants |
+| 0.8 – 1.0 | Creative, expressive | Marketing, storytelling, ideation |

@@ -1,20 +1,21 @@
 ---
-title: "Configurações do agente"
-description: "Resumo de todas as seções de configuração disponíveis para um agente na Timely.ai e para que cada uma serve."
+title: "Agent Settings"
+description: "Agent Settings define the complete behavioral, cognitive, and operational configuration of an Agent. <br />
+Each parameter directly affects how the Agent interprets inputs, reasons about context, and executes actions using connected MCPs, Tools, and Workflows. <br /> <br /> This section details every configurable field available in the Agent Builder interface."
 ---
 
 Cada agente possui um conjunto de configurações que você acessa clicando no agente na lista e navegando pelas abas disponíveis. Alterações entram em vigor imediatamente para novas conversas — conversas já abertas não são afetadas.
 
-## Resumo
+## Summary
 
-| Seção | O que configura |
+| Section | Description |
 |-------|----------------|
-| [Modelo](/guides/agents/settings/model) | Provedor de LLM (OpenAI, Anthropic, Google, OpenRouter), modelo específico, temperatura e effort |
-| [Nome interno](/guides/agents/settings/internal-name) | Identificador do agente dentro da plataforma — visível para a equipe, não para o cliente |
-| [Role](/guides/agents/settings/role) | Função e persona do agente — o "cargo" que ele ocupa na operação |
-| [Prompt](/guides/agents/settings/prompt) | Instruções de sistema com editor de IA, histórico de versões e análise de qualidade em tempo real |
-| [Temperatura](/guides/agents/settings/temperature) | Grau de criatividade vs consistência das respostas (0,00 a 1,00) |
-| [Effort](/guides/agents/settings/effort) | Profundidade de raciocínio controlada por número máximo de passos (10 a 100) |
-| [Capacidades](/guides/agents/settings/capacities) | Funcionalidades opcionais: planejamento, raciocínio, data e hora automática |
-| [Prompts condicionais](/guides/agents/settings/conditional-prompts) | Blocos de instrução ativados por variáveis da conversa ou do contato |
-| [Chat interno](/guides/agents/settings/internal-chat) | Interface de teste direto com o agente sem passar por canal externo |
+| [Model Selection](/guides/agents/settings/model) | Defines the LLM provider and model used for reasoning. |
+| [Role](/guides/agents/settings/internal-name) | Establishes the Agent’s identity and purpose. |
+| [Prompt](/guides/agents/settings/role) | Configures tone, logic, and communication rules. |
+| [Temperature](/guides/agents/settings/prompt) | Controls creativity vs. consistency. |
+| [Effort](/guides/agents/settings/temperature) | Determines reasoning depth and iteration count. |
+| [Planning](/guides/agents/settings/effort) | Enables task decomposition and multi-step execution. |
+| [Supervision](/guides/agents/settings/capacities) | Allows iterative validation and self-correction. |
+| [Tasks](/guides/agents/settings/conditional-prompts) | BAdds conditional automated behaviors. |
+| [Internal Chat](/guides/agents/settings/internal-chat) | Interactive space for testing and fine-tuning. |

@@ -5,7 +5,7 @@ description: "Como ativar uma base de conhecimento num agente, configurar os par
 
 ## Como Funciona a Conexão
 
-Criar uma base de conhecimento não é suficiente para que o agente a utilize — é necessário conectar explicitamente a base ao agente. Essa conexão é estabelecida na aba de treinamento do agente e ativa o pipeline de retrieval para todas as conversas atendidas por ele.
+Criar uma base de conhecimento não é suficiente para que o agente a utilize — é necessário conectar explicitamente a base ao agente. Essa conexão é feita na seção **Bases de conhecimento** do agente e ativa o pipeline de retrieval para todas as conversas atendidas por ele.
 
 Quando a conexão está ativa, o agente executa automaticamente uma busca semântica na base a cada mensagem recebida. Os chunks com similaridade acima do threshold configurado são incluídos no contexto enviado ao LLM junto com a mensagem do usuário. A resposta é então formulada com base nesses trechos recuperados.
 
@@ -17,8 +17,8 @@ Um agente pode ter múltiplas bases conectadas simultaneamente. Nesse caso, a bu
   <Step title="Abra o agente">
     No menu lateral, acesse **Agentes** e clique no agente que receberá a base de conhecimento.
   </Step>
-  <Step title="Acesse a aba Treinamento">
-    Dentro da tela do agente, clique na aba **Treinamento** (ou **Knowledge**). Esta aba centraliza todas as fontes de conhecimento do agente.
+  <Step title="Acesse as bases de conhecimento">
+    Dentro da tela do agente, abra a seção **Bases de conhecimento**. É nela que você conecta as fontes indexadas ao agente.
   </Step>
   <Step title="Adicione a base">
     Na seção **Bases de conhecimento**, clique em **+ Adicionar base**. Uma lista das bases disponíveis no workspace será exibida. Selecione a base desejada e confirme.

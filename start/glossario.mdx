@@ -22,7 +22,7 @@ Agrupamento de múltiplos agentes com modo de operação configurável. Permite 
 ## Agentes e IA
 
 **Agente (Agent)**
-Assistente de IA configurável com personalidade, modelo de linguagem, ferramentas, base de conhecimento e voz. Um agente responde em um ou mais canais.
+Assistente de IA configurável com personalidade, modelo de linguagem, ferramentas e base de conhecimento. Um agente responde em um ou mais canais.
 
 **Modelo / LLM Provider**
 O motor de linguagem do agente. Suportamos OpenAI, Anthropic, Groq e provedores customizados via credenciais próprias no workspace.
@@ -30,14 +30,11 @@ O motor de linguagem do agente. Suportamos OpenAI, Anthropic, Groq e provedores 
 **Prompt**
 Instrução base que define como o agente se comporta. Timely tem editor visual, histórico de versões, melhoria automática e suporte a **prompts condicionais** (mudam conforme variáveis da conversa).
 
-**Treinamento (Training)**
-Conteúdo que vira a base de conhecimento do agente: documentos, Q&A, texto, sites indexados e vídeos do YouTube. Passam pelo pipeline **RAG**.
-
 **RAG (Retrieval-Augmented Generation)**
-Técnica em que o agente busca trechos relevantes da base de conhecimento antes de responder, reduzindo alucinação. Timely indexa conteúdo via embeddings e faz busca semântica.
+Técnica em que o agente busca trechos relevantes da base de conhecimento antes de responder, reduzindo alucinação. Timely indexa conteúdo via embeddings e faz busca semântica. Veja [Base de conhecimento](/guides/knowledge/overview).
 
 **Handoff**
-Transferência de uma conversa do agente de IA para um atendente humano (ou entre agentes). Pode ser disparada por regra (ex: palavra-chave, intenção, complexidade) ou manualmente.
+Transferência de uma conversa do agente de IA para um atendente humano (ou entre agentes). Pode ser disparado por prompt condicional ou manualmente.
 
 **Takeover**
 Pausa temporária do agente de IA para que um humano assuma a conversa. Diferente do handoff definitivo — o agente pode voltar a responder quando o humano sinaliza.
@@ -51,7 +48,7 @@ Meio pelo qual o agente conversa com o contato. Suportados: WhatsApp oficial (WA
 WhatsApp Business API — integração oficial da Meta com suporte a templates aprovados, webhooks e maior limite de envio. Configurada via **embedded signup** no dashboard.
 
 **Widget**
-Chat embeddable no seu site. Gera um snippet JavaScript para colar na página. Suporta chamadas de voz, customização de aparência e múltiplos agentes.
+Chat embeddable no seu site. Gera um snippet JavaScript para colar na página. Suporta customização de aparência e múltiplos agentes.
 
 **Template (Template Message)**
 Mensagem pré-aprovada pelo WhatsApp que pode ser enviada fora da janela de 24h. Obrigatório para re-engajamento ou notificações proativas.
@@ -105,14 +102,6 @@ Moeda interna consumida por ações variáveis (mensagens extras, TTS, tools). R
 
 **Trial**
 Período de teste inicial sem cobrança. Expira automaticamente — cheque `check-trial-status` ou o widget no dashboard.
-
-## Voz e mídia
-
-**TTS (Text-to-Speech)**
-Síntese de voz do agente. Suporta Cartesia, ElevenLabs e Fish Audio como provedores.
-
-**Voice Clone**
-Voz sintética customizada treinada a partir de amostras de áudio enviadas pelo usuário.
 
 ## Copilot interno
 

@@ -1,186 +1,89 @@
 ---
-title: "Primeira requisição"
-description: "Gere sua API key e faça sua primeira chamada à API da Timely.ai em menos de 5 minutos"
+title: "Plans, Princing and Usage Limits"
+icon: "credit-card"
+description: |
+  > ⚠️ **Disclaimer**: This page explains the logic behind Timely.ai pricing model. For current plan details, limits, and pricing, always refer to the Plans page inside the platform — that's where you'll find the most up-to-date information.
+
+  Timely.ai plans are designed to scale with your usage. Instead of charging per feature, the platform measures how much work your agents are doing — and your plan defines the boundaries of that work.
 ---
 
-Pegue o café. Você vai gerar uma chave, confirmar que a API está viva, listar seus agentes e enviar uma mensagem — tudo em sequência, tudo com exemplos prontos para copiar.
+---
 
-<Steps>
-  <Step title="Gere sua API key">
-    Acesse o [Dashboard](https://app.timelyai.com.br) → **Configurações → API Keys → Nova chave**.
+## 📐 How Plans Work
 
-    1. Dê um nome descritivo (ex: `backend-producao`, `n8n-integracao`)
-    2. Selecione os escopos necessários — para este quickstart, marque `agents:read`, `conversations:write` e `messages:send`
-    3. Clique em **Criar**
-    4. Copie a chave imediatamente. Ela só aparece uma vez.
+Plans are structured as a progression: as your usage grows, you move to a higher tier. Each tier unlocks higher limits across the three main usage pillars and adjusts the secondary limits accordingly.
 
-    <Warning>
-      Nunca exponha a API key no frontend ou em repositórios públicos. Use variáveis de ambiente em todo lugar.
-    </Warning>
+There is also a **Custom** plan for teams with enterprise-level needs or specific requirements that don't fit standard tiers.
 
-    Nos exemplos abaixo, substitua `SUA_CHAVE` pela chave gerada.
-  </Step>
+--- 
 
-  <Step title="Teste o health check">
-    Confirme que a API está respondendo e que sua chave é válida:
+## 🔑 The Three Main Pillars
 
-    <CodeGroup>
-    ```bash cURL
-    curl https://api.timelyai.com.br/v1/health \
-      -H "x-api-key: SUA_CHAVE"
-    ```
-    ```js Node.js
-    const res = await fetch("https://api.timelyai.com.br/v1/health", {
-      headers: { "x-api-key": process.env.TIMELY_KEY }
-    });
-    console.log(await res.json());
-    ```
-    ```python Python
-    import httpx, os
+Your plan is primarily determined by three types of usage:
 
-    r = httpx.get(
-        "https://api.timelyai.com.br/v1/health",
-        headers={"x-api-key": os.environ["TIMELY_KEY"]}
-    )
-    print(r.json())
-    ```
-    </CodeGroup>
+**1. External Executions**
 
-    Resposta esperada:
+The core metric. This counts every interaction your agents have with real users across active channels — WhatsApp, Instagram, Widget, and any other connected channel.
 
-    ```json
-    {
-      "data": {
-        "status": "ok",
-        "version": "1.0.0",
-        "timestamp": "2026-04-19T12:00:00Z"
-      }
-    }
-    ```
+Each conversation turn with a real user counts as an execution. The higher your plan, the more external executions your workspace can handle per month.
 
-    Se receber `401`, a chave está inválida ou expirada. Verifique em **Configurações → API Keys**.
-  </Step>
+> **Important**: External executions measure platform usage only — they do not include LLM costs. AI model costs (OpenAI, Anthropic, Google Gemini, etc.) are billed directly by your LLM provider and depend on the model you configure. To deploy agents on external channels, you must have a valid LLM provider connected to your workspace. [Learn how to set up your provider →](/alterardepois)
+<br /> <br /> This is full cost transparency: you pay Timely.ai for what Timely.ai provides, and you pay your LLM provider directly for what the model consumes — no markup, no intermediary.
+<br /> <br /> **Note on legacy plans**: Timely.ai previously offered built-in AI credits as part of the platform. This model no longer exists in current plans. If you are on a legacy plan, you may still see credit-based usage — but all current plans require you to connect your own LLM provider to enable agents on external channels.
 
-  <Step title="Liste seus agentes">
-    Agora busque os agentes configurados no seu workspace:
+**2. Internal Test Usage**
 
-    <CodeGroup>
-    ```bash cURL
-    curl "https://api.timelyai.com.br/v1/agents?page=1&per_page=10" \
-      -H "x-api-key: SUA_CHAVE"
-    ```
-    ```js Node.js
-    const res = await fetch(
-      "https://api.timelyai.com.br/v1/agents?page=1&per_page=10",
-      { headers: { "x-api-key": process.env.TIMELY_KEY } }
-    );
-    const { data, meta } = await res.json();
-    console.log(`Total de agentes: ${meta.total}`);
-    data.forEach(agent => console.log(agent.id, agent.name));
-    ```
-    ```python Python
-    import httpx, os
+Interactions made through the **Internal Chat** — the private testing environment inside the platform — are counted separately from external executions.
 
-    r = httpx.get(
-        "https://api.timelyai.com.br/v1/agents",
-        params={"page": 1, "per_page": 10},
-        headers={"x-api-key": os.environ["TIMELY_KEY"]}
-    )
-    body = r.json()
-    for agent in body["data"]:
-        print(agent["id"], agent["name"])
-    ```
-    </CodeGroup>
+This allows you to test, iterate, and debug your agents without consuming your production quota.
 
-    Guarde o `id` do agente que vai usar no próximo passo.
-  </Step>
+> Internal usage has its own limit, independent of external executions.
 
-  <Step title="Envie uma mensagem via agente">
-    Com o `agent_id` em mãos, envie uma mensagem para um contato. A API cria a conversa automaticamente se não existir.
+**3. Orion Usage (Vibe Agent)**
 
-    <CodeGroup>
-    ```bash cURL
-    curl -X POST https://api.timelyai.com.br/v1/messages/send \
-      -H "x-api-key: SUA_CHAVE" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "agent_id": "AGENT_ID",
-        "contact": {
-          "phone": "+5511999998888",
-          "name": "João Teste"
-        },
-        "message": "Olá! Como posso te ajudar hoje?",
-        "channel": "whatsapp"
-      }'
-    ```
-    ```js Node.js
-    const res = await fetch("https://api.timelyai.com.br/v1/messages/send", {
-      method: "POST",
-      headers: {
-        "x-api-key": process.env.TIMELY_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        agent_id: "AGENT_ID",
-        contact: { phone: "+5511999998888", name: "João Teste" },
-        message: "Olá! Como posso te ajudar hoje?",
-        channel: "whatsapp"
-      })
-    });
-    console.log(await res.json());
-    ```
-    ```python Python
-    import httpx, os
+Every time you use **Orion AI** (Vibe Agent) to create, configure, or diagnose agents through natural language, that also counts toward a usage limit.
 
-    r = httpx.post(
-        "https://api.timelyai.com.br/v1/messages/send",
-        headers={
-            "x-api-key": os.environ["TIMELY_KEY"],
-            "Content-Type": "application/json"
-        },
-        json={
-            "agent_id": "AGENT_ID",
-            "contact": {"phone": "+5511999998888", "name": "João Teste"},
-            "message": "Olá! Como posso te ajudar hoje?",
-            "channel": "whatsapp"
-        }
-    )
-    print(r.json())
-    ```
-    </CodeGroup>
+The more you use Vibe Agent to build, the more this meter moves.
 
-    Resposta de sucesso (`201 Created`):
+> This pillar scales with how actively you're building — not just deploying.
 
-    ```json
-    {
-      "data": {
-        "message_id": "msg_abc123",
-        "conversation_id": "conv_xyz456",
-        "status": "queued",
-        "created_at": "2026-04-19T12:05:00Z"
-      }
-    }
-    ```
+---
 
-    <Info>
-      O campo `status: "queued"` indica que a mensagem foi aceita e está em fila de envio. Use webhooks para acompanhar a entrega em tempo real.
-    </Info>
-  </Step>
-</Steps>
+## ⚙️ Secondary Limits
 
-## Próximos passos
+Beyond the three main pillars, each plan also defines limits on platform resources. These are less likely to drive an upgrade decision, but they still define the boundaries of your workspace:
 
-<CardGroup cols={2}>
-  <Card title="Autenticação e escopos" href="/start/authentication">
-    Entenda todos os escopos disponíveis e boas práticas de segurança.
-  </Card>
-  <Card title="Webhooks" href="/start/webhooks-intro">
-    Receba eventos em tempo real: mensagens, conversas encerradas, handoffs.
-  </Card>
-  <Card title="Rate limits e erros" href="/start/rate-limits">
-    Limites por minuto, paginação e todos os códigos de erro da API.
-  </Card>
-  <Card title="Referência completa da API" href="/api-reference/introduction">
-    Todos os endpoints com playground interativo.
-  </Card>
-</CardGroup>
+- **Members** — how many team members can access the workspace
+- **Connections** — integrations with external services (used by MCPs and Channels)
+- **Tables** — number of structured data tables available
+- **Table rows** — total rows across all tables
+- **Knowledge Bases** — number of KBs available
+- **Knowledge Base characters** — total content volume across all KBs
+- **Workflow concurrent executions** — how many workflows can run simultaneously
+- **Rollback versions** — how many previous Agent versions can be restored
+
+---
+
+## 🔄 Billing Cycles
+
+Plans are available on **monthly** or **annual** billing. Annual billing typically offers a discount compared to the monthly equivalent.
+
+---
+
+## 📊 Choosing the Right Plan
+
+Start by estimating your **external executions per month** — that's the clearest indicator of which plan fits your operation.
+
+From there, consider:
+
+- How actively your team will be **building and testing** agents (internal usage + Orion AI)
+- How many **integrations, knowledge bases, and tables** your workspace needs
+- How many **team members** need access
+
+If your needs exceed the top standard tier, reach out to discuss a **Custom** plan.
+
+---
+
+## ✅ Key Takeaway
+
+Timely.ai pricing reflects usage, not features. Every plan gives you access to the full platform — what changes is how much your agents can do, how actively you can build, and how large your workspace can grow.

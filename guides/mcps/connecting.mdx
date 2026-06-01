@@ -1,44 +1,47 @@
 ---
-title: "Como conectar um novo MCP"
-description: "Passo a passo para adicionar um servidor MCP ao agente, sincronizar ferramentas e ativá-las individualmente."
+title: "How to Connect a New MCP"
+description: "This guide shows, step-by-step, how to add a Managed Connection Provider (MCP) and make its tools available to your Agents and Workflows."
 ---
 
-## Passo a passo
+---
 
-Conectar um servidor MCP ao agente envolve registrar o servidor, estabelecer a conexão, sincronizar as ferramentas disponíveis e ativar individualmente as que o agente pode usar.
+## Step-by-step
 
 <Steps>
-  <Step title="Abra a seção MCP do agente">
-    No painel da Timely.ai, abra o agente desejado e acesse a aba de configurações. Selecione **MCP** no menu lateral. Você verá a lista de servidores já conectados ao agente. Clique em **Nova conexão MCP** para iniciar.
+  <Step title="Open the MCPs area">
+    Go to **MCPs** in the left navigation and click **Connect MCP**.
   </Step>
-  <Step title="Informe os dados do servidor">
-    No formulário de nova conexão, preencha:
+  <Step title="Choose the integration">
+    Select the MCP you want (e.g., **Google Calendar, Notion, Airtable, Slack**, etc.).
+  </Step>
+  <Step title="Name and describe">
+    Fill in:
+    - **MCP Name** – a clear internal name (e.g., “Google Calendar – Sales”).
+    - **Description** (optional) – what this integration is for (helps future you and teammates).
+  </Step>
+  <Step title="Create a Connection (authentication)">
+    Connections are the authentication layer shared by all tools inside the MCP.
+    1. Click **+ Add Connection**.
+    2. Give the connection a **Name** and (optionally) a **Description**.
+    3. Complete the authentication (OAuth sign-in, API key, etc.).
+    4. Once successful, the connection will appear in the list.
 
-    - **Nome do servidor** — um rótulo descritivo para identificar o servidor (ex.: "API de Estoque Interno").
-    - **URL** — o endpoint do servidor MCP. Pode ser SSE (`/sse`) ou HTTP.
-    - **Autenticação** — se o servidor exigir, selecione o tipo (Bearer Token ou API Key) e informe o valor. A credencial é armazenada de forma segura e nunca fica visível na interface após salvar.
-
-    Clique em **Adicionar** para registrar o servidor.
+    <Tip>
+    Pro tip: use different connections for different teams or accounts, so permissions remain separated.
+    </Tip>
   </Step>
-  <Step title="Conecte ao servidor">
-    Após registrar, clique em **Conectar** no card do servidor. A Timely.ai abre uma sessão com o servidor MCP e verifica se a comunicação está funcionando. O status muda para "Conectado" quando bem-sucedido — ou exibe uma mensagem de erro indicando a causa da falha (URL incorreta, servidor fora do ar, credencial inválida).
+  <Step title="Enable the tools you need">
+    All tools start **disabled**. Click to **activate** only the ones your Agent should use. <br />
+Hovering over a tool shows what it does (e.g., in Google Calendar: create event, find free slots, update event).
   </Step>
-  <Step title="Sincronize as ferramentas disponíveis">
-    Com o servidor conectado, clique em **Sincronizar tools**. A Timely.ai consulta o servidor e importa a lista de ferramentas disponíveis. Cada ferramenta aparece com seu nome (slug), a descrição fornecida pelo servidor e os parâmetros aceitos.
-
-    <Note>
-    Repita a sincronização sempre que o servidor MCP for atualizado com novas ferramentas ou quando as descrições e parâmetros forem alterados. A Timely.ai não sincroniza automaticamente — é necessário acionar manualmente.
-    </Note>
-  </Step>
-  <Step title="Ative as ferramentas desejadas">
-    Por padrão, todas as ferramentas importadas ficam desativadas. Ative individualmente as que o agente pode usar. Para cada ferramenta, você pode editar a descrição exibida ao modelo e adicionar uma instrução de uso — um texto injetado no prompt do sistema que orienta o agente sobre quando e como acionar a ferramenta.
-  </Step>
-  <Step title="Salve e teste no Playground">
-    Salve as configurações e abra o Playground do agente. Faça perguntas ou simule cenários que devem acionar as ferramentas ativadas. Verifique se o agente chama as ferramentas corretas e se o resultado é incorporado adequadamente à resposta.
+  <Step title="Create the MCP">
+    Click **Create MCP**. Your integration is now available in Timely.ai.
   </Step>
 </Steps>
 
-## Disponibilizar ferramentas MCP para um agente
+---
+
+## Make MCP tools available to an Agent
 
 Se você já tem um servidor MCP registrado no workspace e quer conectá-lo a um agente diferente, o processo é simplificado:
 

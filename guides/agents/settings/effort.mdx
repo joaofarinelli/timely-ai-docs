@@ -1,17 +1,14 @@
 ---
-title: "Effort (nível de raciocínio)"
-description: "Como o parâmetro effort controla a profundidade de raciocínio do agente na Timely.ai, o impacto no custo e na latência, e quando usar cada nível."
+title: "Effort"
 ---
 
-O effort define quantos passos de raciocínio o agente pode usar para formular uma resposta. Na Timely.ai, ele é controlado por um slider de 10 a 100 passos (incrementos de 5), dividido em quatro níveis com rótulos:
+**Effort** defines how much computational reasoning an Agent invests before producing an answer. <br />
+It can be interpreted as the number of internal reasoning “steps” performed per message.
 
-- **Rápido** (10–20 passos) — perguntas simples, FAQs, confirmações e saudações. Resposta quase imediata, menor custo de créditos.
-- **Equilibrado** (21–40 passos) — suporte geral, qualificação de leads, agendamentos. Bom ponto de partida para qualquer agente novo.
-- **Detalhado** (41–70 passos) — análises técnicas, diagnósticos multi-causa, respostas que exigem lógica encadeada.
-- **Máximo** (71–100 passos) — casos críticos onde a precisão é mais importante que a velocidade ou o custo.
-
-O trade-off é direto: mais effort equivale a respostas mais elaboradas, maior latência e maior consumo de créditos. Não use effort máximo como padrão — o nível correto é o mínimo que entrega qualidade suficiente para o caso de uso.
+- **Low Effort**: fast, lightweight responses
+- **Medium Effort**: moderate contextual analysis
+- **High Effort**: deeper reasoning, multi-step orchestration, and better handling of complex logic
 
 <Note>
-Comece com Equilibrado para qualquer agente novo e ajuste para cima somente se os testes mostrarem respostas rasas ou incorretas em perguntas que representam a complexidade real do caso de uso.
+The higher the Effort, the more credit or API cost may be consumed, since additional iterations are executed internally.
 </Note>

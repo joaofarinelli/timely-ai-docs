@@ -1,43 +1,52 @@
 ---
-title: "Prompts condicionais"
-description: "Como usar prompts condicionais na Timely.ai para adaptar o comportamento do agente por segmento de cliente, canal ou estágio no funil sem criar múltiplos agentes."
+title: "Conditional Prompts"
+description: "**Conditional Prompts** allow you to define **instructions that are executed only when specific conditions are met** during a conversation."
 ---
 
-Prompts condicionais permitem que um único agente se comporte de maneiras diferentes dependendo do contexto da conversa. Em vez de criar um agente separado para cada segmento de cliente ou canal de atendimento, você define blocos de instrução que o agente usa apenas quando certas condições são verdadeiras.
+---
 
-## O que é um prompt condicional?
+## What Is a Conditional Prompt?
 
-Um prompt condicional é um bloco de instrução vinculado a uma condição sobre variáveis da conversa ou do contato. Quando a condição é verdadeira, as instruções do bloco são concatenadas ao prompt base — não substituem o prompt principal, apenas o complementam com contexto adicional.
+A Conditional Prompt is composed of three elements:
 
-Variáveis disponíveis para condicionais:
+- **Name** — an internal identifier to help you organize your logic
+- **Prompt** — the instruction that will be injected into the Agent when the condition is met
+- **Condition** — the rule that determines when the prompt should be executed
 
-- `contact.stage` — estágio do contato no funil (ex.: `lead_quente`, `cliente`, `inativo`)
-- `contact.plan` — plano contratado pelo contato (ex.: `enterprise`, `starter`)
-- `channel` — canal de origem da conversa (ex.: `whatsapp`, `widget`, `instagram`)
-- `contact.language` — idioma preferido do contato (ex.: `pt-BR`, `es`)
+When multiple Conditional Prompts exist, the **condition** is what determines which one applies in each situation.
 
-## Como os prompts condicionais funcionam
+---
 
-1. A cada execução, o sistema avalia todas as condições configuradas para o agente.
-2. Para cada condição verdadeira, o bloco de instrução correspondente é adicionado ao contexto enviado ao modelo.
-3. Se múltiplas condições forem verdadeiras simultaneamente, todos os blocos correspondentes são incluídos — por isso é importante que as instruções não se contradigam.
+## How Conditional Prompts Work
 
-## Exemplos de uso
+During a conversation, the Agent continuously evaluates the defined conditions.
 
-Situações comuns onde prompts condicionais resolvem problemas sem a necessidade de criar múltiplos agentes:
+When a condition matches the current context:
 
-- Canal Instagram: resposta mais curta, até 3 frases, sem listas longas, emojis com moderação
-- Contato no plano enterprise: confirmar número de ticket, SLA prioritário, escalar em menos de 2 horas se não resolvido
-- Lead quente: foco no cronograma de decisão, oferecer chamada com o time comercial, evitar desvios para suporte
-- Idioma espanhol: responder em espanhol neutro independentemente do idioma usado na mensagem
+1. The corresponding **Conditional Prompt** is activated
+2. Its instructions are applied to the Agent’s reasoning
+3. The Agent responds or acts according to that injected prompt
 
-## Boas práticas
+This allows Agents to adapt behavior dynamically without changing their core Prompt.
 
-- Escreva blocos condicionais pequenos e focados — 2 a 4 instruções claras por bloco funcionam muito melhor do que blocos longos que tentam cobrir todos os cenários
-- Teste cada condição isoladamente com o Chat interno usando um contato que atenda à condição antes de combinar múltiplas
-- Não replique no bloco condicional instruções que já estão no prompt base — isso aumenta o tamanho do contexto sem benefício real
-- Se uma condição específica está sendo ativada em quase todas as conversas, mova a instrução para o prompt base — ela provavelmente não é tão condicional quanto parece
+---
+
+## Examples of Use
+
+- If the user asks to speak with a human → trigger a prompt that uses the **Ticket Creation Tool**
+- If the user confirms an action → inject a prompt that executes a **Workflow**
+- If a specific keyword appears → change tone, flow, or next steps
+- If the conversation reaches a certain state → guide the Agent to finalize or escalate
+
+---
+
+## Best Practices
+
+- Keep **conditions explicit and non-overlapping**
+- Use Conditional Prompts for **logic and flow control**, not for core identity
+- Avoid duplicating logic already defined in the main Prompt
+- Disable unused Conditional Prompts to keep behavior predictable
 
 <Tip>
-Mantenha os valores das variáveis sincronizados com os dados reais do CRM. Uma condição que nunca é verdadeira por inconsistência de dados entre sistemas é invisível e difícil de diagnosticar.
+**Tip**: Think of Conditional Prompts as contextual instructions that activate only when needed.
 </Tip>

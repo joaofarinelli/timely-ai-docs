@@ -1,18 +1,18 @@
 ---
-title: "Role do agente"
-description: "Como a role define a função e a persona do agente na Timely.ai, influenciando o enquadramento que o modelo usa para interpretar ambiguidades e tomar decisões."
+title: "Role"
 ---
 
-A role é uma descrição curta da função principal do agente — pense nela como o cargo que ele ocupa dentro da sua operação. Ela não é apenas um rótulo organizacional: a role é injetada no contexto do modelo de linguagem como o enquadramento de atuação esperado, complementando o prompt do sistema.
+The **Role** defines what the Agent is designed to do and establishes the foundation for its decision-making. <br />
+It should summarize the Agent’s responsibilities and general behavior without procedural details.
 
-Enquanto o prompt detalha regras, restrições e exemplos específicos, a role funciona como o chapéu que o agente veste antes de ler qualquer instrução. Um agente com role "qualificador de leads" interpreta ambiguidades com viés comercial; um agente com role "suporte técnico nível 1" prioriza diagnóstico e solução de problemas. A mesma pergunta pode receber respostas muito diferentes dependendo da role configurada.
+**Best practices**:
 
-## Boas práticas
+- Keep it under 250 characters.
+- Focus on *purpose* rather than *process*.
+- Avoid overly broad descriptions.
 
-- Seja específico: "suporte técnico de software SaaS" é mais útil para o modelo do que "suporte"
-- Alinhe a role com o nome interno — se o nome é "Suporte Técnico L1", a role deve ser consistente com essa função, não "vendedor"
-- Não use a role para incluir instruções detalhadas — isso pertence ao prompt. A role é o contexto; o prompt é o roteiro
+**Example**:
 
-## Exemplo
+> “Dental care and scheduling assistant — specialized in Endodontics and Aesthetic Dentistry for premium clients.”
 
-> assistente de suporte ao cliente especializado em planos de assinatura e cancelamentos, responsável por resolver dúvidas e escalar casos críticos para o time de retenção
+This field serves as the Agent’s mission statement, guiding its reasoning and responses.

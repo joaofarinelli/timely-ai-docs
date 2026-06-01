@@ -49,12 +49,8 @@
                 "pages": [
                   "start/introduction",
                   "start/quickstart-product",
-                  "start/quickstart-api",
                   "start/authentication",
-                  "start/webhooks-intro",
-                  "start/rate-limits",
-                  "start/production",
-                  "start/glossario"
+                  "start/quickstart-api"
                 ]
               }
             ]
@@ -68,16 +64,17 @@
                   "guides/agents/overview",
                   {
                     "group": "Criando um agente",
+                    "expanded": false,
                     "pages": [
-                      "guides/agents/creating/overview",
                       "guides/agents/creating/from-scratch",
                       "guides/agents/creating/wizard"
                     ]
                   },
                   {
                     "group": "Configurações do agente",
+                    "expanded": false,
+                    "root": "guides/agents/settings/overview",
                     "pages": [
-                      "guides/agents/settings/overview",
                       "guides/agents/settings/model",
                       "guides/agents/settings/internal-name",
                       "guides/agents/settings/role",
@@ -88,10 +85,7 @@
                       "guides/agents/settings/conditional-prompts",
                       "guides/agents/settings/internal-chat"
                     ]
-                  },
-                  "guides/agents/training",
-                  "guides/agents/voice",
-                  "guides/agents/transfer-rules"
+                  }
                 ]
               },
               {
@@ -112,7 +106,7 @@
                 ]
               },
               {
-                "group": "MCP Servers",
+                "group": "MCPS",
                 "pages": [
                   "guides/mcps/overview",
                   "guides/mcps/connecting"
@@ -372,7 +366,7 @@
                 ]
               },
               {
-                "group": "MCP Servers",
+                "group": "MCPS",
                 "pages": [
                   "api-reference/mcp-servers/referencia",
                   "POST /v1/agent/{id}/mcp/add",
@@ -495,11 +489,7 @@
                   "en/start/introduction",
                   "en/start/quickstart-product",
                   "en/start/quickstart-api",
-                  "en/start/authentication",
-                  "en/start/webhooks-intro",
-                  "en/start/rate-limits",
-                  "en/start/production",
-                  "en/start/glossario"
+                  "en/start/authentication"
                 ]
               }
             ]
@@ -513,16 +503,17 @@
                   "en/guides/agents/overview",
                   {
                     "group": "Creating an agent",
+                    "expanded": false,
                     "pages": [
-                      "en/guides/agents/creating/overview",
                       "en/guides/agents/creating/from-scratch",
                       "en/guides/agents/creating/wizard"
                     ]
                   },
                   {
                     "group": "Agent settings",
+                    "expanded": false,
+                    "root": "en/guides/agents/settings/overview",
                     "pages": [
-                      "en/guides/agents/settings/overview",
                       "en/guides/agents/settings/model",
                       "en/guides/agents/settings/internal-name",
                       "en/guides/agents/settings/role",
@@ -533,10 +524,7 @@
                       "en/guides/agents/settings/conditional-prompts",
                       "en/guides/agents/settings/internal-chat"
                     ]
-                  },
-                  "en/guides/agents/training",
-                  "en/guides/agents/voice",
-                  "en/guides/agents/transfer-rules"
+                  }
                 ]
               },
               {
@@ -557,7 +545,7 @@
                 ]
               },
               {
-                "group": "MCP Servers",
+                "group": "MCPS",
                 "pages": [
                   "en/guides/mcps/overview",
                   "en/guides/mcps/connecting"
@@ -817,7 +805,7 @@
                 ]
               },
               {
-                "group": "MCP Servers",
+                "group": "MCPS",
                 "pages": [
                   "en/api-reference/mcp-servers/referencia",
                   "POST /v1/agent/{id}/mcp/add",
