@@ -1,3 +1,102 @@
 ---
 title: "Knowledge Base Search Tool"
 ---
+
+The **Knowledge Base (KB) Search Tool** allows your Agent to query structured repositories of documents, FAQs, guides, or policies created inside Timely.ai.\
+It is the most efficient way to ensure your Agent always has access to updated and reliable information without overloading the main Prompt.
+
+***
+
+## 🔎 What Is a Knowledge Base?
+
+A Knowledge Base in Timely.ai is a structured container where you store information such as:
+
+* Company policies and procedures
+* Product documentation
+* Pricing and plan descriptions
+* Frequently Asked Questions (FAQs)
+* Training and onboarding materials
+
+Unlike the Agent Prompt, Knowledge Bases are optimized for **search and retrieval**, allowing the Agent to access only what is relevant to each question.
+
+***
+
+## ⚙️ How the Tool Works
+
+* The **Description** field defines *when* the Agent should use this tool.
+* You must link the tool to an existing Knowledge Base using its **ID**.
+* When triggered, the Agent searches the Knowledge Base and integrates the most relevant results into its response.
+
+***
+
+## 🆕 Execution Options
+
+The Knowledge Base Search Tool includes two execution toggles that control how the search behaves:
+
+#### 🔁 Execute Always
+
+When enabled, the Knowledge Base search is executed on **every Agent response**, regardless of the user’s question.
+
+* Use when the Knowledge Base contains **critical context** that should always influence responses.
+* When disabled, the Agent decides dynamically whether the KB is relevant.
+
+***
+
+### 📄 Preselect Documents
+
+When enabled, the Agent first selects the **most relevant document** before searching its content.
+
+* The selection is based on the **Description field of each document** in the Knowledge Base.
+* After choosing the best-matching document, the Agent searches only within the blocks generated from that document.
+
+This improves precision and performance, especially in Knowledge Bases with many documents.
+
+***
+
+## 📐 When to Use a Knowledge Base
+
+Use a Knowledge Base when:
+
+* Information changes frequently (pricing, policies, documentation)
+* Content is too long for the Agent Prompt
+* Structured retrieval is required
+
+**Tip:**\
+Keep stable behavioral rules in the Prompt, and store long or evolving information in Knowledge Bases.
+
+***
+
+## 🛠️ Setup Example
+
+**Scenario:** Your Agent needs to answer questions about pricing.
+
+1. Create a Knowledge Base
+   * Name: Pricing and Plans
+   * Upload pricing documentation or FAQs
+2. Configure the Tool
+   * Description:\
+     “Use this tool when the user asks about prices, plans, billing, or upgrades.”
+   * Knowledge Base ID: Pricing and Plans
+   * Execute Always: Disabled
+   * Preselect Documents: Enabled
+
+If a user asks *“What’s included in the Pro Plan?”*, the Agent retrieves the correct pricing information directly from the Knowledge Base.
+
+***
+
+## ✅ Best Practices
+
+* Write clear, action-oriented tool descriptions
+* Use meaningful descriptions for each document in the Knowledge Base
+* Enable **Preselect Documents** for large or diverse KBs
+* Keep Knowledge Bases updated to avoid outdated answers
+* Avoid duplicating the same content in both the Prompt and the KB
+
+***
+
+## 🎯 Key Takeaway
+
+The Knowledge Base Search Tool gives your Agent structured, up-to-date knowledge on demand.\
+With **Preselect Documents**, retrieval becomes faster and more precise by narrowing the search to the most relevant document before reading its content.
+
+Used correctly, it keeps Agents accurate, scalable, and easy to maintain.

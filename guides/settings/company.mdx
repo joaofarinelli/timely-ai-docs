@@ -1,90 +1,81 @@
 ---
-title: Configurações da Empresa
-description: Gerencie os dados cadastrais da empresa, logo, setor e configurações de NPS survey.
+title: Members
 ---
 
-As configurações da empresa centralizam os dados institucionais que identificam sua organização na plataforma. Essas informações são compartilhadas entre todos os workspaces da conta e são usadas em relatórios, benchmark de setor e comunicações da plataforma.
+The **Members** section allows you to manage all users who have access to your workspace in Timely.ai.\
+From this page, you can invite new collaborators, assign roles, and control each member’s level of access and permissions.
 
-## Quem pode editar
+Each **workspace** has its own independent list of members — adding someone to one workspace does not grant access to others.
 
-Apenas **owner** e **manager** têm permissão para editar as configurações da empresa. Membros com outras roles podem visualizar algumas informações, mas não fazer alterações.
+> ⚠️ **Important:**\
+> Each plan includes a limited number of members.\
+> To check the exact number available in your plan, visit **Settings → Subscriptions** and review your active plan’s details.
 
-## Acessando as configurações da empresa
+***
 
-No menu lateral, clique em **Configurações** e selecione a aba **Empresa**.
+## 🔹 Adding Members
 
-<Frame>
-  <img src="/images/settings-company.png" alt="Tela de configurações da empresa com campos de nome, documento e setor" />
-</Frame>
+To invite a new member to your workspace:
 
-## Dados cadastrais
+1. Click **Add Member** in the top-right corner.
+2. Enter the person’s **email address**.
+3. Click **Invite**.
+4. The invited user will receive an email to join the workspace.
 
-<AccordionGroup>
-  <Accordion title="Nome da empresa">
-    Nome oficial da organização como deve aparecer na plataforma. Este nome aparece em relatórios exportados e na interface para todos os membros do time.
-  </Accordion>
-  <Accordion title="Documento (CNPJ / CPF)">
-    Campo opcional para registro fiscal da empresa. Pode ser exigido para emissão de notas fiscais conforme o plano contratado.
-  </Accordion>
-  <Accordion title="E-mail corporativo">
-    E-mail principal de contato da empresa. Usado pela plataforma para envio de relatórios agendados e comunicações sobre a conta.
-  </Accordion>
-  <Accordion title="Telefone">
-    Telefone de contato da empresa. Campo opcional.
-  </Accordion>
-  <Accordion title="Endereço">
-    Rua, cidade, estado e complemento. Usado para fins de faturamento e registro.
-  </Accordion>
-  <Accordion title="Website">
-    URL do site da empresa. Campo opcional, exibido internamente apenas.
-  </Accordion>
-  <Accordion title="Setor de atuação">
-    Selecione o segmento que melhor descreve a empresa:
-    - Saúde e bem-estar
-    - Beleza
-    - Educação
-    - Tecnologia
-    - Consultoria
-    - Jurídico
-    - Financeiro
-    - Outros
+Once the invitation is accepted, the user’s status will change from **Pending** to **Active**.
 
-    Esta configuração é fundamental para o benchmark do [BI Dashboard](/guides/analytics/bi-dashboard). Sem ela, a comparação com médias do setor não é exibida.
-  </Accordion>
-  <Accordion title="Descrição">
-    Texto livre sobre a empresa. Campo interno, não exibido para clientes finais.
-  </Accordion>
-</AccordionGroup>
+| Status      | Description                                                                 |
+| ----------- | --------------------------------------------------------------------------- |
+| **Pending** | The invitation has been sent but not yet accepted.                          |
+| **Active**  | The member has accepted the invitation and now has access to the workspace. |
 
-## Salvando alterações
+***
 
-Após editar os campos desejados, clique em **Salvar configurações** no final do formulário. O botão fica habilitado apenas quando existem alterações pendentes em relação aos dados originais.
+## 🔹 Updating or Removing Members
 
-<Info>
-  As alterações nos dados da empresa são propagadas imediatamente para todos os workspaces e membros da conta. Não é necessário nenhuma ação adicional após salvar.
-</Info>
+You can modify an existing member’s role or remove them at any time.
 
-## NPS Survey
+* Click the **⋯ (three dots)** icon next to the user’s row.
+* Choose **Edit permissions** or **Remove member**.
+* Select a new role (Admin, Member, or Ops) if updating.
+* Confirm your changes.
 
-A Timely.ai coleta periodicamente o Net Promoter Score (NPS) dos usuários da plataforma para medir satisfação e guiar o desenvolvimento de produto. A pesquisa aparece como um modal não invasivo após um período de uso.
+Changes take effect immediately and apply to all sections of the workspace.
 
-<Steps>
-  <Step title="Como a pesquisa aparece">
-    Após um período de uso da plataforma (configurado internamente), um modal de NPS abre automaticamente perguntando "De 0 a 10, qual a probabilidade de você recomendar a Timely.ai?".
-  </Step>
-  <Step title="Resposta">
-    Selecione uma nota de 0 a 10. Um campo de texto opcional aparece para você detalhar o motivo da nota.
-  </Step>
-  <Step title="Envio">
-    Clique em **Enviar**. A pesquisa é encerrada e não volta a aparecer por um período configurado (normalmente 90 dias).
-  </Step>
-  <Step title="Fechar sem responder">
-    Você pode fechar o modal sem responder clicando no X. A pesquisa pode reaparecer após alguns dias.
-  </Step>
-</Steps>
+***
 
-O NPS é coletado por usuário, não por empresa. Cada membro responde individualmente. As respostas são anônimas em relação ao produto — a equipe da Timely.ai analisa os dados de forma agregada.
+## 🔹 Roles and Permissions
 
-## Logo da empresa
+Each member is assigned a **role**, defining what actions they can perform inside the workspace.
 
-Atualmente a logo da empresa é configurada por workspace na seção de personalização do widget de atendimento. Para atualizar a logo que aparece nas comunicações da plataforma, entre em contato com o suporte.
+| Role       | Access Level          | Description                                                                                                                                                                                             |
+| ---------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Admin**  | 🔧 Full Access        | Has unrestricted control over the entire workspace. Can manage billing, Agents, Workflows, Tables, Knowledge Bases, human support settings, teams, and all configurations.                              |
+| **Member** | ⚙️ Standard Access    | Can manage Agents, Workflows, Tables, Knowledge Bases, and team settings, but **cannot access billing or global workspace configurations**. Functionally equivalent to Admin within project operations. |
+| **Ops**    | 💬 Operational Access | Designed for support or operational staff. Can only interact with human handoff conversations assigned to them. **Cannot modify Agents, Teams, or global workspace settings.**                          |
+
+> 💡 **Tip:**\
+> Use the **Ops** role for staff who only need access to the operational interface or human handoff management — not configuration or billing.
+
+***
+
+## 🔹 Removing Access
+
+To remove a user:
+
+1. Open the member’s menu (**⋯**).
+2. Click **Remove member**.
+3. Confirm the action.
+
+The user will immediately lose access to all workspace resources.\
+This does not affect other workspaces the user may belong to.
+
+***
+
+## 🔹 Best Practices
+
+* Assign **Admin** only to trusted users responsible for workspace or billing management.
+* Use **Member** for general collaborators, developers, or AI builders.
+* Use **Ops** for agents or support roles focused on operational execution.
+* Review member permissions periodically to ensure least-privilege access.
+* Monitor your member usage in **Settings → Usage** to keep track of your workspace limits.

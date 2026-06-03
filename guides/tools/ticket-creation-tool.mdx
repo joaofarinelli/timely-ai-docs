@@ -1,3 +1,113 @@
 ---
 title: "Ticket Creation Tool"
 ---
+
+The **Ticket Creation Tool** allows an Agent to hand off a conversation to a human team natively inside **Timely.ai CRM**.\
+Instead of relying on external CRMs or manual escalation, this tool creates a ticket directly in the internal support area, ensuring a seamless human takeover with full context.
+
+***
+
+## 🔎 What It Does
+
+* Creates a ticket in a specific **CRM Team**
+* Transfers the full conversation context and collected data
+* Allows human operators to continue exactly where the Agent stopped
+* Enables structured filtering and prioritization using **tags**
+
+This is the **official and recommended way** to escalate conversations from Agents to humans inside Timely.ai.
+
+***
+
+## ⚙️ Configuration
+
+When creating a Ticket Creation Tool, you configure:
+
+* **Name**\
+  A clear label for the tool\
+  *Example:* `Escalate to Support`
+* **Description**\
+  Defines *when* the Agent should trigger the ticket\
+  *Example:*\
+  “Create a ticket when the user asks to talk to a human or when the request cannot be solved automatically.”
+* **CRM Team**\
+  The team responsible for receiving the ticket
+  * Must be created beforehand in **CRM → Teams**
+  * Can include one or multiple human operators
+
+***
+
+## 🆕 Automatic Tags on Ticket Creation
+
+The Ticket Creation Tool now supports **automatic tag assignment** when a ticket is created.
+
+### 🏷️ How Tags Work
+
+* Tags are created and managed in **CRM → Tags**
+* Each tag has:
+  * **Name**
+  * **Description**
+  * **Color** (for visual identification)
+* Tags are **not created by the Agent** — they must exist beforehand
+
+When the ticket is created:
+
+* The Agent analyzes the **conversation context**
+* It selects the most appropriate tag(s) based on the **tag descriptions**
+* The selected tags are automatically applied to the ticket
+
+***
+
+### 💡 Example
+
+If the user is asking about billing or payments and the conversation is escalated:
+
+* Existing tag: **Finance**
+  * Description: “Questions related to billing, payments, invoices, or pricing.”
+* Result:
+  * The Agent creates the ticket
+  * Automatically applies the **Finance** tag
+
+Human operators can then easily **filter tickets by tag**, improving triage and response time.
+
+***
+
+## 🔄 Runtime Behavior
+
+1. The Agent detects the need for human escalation
+2. The Ticket Creation Tool is triggered
+3. A ticket is created in the selected CRM Team
+4. Relevant tags are applied automatically
+5. A human operator takes over the conversation
+
+All tickets are visible in **CRM → Attendants / Conversations**, fully searchable and filterable by tags.
+
+***
+
+## 📌 Example Use Cases
+
+* **Support escalation**\
+  User: “I want to talk to a real person.”\
+  → Ticket created and routed to *Support Team*
+* **Sales follow-up**\
+  Agent collects lead data and user requests a proposal\
+  → Ticket created and assigned to *Sales Team*
+* **Specialized routing with tags**\
+  Conversation about refunds\
+  → Ticket created with *Finance* tag
+
+***
+
+## ✅ Best Practices
+
+* Always associate the tool with a valid CRM Team
+* Write very explicit tool descriptions so the Agent knows exactly when to escalate
+* Create clear, well-described tags in advance
+* Use tags to simplify filtering and prioritization for human teams
+* Combine with **Tasks** to trigger escalation under specific conditions
+
+***
+
+## 🎯 Key Takeaway
+
+The Ticket Creation Tool ensures **reliable, native human handoff** inside Timely.ai.\
+With automatic tag assignment, escalated conversations arrive **contextualized, categorized, and ready for action**, allowing human teams to work faster and more efficiently.

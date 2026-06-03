@@ -1,60 +1,90 @@
 ---
-title: "Criando Tabelas"
-description: "Como criar uma tabela (datagrid) na Timely.ai: nome, descrição, tipos de coluna, busca semântica, campos obrigatórios e gerenciamento de linhas."
+title: "Creating Tables"
 ---
 
-## Passo 1 — Crie uma Nova Tabela
+Creating a new Table in Timely.ai is fast and intuitive.\
+Each Table can be customized with specific columns, types, and semantic capabilities depending on your operational needs.
 
-No menu lateral, acesse **Tabelas** (ou **Datagrids**). A tela exibe todas as tabelas existentes no workspace. Para criar uma nova:
+***
 
-- Clique em **+ Adicionar tabela** no canto superior direito
-- Um modal de criação será exibido com dois campos obrigatórios
-- **Nome**: até 50 caracteres. Escolha um nome descritivo — o agente usa o nome para identificar qual tabela consultar quando há múltiplas disponíveis. Exemplos: "Catálogo de Produtos", "Agenda Outubro 2025", "Leads WhatsApp".
+## 🪄 Step 1 — Create a New Table
 
-## Passo 2 — Adicione Colunas
+1. Navigate to **Builder → Tables**.
+2. Click **Create new table +** in the top-right corner.
+3. Enter the following details:
+   * **Name** — the Table identifier (e.g. *Unanswered Questions*, *Feedbacks*, *Contacts*).
+   * **Description** *(optional)* — for internal use, describing the purpose of this Table.
 
-Com a tabela criada, adicione as colunas que estruturam os dados. Clique em **+ Adicionar coluna** na tela da tabela. O formulário de criação de coluna é aberto.
+Click **Create Table** to finish.
 
-### Para adicionar uma coluna:
+***
 
-Preencha os campos do formulário:
+## 📋 Step 2 — Add Columns
 
-| Campo | Descrição | Requisitos |
-|-------|-----------|------------|
-| **Nome** | Identificador da coluna. O agente usa o nome para entender o que cada campo representa. | Máximo 50 caracteres. Use nomes claros: `preco_reais`, `disponivel`, `descricao_produto`. |
-| **Descrição** | Explicação do propósito da coluna para o agente. Quanto mais específica, melhor o agente entende quando e como preencher o campo. | Mínimo 3 caracteres, máximo 250. |
-| **Tipo** | Define qual valor a coluna aceita. Não pode ser alterado após a criação. | `String`, `Number` ou `Boolean`. |
-| **Busca semântica** | Quando ativada, vetoriza os valores para busca por linguagem natural. Disponível apenas para colunas `String`. | Opcional. Recomendado para colunas com texto descritivo. |
+Columns define the structure and behavior of your Table.\
+They determine what type of data each record will hold and how the Agent will interpret it.
 
-<Note>
-  O tipo da coluna é permanente. Planeje os tipos antes de criar as colunas — se precisar mudar de `Number` para `String` depois, será necessário criar uma nova coluna e migrar os dados manualmente.
-</Note>
+### ➕ To add a column:
 
-## Tipos de Coluna Suportados
+1. Open your Table.
+2. Click **Add Column +**.
+3. Configure the following fields:
 
-| Tipo | Descrição | Exemplos |
-|------|-----------|---------|
-| `String` | Texto livre de qualquer comprimento. Suporta busca semântica quando ativada. | nome do produto, descrição, status, URL, categoria |
-| `Number` | Valor numérico, inteiro ou decimal. Permite comparações numéricas pelo agente. | preço em reais, quantidade em estoque, nota de 1 a 5, capacidade |
-| `Boolean` | Verdadeiro ou falso. Ideal para flags e condições binárias. | disponível, ativo, destaque, aceita parcelamento |
+| Field                      | Description                                                                                                                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Name**                   | The column name. Each must be unique within the Table.                                                                                                          |
+| **Description**            | Clearly describe what the column represents — the Agent uses this to interpret and interact with data correctly.                                                |
+| **Type**                   | Choose one of the supported field types (`string`, `boolean`, or `number`).                                                                                     |
+| **Enable Semantic Search** | When enabled, allows the Agent to query this column based on meaning and context, not just exact text matches. Recommended for descriptive or free-text fields. |
 
-## Passo 3 — Adicione e Edite Linhas
+Click **Add Column** to save.
 
-Com as colunas definidas, popule a tabela com dados. Há três formas de adicionar linhas:
+> 🧠 **Tip:** Write clear and specific descriptions — the Agent reads them to infer intent and understand how to use the data.
 
-- **Adição manual**: clique em **+ Adicionar linha** na grade de dados e preencha os valores célula a célula diretamente na interface. Útil para tabelas pequenas ou para registros individuais.
-- **Importação via CSV**: na tela da tabela, clique em **Importar CSV**. O arquivo deve ter cabeçalhos correspondentes exatamente aos nomes das colunas criadas. Valores de tipo incompatível geram erros de importação.
+***
 
-O editor de grade funciona como uma planilha — clicar em uma célula abre o editor inline, Tab avança para a próxima célula e as alterações são salvas individualmente por célula de forma imediata.
+## 🔧 Supported Column Types
 
-## Passo 4 — Atualize ou Exclua Tabelas
+Timely.ai currently supports three data types for Table columns:
 
-Tabelas podem ser editadas a qualquer momento: adicione novas colunas, renomeie colunas existentes ou ajuste as descrições. Para excluir uma tabela:
+| Type        | Description                                                                          | Example                                                       |
+| ----------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| **string**  | Textual information, such as names, messages, or identifiers.                        | `"John Doe"`, `"user_123"`, `"Asked about campaign creation"` |
+| **boolean** | Logical values representing `true` or `false`. Ideal for flags or conditional logic. | `true`, `false`                                               |
+| **number**  | Numeric data, such as counters, scores, or ratings.                                  | `42`, `3.14`                                                  |
 
-1. Na lista de tabelas, clique no menu de opções da tabela desejada.
-2. Selecione **Excluir tabela**.
-3. Confirme a exclusão na caixa de diálogo.
+> ⚙️ **Best practice:**\
+> Use `string` for most descriptive text fields, and enable **semantic search** for fields where Agents need to interpret meaning — e.g. questions, feedbacks, or messages.
 
-<Warning>
-  A exclusão de uma tabela é permanente e irreversível. Todos os dados (linhas e colunas) são apagados, e os agentes que usavam a tabela deixam de ter acesso a ela imediatamente. Desconecte a tabela dos agentes antes de excluí-la para evitar erros nas conversas em andamento.
-</Warning>
+***
+
+## 🧱 Step 3 — Add and Edit Rows
+
+Rows represent the actual data stored inside the Table.\
+You can manually add rows or have them created dynamically by Agents or Workflows.
+
+### ➕ To add a row:
+
+* Click **Add row +** and fill in each column’s value.
+
+### ✏️ To edit a row:
+
+* Hover over a record, click the **⋮ (Edit)** icon, and modify as needed.
+
+Example — Table **Unanswered Questions**:
+
+| chatId                                 | Name | Question                                                     |
+| -------------------------------------- | ---- | ------------------------------------------------------------ |
+| `5edca67d-dd2d-41e4-b7c0-23e4858f05e6` | —    | “User asked if it’s possible to create proactive campaigns…” |
+
+***
+
+## 🧩 Step 4 — Update or Delete Tables
+
+You can modify a Table’s metadata at any time:
+
+* Click the **✏️ Edit** button to update the name or description.
+* Click the **⋮ menu** to rearrange or delete a Table.
+
+> ⚠️ **Warning:**\
+> Deleting a Table permanently removes all its data — this action cannot be undone.

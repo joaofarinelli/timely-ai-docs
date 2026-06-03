@@ -1,30 +1,49 @@
 ---
-title: "Workflows: Visão Geral"
-description: "Orquestre automações complexas conectando triggers, ações e lógica em um editor visual — sem escrever código."
+title: "Workflows: Overview"
 ---
 
-Workflows são sequências de nós conectados que executam automações na Timely.ai. Cada fluxo começa em um trigger, percorre nós de ação e lógica configurados por você e pode retornar dados estruturados ao chamador quando necessário.
+Workflows allow you to create automated processes inside Timely.ai.\
+They are made of **nodes**, each one representing an action (like receiving a webhook, calling an API, or returning a response).
 
-## Como os Workflows Funcionam
+With Workflows you can:
 
-Um workflow é montado no editor visual drag-and-drop: arraste componentes para o canvas, conecte os nós pelos handles de saída e configure cada um com um duplo clique. Toda publicação gera uma versão imutável — o rascunho em edição não afeta o fluxo em produção até você clicar em **Publicar**.
+* Connect external services via webhooks or HTTP requests.
+* Allow Agents to trigger multi-step processes.
+* Organize logic visually, step by step.
 
-Cada execução gera um **Workflow Run** com status, log individual de cada nó, payload de entrada e saída e duração total. O histórico fica disponível em **Automações > Workflows > Ver execuções**.
+***
 
-## Nós Disponíveis
+## 🛠️ How Workflows Work
 
-O editor oferece três categorias de nós:
+* A Workflow is a **blank canvas** where you drag and drop nodes.
+* Each Workflow has a **trigger** (for example, a webhook call or an Agent request).
+* You can then chain actions like making an HTTP request, saving variables, or sending back a response.
 
-- **Webhook** — recebe requisição HTTP externa e expõe body, headers e query params para os nós seguintes
-- **Agendamento** — dispara em horário programado via expressão cron com fuso horário configurável
-- **Requisição do Agente** — permite que um agente IA acione o workflow como ferramenta, passando parâmetros estruturados
-- **Requisição HTTP** — chama qualquer API REST externa com suporte a GET, POST, PUT, PATCH e DELETE
-- **Definir Variável** — cria ou transforma variáveis acessíveis via `{{ $vars.nome }}`
-- **Código JavaScript** — executa lógica customizada em ambiente isolado com timeout de 10 segundos
-- **Transformação IA** — processa texto com modelo de linguagem para extrair, classificar ou reescrever dados
+***
 
-## Por Que Usar Workflows
+## 🔑 Available Nodes
 
-Workflows são a escolha certa quando você precisa integrar sistemas externos, processar dados antes de agir ou orquestrar passos que dependem uns dos outros. Diferente de instruções no prompt do agente, um workflow executa de forma determinística, rastreável e auditável — cada nó tem logs, status e tempo de execução registrados.
+Currently, you can use:
 
-Use workflows para automatizar notificações baseadas em eventos, sincronizar dados entre plataformas ou gerar relatórios periódicos sem intervenção manual.
+* **Webhook Request** → receives data from an external service.
+* **Webhook Response** → sends back a reply to that service.
+* **Agent Request** → lets an Agent call this workflow.
+* **Agent Response** → sends information back to the Agent.
+* **HTTP Request** → call an external API (GET, POST, PUT, DELETE, PATCH).
+* **Define Variables** → store values for later use in the workflow.
+* **LLM** → call a language model to process or generate text.
+
+***
+
+## 📌 Why Use Workflows
+
+* No need for custom code — build automations visually.
+* Reuse them across different Agents.
+* Control the logic of how and when actions happen.
+
+Workflows are the **orchestration layer** of Timely.ai.\
+They allow you to go beyond simple tool calls, creating structured flows that respond exactly the way you need.
+
+***
+
+👉 Next: we’ll explore each **node** in detail, starting with **Webhook Request**.

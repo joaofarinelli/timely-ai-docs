@@ -1,53 +1,48 @@
 ---
-title: "Widget Web"
-description: "Adicione um chat ao seu site em minutos com um snippet JavaScript — com suporte a voz, personalização visual e múltiplos domínios."
+title: "Widget"
 ---
 
-O Widget Web é o canal mais rápido para colocar um agente em produção. Basta colar um snippet JavaScript no HTML do site — sem conta Business, sem aprovação de terceiros, sem configuração de webhook manual.
+The **Widget** channel is used to embed an interactive chat directly on your website or system.
 
-## Passo a passo de criação
+### Steps to Create
 
-<Steps>
-  <Step title="Abra Canais no dashboard">
-    No menu lateral, acesse **Canais → Adicionar canal** e selecione **Widget Web**.
-  </Step>
-  <Step title="Nomeie a integração">
-    Defina um nome interno (ex.: "Site Principal", "Blog EN") que identifique este widget nos filtros da Inbox.
-  </Step>
-  <Step title="Escolha o agente">
-    Selecione o agente de IA que vai atender as conversas deste widget.
-  </Step>
-  <Step title="Personalize a aparência">
-    Ajuste cor primária, cor de destaque, posição do botão (`bottom-right` ou `bottom-left`), mensagem de boas-vindas, nome do assistente, avatar e tema (`auto`, `light` ou `dark`).
-  </Step>
-  <Step title="Copie o snippet">
-    A Timely.ai gera o código com o `data-agent-id` da sua integração. Cole-o antes do `</body>` em todas as páginas onde o chat deve aparecer.
-  </Step>
-  <Step title="(Opcional) Configure domínios permitidos">
-    Restrinja em quais domínios o widget pode ser carregado para evitar uso não autorizado.
-  </Step>
-</Steps>
+1. Select **Type: Widget**.
+2. Name the channel (e.g., *Official Widget*).
+3. Assign a responder (Agent or Squad).
+4. Optionally, add a custom prompt.
+5. Set the response delay.
+6. Click **Create Channel**.
 
-## Notas de personalização
+Once created, the channel exposes a **Widget Configuration Page** containing:
 
-- Atributos definidos diretamente no snippet sobrescrevem as configurações do dashboard — útil para múltiplas variações em páginas diferentes.
-- O widget suporta modo embeddable: adicione `data-embedded="true"` e `data-target="#id-do-container"` para renderizá-lo dentro de um `<div>` em vez do botão flutuante.
-- Para suporte a voz, o site deve usar HTTPS e o agente precisa ter voz configurada em **Agentes → [agente] → Voz**.
-- O cache do script `embed.js` é de 5 minutos — mudanças de configuração podem levar esse tempo para refletir no site.
-
-| Seção do snippet | Descrição |
-|------------------|-----------|
-| `data-agent-id` | ID da integração Widget — obrigatório |
-| `data-theme` | Tema visual: `auto`, `light` ou `dark` (padrão: `auto`) |
-| `data-position` | Posição do botão flutuante: `bottom-right` ou `bottom-left` |
-
-<Note>
-  O widget usa `sessionStorage` para manter a sessão enquanto a aba estiver aberta. Ao fechar e reabrir o navegador, uma nova sessão começa — o histórico anterior fica disponível para o atendente na Inbox.
-</Note>
+| Section                   | Description                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| **Configuration Code**    | JavaScript snippet that must be copied and pasted into your site or web app. |
+| **Theme Controls**        | Switch between **Light Mode** and **Dark Mode** versions.                    |
+| **Customization Options** | Modify colors for background, text, and buttons.                             |
+| **Open on Load**          | Option to auto-open the widget when the page loads.                          |
 
 ```html
-<script src="https://widget.timelyai.com.br/embed.js"
-        data-agent-id="agent_abc123"
-        data-theme="auto"
-        async></script>
+<body>
+  <script>
+    window.ZV2Widget = {
+      ChannelURL: "https://widget.timelyai.com.br/widget/channel/..."
+    };
+  </script>
+  <script src="https://widget.timelyai.com.br/script/widget-loader.js" async></script>
+</body>
 ```
+
+> ⚙️ Use the “Copy” button to copy the full script into your HTML `<body>` section.\
+> Once deployed, your website visitors will be able to chat directly with your Agent.
+
+## **Customization Notes**
+
+For **Widget Channels**, Timely.ai provides a live customization environment:
+
+* Modify message bubble colors and text colors.
+* Adjust button color to match your branding.
+* Switch between Light and Dark previews.
+* Instantly preview all UI changes before saving.
+
+Each customization option is applied independently per channel, allowing multiple widget styles for different sites or environments.

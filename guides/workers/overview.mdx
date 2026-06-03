@@ -1,120 +1,162 @@
 ---
 title: "Workers"
-description: "Sessões de trabalho direto com agentes e squads para tarefas longas, análises e processamentos que não cabem no fluxo de atendimento."
 ---
 
-Workers é o espaço da Timely.ai onde você conversa diretamente com um agente ou squad como se fosse um colaborador interno. Enquanto o chat de atendimento ao cliente serve para sessões voltadas ao consumidor final, Workers serve para você — o operador — delegar trabalhos que o agente processará de forma autônoma.
+**Workers** is a workspace that allows you to interact directly with your Agents in **production**, inside the Timely.ai platform.
 
-## O que é Workers
+It provides a centralized chat interface where you can use your Agents for **real tasks, daily workflows, or testing**, without relying on external channels.
 
-Workers funciona como uma área de trabalho pessoal com sessões de conversa persistentes. Cada sessão é vinculada a um agente ou squad específico do seu workspace. O agente responde usando o mesmo modelo LLM, ferramentas e base de conhecimento que ele usa no atendimento real — a diferença é que a conversa é sua, privada, e não gera registros no CRM de clientes.
+***
 
-## Quando usar Workers
+## 🧠 What is Workers
 
-- **Análise de dados e conversas:** solicite ao agente que processe um volume grande de registros, extraia padrões ou consolide informações em um relatório estruturado.
-- **Pesquisa e síntese de informação:** peça ao agente para pesquisar um tema, comparar fontes e entregar um resumo pronto para uso.
-- **Geração de conteúdo em lote:** delegue a criação de múltiplos textos, scripts, templates ou respostas de uma só vez.
-- **Tarefas com integrações externas:** quando o agente precisa acessar Google Sheets, Notion, Slack ou outras ferramentas, o processamento pode levar mais tempo — Workers garante que a tarefa não seja interrompida.
+Workers is a chat-based interface to interact with your Agents in a way that feels similar to tools like ChatGPT or Claude.
 
-## Como funciona
+However, instead of a single AI, you can:
 
-A tela de Workers é dividida em dois painéis principais que você usará em conjunto durante o trabalho.
+> Choose exactly which Agent (or Squad) you want to interact with.
 
-### Painel esquerdo (histórico de conversas)
+***
 
-A sidebar esquerda lista todas as suas sessões em ordem cronológica, com as mais recentes no topo. Cada item exibe:
+## 💡 When to Use Workers
 
-- Nome do agente ou squad executor
-- Prévia da última mensagem da sessão
-- Horário da última atividade
+Workers is designed for both **real usage** and **validation**.
 
-As sessões são agrupadas por período: **Hoje**, **Ontem**, **Últimos 7 dias**, **Últimos 30 dias** e **Mais antigas**. Use a busca no topo da sidebar para localizar sessões por conteúdo.
+You can use it to:
 
-### Área principal de chat
+* Interact with Agents for daily productivity
+* Use internal tools and workflows powered by Agents
+* Share Agents across teams and collaborate
+* Test how Agents behave in production
+* Simulate real user conversations
 
-A área central exibe a conversa ativa com o agente selecionado. O campo de mensagem aceita texto e anexos (imagens, PDFs, documentos Office e CSVs) com limite de 25 MB por arquivo e 4.000 caracteres por mensagem.
+***
 
-## Iniciando uma nova conversa
+## 💬 How It Works
 
-<Steps>
-  <Step title="Clique no ícone de nova sessão">
-    No topo da sidebar, clique no botão **+** para abrir o diálogo de nova sessão.
-  </Step>
-  <Step title="Escolha o executor">
-    O diálogo exibe duas abas: **Agentes** e **Squads**. Selecione o agente ou squad que vai processar a tarefa. Cada opção mostra o nome e o avatar do executor.
-  </Step>
-  <Step title="Escreva a primeira mensagem">
-    Com a sessão aberta, descreva a tarefa no campo de chat. Seja específico sobre o contexto, o formato de saída esperado e qualquer restrição relevante.
-  </Step>
-</Steps>
+The experience is divided into two main areas:
 
-<Note>
-  O saldo de créditos disponível para o workspace aparece no rodapé do campo de mensagem. Cada mensagem processada consome créditos de acordo com o modelo LLM configurado no agente.
-</Note>
+***
 
-## Continuando conversas
+### Left Panel (Conversation History)
 
-Sessões anteriores ficam na sidebar e podem ser retomadas a qualquer momento:
+* Displays all your conversations
+* Organized by date
+* Allows you to:
+  * Resume previous chats
+  * Search conversations
+  * Start new chats
 
-- Clique na sessão para abrir o histórico completo e continuar de onde parou.
-- O contexto da conversa é preservado entre sessões — o agente "lembra" do que foi dito anteriormente.
+Each conversation is saved automatically and can be accessed anytime.
 
-## Renomeando conversas
+***
 
-Para facilitar a organização, você pode renomear qualquer sessão:
+### Main Chat Area
 
-<Steps>
-  <Step title="Clique com o botão direito na sessão">
-    Na sidebar, clique com o botão direito sobre o item da sessão que deseja renomear.
-  </Step>
-  <Step title="Selecione Renomear">
-    Escolha a opção **Renomear** no menu de contexto exibido.
-  </Step>
-  <Step title="Digite o novo nome e confirme">
-    Edite o título diretamente no campo exibido e pressione **Enter** para salvar.
-  </Step>
-</Steps>
+* Displays the active conversation
+* Allows real-time interaction with the selected Agent
+* Works like a messaging interface
 
-## Busca
+***
 
-O campo de busca no topo da sidebar filtra sessões por conteúdo em tempo real:
+## ➕ Starting a New Conversation
 
-- A busca considera o título da sessão e o conteúdo das mensagens.
-- Resultados aparecem instantaneamente conforme você digita.
-- Para limpar o filtro, apague o texto do campo ou clique no ícone de fechar.
+To start a new chat:
 
-## Comportamento em produção
+1. Click the **"+" button**
+2. Select an Agent or Squad
+3. A new conversation is created
 
-Workers roda os mesmos agentes que estão ativos no atendimento real. Isso tem implicações importantes:
+***
 
-- Mensagens enviadas em Workers consomem créditos reais do workspace.
-- Arquivos enviados ficam armazenados no bucket de armazenamento do workspace.
-- Integrações externas acionadas pelo agente (como Google Calendar ou Sheets) executam ações reais — não em ambiente de teste.
+### Important
 
-<Warning>
-  Não use Workers para testar comportamentos de agentes em produção com dados fictícios. Use o **Chat de Teste** disponível no painel do agente ou no detalhe do squad para testes sem impacto em créditos ou integrações reais.
-</Warning>
+* Each conversation is tied to a specific Agent
+* The conversation follows that Agent’s production behavior
 
-## Workers vs. Chat Interno
+***
 
-| Funcionalidade | Workers | Chat Interno (Time AI) |
-|---|---|---|
-| Executor | Agente ou squad da sua conta | Copilot interno da Timely.ai |
-| Histórico | Sessões separadas por executor | Sessões unificadas |
-| Consome créditos do plano | Sim | Não |
+## 🔄 Continuing Conversations
 
-## Boas práticas
+You can continue any previous conversation:
 
-- Escreva a primeira mensagem com instruções completas para reduzir idas e vindas com o agente.
-- Envie todos os arquivos relevantes em uma única mensagem quando possível — o agente processa o conjunto como contexto unificado.
-- Crie sessões separadas para tarefas distintas. Misturar assuntos em uma sessão dificulta a consulta futura e pode confundir o contexto do agente.
-- Use Workers para tarefas que levam mais de alguns minutos. Para consultas rápidas, o chat no painel do agente é mais ágil.
+* Click a chat from the left panel
+* The full history will be loaded
+* Continue from where you left off
 
-## Conclusão
+***
 
-Workers é o atalho para aproveitar o poder dos seus agentes além do atendimento ao cliente:
+## ✏️ Renaming Conversations
 
-- Produtividade pessoal com processamento autônomo de tarefas demoradas.
-- Histórico organizado por sessão, agente e período.
-- Suporte a arquivos e visão multimodal quando o modelo do agente suportar.
-- Contexto preservado entre sessões para trabalhos contínuos.
+You can rename chats to keep your workspace organized:
+
+1. Click the edit icon
+2. Enter a new name
+3. Save
+
+***
+
+### Why this is useful
+
+* Organize different use cases
+* Separate workflows by topic
+* Improve navigation across conversations
+
+***
+
+## 🔍 Search
+
+Workers allows you to search across conversations.
+
+You can search by:
+
+* Conversation title
+* Message content
+* Agent name
+
+This helps you quickly find specific interactions or tasks.
+
+***
+
+## ⚠️ Production Behavior
+
+Workers interacts with your Agents exactly as they are in **production**.
+
+This means:
+
+* All responses follow the live configuration
+* Tools, flows, and logic are executed in real conditions
+* Changes in Draft are NOT reflected until deployed
+
+***
+
+## 🔁 Workers vs Internal Chat
+
+| Feature     | Workers                 | Internal Chat (Draft) |
+| ----------- | ----------------------- | --------------------- |
+| Environment | Production              | Draft                 |
+| Behavior    | Live                    | In development        |
+| Use case    | Real usage + validation | Development & testing |
+| Risk        | Real behavior           | Safe experimentation  |
+
+***
+
+## 📌 Best Practices
+
+* Use **Internal Chat** to test changes before deploying
+* Use **Workers** for real usage and production validation
+* Rename conversations to stay organized
+* Use search to quickly retrieve past interactions
+
+***
+
+## ✅ Key Takeaway
+
+Workers allows you to:
+
+* Use your Agents in a real chat interface
+* Support daily workflows and team productivity
+* Interact with Agents in production
+* Manage conversations in a centralized workspace
+
+It’s not just for testing — it’s a **practical interface to work with your Agents every day**.

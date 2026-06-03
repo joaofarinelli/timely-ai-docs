@@ -1,3 +1,173 @@
 ---
 title: "Follow Up Tool"
 ---
+
+The **Follow Up Tool** allows an Agent to schedule proactive messages based on the **current conversation context**, enabling timely re-engagement when the user stops responding — without breaking the conversational flow.
+
+This tool is especially useful for sales, lead qualification, onboarding, reminders, and pending decision scenarios.
+
+***
+
+## 🔎 What the Follow Up Tool Does
+
+* Schedules one or more follow-up messages during a conversation.
+* Uses **conversation context and conditions** to decide *if* a follow-up should be scheduled.
+* Defines **when** the message should be sent and **what** it should say.
+* Automatically cancels follow-ups if the user re-engages before the scheduled time.
+* Allows operators to **view, edit, or delete** scheduled follow-ups directly from the conversation history.
+
+***
+
+## ⏱️ Channel Limitation (Important)
+
+When the Agent is connected to **WhatsApp Official** or **Instagram**, follow-ups must respect the **24-hour messaging window**:
+
+* The follow-up must be scheduled **within 24 hours of the user’s last message**.
+* If the window expires, the follow-up will not be delivered.
+
+This behavior follows Meta’s official messaging policies.
+
+***
+
+## 🧠 How Follow Ups Are Evaluated
+
+The key concept to understand:
+
+> **The Agent evaluates follow-up conditions at the moment it sends a message — not in the future.**
+
+### What this means in practice:
+
+* The Agent **does not know** whether the user will reply or not.
+* It **predicts the need for a follow-up** based on:
+  * The current conversation state
+  * The user’s intent
+  * What information is still missing
+  * Whether the conversation feels “open” or “pending”
+
+If the condition matches, the Agent:
+
+1. Decides that a follow-up *may be needed*
+2. Reads the scheduling prompt
+3. Schedules the message for a future time
+
+***
+
+## ⚙️ Tool Configuration
+
+Each Follow Up entry contains:
+
+### 1️⃣ Name
+
+A short identifier for the follow-up scenario.
+
+Example:\
+`Waiting for car preference`
+
+***
+
+### 2️⃣ Conversation Stage
+
+Describes **when this follow-up should be scheduled**, based on the current state of the conversation.
+
+This is **not** about future behavior.\
+It’s about **what is true right now**.
+
+**✅ Good examples of conversation stages:**
+
+* “The user asked about cars but hasn’t specified a model or brand yet.”
+* “The user showed interest in pricing but didn’t confirm the plan.”
+* “The user requested information but stopped responding before choosing an option.”
+* “The user asked for a proposal but hasn’t shared required details.”
+
+❌ Avoid future assumptions like:
+
+* “If the user doesn’t reply…”\
+  (The Agent cannot know this yet.)
+
+***
+
+### 3️⃣ Scheduling Prompt
+
+Defines **when** the follow-up should be sent and **what message** should be scheduled.
+
+This prompt tells the Agent:
+
+* How long to wait
+* What tone to use
+* What question or reminder to send
+
+**✅ Good scheduling prompt examples:**
+
+* “After 10 minutes, ask if I can send the complete list of available cars.”
+* “In 30 minutes, politely check if the user needs help choosing a plan.”
+* “After 1 hour, remind the user that support is available if they have questions.”
+* “Later today, follow up asking if the proposal should be adjusted.”
+
+***
+
+## 🔄 Runtime Behavior
+
+### Scheduling
+
+* Follow-ups are scheduled immediately after the Agent sends a message.
+* The scheduled message appears in the conversation history.
+
+### Automatic Cancellation
+
+* If the user sends **any message before the follow-up time**:
+  * All pending follow-ups are automatically canceled.
+  * The Agent may schedule **new follow-ups**, based on the updated context.
+
+### Manual Control
+
+Operators can:
+
+* See scheduled follow-ups inside the conversation timeline
+* Edit:
+  * Send date and time
+  * Message content
+* Delete follow-ups if needed
+
+This gives full operational visibility and control.
+
+***
+
+## 🔁 Fallback Follow Up (Optional)
+
+You can define a **Fallback Follow Up**, used when:
+
+* None of the configured follow-up conditions match
+* The Agent still considers a re-engagement useful
+
+This ensures the Agent always has a safe default behavior.
+
+***
+
+## 📌 Practical Example
+
+**Conversation**\
+User: “I want to know more about cars.”
+
+Agent asks follow-up questions (brand, model, type).
+
+**Conversation Stage**\
+“The user showed interest in cars but hasn’t specified which one yet.”
+
+**Scheduling Prompt**\
+“After 10 minutes, ask if I can send the complete list of available cars.”
+
+**Result**
+
+* Follow-up is scheduled
+* If the user replies before 10 minutes → follow-up is canceled
+* If not → message is sent automatically
+
+***
+
+## 🧠 Best Practices
+
+* Write conversation stages based on **present context**, not future outcomes.
+* Keep scheduling prompts clear and time-specific.
+* Use follow-ups to unblock decisions, not to spam users.
+* Always respect the 24-hour window on WhatsApp and Instagram.
+* Monitor and adjust follow-ups from conversation history when needed.

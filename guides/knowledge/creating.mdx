@@ -1,62 +1,78 @@
 ---
-title: "Criando uma Base de Conhecimento"
-description: "Passo a passo para criar uma base de conhecimento na Timely.ai, adicionar fontes de conteúdo e acompanhar o status de processamento."
+title: "Creating a Knowledge Base"
 ---
 
-Uma **base de conhecimento** organiza o conteúdo que o agente consulta em tempo real durante as conversas. Cada base é independente e pode conter múltiplas fontes: documentos, Q&As, páginas de site e transcrições de vídeos do YouTube. A mesma base pode ser conectada a diferentes agentes, e um agente pode usar múltiplas bases simultaneamente.
+Creating a Knowledge Base in Timely.ai is a straightforward process.\
+Each base can hold multiple items and serve as a reusable knowledge layer for different Agents or Squads.
 
-## Passo 1 — Acesse o Módulo de Knowledge
+***
 
-1. No menu lateral, clique em **Knowledge** (ou **Bases de Conhecimento**).
-2. A tela exibe todas as bases existentes no workspace, organizadas por data de criação.
+## 🪄 Step 1 — Open the Knowledge Module
 
-## Passo 2 — Defina a Base
+1. Navigate to **Builder → Knowledge**
+2. Click **New Knowledge Base +** in the top-right corner.
 
-Clique em **+ Nova base** no canto superior direito. Um formulário de criação será exibido com dois campos:
+***
 
-- **Nome** — identificador interno da base. Escolha algo descritivo que indique o propósito: "FAQ Produto", "Políticas de Devolução", "Catálogo de Serviços 2025".
-- **Workspace** — se a conta tem múltiplos workspaces, selecione ao qual workspace esta base pertence. A base ficará visível apenas para agentes desse workspace.
+## 🧠 Step 2 — Define the Base
 
-## Passo 3 — Adicione Itens
+In the **Add Knowledge Base** window:
 
-Com a base criada, adicione as fontes de informação. A base suporta quatro tipos de conteúdo que podem coexistir na mesma base:
+* **Name:** Choose a clear and descriptive title (e.g. *Support FAQs*, *Internal Docs*, *Sales Playbook*).
+* **Description (optional):** Add internal notes for organization or context.
 
-### Texto e Documentos
+Click **Create Knowledge Base** to finalize.
 
-Faça upload de arquivos PDF ou de texto diretamente na interface.
+Your new base will now appear in the list.
 
-- O processador extrai o texto do arquivo automaticamente
-- O conteúdo é dividido em chunks de ~4.000 caracteres com sobreposição de ~400 caracteres
-- Cada chunk é vetorizado e armazenado para busca semântica
+***
 
-### PDF
+## 📚 Step 3 — Add Items
 
-PDFs com conteúdo estruturado — manuais, políticas, catálogos — são processados da mesma forma que documentos de texto.
+Each Knowledge Base can contain multiple items, which are the actual content sources.
 
-- PDFs com texto digitalizado (imagens escaneadas) não são suportados — o extrator precisa de texto selecionável
-- O tamanho máximo por arquivo é 50 MB
-- O status muda de **Processando** para **Indexado** quando a vetorização é concluída
+Click **Add Item +**, then select one of the following:
 
-## Passo 4 — Indexação e status
+### 📝 Text
 
-Após adicionar uma fonte, o conteúdo passa pelo pipeline assíncrono de processamento. Acompanhe o status na tela da base:
+* Ideal for FAQs, structured guides, or internal definitions.
+* Paste up to **1,000,000 characters** of content.
+* Click **Update** to save and start training.
 
-| Status | Descrição |
-|--------|-----------|
-| **Processando** | O conteúdo está sendo extraído, dividido em chunks e vetorizado. O item ainda não está disponível para busca. |
-| **Indexado** | Processamento concluído. O agente já pode recuperar este conteúdo nas conversas. |
-| **Erro** | Falha no processamento. Clique no item para ver o detalhe do erro e tente novamente. |
+### 📄 PDF
 
-## Passo 5 — Atualize ou Gerencie
+* Upload a `.pdf` file from your computer.
+* The platform will automatically extract, process, and index the text content.
+* Click **Add** to confirm.
 
-Após a criação inicial, a base pode ser mantida de três formas:
+***
 
-- **Adicionar novas fontes** — clique em **+ Adicionar** dentro da base para incluir novos documentos, Q&As, URLs ou vídeos sem remover o conteúdo existente.
-- **Editar Q&As** — pares de pergunta e resposta podem ser editados diretamente pela interface. A re-indexação ocorre automaticamente após salvar.
-- **Remover conteúdo desatualizado** — exclua documentos ou Q&As que não são mais válidos. O conteúdo excluído deixa de aparecer nas buscas imediatamente.
+## 🔄 Step 4 — Training & Status
 
-## Dica
+After adding content, the system automatically begins **training** — converting text into vector embeddings for retrieval.
 
-<Note>
-  Comece com Q&As manuais para os 10 a 20 tópicos mais frequentes. Eles são indexados instantaneamente — sem pipeline assíncrono — e têm alta precisão porque você controla exatamente o que o agente vai recuperar. Depois, complemente com documentos para conteúdos extensos e contextuais.
-</Note>
+| Status         | Description                                |
+| -------------- | ------------------------------------------ |
+| **Pending**    | Waiting to start training.                 |
+| **Processing** | Data is being analyzed and embedded.       |
+| **Completed**  | Training finished successfully.            |
+| **Failed**     | An issue occurred; edit or retry the item. |
+
+You can hover over the **Status** indicator to view detailed information.
+
+***
+
+## 🧩 Step 5 — Update or Manage
+
+At any time:
+
+* Click the **Edit (✏️)** button to rename or update the base description.
+* Click the **⋮** menu beside an item to edit, delete, or retrain it.
+* Adding new items will automatically trigger training again.
+
+***
+
+## 💡 Tip
+
+Keep content concise, clean, and well-structured.\
+Use consistent headings and avoid redundant data to improve embedding quality and retrieval precision.

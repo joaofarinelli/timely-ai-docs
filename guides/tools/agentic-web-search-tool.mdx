@@ -1,3 +1,67 @@
 ---
 title: "Agentic Web Search Tool"
 ---
+
+The **Web Search Tool** enables your Agent to perform searches on the internet and bring back relevant and up-to-date information. This is especially useful when the knowledge required by the user cannot be pre-loaded into a Knowledge Base or when real-time information is needed (e.g., news, trends, events, product availability).
+
+***
+
+## 🔑 Key Concepts
+
+* **Description Field**: The Agent decides when to use this tool based on the description you provide. Be clear and precise about what the tool is meant to search (e.g., *“Use this tool to fetch the latest news articles related to financial markets”*).
+* **Topics**: Define whether the search should be general or restricted to news.
+* **Maximum Days**: Set a timeframe filter to restrict results to recent content (e.g., last 7, 30, or 90 days).
+* **Mode**:
+  * *Basic*: Standard web search with less filtering.
+  * *Advanced*: More precise search logic, with better contextual alignment to the Agent’s goal.
+* **Results**: The maximum number of results the tool should return (e.g., top 5, top 10).
+
+***
+
+## ⚙️ Configuration Fields
+
+1. **Name** – Give the tool a meaningful name that reflects its purpose.\
+   Example: `Latest Tech News Search`.
+2. **Description** – Write a clear instruction for the Agent.\
+   Example:
+
+   ```
+   Allows the Agent to fetch recent news articles about technology updates and trends.
+   ```
+3. **Topic** – Choose between:
+   * `General` → Broader search results from the web.
+   * `News` → Results restricted to news sources.
+4. **Maximum Days** – Define the time range for content freshness.
+   * Example: `7` → Only last week’s content.
+5. **Mode** –
+   * `Basic` → Quick, broad searches.
+   * `Advanced` → More structured and reliable searches.
+6. **Results** – The number of search results to be returned (1–20).
+   * Example: `10` → Top 10 results.
+
+***
+
+## 📘 Example Setup
+
+* **Name**: `Crypto News Search`
+* **Description**: `Use this tool to fetch the latest cryptocurrency news from reliable sources.`
+* **Topic**: `News`
+* **Maximum Days**: `30`
+* **Mode**: `Advanced`
+* **Results**: `5`
+
+This configuration ensures the Agent fetches only recent and relevant news, helping it provide more accurate answers in real time.
+
+***
+
+## 💡 Best Practices
+
+* Keep the **description short but precise** so the Agent knows exactly when to trigger this tool.
+* Use **News mode** for contexts requiring trust and recency (finance, politics, technology updates).
+* Use **General mode** when open web context is sufficient (definitions, product details, how-to guides).
+* Set **Maximum Days** thoughtfully – shorter ranges for fast-moving industries, longer for evergreen topics.
+* Limit **Results** to avoid overwhelming the Agent with too many irrelevant links.
+
+***
+
+👉 With the **Web Search Tool**, your Agent extends beyond static knowledge and can operate with **real-time awareness**, enhancing its usefulness in dynamic scenarios like support, sales, and research.

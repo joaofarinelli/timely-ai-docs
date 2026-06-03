@@ -1,81 +1,74 @@
 ---
-title: "Knowledge Base — Visão Geral"
-description: "Entenda os conceitos centrais da Knowledge Base da Timely.ai, como o pipeline RAG funciona e quais tipos de conteúdo são suportados."
+title: "Knowledge Base — Overview"
 ---
 
-A Knowledge Base é o repositório de conhecimento dos seus agentes. Em vez de depender exclusivamente do prompt de sistema, o agente consulta a base durante cada conversa e recupera trechos relevantes antes de formular a resposta. Essa arquitetura é chamada de **RAG (Retrieval-Augmented Generation)**.
+The **Knowledge Base** is where your Agents learn what to say, how to say it, and what information to rely on.\
+It acts as a structured repository of trusted data — from FAQs and documents to custom training texts — ensuring that your Agents can respond accurately and consistently across all channels.
 
-## Conceitos Centrais
+In Timely.ai, Knowledge Bases are **independent and reusable** entities.\
+They can be linked to multiple **Agents** or **Squads** simultaneously, depending on which Agents have access to a Tool connected to that specific Knowledge Base.
 
-| Conceito | Descrição |
-|----------|-----------|
-| **Base de Conhecimento** | Coleção independente de documentos e conteúdos que um agente pode consultar. Cada base é isolada — os documentos de uma base nunca aparecem nas buscas de outra. |
-| **Chunk** | Fragmento de texto gerado pelo processo de divisão de documentos longos. O chunker divide o conteúdo em pedaços de ~4.000 caracteres com sobreposição de ~400 caracteres entre chunks consecutivos para preservar o contexto nas fronteiras. |
-| **Embedding** | Representação vetorial de um chunk gerada pelo modelo `text-embedding-3-small`. Cada embedding tem 1.536 dimensões e captura o significado semântico do texto. |
-| **Retrieval** | Processo de busca por similaridade coseno que compara o embedding da pergunta do usuário com os embeddings armazenados e retorna os chunks mais próximos semanticamente. |
-| **RAG** | Retrieval-Augmented Generation — os chunks recuperados são injetados no contexto do LLM junto com a mensagem do usuário, permitindo que o agente responda com base em informação específica indexada, não em memória de treinamento genérico. |
+***
 
-## Por Que Isso Importa
+## 🧩 Core Concepts
 
-1. **Respostas baseadas em dados reais**: o agente responde com o conteúdo exato que você indexou — políticas, preços, catálogos — e não com inferências genéricas do modelo base.
-2. **Atualização sem reprogramação**: basta atualizar o conteúdo na base de conhecimento. O agente passa a usar a nova informação imediatamente nas próximas conversas, sem necessidade de modificar o prompt de sistema.
-3. **Escopo controlado**: a busca é sempre filtrada por `knowledge_base_id` e `company_id`, garantindo que dados de um cliente nunca apareçam para outro e que bases distintas permaneçam isoladas mesmo quando um agente acessa múltiplas bases simultaneamente.
+| Concept            | Description                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| **Knowledge Base** | A container that stores curated information used to train or inform Agents.                        |
+| **Items**          | Individual pieces of content within a Knowledge Base — such as texts or PDFs.                      |
+| **Training**       | The process of embedding and indexing your data so it becomes searchable and understandable by AI. |
+| **Linking**        | The mechanism that connects a Knowledge Base to one or more Agents through the **Knowledge Tool**. |
 
-## Como Funciona
+***
 
-<Steps>
-  <Step title="Ingestão de conteúdo">
-    Você adiciona conteúdo à base — documentos, pares de Q&A, páginas de site ou vídeos do YouTube. O conteúdo é armazenado como documento na tabela `knowledge_base_documents`.
-  </Step>
-  <Step title="Chunking">
-    A função `knowledge-process-document` divide o texto em pedaços de ~4.000 caracteres. Uma sobreposição de ~400 caracteres é mantida entre chunks consecutivos para que o contexto não se perca nas fronteiras.
-  </Step>
-  <Step title="Geração de embeddings">
-    Cada chunk é convertido em um vetor de 1.536 dimensões pelo modelo `text-embedding-3-small` da OpenAI, enviado em lotes de até 100 chunks por requisição. Os vetores são armazenados na tabela `knowledge_chunks`.
-  </Step>
-  <Step title="Busca semântica">
-    Quando o agente precisa de informação, a função `knowledge-search` converte a pergunta do usuário em um vetor e executa busca por similaridade coseno. Os chunks mais próximos semanticamente são retornados, ordenados por relevância.
-  </Step>
-  <Step title="Geração aumentada">
-    Os chunks recuperados são injetados no contexto do LLM junto com a mensagem do usuário. O agente formula a resposta com base nessa informação específica, não em conhecimento genérico de pré-treinamento.
-  </Step>
-</Steps>
+## 💡 Why It Matters
 
-## Tipos de Conteúdo Suportados
+Knowledge Bases allow you to separate **intelligence** (the Agent’s reasoning) from **information** (the Agent’s source of truth).\
+This modular structure offers three key benefits:
 
-| Tipo | Descrição |
-|------|-----------|
-| **Documentos** | PDFs, arquivos de texto e documentos enviados por upload. O processador extrai o texto, divide em chunks e gera embeddings. |
-| **Q&A** | Pares de pergunta e resposta adicionados manualmente. Indexados instantaneamente, sem pipeline assíncrono. Alta precisão porque você controla exatamente o que será recuperado. |
-| **Website** | URLs rastreadas pelo crawler. O sistema percorre as páginas, extrai o conteúdo textual e indexa como documentos. Útil para manter a base sincronizada com documentação pública. |
-| **YouTube** | URLs de vídeos. O sistema baixa a transcrição automática, divide em chunks e indexa. Útil para bases de tutoriais em vídeo. |
+1. **Scalability** — The same knowledge can be shared across multiple Agents or Squads.
+2. **Versioning** — You can update a Knowledge Base without rebuilding or reconfiguring Agents.
+3. **Precision** — Each Agent retrieves only the information it is authorized to use.
 
-## Ciclo de Vida do Conhecimento
+***
 
-<Steps>
-  <Step title="Criação da base">
-    Uma base de conhecimento é criada no módulo de Knowledge, recebe um nome e fica associada ao workspace. Começa vazia, sem documentos.
-  </Step>
-  <Step title="Adição de conteúdo">
-    Documentos, Q&As, URLs e vídeos são adicionados à base. Cada fonte passa pelo pipeline de processamento correspondente ao seu tipo.
-  </Step>
-  <Step title="Processamento e indexação">
-    O conteúdo é processado de forma assíncrona: chunking, vetorização e armazenamento. O status muda de **Processando** para **Indexado** quando concluído.
-  </Step>
-  <Step title="Conexão ao agente">
-    A base é conectada a um ou mais agentes na seção **Bases de conhecimento**. Os parâmetros de retrieval — top-k e threshold de similaridade — são configurados por base.
-  </Step>
-  <Step title="Uso em produção">
-    O agente consulta a base automaticamente em cada conversa. Quando a pergunta do usuário tem correspondência semântica acima do threshold, os chunks relevantes são incluídos no contexto da resposta.
-  </Step>
-</Steps>
+## 🧠 How It Works
 
-## Exemplo
+1. You create one or more Knowledge Bases under the **Builder → Knowledge** section of an Agent.
+2. You add content items — either **Text** or **PDF**.
+3. The system automatically processes and trains the data.
+4. You can link the trained base to any Agent via the **Knowledge Tool**.
+5. When a user interacts with the Agent, it retrieves contextually relevant information from that base in real time.
 
-Uma empresa de software conecta três bases ao mesmo agente de suporte:
+***
 
-- Base "FAQ Produto" com respostas para as perguntas mais frequentes sobre funcionalidades
-- Base "Documentação Técnica" com manuais e guias de integração
-- Base "Políticas Comerciais" com regras de cancelamento, reembolso e contratos
+## ⚙️ Supported Content Types
 
-Quando um usuário pergunta "como cancelo minha assinatura?", o agente busca nas três bases simultaneamente, recupera os chunks mais relevantes da base "Políticas Comerciais" e formula uma resposta precisa com base nas regras reais da empresa.
+| Type     | Description                                                                              |
+| -------- | ---------------------------------------------------------------------------------------- |
+| **Text** | Raw content written directly in the interface (ideal for FAQs, guides, and definitions). |
+| **PDF**  | Uploaded documents such as manuals, reports, or training materials.                      |
+
+Support for other formats (e.g. `.docx`, `.md`, `.csv`) will be added in upcoming releases.
+
+***
+
+## 📈 Knowledge Lifecycle
+
+1. **Creation** — Define the base and its purpose.
+2. **Population** — Add items such as text or PDF documents.
+3. **Training** — Let the platform process and embed your data.
+4. **Linking** — Assign the base to one or more Agents.
+5. **Iteration** — Update content and retrain as needed.
+
+***
+
+## 🧭 Example
+
+* **Base Name:** *Cérebro Ju*
+* **Used by:** *Agent Ju da Timely* and *Squad da Timely*
+* **Items:**
+  * Text: *Commercial FAQs (bilingual)*
+  * PDF: *Product Documentation*
+
+Both the individual Agent and the Squad can query this same base, as long as they’re linked through a **Knowledge Tool**.

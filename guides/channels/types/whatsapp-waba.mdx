@@ -1,184 +1,25 @@
 ---
-title: "WhatsApp (Oficial WABA)"
-description: "Conecte um número ao WhatsApp Business API oficial via Meta Embedded Signup e configure templates, webhooks e limites de taxa."
+title: "WhatsApp (Evo Go)"
 ---
 
-O canal WhatsApp WABA usa a **API oficial da Meta** (WhatsApp Business API). É a única forma homologada de integrar WhatsApp a sistemas automatizados com SLA garantido, suporte a templates aprovados e alta volumetria — sem risco de banimento por uso de soluções não oficiais.
+This option connects the platform to WhatsApp using **Evolution Go**, which leverages the official WhatsApp Web protocol through QR code authentication.
 
-## Guias de referência
+### Connection Flow
 
-### Entendendo a API oficial do WhatsApp
+1. Select **Type: WhatsApp Web**.
+2. Define the channel name and description.
+3. Assign a responder (Agent or Squad).
+4. Click **Create Channel**.
+5. A **QR Code** will appear automatically.
 
-A API oficial do WhatsApp (WABA) opera dentro do ecossistema Meta Business. Antes de conectar, é importante compreender como ela difere do aplicativo WhatsApp Business:
+### QR Code Authentication
 
-- O número de telefone precisa ser **exclusivo** para a API — não pode estar cadastrado no app WhatsApp pessoal ou Business ao mesmo tempo.
-- Toda comunicação fora de uma janela de atendimento ativa exige o uso de **templates HSM aprovados** pela Meta.
-- A conta Meta Business Manager precisa estar **verificada** para aumentar os limites de mensagens acima do nível inicial.
-- O acesso é gerenciado por **tokens de sistema de longa duração** — tokens pessoais expiram em 60 dias e causam desconexões.
+* Open the WhatsApp app on your phone.
+* Navigate to **Linked Devices → Add Device**.
+* Scan the QR Code displayed on the screen.
+* The connection will be established within a few seconds.
 
-### Tutorial de conexão passo a passo
+Once the QR code is read successfully, the Agent can send and receive messages through that WhatsApp number.\
+If the channel is deactivated, message routing stops immediately.
 
-A conexão é feita pelo fluxo Meta Embedded Signup diretamente no dashboard da Timely.ai. O processo leva em média 10 a 15 minutos na primeira vez e não exige conhecimento técnico. As seções abaixo cobrem cada etapa em detalhe.
-
-## Guia rápido de conexão
-
-### Na Timely.ai
-
-<Steps>
-  <Step title="Acesse Canais no dashboard">
-    No menu lateral, clique em **Canais** e depois em **Adicionar canal**. Selecione **WhatsApp (WABA)**.
-  </Step>
-  <Step title="Inicie o Embedded Signup">
-    Clique em **Conectar com Meta**. Uma janela popup da Meta abre — certifique-se de que popups estão habilitados no navegador antes de clicar.
-  </Step>
-  <Step title="Aguarde o retorno do fluxo Meta">
-    Conclua o fluxo no popup (descrito na seção abaixo). Após a autorização, a Timely.ai recebe automaticamente o **Phone Number ID** e o **Business Account ID**.
-  </Step>
-</Steps>
-
-<Warning>
-  Números já cadastrados no WhatsApp pessoal ou no app WhatsApp Business precisam ser migrados antes da conexão. A migração apaga o histórico de conversas do app — documente o que for necessário antes de prosseguir.
-</Warning>
-
-### No fluxo da Meta
-
-Dentro do popup do Embedded Signup, você vai:
-
-1. **Fazer login** com a conta Facebook que tem acesso ao Meta Business Manager.
-2. **Selecionar a empresa** correta na lista. Se não aparecer, verifique se o seu usuário tem papel de administrador no Business Manager.
-3. **Criar ou selecionar uma conta WhatsApp Business** — a WABA que será usada para enviar e receber mensagens.
-4. **Adicionar o número de telefone** — pode ser fixo ou celular. O número não pode estar ativo em nenhum app WhatsApp.
-5. **Verificar o número** via código SMS ou chamada de voz.
-6. **Escolher o nome de exibição** — nome que aparecerá para os seus clientes nos chats. Passa por revisão da Meta (geralmente aprovado em menos de 24h).
-
-| Campo | Onde encontrar |
-|-------|---------------|
-| **Phone Number ID** | Preenchido automaticamente após o Embedded Signup |
-| **Business Account ID** | Preenchido automaticamente após o Embedded Signup |
-| **Access Token** | Meta Business Manager → Configurações → Usuários do sistema → Gerar token |
-| **App Secret** | Meta for Developers → Seu App → Configurações → Básicas |
-| **Webhook Verify Token** | String aleatória definida por você (mínimo 16 caracteres) |
-
-<Note>
-  Prefira sempre **tokens de usuário de sistema de longa duração**. Tokens pessoais expiram em 60 dias e desconectam o canal automaticamente — um erro comum que causa interrupção de atendimentos.
-</Note>
-
-### De volta à Timely.ai
-
-<Steps>
-  <Step title="Preencha as credenciais">
-    Insira o Access Token, App Secret e Webhook Verify Token nos campos correspondentes. Selecione a versão da API (recomendamos `v18.0`).
-  </Step>
-  <Step title="Configure o webhook na Meta">
-    No painel Meta for Developers, acesse **Seu App → WhatsApp → Configuração** e preencha a URL do webhook (`https://[SEU-SUPABASE].supabase.co/functions/v1/waba-webhook`) e o Verify Token. Assine o campo `messages`.
-  </Step>
-  <Step title="Ative e teste">
-    Ative o toggle **Integração ativa**, clique em **Salvar configuração** e use **Testar conexão** para validar as credenciais e o webhook.
-  </Step>
-</Steps>
-
-### Importante: verificação de portfólio novo
-
-<Warning>
-  Contas Meta Business Manager recém-criadas passam por um período de revisão de portfólio. Durante esse período, o limite de mensagens é restrito a 250 conversas únicas por dia. A verificação de negócio no Business Manager (upload de documentos da empresa) é necessária para elevar esse limite. O processo leva de 1 a 5 dias úteis.
-</Warning>
-
-## Duas abordagens de conexão
-
-A API do WhatsApp pode ser acessada de duas formas distintas, cada uma com implicações diferentes para o gerenciamento do número:
-
-<CardGroup cols={2}>
-  <Card title="App + API (Embedded Signup)">
-    Fluxo guiado dentro da Timely.ai. A Meta gera as credenciais automaticamente após você autorizar o acesso. Recomendado para a maioria dos casos — menor complexidade técnica.
-  </Card>
-  <Card title="API-Only (credenciais manuais)">
-    Você gera as credenciais diretamente no Meta for Developers e insere manualmente. Necessário quando o número já está em uma WABA existente gerenciada por outro sistema.
-  </Card>
-</CardGroup>
-
-## App + API vs API-Only
-
-<CardGroup cols={2}>
-  <Card title="App + API">
-    Gerenciamento do número dentro da interface da Timely.ai. Atualizações de configuração refletem imediatamente. Ideal para empresas sem equipe técnica dedicada.
-  </Card>
-  <Card title="API-Only">
-    Controle total da WABA pelo Meta Business Manager. Permite compartilhar o mesmo número entre a Timely.ai e outros sistemas (ex.: CRM externo via API).
-  </Card>
-</CardGroup>
-
-<Warning>
-  Na abordagem API-Only, a Timely.ai não recebe notificações automáticas quando as credenciais expiram. Configure monitoramento externo ou revise as credenciais manualmente a cada 45 dias.
-</Warning>
-
-## Preços
-
-O WhatsApp WABA usa o modelo de precificação por conversa da Meta. Pontos principais:
-
-- **Conversas iniciadas pelo cliente** (service conversations) — janela de 24h contada a partir da primeira mensagem do cliente. Dentro da janela, o agente pode responder livremente sem custo adicional por mensagem.
-- **Conversas iniciadas pela empresa** — requerem template HSM aprovado e geram cobrança por conversa aberta. O valor varia por país de destino.
-- **1.000 conversas gratuitas por mês** — a Meta oferece uma cota gratuita mensal que cobre a maioria dos casos de baixo volume.
-
-<Note>
-  Os preços exatos por categoria e país estão disponíveis na tabela de preços da Meta. A Timely.ai não cobra por mensagem — o custo do WhatsApp é cobrado diretamente pela Meta na sua conta Business Manager.
-</Note>
-
-## Verificação
-
-<Warning>
-  A verificação de negócio no Meta Business Manager é obrigatória para ultrapassar o limite de 250 conversas únicas por dia. Sem verificação, o número fica restrito ao nível básico indefinidamente.
-</Warning>
-
-### Quando é necessária
-
-A verificação é exigida quando:
-
-- Você precisa enviar mensagens para mais de 250 números únicos por dia.
-- Quer habilitar o selo de verificação no perfil do WhatsApp Business.
-- Planeja usar funcionalidades avançadas como anúncios com link direto para o WhatsApp.
-
-### O que você precisa
-
-Para concluir a verificação no Business Manager:
-
-- Documento oficial da empresa (contrato social, CNPJ, alvará ou equivalente no país).
-- Site da empresa com domínio correspondente ao nome da empresa na Meta.
-- E-mail ou número de telefone no domínio da empresa para verificação de identidade.
-
-### Pontos importantes
-
-A revisão da Meta leva de 1 a 5 dias úteis após o envio dos documentos. Se rejeitada, você pode resubmeter com documentação adicional. O status da verificação fica visível em **Meta Business Manager → Configurações → Verificação de negócio**. Empresas com nomes de exibição diferentes do nome legal registrado podem precisar de documentação extra para comprovar a relação.
-
-## FAQ
-
-**O número precisa ser exclusivo para a API?**
-Sim. O mesmo número não pode estar ativo no app WhatsApp pessoal ou no app WhatsApp Business simultaneamente. Se o número estiver em uso em um app, é necessário fazer a migração — o que apaga o histórico de conversas do app.
-
-**Posso usar um número fixo?**
-Sim. Números de telefone fixo são suportados. A verificação é feita por chamada de voz em vez de SMS.
-
-**Quantos números posso ter por workspace?**
-Não há limite técnico de números por workspace na Timely.ai. Cada número é uma integração WABA separada e pode ter agente e configurações independentes.
-
-**O agente pode enviar mensagens proativamente?**
-Sim, com templates HSM aprovados. Fora da janela de 24h, toda mensagem iniciada pela empresa precisa usar um template pré-aprovado pela Meta na categoria MARKETING, UTILITY ou AUTHENTICATION.
-
-**O que acontece se o Quality Rating cair?**
-A Meta reduz o limite diário de mensagens quando o Quality Rating está baixo (geralmente causado por bloqueios ou reclamações dos destinatários). Monitore o rating no Business Manager e reaja rápido para evitar restrições de volume.
-
-**Posso mudar o nome de exibição do número depois de aprovado?**
-Sim, mas a mudança passa por nova revisão da Meta. Durante a revisão, o nome atual continua visível para os clientes.
-
-## Solução de problemas
-
-- **Erro 190 (Access Token inválido)** — tokens de usuário pessoal expiram em 60 dias. Gere um token de usuário de sistema de longa duração no Business Manager em **Configurações → Usuários do sistema**.
-- **Webhook retorna 403** — o Webhook Verify Token cadastrado na Timely.ai precisa ser idêntico ao configurado na Meta (maiúsculas, espaços e caracteres especiais incluídos). Salve antes de verificar.
-- **Mensagens chegam mas agente não responde** — verifique se o agente está ativo e vinculado ao canal em **Agentes → [agente] → Canais**. Confirme que o campo `messages` está assinado no webhook.
-- **Template rejeitado** — causas comuns: linguagem promocional em template UTILITY, variáveis não identificadas corretamente (`{{1}}`, `{{2}}`), ou conteúdo que viola as políticas de negócios da Meta.
-- **Número não aparece no Embedded Signup** — o número precisa estar associado à empresa correta no Business Manager. Verifique em **Business Manager → Configurações → Números de telefone WhatsApp**.
-
-## Recursos
-
-- [Meta Business Manager](https://business.facebook.com)
-- [Meta for Developers — WhatsApp](https://developers.facebook.com/docs/whatsapp)
-- [Políticas de templates da Meta](https://developers.facebook.com/docs/whatsapp/message-templates/guidelines)
+> 🕐 QR codes are valid for **40 seconds** — if the connection fails, refresh the page or restart the pairing process.

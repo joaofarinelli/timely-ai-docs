@@ -1,29 +1,16 @@
 ---
 title: "Instagram"
-description: "Conecte sua conta Instagram Business e atenda DMs automaticamente via Meta OAuth."
 ---
 
-O canal Instagram permite que seu agente atenda **Direct Messages** do Instagram em tempo real. A conexão usa o fluxo OAuth da Meta e exige uma conta Instagram Business ou Creator vinculada a uma Página do Facebook.
+The **Instagram** channel follows the same authentication pattern as WhatsApp Official, but directly through Instagram’s own OAuth page.
 
-## Fluxo de conexão
+### Connection Flow
 
-<Steps>
-  <Step title="Acesse Canais no dashboard">
-    No menu lateral, clique em **Canais** e depois em **Adicionar canal**. Selecione **Instagram**.
-  </Step>
-  <Step title="Clique em Conectar com Instagram">
-    Um popup da Meta abre. Certifique-se de que popups estão habilitados no navegador antes de clicar.
-  </Step>
-  <Step title="Faça login e selecione as contas">
-    Dentro do popup, faça login com o Facebook que administra a Página vinculada ao Instagram. Selecione a Página do Facebook e a conta Instagram correspondente. Conceda todas as permissões solicitadas — especialmente `instagram_manage_messages` e `pages_messaging`.
-  </Step>
-  <Step title="Aguarde a confirmação">
-    Após autorizar, o popup fecha e a Timely.ai verifica o status em segundo plano. Quando a conexão for estabelecida, o badge muda para **Conectado** e o username `@suaconta` aparece na tela.
-  </Step>
-  <Step title="Vincule ao agente">
-    Confirme que o agente correto está selecionado para este canal em **Agentes → [agente] → Canais**.
-  </Step>
-  <Step title="Teste o recebimento">
-    Envie uma DM para a conta Instagram conectada a partir de outro perfil. A mensagem deve aparecer na Inbox dentro de alguns segundos.
-  </Step>
-</Steps>
+1. Select **Type: Instagram**.
+2. Set the name, description, and responder.
+3. Click **Create Connection**.
+4. You will be redirected to Instagram’s login page.
+5. Log in using the Instagram account that your Agent should use for client communication.
+6. Authorize the connection.
+
+After completing authentication, the Agent will be able to send and receive messages directly from that Instagram account within Timely.ai.

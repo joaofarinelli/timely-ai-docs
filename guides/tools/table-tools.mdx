@@ -1,3 +1,68 @@
 ---
 title: "Table Tools"
 ---
+
+Table Tools allow Agents to interact with structured data in Timely.ai. They provide the ability to **insert, update, search, and compare data directly inside tables**, making Agents more autonomous in managing business information.
+
+These tools are essential when the Agent needs to **store new information**, **update existing records**, or **search across large datasets** for relevant answers.
+
+***
+
+## 📝 Insert Row in Table
+
+* **What it does**: Inserts a new row into a specific table with information collected during the conversation.
+* **When to use**:
+  * Collecting user feedback.
+  * Storing contact details from leads.
+  * Recording structured inputs that Agents gather step by step.
+* **Important**: The Agent will only call this tool after ensuring it has collected all required fields for the table.
+
+***
+
+## ✏️ Update Row in Table
+
+* **What it does**: Updates existing records in a table with new or corrected information.
+* **When to use**:
+  * A customer updates their contact details.
+  * Correcting errors in a record.
+  * Tracking process stages (e.g., status change from *Pending* → *Completed*).
+
+***
+
+## 🔎 Semantic Search in Table
+
+* **What it does**: Allows Agents to run **semantic searches** inside table rows. Instead of relying only on exact matches, the Agent can interpret **meaning and context** of the query.
+* **When to use**:
+  * Finding relevant user feedback (even if the exact keywords differ).
+  * Searching for contextual information in descriptive fields.
+  * Recalling similar cases from historical datasets.
+* ⚠️ **Key Requirement**:\
+  Semantic search only works if the **column is explicitly enabled for semantic indexing**.
+  * While configuring the table, toggle **Enable Semantic Search** for the columns where you want the Agent to run contextual queries (e.g., free text, notes, messages).
+  * Columns without this option enabled will be ignored in semantic queries.
+
+***
+
+## 🔍 Similarity Search in Table
+
+* **What it does**: Finds records that are **most similar** to the input provided by the user.
+* **When to use**:
+  * Searching for users with similar names or IDs.
+  * Matching product descriptions.
+  * Detecting duplicates or related records.
+* **Difference from Semantic Search**:
+  * **Similarity Search** → looks for closest matches based on embeddings (vectors).
+  * **Semantic Search** → interprets meaning and context, broader and more flexible.
+
+***
+
+## ✅ Best Practices
+
+* Always design tables with **clear column names and descriptions**.
+* Use **semantic search only for text-heavy columns** where meaning matters (e.g., feedback, notes, support tickets).
+* For structured fields (e.g., CPF, Email, Phone), prefer **Similarity Search** for better precision.
+* Agents will automatically gather all required variables (like column values) before executing insert or update actions.
+
+***
+
+👉 With these tools, your Agents can **not only answer queries**, but also **write, update, and search structured datasets**, becoming a powerful interface between conversations and your company’s internal data.

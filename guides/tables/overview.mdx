@@ -1,30 +1,36 @@
 ---
-title: "Tabelas — Visão Geral"
-description: "Entenda o modelo de dados das tabelas (datagrids) na Timely.ai: conceitos centrais, quando usar tabelas versus bases de conhecimento e casos de uso típicos."
+title: "Tables — Overview"
 ---
 
-Tabelas — chamadas internamente de **datagrids** — são estruturas de dados estruturados que os agentes de IA podem consultar e preencher durante as conversas. Diferente de uma base de conhecimento, que armazena texto livre para busca semântica, uma tabela armazena dados em colunas e linhas com tipos definidos, como um banco de dados leve acessível diretamente pelo agente.
+**Tables** in Timely.ai are dynamic data structures that allow your Agents to **store, access, and manage information** in real time.\
+They act as lightweight, AI-friendly databases that Agents can read from and write to — supporting structured workflows such as contact registration, lead tracking, unresolved inquiries, and feedback collection.
 
-## Conceitos Centrais
+A Table can be fully managed inside the Builder interface, with tools for creating, editing, and linking it to one or more Agents.
 
-| Conceito | Descrição |
-|----------|-----------|
-| **Tabela (Datagrid)** | Estrutura de dados com colunas nomeadas e tipadas, organizada em linhas. Cada tabela pertence a um workspace e pode ser conectada a um ou mais agentes. |
-| **Coluna** | Define um campo da tabela. Cada coluna tem nome (até 50 caracteres), descrição (3 a 250 caracteres), tipo de dado (`String`, `Number`, `Boolean`) e configurações opcionais como busca semântica e campo obrigatório. |
-| **Linha** | Um registro na tabela. Cada linha contém valores para cada coluna definida. Linhas podem ser inseridas manualmente pela interface, importadas via CSV ou criadas pelo agente durante conversas. |
-| **Ferramenta de Datagrid** | Capacidade disponibilizada ao agente para interagir com a tabela. As ações possíveis são: `semantic_search`, `similarity_search`, `insert_row` e `update_row`. Cada ação é ativada individualmente por tabela. |
-| **Busca Semântica de Coluna** | Quando ativada em uma coluna do tipo `String`, os valores são vetorizados com o modelo `text-embedding-3-small` (1.536 dimensões) e indexados para busca por similaridade — o agente encontra linhas pelo significado, não apenas por correspondência exata. |
+***
 
-## Por Que Tabelas São Importantes
+## 🧩 Core Concepts
 
-1. **Dados em tempo real sem integração externa**: o agente acessa tabelas diretamente durante a conversa. Não é necessário configurar webhooks, APIs ou integrações para que o agente consulte um catálogo de produtos ou registre um lead.
-2. **Separação de conhecimento estruturado e não estruturado**: bases de conhecimento são ideais para texto livre — manuais, políticas, FAQs. Tabelas são ideais para dados com estrutura definida — catálogos, agendas, inventários, registros. Usar cada recurso para o que foi projetado melhora a precisão do agente.
-3. **Escrita durante a conversa**: diferente de bases de conhecimento (somente leitura pelo agente), tabelas permitem que o agente insira e atualize dados em tempo real — o agente coleta informações do usuário e as registra estruturadamente na tabela, sem intervenção humana.
-4. **Atualização independente do prompt**: os dados mudam na tabela sem precisar editar o prompt do agente. Um preço atualizado na tabela já está disponível para o agente na próxima consulta.
+| Concept             | Description                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| **Table**           | A dynamic dataset used by Agents to store or retrieve information.                       |
+| **Columns**         | Define the structure of your Table — similar to database fields.                         |
+| **Rows**            | Each entry or record in your Table.                                                      |
+| **Semantic Search** | A feature that allows Agents to query data using meaning and context, not only keywords. |
 
-Casos de uso típicos onde tabelas superam outras abordagens:
+***
 
-- Catálogo de produtos com preço, disponibilidade e descrição
-- Agenda de profissionais ou eventos com horários e vagas
-- Registro de leads coletados durante as conversas
-- Inventário com controle de quantidade em tempo real
+## 💡 Why Tables Matter
+
+Tables extend your Agents’ memory and logic capabilities by providing:
+
+1. **Persistent storage** — Agents can log user interactions or unresolved questions.
+2. **Structured intelligence** — Data can be filtered, queried, and reasoned upon.
+3. **Collaboration** — Shared datasets can be used across multiple Agents or Squads.
+4. **Automation** — Tables integrate seamlessly with workflows, triggers, and tools.
+
+Example use cases:
+
+* “Unanswered Questions” log for training or review.
+* “Contacts” table for lead management.
+* “Feedbacks” table for quality tracking.

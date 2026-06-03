@@ -1,146 +1,173 @@
 ---
-title: "Boas Práticas e Otimização — Knowledge Base"
-description: "Granularidade de documentos, otimização de embeddings, conteúdo multilíngue, gestão de atualizações e monitoramento de retrieval para bases de conhecimento na Timely.ai."
+title: "Best Practices & Optimization"
 ---
 
-Uma base de conhecimento bem estruturada é tão importante quanto a configuração do agente. O pipeline RAG recupera chunks — não documentos inteiros — e a qualidade da recuperação depende diretamente de como o conteúdo está organizado. As práticas a seguir fazem diferença concreta na precisão das respostas.
+Building a Knowledge Base is not just about uploading documents — it’s about optimizing how your data is understood, embedded, and retrieved by your Agents.\
+This section provides advanced guidelines for improving accuracy, reducing noise, and ensuring consistent multi-Agent performance across Timely.ai.
 
-## Estruturando o Conhecimento
+***
 
-O maior equívoco na criação de bases de conhecimento é tratar documentos como unidades indivisíveis de informação. O chunker divide automaticamente o conteúdo em pedaços de ~4.000 caracteres — mas se um mesmo chunk mistura assuntos diferentes, a recuperação traz contexto irrelevante junto com o relevante.
+## 🧱 1. Structuring Your Knowledge
 
-O ideal é organizar o conteúdo de forma que cada chunk possa ser útil de forma autônoma, sem depender de chunks adjacentes para fazer sentido. Um teste prático: leia um trecho isolado do documento. Se ele responder uma pergunta específica sem precisar de contexto adicional, a granularidade está adequada. Se for necessário ler antes ou depois para entender do que se trata, o documento precisa ser reestruturado.
+The quality of an Agent’s responses depends heavily on how the content inside your Knowledge Base is written and organized.\
+Follow these principles to maximize retrieval precision:
 
-### Faça:
+### ✅ Do:
 
-- Divida documentos longos em arquivos menores por tema. Um PDF de manual de produto com 12 capítulos se beneficia de ser carregado como 12 arquivos separados — um por capítulo.
-- Use títulos e subtítulos claros. O chunker respeita a estrutura de parágrafos, e títulos ajudam a criar chunks mais coesos temáticamente.
-- Escreva em linguagem natural próxima à que os usuários usam. A similaridade semântica funciona melhor quando o estilo do documento se aproxima do estilo das perguntas.
-- Prefira Q&A para respostas curtas e objetivas. Um par de pergunta e resposta é indexado com controle total sobre o que será recuperado — sem depender de como o chunker fragmentará o texto.
-- Inclua variações de terminologia. Se o produto é chamado de "sistema", "plataforma" e "app" pelos usuários, mencione as três formas nos documentos para aumentar a cobertura semântica.
+* **Use clear titles and headings.** Structure long texts with `#` or `##` (Markdown syntax) or bold section headers.
+* **Keep topics focused.** Each item should represent one domain or subject area.
+* **Segment logically.** If a document covers several unrelated subjects, split it into multiple text items.
+* **Add context identifiers.** Example:
 
-### Evite:
+  ```
+  [SECTION: Product Pricing]
+  [SECTION: Warranty Policies]
+  ```
 
-- Documentos que tratam de 10 assuntos diferentes num único arquivo. Divida por tema antes de fazer o upload.
-- Conteúdo duplicado entre bases. Se a mesma política de cancelamento existe em dois documentos diferentes, o agente pode recuperar versões inconsistentes e gerar respostas contraditórias.
-- Abreviações e siglas internas sem explicação. "O CRM envia o ticket ao ATD via webhook" tem baixa recuperabilidade para "como o sistema registra minha solicitação?".
+### ❌ Avoid:
 
-## Otimizando para Embeddings
+* Overlapping or redundant information between items.
+* Long unstructured paragraphs (over 2000 characters without breaks).
+* Mixing unrelated concepts (e.g. pricing + onboarding + troubleshooting in one text).
 
-O modelo `text-embedding-3-small` converte texto em vetores de 1.536 dimensões. A qualidade do embedding — e portanto da recuperação — depende diretamente da qualidade do texto de entrada. Texto malformado, com muitos erros ou muito técnico produz embeddings de menor discriminação semântica.
+***
 
-O embedding captura o significado global do chunk, não palavras individuais. Isso significa que "tênis para corrida de longa distância" e "calçado esportivo para maratonistas" têm embeddings próximos, mesmo sem compartilhar palavras. Esse comportamento é a força da busca semântica — mas também exige que o conteúdo seja escrito com clareza conceptual.
+## 🧠 2. Optimizing for Embeddings
 
-### Boas Práticas de Embedding
+Each Knowledge Base undergoes an **embedding process**, where its text is transformed into high-dimensional vectors for semantic retrieval.\
+Small changes in structure can significantly affect search quality.
 
-- Mantenha os chunks temáticamente coesos. Um chunk que fala sobre preços, depois sobre suporte e depois sobre instalação tem um embedding "médio" que representa mal qualquer um dos três assuntos.
-- Evite chunks com listas longas sem contexto. Uma lista de 50 itens de catálogo sem descrição produz um embedding que representa "lista de produtos" genericamente — difícil de distinguir por busca semântica.
-- Priorize parágrafos completos sobre fragmentos de frases. O embedding de uma frase incompleta é menos preciso do que o de um parágrafo bem formado.
-- Inclua o contexto necessário no próprio chunk. Se um trecho diz "veja a seção anterior para entender os pré-requisitos", ele depende de outro chunk para ser útil — reescreva para ser autossuficiente.
-- Re-indexe após grandes revisões de conteúdo. Quando você atualiza um documento, os embeddings antigos são substituídos pelos novos na próxima vetorização.
+### 🔍 Embedding Best Practices
 
-<Note>
-  Q&As manuais são indexados instantaneamente e têm embeddings de alta qualidade porque a pergunta e a resposta são texts curtos e bem definidos. Para conteúdo com alta precisão esperada, prefira Q&A sobre documentos.
-</Note>
+* **Shorter segments embed better.** Keep each paragraph or bullet list under \~1500 characters.
+* **Avoid repeated keywords.** Semantic models already infer meaning — keyword stuffing lowers quality.
+* **Maintain consistent formatting.** Avoid random line breaks, tabs, or inconsistent casing.
+* **Include synonyms naturally.** This helps the model connect variations of user queries.
 
-## Conteúdo Bilíngue e Multilíngue
+  > Example: “pricing / cost / plan / subscription” within one sentence helps broaden recall.
+* **Avoid excessive symbols.** Special characters, emojis, or decorative punctuation can reduce precision.
 
-O modelo `text-embedding-3-small` suporta múltiplos idiomas e é capaz de encontrar similaridade semântica entre textos em línguas diferentes. Um documento em português pode ser recuperado por uma pergunta em inglês se o significado for suficientemente próximo.
+***
 
-Para bases que precisam atender usuários em mais de um idioma, a estrutura recomendada é manter o conteúdo separado por idioma dentro da mesma base:
+## 🌐 3. Bilingual and Multi-Language Knowledge
 
-### Estrutura Recomendada
+Timely.ai supports multilingual Agents. When building bilingual Knowledge Bases (e.g., Portuguese + English), always separate languages clearly to prevent mixed-context embeddings.
+
+### 🏗️ Recommended Structure
 
 ```
-Base: Produto Central
-├── [PT] FAQ - Produto
-├── [PT] Políticas - Produto
-├── [EN] FAQ - Product
-└── [EN] Policies - Product
+FAQ — English
+Q: What is the price of Timely?
+A: Plans start at $X/month depending on usage.
+
+FAQ — Português
+P: Qual é o preço da Timely?
+R: Os planos começam em R$X/mês dependendo do uso.
 ```
 
-### Dicas:
+**Tips:**
 
-- Prefixe os nomes dos documentos com o idioma `[PT]`, `[EN]`, `[ES]`. Facilita a manutenção e a identificação de qual versão foi atualizada.
-- Não misture idiomas dentro do mesmo documento. Um chunk com parágrafos em dois idiomas produz um embedding de qualidade inferior a um chunk monolingue.
-- Para Q&As multilíngues, crie entradas separadas para cada idioma. A pergunta em português e a mesma pergunta em inglês devem ser Q&As diferentes com respostas no respectivo idioma.
+* Keep both languages in the same item only if logically aligned.
+* Use language tags `(EN)` and `(PT)` to separate content blocks.
+* Do **not** interleave sentences from different languages.
 
-## Gerenciando Atualizações e Re-treinamento
+***
 
-Bases de conhecimento acumulam conteúdo desatualizado ao longo do tempo. Políticas mudam, preços são revisados, produtos são descontinuados. Sem manutenção regular, o agente passa a recuperar informações obsoletas que contradizem a realidade atual.
+## 🔄 4. Managing Updates and Retraining
 
-O maior risco não é a ausência de conteúdo — é a presença de conteúdo desatualizado. Um agente que "não sabe" algo informa o usuário claramente. Um agente que sabe a versão antiga de uma política pode gerar comprometimentos incorretos.
+Whenever a Knowledge Base item is edited or replaced, it automatically re-enters the **training pipeline**.\
+To ensure clean retraining cycles:
 
-### Boas Práticas
+### Best Practices
 
-- Quando uma informação muda, exclua o documento antigo **antes** de adicionar o novo. Manter versões antigas "por precaução" cria inconsistência de retrieval.
-- Revise documentos com mais de 90 dias regularmente. Preços, prazos e políticas têm alta taxa de desatualização — priorize esses tipos na revisão trimestral.
-- Use Q&A para conteúdo que muda com frequência. Editar uma resposta de Q&A é mais rápido do que reuploar um documento inteiro.
-- Documente a fonte e a data de criação no nome ou descrição de cada documento. Facilita identificar o que precisar ser revisado em auditorias periódicas.
+* **Batch updates.** Edit multiple items before retraining to optimize resource usage.
+* **Avoid duplicates.** If you replace an item, delete the old one before retraining.
+* **Monitor status.** Wait for the `Completed` state before testing the Agent.
+* **Periodic refresh.** Retrain major bases every 30–60 days to ensure embeddings stay aligned with evolving models.
 
-## Otimização para Multi-Agente e Squads
+***
 
-Quando múltiplos agentes compartilham bases de conhecimento, a organização das bases afeta tanto a precisão das respostas quanto a manutenção do sistema.
+## 🧩 5. Multi-Agent and Squad Optimization
 
-A tentação é centralizar tudo numa única base grande — é mais simples de gerenciar inicialmente, mas cria ruído semântico conforme cresce. Uma base com conteúdo de suporte técnico, catálogo de produtos e políticas financeiras misturados produz resultados de retrieval menos precisos do que três bases separadas.
+Since a single Knowledge Base can be shared across **multiple Agents** or an entire **Squad**, consider how each entity interacts with the same data context.
 
-### Diretrizes
+### Guidelines
 
-- Crie bases por área temática, não por agente. A base "Políticas da Empresa" pode ser conectada ao agente de Suporte, ao de Vendas e ao Financeiro simultaneamente — sem duplicar o conteúdo.
-- Conecte ao squad apenas o conhecimento transversal a todos os agentes. Conhecimento especializado vai diretamente ao agente específico.
-- Nomeie as bases de forma que a responsabilidade fique clara: "Catálogo Verão 2025" é mais informativo do que "Produtos".
-- Revise as conexões entre bases e agentes periodicamente. Bases desconectadas que não foram excluídas consomem cota de indexação sem contribuir para nenhum agente.
+* **Centralize shared knowledge.** Keep universal data (e.g., company policies) in one shared base.
+* **Isolate specialized data.** Create smaller, domain-specific bases (e.g., “Technical Docs”, “Sales FAQs”).
+* **Avoid conflicting sources.** If two bases contain similar topics, Agents may retrieve mixed or inconsistent results.
+* **Audit link usage.** Regularly check which Agents and Squads are linked to each base through the Knowledge Tool.
 
-## Otimização de Retrieval (para Desenvolvedores)
+***
 
-Os parâmetros de retrieval controlam diretamente a qualidade e o custo das respostas. Entender o efeito de cada parâmetro permite ajuste fino para casos de uso específicos.
+## ⚙️ 6. Retrieval Optimization (for Developers)
 
-| Parâmetro | Descrição | Recomendação |
-|-----------|-----------|--------------|
-| `similarity_threshold` | Limiar mínimo de similaridade coseno (0 a 1). Chunks abaixo são descartados. | `0.7` para uso geral; `0.5` para bases com linguagem variada; `0.85` para bases de dados críticos onde falsos positivos têm alto custo. |
-| `limit` (top-k) | Número máximo de chunks retornados por consulta. | `5` para Q&As e bases com respostas curtas; `8–10` para documentação técnica extensa onde o contexto pode estar distribuído. |
-| `document_ids` | Filtrar a busca por documentos específicos dentro da base. | Use para restringir o retrieval a documentos de uma versão específica ou de um produto específico quando o agente atende múltiplas linhas. |
+For technical teams customizing Agents via the API or SDK, consider fine-tuning retrieval settings:
 
-## Qualidade de Dados e Segurança
+| Parameter                | Description                                   | Recommendation                             |
+| ------------------------ | --------------------------------------------- | ------------------------------------------ |
+| **Top-k**                | Number of results returned per query          | 3–5 for precision, 8–10 for broader recall |
+| **Similarity threshold** | Minimum cosine similarity for match relevance | 0.75–0.85 for most business contexts       |
+| **Context window**       | How much text is passed to the LLM            | Keep under 4000 tokens for efficiency      |
+| **Cache policy**         | Determines when embeddings are refreshed      | Refresh after major updates only           |
 
-A qualidade do retrieval começa na qualidade do dado indexado. Erros ortográficos, formatação inconsistente e informações contraditórias degradam diretamente a precisão do agente.
+Fine-tuning these parameters helps balance **speed**, **accuracy**, and **token cost**.
 
-Antes de indexar um novo documento:
+***
 
-- Revise ortografia e gramática. Erros afetam a qualidade do embedding.
-- Verifique se a informação é atual. Não indexe rascunhos ou versões provisórias.
-- Confirme se o conteúdo é autorizado para consumo pelo agente — não indexe informações confidenciais que não devem ser compartilhadas com clientes.
+## 🔐 7. Data Quality and Security
 
-Sobre segurança:
+Timely.ai processes all Knowledge Base content securely, ensuring that:
 
-- Todas as buscas são filtradas por `company_id` e `knowledge_base_id`. Não há risco de contaminação cruzada entre bases de clientes diferentes.
-- O conteúdo indexado não é exposto diretamente — apenas os chunks relevantes são injetados no contexto do LLM, que decide o que incluir na resposta final.
-- Revise periodicamente quais documentos estão indexados. Documentos enviados por erro (com dados pessoais ou estratégicos) devem ser excluídos imediatamente.
+* Files and texts are encrypted at rest and during transfer.
+* Only authorized workspace members can view or modify data.
+* Data used for embeddings is **never shared or exposed** to other tenants.
 
-## Desempenho e Testes
+Still, follow these best practices:
 
-Após criar ou atualizar uma base, teste o retrieval antes de ativar em produção:
+* Avoid uploading sensitive credentials or personally identifiable information (PII).
+* Sanitize internal notes before including them in Knowledge Bases used by customer-facing Agents.
+* Use versioned exports for compliance (e.g., ISO, GDPR, LGPD contexts).
 
-<Steps>
-  <Step title="Use a busca semântica da interface">
-    Na tela da base, use a funcionalidade de busca semântica para testar manualmente se perguntas reais retornam os chunks esperados. Faça buscas com as perguntas mais comuns dos seus usuários.
-  </Step>
-  <Step title="Teste no chat de preview do agente">
-    No chat de preview, faça perguntas que deveriam ser respondidas pela base. Verifique se a resposta é baseada no conteúdo indexado ou no conhecimento genérico do LLM.
-  </Step>
-  <Step title="Ajuste threshold e top-k">
-    Se a base não retorna resultados para perguntas que deveria responder, reduza o threshold em 0.05. Se o agente traz informações tangencialmente relacionadas, aumente o threshold em 0.05.
-  </Step>
-  <Step title="Monitore os misses em produção">
-    Filtre conversas onde o agente respondeu "não tenho essa informação" ou deu respostas genéricas. Identifique os assuntos não cobertos e adicione Q&As ou documentos para preenchê-los.
-  </Step>
-</Steps>
+***
 
-## Técnicas Avançadas (Opcional)
+## 🧭 8. Performance and Testing
 
-Para bases de conhecimento com requisitos específicos de precisão ou volume:
+After training or linking Knowledge Bases:
 
-- **Hiperdocumentação de Q&A**: para FAQs com alta variação de como os usuários formulam a mesma pergunta, crie múltiplos Q&As com formulações diferentes que levam à mesma resposta — aumenta a cobertura semântica.
-- **Chunking manual via múltiplos arquivos**: em vez de depender do chunker automático, divida documentos longos em arquivos de uma a duas páginas antes de fazer upload — controle total sobre os limites de cada chunk.
-- **Bases por persona**: se o agente atende públicos distintos (ex.: cliente final e revendedor), crie bases separadas com a mesma informação formatada para cada público e conecte bases diferentes a agentes diferentes.
-- **Versionamento de bases**: antes de grandes atualizações de conteúdo, duplique a base atual e trabalhe na cópia. Isso permite rollback se a nova versão degradar a qualidade do retrieval.
+1. Test queries directly through the **Agent Playground** or **CRM Inbox**.
+2. Ask questions that closely match and others that differ semantically.
+3. Review how the Agent retrieves and synthesizes context.
+4. Adjust the base content or retraining if answers are incomplete or redundant.
+
+A well-structured base should produce confident, consistent, and concise answers with minimal hallucination.
+
+***
+
+## 🧩 9. Advanced Techniques (Optional)
+
+For advanced teams:
+
+* **Chunk tuning:** Split documents into smaller logical pieces manually for greater control.
+* **Metadata tagging:** Prefix sections with tags (e.g., `[PRICING]`, `[ONBOARDING]`) for scoped retrieval.
+* **Hybrid models:** Combine Knowledge Bases with workflow-based tools to pre-filter sources.
+* **Evaluation metrics:** Track retrieval accuracy (R\@k) and response satisfaction from real conversations.
+
+***
+
+## ✅ Summary
+
+| Goal                           | Action                                 |
+| ------------------------------ | -------------------------------------- |
+| Improve accuracy               | Write structured, focused content      |
+| Support multilingual retrieval | Separate and label languages           |
+| Maintain freshness             | Retrain regularly                      |
+| Reduce conflicts               | Centralize or modularize knowledge     |
+| Optimize performance           | Tune retrieval parameters per use case |
+
+***
+
+### 🚀 Final Insight
+
+A well-built Knowledge Base is not just a data repository — it’s a **strategic foundation** for scalable, intelligent, and explainable AI operations.\
+In Timeoly.ai, every great Agent starts with great knowledge — organized, optimized, and continuously improved.

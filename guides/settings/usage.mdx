@@ -1,83 +1,102 @@
 ---
-title: "Uso"
-description: "Como monitorar créditos, métricas renováveis mensalmente e limites permanentes do plano, além de inspecionar o consumo por agente e usar provedores próprios para reduzir custos."
+title: "Usage"
 ---
 
-## Visão geral
+The Usage section gives you a complete overview of how your workspace is consuming resources based on your active plan.
 
-A seção **Uso** exibe o consumo real do workspace em relação aos limites do plano ativo. Use esse painel para acompanhar tendências, identificar agentes ou canais com alto volume e antecipar a necessidade de upgrade antes de atingir os limites.
+Here you can track execution volume across all three usage pillars and monitor the structural limits of your workspace.
 
-O acesso é restrito a membros com role `manager` ou `owner`. Acesse em **Configurações > Uso**.
+***
 
-Os dados são atualizados em tempo quase real — o atraso típico entre uma mensagem processada e a contabilização no painel é de alguns minutos. Filtros de período (7 dias, 30 dias, mês atual, mês anterior e intervalo customizado) permitem isolar janelas específicas de análise.
+### 🔹 Overview
 
-## Uso renovável (reseta mensalmente)
+Each workspace in Timely.ai has its own usage dashboard, displaying two main types of information:
 
-Métricas renováveis são reiniciadas no início de cada ciclo de faturamento. O consumo do período corrente é comparado ao limite incluído no plano:
+* **Renewable limits (monthly)** → tied to execution consumption. Reset automatically at the start of each billing cycle.
+* **Permanent limits (plan-based)** → tied to the structure of your workspace. Fixed until you upgrade your plan.
 
-| Métrica | Descrição |
-|---|---|
-| **Créditos de IA consumidos** | Total de créditos usados por mensagens processadas pelos agentes no período. O custo por mensagem varia conforme o modelo LLM: Claude Haiku 4.5 = 3 créditos, Claude Sonnet 4.6 = 4 créditos, GPT-5.1 = 4 créditos, Gemini 2.5 Flash = 2 créditos, Kimi K2.5 = 1 crédito |
-| **Execuções de agente** | Número de vezes que um agente foi acionado por uma mensagem de entrada no período |
-| **Mensagens processadas** | Total de mensagens que passaram pelo pipeline de IA (entrada + saída) em todos os canais |
-| **Membros ativos** | Usuários com acesso ao workspace no período (comparado ao limite do plano) |
+***
 
-## Uso permanente (limites baseados no plano)
+### 🔄 Renewable Usage (Resets Monthly)
 
-Limites permanentes não se renovam mensalmente — são determinados pelo plano contratado e se mantêm enquanto o plano estiver ativo:
+These metrics renew automatically at the start of each new billing cycle.
 
-| Limite | Descrição |
-|---|---|
-| **Agentes de IA** | Número máximo de agentes ativos que podem ser criados no workspace |
-| **Squads** | Número máximo de squads que podem ser criados e vinculados a canais |
-| **Canais conectados** | Total de canais de atendimento ativos (WhatsApp, Instagram, widget, etc.) |
-| **Integrações Composio** | Acesso às integrações externas via Composio (disponível em todos os planos) |
+Renewable usage tracks the three main pillars of your plan:
 
-## Inspecionando o consumo de créditos por agente
+* **External Executions** — interactions your agents have with real users across active channels (WhatsApp, Instagram, Widget, etc.)
+* **Internal Usage** — interactions made through the Internal Chat, your private testing environment inside the platform
+* **Vibe Agent Usage** — interactions with Vibe Agent to create, configure, or diagnose agents through natural language
 
-A visão agregada do painel mostra o consumo total do workspace. Para identificar quais agentes são responsáveis pelo maior volume de créditos:
+When the monthly cycle resets, all three counters return to zero — allowing continuous operation.
 
-- Na seção **Créditos por agente**, cada agente aparece com seu total consumido no período filtrado.
-- Clique no nome do agente para ver o detalhamento por dia e por conversa.
-- O modelo LLM associado a cada agente aparece ao lado do nome — use essa informação para avaliar se um modelo mais econômico atenderia ao caso de uso.
+⚠️ **Important:** If you reach your execution limit before the cycle resets, your agents will stop responding to users until the limit renews or your plan is upgraded.
 
-<Note>
-  Agentes em squads consomem créditos individualmente. Um handoff entre dois agentes dentro de um squad conta como duas execuções separadas — uma para o agente que recebeu e uma para o agente que respondeu.
-</Note>
+***
 
-## Provedores próprios
+### 🏗️ Permanent Usage (Plan-Based Limits)
 
-Ao conectar uma chave própria de provedor (OpenAI, Anthropic, Google ou OpenRouter), o consumo de tokens é cobrado diretamente na sua conta do provedor — não nos créditos incluídos no plano da Timely.ai:
+Some resources are structural — they are tied to your current plan and do not reset monthly.
 
-- Agentes configurados com um provedor próprio aparecem na seção **Provedores externos** do painel de Uso.
-- O volume de tokens (entrada e saída) processado por esses agentes é exibido para fins de monitoramento, mas não deduz do saldo de créditos do plano.
-- O custo real fica visível no painel de faturamento do provedor (ex.: platform.openai.com ou console.anthropic.com).
+These define how much your workspace can scale in data and organization:
 
-<Tip>
-  Workspaces com alto volume de mensagens em modelos premium (como Claude Opus 4.6 com 20 créditos/msg) podem reduzir significativamente o custo por mensagem migrando para um provedor próprio com contrato de volume. Compare o custo por token do provedor com o custo equivalente em créditos do plano antes de decidir.
-</Tip>
+* **Members** — team members with access to the workspace
+* **Connections** — integrations with external services
+* **Tables** and **Table rows** — structured data storage
+* **Knowledge Bases** and **Knowledge Base characters** — content available to agents
+* **Workflow concurrent executions** — parallel workflow runs
+* **Rollback versions** — previous agent versions available for restore
 
-## Boas práticas
+These limits remain fixed until you upgrade your plan.
 
-- Acesse o painel de Uso pelo menos uma vez por semana em períodos de crescimento. Consumo que parece controlado pode dobrar rapidamente com um aumento de volume em canais.
-- Monitore separadamente os agentes que usam modelos com alto custo em créditos. Se um agente usa Claude Opus 4.6 (20 créditos/msg) para tarefas simples, migre para Claude Haiku 4.5 (3 créditos/msg) ou Kimi K2.5 (1 crédito/msg).
-- Use o filtro de intervalo customizado para isolar o impacto de campanhas de marketing ou broadcasts — picos de volume nesses períodos podem distorcer as projeções mensais.
-- Se a projeção indicar ultrapassagem do limite de créditos antes do fim do ciclo, faça o upgrade com antecedência para evitar bloqueio de mensagens.
-- Configure alertas de uso em **Configurações > Perfil > Notificações** para receber e-mails automáticos quando o consumo atingir 70%, 90% e 100% do limite.
+***
 
-## Perguntas frequentes
+### 🔍 Inspecting Execution Details per Agent
 
-**O que acontece quando os créditos do plano acabam no meio do mês?**
-Depende da configuração do plano. Planos com excedente pago continuam processando mensagens e o custo adicional é cobrado na próxima fatura. Planos com limite rígido enfileiram ou bloqueiam novas mensagens até o reinício do ciclo ou upgrade.
+You can view how executions are consumed during conversations by inspecting an Agent's response.
 
-**Workers consume créditos do plano?**
-Sim. Mensagens enviadas em sessões de Workers são processadas pelo mesmo pipeline dos agentes e consomem créditos normalmente.
+To do this, open any ticket or conversation and click the credit counter in the top-right panel.
 
-**Agentes em squads consomem créditos separados?**
-Sim. Cada agente dentro de um squad consome créditos de forma independente conforme o modelo LLM configurado para ele.
+This will display:
 
-**Posso ver o consumo de um workspace específico se tiver múltiplos?**
-Sim. O seletor de workspace no topo do painel de Uso permite alternar entre workspaces e ver o consumo de cada um individualmente.
+* Total credits used in that response
+* Execution time per step
+* Tool calls and reasoning iterations with detailed logs
 
-**Créditos não usados acumulam para o próximo mês?**
-Não. Créditos renováveis não acumulam — o saldo restante ao fim do ciclo é zerado na renovação. Apenas planos anuais recebem o crédito completo do ano de uma vez, sem renovação mensal.
+💡 **Tip:** This feature is especially useful for understanding which Agents consume more resources and optimizing prompt efficiency.
+
+***
+
+### 🔌 Custom Providers
+
+Custom Providers allow you to connect an Agent to your own LLM API key — such as OpenAI, Anthropic, Google Gemini, or others — instead of using Timely's default model.
+
+This affects **which model** the Agent uses, but does not impact execution limits or usage tracking in any way. All plan limits still apply normally.
+
+***
+
+### ✅ Best Practices
+
+* Check your Usage panel regularly to anticipate limit exhaustion before it affects live users
+* Inspect Agent response logs to understand which Agents consume more resources
+* Use Custom Providers for high-volume or specialized deployments
+* Review your active plan under **Settings → Subscriptions** for upgrade options
+
+***
+
+⚠️ **Disclaimer:** This page explains how usage tracking works in Timely. For current plan limits and details, always refer to the **Plans page inside the platform**.
+
+***
+
+### ❓ Common Questions
+
+**Q: Do renewable limits reset every month?** A: Yes. External executions, internal test usage, and Vibe Agent usage all reset at the start of each billing cycle.
+
+**Q: Do permanent limits reset monthly?** A: No. Structural limits (Tables, Knowledge Bases, Members, etc.) are tied to your plan and remain fixed until you upgrade.
+
+**Q: Can I continue using Agents after reaching my execution limit?** A: No. Once your execution limit is reached, agents stop responding until the limit resets at the next billing cycle or you upgrade your plan.
+
+**Q: Are limits shared across workspaces?** A: No. Each workspace has its own independent usage tracking and limits.
+
+**Q: Can I see which Agent uses more resources?** A: Yes — open the Inspect Response panel on any conversation to see a detailed breakdown per Agent action.
+
+**Q: Does Vibe Agent usage count toward my external executions?** A: No. Vibe Agent usage is tracked separately as its own renewable metric.

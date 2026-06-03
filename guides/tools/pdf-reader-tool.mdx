@@ -1,3 +1,103 @@
 ---
 title: "PDF Reader Tool"
 ---
+
+The **PDF Reader** Tool allows an Agent to read, interpret, and reason over the **entire content of a PDF document that is uploaded during the Agent configuration**.
+
+Unlike Knowledge Bases, which split content into chunks for retrieval, PDF Reader preserves the **full structure and continuity of a single document**, enabling deeper and more contextual reasoning.
+
+***
+
+## 🔎 What It Does
+
+With PDF Reader, an Agent can:
+
+* Read a **pre-configured PDF document**
+* Understand the document **as a whole**, without fragmentation
+* Extract insights, summaries, rules, or structured information
+* Reason across sections, pages, and references consistently
+
+This tool is ideal when a document must be treated as **authoritative context**, not as searchable snippets.
+
+***
+
+## 🧠 How PDF Reader Works
+
+PDF Reader acts as a **static cognitive extension** of the Agent.
+
+At configuration time:
+
+1. The Agent creator uploads a PDF file.
+2. The full document is ingested as a **single contextual source**.
+3. During conversations, the Agent can reason over the entire document whenever needed.
+4. The document remains available to the Agent as long as the tool exists.
+
+The Agent decides to use the PDF Reader based on the **tool description**, not by user action.
+
+***
+
+## 📚 PDF Reader vs Knowledge Base
+
+### Use **PDF Reader** when:
+
+* The document must be interpreted as a whole
+* Cross-section understanding is required
+* The content represents a single source of truth (e.g., contract, policy, manual)
+* The document does not need semantic retrieval by fragments
+
+### Use **Knowledge Base** when:
+
+* Content must be searchable and modular
+* Information changes frequently
+* Multiple documents need to be queried
+* You want long-term, scalable retrieval
+
+💡 **Rule of thumb:**\
+PDF Reader is for **deep reasoning over one document**.\
+Knowledge Base is for **searching across many documents**.
+
+***
+
+## 📄 Common Use Cases
+
+* Company policies or internal rulebooks
+* Legal contracts or compliance documents
+* Technical manuals or specifications
+* Institutional PDFs that must be followed strictly
+
+***
+
+## ⚙️ Tool Configuration
+
+When creating a PDF Reader Tool, you configure:
+
+* **Name**\
+  A clear identifier for the tool\
+  Example: `Company Policy PDF`
+* **Description**\
+  Guides the Agent on when to use the document\
+  Example:
+
+  > “Use this tool whenever the user asks about company rules, policies, or internal procedures.”
+* **PDF File**\
+  The document uploaded during Agent configuration
+
+The description is essential — it determines **when the Agent will rely on the PDF**.
+
+***
+
+## 🧠 Best Practices
+
+* Use PDF Reader for documents that must be interpreted in full
+* Avoid duplicating large documents into the main prompt
+* Keep the description explicit and scoped
+* If the document needs frequent updates or search, prefer a Knowledge Base
+* Combine with Tasks or Follow Ups to act on document-based conclusions
+
+***
+
+## ✅ Key Takeaway
+
+The **PDF Reader** Tool allows an Agent to reason over a **single, complete PDF document configured by the Agent creator**, without chunking or fragmentation.
+
+It is the best choice when structural integrity, coherence, and full-context understanding are critical — turning a static PDF into a trusted, always-available reference for the Agent.

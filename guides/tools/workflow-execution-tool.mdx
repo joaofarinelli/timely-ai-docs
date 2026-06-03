@@ -1,3 +1,65 @@
 ---
 title: "Workflow Execution Tool"
 ---
+
+The **Workflow Execution Tool** allows Agents to trigger specific workflows that you have configured in Timely.ai. Instead of linking directly to a single workflow, this tool is connected to a **workflow trigger** — a node inside a workflow known as **Agent Tool Request**.
+
+This flexibility means that:
+
+* You can have **multiple triggers** inside the same workflow.
+* Each trigger can be linked to a different Execution Tool.
+* Depending on the context, the Agent will decide which Execution Tool (and therefore which trigger) to call.
+* The workflow will then execute only the scenario linked to that trigger.
+
+***
+
+## 🔑 Key Concepts
+
+### **Workflow Trigger**
+
+* A trigger is a defined entry point inside a workflow.
+* It is created using the **Agent Tool Request** node.
+* Each trigger has its own name and logic, allowing multiple workflows or paths to exist inside the same workflow.
+
+### **Execution vs. Trigger**
+
+* **Execution Tool:** What the Agent can call.
+* **Trigger inside Workflow:** The specific entry point that will be executed.
+* In practice, you configure the tool to point to one of the workflow’s triggers.
+
+***
+
+## 🛠️ Configuration
+
+When creating the Workflow Execution Tool, you must define:
+
+1. **Trigger** – select which workflow trigger (Agent Tool Request) this tool should call.
+2. **Name** – how the tool will be referenced internally by the Agent.
+3. **Description** – clearly explain what the tool does. The Agent will rely on this description to decide when to use it.
+
+***
+
+## 📌 Example Use Cases
+
+* **Order Processing Workflow:**
+  * One trigger could handle order creation.
+  * Another trigger in the same workflow could handle cancellations.
+  * Each trigger is linked to a different Execution Tool.
+* **Support Automation Workflow:**
+  * One trigger could escalate to Level 2 Support.
+  * Another trigger could send a satisfaction survey.
+* **Multi-Path Workflow:**
+  * All scenarios exist in a single workflow.
+  * The triggers define which path to follow depending on the tool used.
+
+***
+
+## 🧠 How the Agent Uses It
+
+* If the Agent identifies that the user’s request matches a scenario handled by a workflow, it will check the available Execution Tools.
+* The Agent decides **which Execution Tool** (and therefore which trigger) is relevant.
+* The workflow is executed, running the nodes you designed under that trigger.
+
+***
+
+✅ This design gives you **scalability and modularity**: you don’t need to create a new workflow for every scenario — you can create one large workflow with multiple entry points, each activated by a different Execution Tool.

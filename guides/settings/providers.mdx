@@ -1,166 +1,81 @@
 ---
-title: "Provedores"
-description: "Conecte e gerencie as chaves de API dos provedores de modelos de IA para uso nos agentes do workspace."
+title: "Billing"
 ---
 
-## Conecte e gerencie seus provedores de modelos de IA
+The **Billing** section centralizes all financial and payment-related configurations of your workspace.\
+From here, you can define the payment responsible, manage your active billing method, and view your historical statements.
 
-Por padrão, a Timely.ai usa créditos gerenciados pela plataforma para rodar os modelos de linguagem. Ao conectar uma chave própria de provedor, os agentes do workspace passam a usar suas credenciais — aproveitando seus contratos de volume e limites de rate privados. Provedores configurados ficam disponíveis para todos os agentes do workspace.
+> ⚠️ **Important:**\
+> Billing is managed **per workspace** — each workspace has its **own subscription plan, billing cycle, and payment method**.\
+> If you manage multiple workspaces, ensure that each one has an active payment configuration.
 
-## OpenAI (GPT-5.1, GPT-5.2, etc.)
+***
 
-<Steps>
-  <Step title="Acesse platform.openai.com/api-keys">
-    Faça login na sua conta OpenAI e acesse a seção de chaves de API.
-  </Step>
-  <Step title="Crie uma nova chave">
-    Clique em **Create new secret key**. Dê um nome descritivo (ex.: "Timely.ai Produção") para identificar a origem das chamadas.
-  </Step>
-  <Step title="Copie a chave">
-    Copie a chave imediatamente — ela não será exibida novamente após fechar o modal.
-  </Step>
-  <Step title="Acesse Configurações > Provedores na Timely.ai">
-    No menu lateral, clique em **Configurações** e selecione a subseção **Provedores**.
-  </Step>
-  <Step title="Clique em Adicionar provedor e selecione OpenAI">
-    Preencha o nome interno, selecione o tipo **OpenAI** e cole a chave no campo correspondente.
-  </Step>
-  <Step title="Salve e valide">
-    Clique em **Validar chave** para confirmar que as credenciais estão funcionando. Com a validação positiva, clique em **Salvar**.
-  </Step>
-</Steps>
+## 🔹 Overview
 
-<Warning>
-  Chaves OpenAI começam com `sk-`. Verifique se a organização associada à chave tem acesso aos modelos GPT-5.1 e GPT-5.2 — modelos novos exigem aprovação de acesso no painel da OpenAI.
-</Warning>
+The Billing interface displays key details about your workspace’s payment setup:
 
-## Anthropic (Claude)
+| Field                   | Description                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| **Payment Responsible** | The email of the user who owns or manages billing for this workspace.                |
+| **Payment Method**      | The registered payment source (credit card or other method, depending on region).    |
+| **Statement**           | Historical billing data, including transaction ID, date, amount, and payment status. |
 
-<Steps>
-  <Step title="Acesse console.anthropic.com/settings/keys">
-    Faça login na sua conta Anthropic e vá até a seção de chaves.
-  </Step>
-  <Step title="Crie uma nova chave de API">
-    Clique em **Create Key**. Defina um nome que identifique o uso (ex.: "Timely Workspace").
-  </Step>
-  <Step title="Copie a chave">
-    A chave tem o prefixo `sk-ant-`. Copie antes de fechar o modal.
-  </Step>
-  <Step title="Acesse Configurações > Provedores na Timely.ai">
-    Navegue até a subseção **Provedores** em Configurações.
-  </Step>
-  <Step title="Adicione o provedor Anthropic">
-    Selecione o tipo **Anthropic**, nomeie o provedor e cole a chave.
-  </Step>
-  <Step title="Salve e valide">
-    Clique em **Validar** e, com confirmação positiva, em **Salvar**. Modelos disponíveis: Claude Haiku 4.5 (3 créditos), Claude Sonnet 4.6 (4 créditos) e Claude Opus 4.6 (20 créditos).
-  </Step>
-</Steps>
+If no payment method is registered, you’ll see an **Add** button to add one.
 
-<Warning>
-  Garanta que a conta Anthropic tem saldo de API suficiente. Chaves de contas sem crédito retornam erro 429 mesmo com a chave válida.
-</Warning>
+***
 
-## Google Gemini (Google AI Studio)
+## 🔹 Adding or Updating a Payment Method
 
-<Steps>
-  <Step title="Acesse aistudio.google.com/app/apikey">
-    Faça login com sua conta Google e vá até a seção de chaves de API do Google AI Studio.
-  </Step>
-  <Step title="Crie uma chave para o projeto desejado">
-    Selecione o projeto Google Cloud associado e clique em **Create API key**.
-  </Step>
-  <Step title="Copie a chave">
-    Chaves do Google AI começam com `AI`. Copie antes de sair da tela.
-  </Step>
-  <Step title="Acesse Configurações > Provedores na Timely.ai">
-    Navegue até a subseção **Provedores**.
-  </Step>
-  <Step title="Adicione o provedor Google">
-    Selecione o tipo **Google**, nomeie e cole a chave.
-  </Step>
-  <Step title="Salve e valide">
-    Valide e salve. Modelos disponíveis: Gemini 2.5 Flash (2 créditos), Gemini 2.5 Pro (4 créditos), Gemini 3.0 Pro Preview (6 créditos) e Gemini 3.1 Pro Preview (6 créditos).
-  </Step>
-</Steps>
+To add or update your payment method:
 
-## OpenRouter (Em breve)
+1. Click **Add** or **Change Payment Method**.
+2. A secure modal will open for you to fill in your credit card information.
+3. Provide:
+   * **Card Number**
+   * **Expiration Date**
+   * **Security Code (CVC)**
+   * **Billing Country**
+4. Click **Register** to confirm.
 
-<Steps>
-  <Step title="Acesse openrouter.ai/keys">
-    Faça login na sua conta OpenRouter e vá até a seção de chaves de API.
-  </Step>
-  <Step title="Crie uma nova chave">
-    Clique em **Create Key** e dê um nome descritivo.
-  </Step>
-  <Step title="Copie a chave">
-    Chaves OpenRouter começam com `sk-or-`. Copie antes de fechar o modal.
-  </Step>
-  <Step title="Acesse Configurações > Provedores na Timely.ai">
-    Navegue até a subseção **Provedores**.
-  </Step>
-  <Step title="Adicione o provedor OpenRouter">
-    Selecione o tipo **OpenRouter**, nomeie e cole a chave.
-  </Step>
-  <Step title="Salve e valide">
-    Valide e salve. Modelo disponível via OpenRouter: Kimi K2.5 da Moonshot AI (1 crédito por mensagem — melhor custo-benefício do catálogo).
-  </Step>
-</Steps>
+Timely.ai uses a PCI-compliant payment gateway, ensuring all sensitive information is encrypted and stored securely.
 
-<Warning>
-  A integração com OpenRouter está em fase de liberação gradual. Se o tipo ainda não aparecer no seletor de provedores, o acesso ainda não foi liberado para o seu workspace.
-</Warning>
+> 💡 **Tip:**\
+> You can update your card details at any time — this won’t interrupt your active plan or current billing cycle.
 
-## Como configurar o provedor dentro da Timely.ai
+***
 
-Após criar a chave no painel do provedor, você tem duas formas de registrá-la na plataforma. Ambas têm o mesmo resultado — escolha a que for mais conveniente para o seu fluxo.
+## 🔹 Payment Statements
 
-## Opção 1: Pela página principal do workspace
+The **Statement** section displays your billing history for transparency and control.
 
-<Steps>
-  <Step title="Acesse Configurações">
-    No menu lateral, clique em **Configurações**.
-  </Step>
-  <Step title="Abra a subseção Provedores">
-    Selecione **Provedores** na lista de subseções disponíveis.
-  </Step>
-  <Step title="Clique em Adicionar provedor">
-    O formulário de cadastro é exibido na tela.
-  </Step>
-</Steps>
+| Column           | Description                                                       |
+| ---------------- | ----------------------------------------------------------------- |
+| **Statement ID** | Unique identifier for each billing cycle or transaction.          |
+| **Billing Date** | The date on which the charge occurred or was scheduled.           |
+| **Status**       | Indicates whether the payment was successful, pending, or failed. |
+| **Amount**       | Total billed value for that period.                               |
 
-## Opção 2: Pela página de um agente
+If no payments have been made yet, you’ll see a *“No results”* message.
 
-<Steps>
-  <Step title="Acesse o painel do agente">
-    Abra o agente desejado em **Agentes de IA**.
-  </Step>
-  <Step title="Localize o seletor de provedor e modelo">
-    Na seção de configurações do agente, clique em **Provedor de LLM**.
-  </Step>
-  <Step title="Selecione ou adicione um provedor">
-    Se o provedor desejado não estiver listado, clique em **Adicionar novo provedor** para abrir o mesmo formulário de cadastro.
-  </Step>
-</Steps>
+***
 
-## Configurar o provedor
+## 🔹 Workspace and Billing Relationship
 
-Com o formulário aberto — seja pela página de workspace ou pela página do agente — siga estas etapas:
+Each workspace is billed **independently**, allowing organizations to isolate budgets and client accounts.\
+For example:
 
-<Steps>
-  <Step title="Preencha o nome interno">
-    Use um nome que identifique o uso (ex.: "OpenAI Produção", "Anthropic Testes"). Esse nome aparece nos seletores de agente.
-  </Step>
-  <Step title="Selecione o tipo de provedor">
-    Escolha entre OpenAI, Anthropic, Google ou OpenRouter.
-  </Step>
-  <Step title="Cole a chave de API">
-    O campo mascara os caracteres após a inserção por segurança.
-  </Step>
-  <Step title="Valide a chave">
-    Clique em **Validar chave**. A plataforma faz uma chamada de teste ao provedor e exibe o resultado imediatamente — válida (verde) ou inválida (vermelho com a mensagem de erro do provedor).
-  </Step>
-  <Step title="Salve o provedor">
-    Com validação positiva, clique em **Salvar**. O provedor aparece na lista com um indicador de status e fica disponível para seleção nos agentes do workspace.
-  </Step>
-</Steps>
+* Your **main workspace** might use a corporate credit card.
+* Your **client-specific workspace** could use a different payment source or plan.
+
+Changing the billing method in one workspace does **not** affect others.
+
+***
+
+## 🔹 Best Practices
+
+* Keep your payment method updated to avoid service interruptions.
+* Assign billing management to an **Admin** user only.
+* Download or record your Statement IDs for financial tracking.
+* If you manage multiple workspaces, ensure each one has its own valid payment setup.
+* Check your **Usage** section regularly to anticipate upcoming billing cycles.

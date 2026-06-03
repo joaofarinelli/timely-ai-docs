@@ -1,34 +1,28 @@
 ---
-title: "Busca Semântica em Tabelas"
-description: "Como ativar a indexação semântica em colunas de texto, entender os tipos de busca disponíveis e interpretar os resultados de similaridade."
+title: "Semantic Search"
 ---
 
-A **busca semântica** em tabelas permite que o agente encontre linhas com base no significado da consulta, não em correspondência exata de palavras. Internamente, o sistema usa o modelo `text-embedding-3-small` (1.536 dimensões) para vetorizar os valores de colunas habilitadas. As queries são executadas via comparação de similaridade coseno no banco de dados.
+Semantic Search enhances the way Agents interact with Tables by allowing **contextual** and **meaning-based** queries.\
+When this option is enabled on a column, the system uses vector embeddings to interpret user input.
 
-## Exemplo:
+### Example:
 
-> Um usuário pergunta "tem algum tênis para corrida de longa distância?". A tabela contém uma linha com a descrição "Calçado esportivo de alto desempenho para maratonistas, com amortecimento reforçado". O agente encontra essa linha via busca semântica mesmo sem nenhuma palavra em comum entre a pergunta e a descrição — porque os embeddings capturam a proximidade de significado entre os dois textos.
+If a user asks:
 
-## Quando Ativar a Busca Semântica
+> “Show all users who asked about campaigns”
 
-Ative a busca semântica em colunas onde a linguagem natural faz sentido como critério de busca:
+An Agent can retrieve rows from a “Questions” column even if none explicitly mention “campaigns”, as long as the semantic meaning aligns (e.g., “marketing flows”, “mass messages”).
 
-- Colunas de descrição de produtos, serviços ou eventos
-- Colunas de observações, resumos e notas em formato de texto
-- Colunas de categorias escritas por extenso ("eletrônicos", "feminino", "promoção especial")
-- Colunas de perguntas frequentes onde o usuário pode usar formulações variadas
+***
 
-Não ative a busca semântica em:
+## 🧩 When to Enable Semantic Search
 
-- Colunas com identificadores únicos (CPF, SKU, código de pedido, ID interno)
-- Colunas com valores numéricos armazenados como texto (ex.: "4990" para R$ 49,90)
-- Colunas com status codificados onde a correspondência exata é suficiente (ex.: "ativo", "inativo", "pendente")
-- Colunas do tipo `Number` e `Boolean` — a busca semântica não está disponível para esses tipos
+✅ **Recommended for:**
 
-<Note>
-  Cada inserção ou atualização em uma coluna com busca semântica ativa faz uma chamada à API de embeddings da OpenAI. Para tabelas com alto volume de inserções simultâneas, ative a busca semântica apenas nas colunas onde ela realmente agrega valor ao comportamento do agente.
-</Note>
+* Descriptive or natural language fields (`string`)
+  * Examples: *Question*, *Feedback*, *Message*, *Description*
 
-<Note>
-  O tipo da coluna não pode ser alterado após a criação. Se você precisa de busca semântica em uma coluna que foi criada como `Number` ou `Boolean`, será necessário criar uma nova coluna do tipo `String` e migrar os dados existentes.
-</Note>
+❌ **Avoid enabling for:**
+
+* Short categorical or structured fields
+  * Examples: *ID*, *Status*, *Type*, *Boolean flags*

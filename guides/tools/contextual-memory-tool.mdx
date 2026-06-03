@@ -1,3 +1,59 @@
 ---
 title: "Contextual Memory Tool"
 ---
+
+The **Contextual Memory Tool** allows your Agent to **store and retrieve structured information across conversations**, enabling it to "remember" past interactions, user preferences, and relevant data. This transforms your Agent from a simple assistant into a **truly contextual and personalized companion**.
+
+***
+
+## 🔑 Key Capabilities
+
+* **Custom Properties**: You decide what kind of information should be stored (e.g., names, preferences, conversation summaries, tool usage).
+* **Typed Data**: Each property can have a type (`string`, `number`, `boolean`), making the memory precise and structured.
+* **Natural Language Descriptions**: Define, in plain language, what the Agent should store, when to store it, and in which format.
+* **Sensitive Flag**: Mark certain data as **sensitive** so it won’t be visible to human support agents if a chat is escalated.
+* **Retrieval Across Sessions**: Data stored can be retrieved in future interactions, creating continuity across multiple conversations.
+
+***
+
+## 🛠️ How to Configure
+
+When creating a **Contextual Memory Tool**, you can:
+
+1. **Add Properties**
+   * Example:
+     * `interactions (string)` → A list with the main points of the conversation.
+     * `toolCallHistory (string)` → A bullet list of all tools called and their results.
+     * `people (string, sensitive)` → Names, roles, or preferences mentioned by the user.
+2. **Describe Each Property Clearly**
+   * Example:
+     * *"A list of people, their names and/or nicknames, professional roles, contact details, and preferences."*
+     * *"A summary of the last tool calls and what was learned from them."*
+3. **Choose the Data Type**
+   * `string` for free text (e.g., notes, names, feedback).
+   * `number` for numerical values (e.g., age, budget, score).
+   * `boolean` for true/false data (e.g., subscription active: true/false).
+4. **Mark Sensitive Data** (optional)
+   * Toggle this if the information is private and should **not be shared** when the chat is escalated to a human.
+
+***
+
+## 🌍 Example Use Cases
+
+* **Customer Support**: Remember user account details, previous issues, and preferences to avoid asking the same questions again.
+* **Sales Assistant**: Store budget ranges, product interests, and negotiation history to personalize follow-ups.
+* **Learning Agent**: Track what topics the user studied, their skill level, and which tools they’ve used successfully.
+* **Internal Tools**: Store agent’s own usage history, making it smarter in how it calls tools over time.
+
+***
+
+## 📌 Best Practices
+
+* Be **specific** in property descriptions so the Agent knows exactly when and how to save information.
+* Use **concise names** for properties (`people`, `preferences`, `history`) to make them easy to reuse.
+* Mark **sensitive data** whenever it involves personal or confidential information.
+* Use memory in combination with **Tickets** and **Knowledge Base** to ensure smooth human handover and reliable long-term records.
+
+***
+
+👉 With **Contextual Memory**, your Agents evolve beyond scripted bots, becoming adaptive, continuous, and deeply personalized in every interaction.

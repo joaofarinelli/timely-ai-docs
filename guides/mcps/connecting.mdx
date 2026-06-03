@@ -1,72 +1,80 @@
 ---
 title: "How to Connect a New MCP"
-description: "This guide shows, step-by-step, how to add a Managed Connection Provider (MCP) and make its tools available to your Agents and Workflows."
 ---
 
----
+This guide shows, step-by-step, how to add a Managed Connection Provider (MCP) and make its tools available to your Agents and Workflows.
+
+***
 
 ## Step-by-step
 
-<Steps>
-  <Step title="Open the MCPs area">
-    Go to **MCPs** in the left navigation and click **Connect MCP**.
-  </Step>
-  <Step title="Choose the integration">
-    Select the MCP you want (e.g., **Google Calendar, Notion, Airtable, Slack**, etc.).
-  </Step>
-  <Step title="Name and describe">
-    Fill in:
-    - **MCP Name** – a clear internal name (e.g., “Google Calendar – Sales”).
-    - **Description** (optional) – what this integration is for (helps future you and teammates).
-  </Step>
-  <Step title="Create a Connection (authentication)">
-    Connections are the authentication layer shared by all tools inside the MCP.
-    1. Click **+ Add Connection**.
-    2. Give the connection a **Name** and (optionally) a **Description**.
-    3. Complete the authentication (OAuth sign-in, API key, etc.).
-    4. Once successful, the connection will appear in the list.
+### 1) Open the MCPs area
 
-    <Tip>
-    Pro tip: use different connections for different teams or accounts, so permissions remain separated.
-    </Tip>
-  </Step>
-  <Step title="Enable the tools you need">
-    All tools start **disabled**. Click to **activate** only the ones your Agent should use. <br />
-Hovering over a tool shows what it does (e.g., in Google Calendar: create event, find free slots, update event).
-  </Step>
-  <Step title="Create the MCP">
-    Click **Create MCP**. Your integration is now available in Timely.ai.
-  </Step>
-</Steps>
+Go to **MCPs** in the left navigation and click **New MCP**.
 
----
+### 2) Choose the integration
+
+Select the MCP you want (e.g., **Google Calendar**, **Notion**, **Airtable**, **Slack**, etc.).
+
+### 3) Name and describe
+
+Fill in:
+
+* **MCP Name** – a clear internal name (e.g., “Google Calendar – Sales”).
+* **Description** (optional) – what this integration is for (helps future you and teammates).
+
+### 4) Create a Connection (authentication)
+
+Connections are the authentication layer shared by all tools inside the MCP.
+
+1. Click **+ Add Connection**.
+2. Give the connection a **Name** and (optionally) a **Description**.
+3. Complete the authentication (OAuth sign-in, API key, etc.).
+4. Once successful, the connection will appear in the list.
+
+> Pro tip: use different connections for different teams or accounts, so permissions remain separated.
+
+### 5) Enable the tools you need
+
+All tools start **disabled**. Click to **activate** only the ones your Agent should use.\
+Hovering over a tool shows what it does (e.g., in Google Calendar: *create event*, *find free slots*, *update event*).
+
+### 6) Create the MCP
+
+Click **Create MCP**. Your integration is now available in Timely.ai.
+
+***
 
 ## Make MCP tools available to an Agent
 
-Se você já tem um servidor MCP registrado no workspace e quer conectá-lo a um agente diferente, o processo é simplificado:
+Unlike custom tools or tables, you don’t have to add each tool individually.\
+Instead:
 
-<Steps>
-  <Step title="Abra o agente de destino">
-    Acesse o agente desejado e vá até a seção **MCP** nas configurações. Clique em **Nova conexão MCP**.
-  </Step>
-  <Step title="Selecione o servidor existente">
-    Escolha o servidor MCP já registrado no workspace na lista de servidores disponíveis. As ferramentas previamente sincronizadas ficam disponíveis imediatamente — não é necessário sincronizar novamente, a menos que o servidor tenha sido atualizado.
-  </Step>
-  <Step title="Ative as ferramentas para este agente">
-    Ative individualmente as ferramentas que fazem sentido para o contexto deste agente específico. Um mesmo servidor pode ter ferramentas ativadas de forma diferente em agentes distintos — cada agente controla quais ferramentas enxerga.
-  </Step>
-</Steps>
+1. Open **Agents → Your Agent → MCPs**.
+2. Activate the MCP you just created.
+3. Done ✅ — all selected tools inside that MCP are now automatically available for the Agent.
 
-## Teste interno (recomendado)
+***
 
-Antes de colocar o agente com ferramentas MCP em produção, realize testes internos para validar o comportamento:
+## Test internally (recommended)
 
-- Use o Playground com cenários reais do seu fluxo de atendimento — inclua casos em que a ferramenta deve ser acionada e casos em que não deve, para verificar se o modelo distingue corretamente.
-- Confirme que os resultados retornados pelo servidor são interpretados e formatados corretamente pelo agente antes de expor o canal aos usuários finais.
+Use the **internal chat** on the Agent’s page:
 
-## Solução de problemas
+* Example for Google Calendar MCP:
+  * “Find me 3 free 30-minute slots this week.”
+  * “Book a meeting with John tomorrow at 10am.”
 
-Se a conexão ou as ferramentas não funcionarem como esperado, verifique os pontos mais comuns:
+The Agent will gather missing details (date, participants, duration) and then trigger the right tool.
 
-- **Falha na conexão** — confirme que o servidor está em operação, a URL está correta e a credencial de autenticação é válida e não expirou.
-- **Nenhuma ferramenta aparece após sincronizar** — o servidor pode estar retornando uma lista vazia; verifique a implementação do servidor e confirme que ele expõe ao menos uma ferramenta com schema válido.
+***
+
+## Troubleshooting
+
+* **MCP created but no tools available?**\
+  Make sure you enabled at least one tool before saving.
+* **Auth completed but calls fail?**\
+  Verify the connection’s&#x20;
+
+***
+
+👉 With this, you now know how to create an MCP, connect it, activate its tools, and make them instantly available for your Agent.

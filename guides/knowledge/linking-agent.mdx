@@ -1,57 +1,66 @@
 ---
-title: "Conectando uma KB ao Agente"
-description: "Como ativar uma base de conhecimento num agente, configurar os parâmetros de retrieval e boas práticas para múltiplas bases."
+title: "Linking a Knowledge Base to an Agent"
 ---
 
-## Como Funciona a Conexão
+Creating a Knowledge Base is only the first step — to make it functional, you need to **link** it to an Agent or Squad.\
+This connection is established through the **Knowledge Tool**, available inside each Agent’s configuration.
 
-Criar uma base de conhecimento não é suficiente para que o agente a utilize — é necessário conectar explicitamente a base ao agente. Essa conexão é feita na seção **Bases de conhecimento** do agente e ativa o pipeline de retrieval para todas as conversas atendidas por ele.
+***
 
-Quando a conexão está ativa, o agente executa automaticamente uma busca semântica na base a cada mensagem recebida. Os chunks com similaridade acima do threshold configurado são incluídos no contexto enviado ao LLM junto com a mensagem do usuário. A resposta é então formulada com base nesses trechos recuperados.
+## 🧠 How Linking Works
 
-Um agente pode ter múltiplas bases conectadas simultaneamente. Nesse caso, a busca é executada em todas as bases ao mesmo tempo. Os resultados são ordenados por similaridade e os melhores chunks do conjunto total são selecionados — não um top-k por base.
+Every Agent has its own list of **Tools**.\
+When you add the **Knowledge Tool**, you can choose which Knowledge Bases that Agent will use as reference sources.
 
-## Conectando uma Base de Conhecimento
+An Agent can:
 
-<Steps>
-  <Step title="Abra o agente">
-    No menu lateral, acesse **Agentes** e clique no agente que receberá a base de conhecimento.
-  </Step>
-  <Step title="Acesse as bases de conhecimento">
-    Dentro da tela do agente, abra a seção **Bases de conhecimento**. É nela que você conecta as fontes indexadas ao agente.
-  </Step>
-  <Step title="Adicione a base">
-    Na seção **Bases de conhecimento**, clique em **+ Adicionar base**. Uma lista das bases disponíveis no workspace será exibida. Selecione a base desejada e confirme.
-  </Step>
-  <Step title="Configure os parâmetros de retrieval">
-    Após adicionar, os parâmetros ficam disponíveis para edição:
+* Use **multiple Knowledge Bases** simultaneously.
+* Share the **same Knowledge Base** with other Agents or Squads.
+* Retrieve relevant data dynamically based on context.
 
-    - **Top-k** — número máximo de chunks retornados por consulta. Padrão: `5`. Valores maiores trazem mais contexto, mas aumentam o tamanho do prompt enviado ao LLM.
-    - **Threshold** — limiar mínimo de similaridade coseno (0 a 1). Padrão: `0.7`. Chunks com similaridade abaixo desse valor são descartados automaticamente.
-  </Step>
-</Steps>
+This flexibility allows you to build complex ecosystems where shared information powers multiple intelligent Agents.
 
-## Conectando a um Squad
+***
 
-Um squad é um grupo de agentes especializados que colaboram numa mesma conversa. Quando uma base de conhecimento é conectada ao squad (em vez de a um agente específico), todos os agentes do squad passam a consultá-la durante suas interações.
+## ⚙️ Linking a Knowledge Base
 
-Acesse a configuração do squad, abra a aba de **Bases de conhecimento** e adicione a base da mesma forma que faria para um agente individual. A base fica compartilhada entre todos os membros do squad sem duplicação — o conteúdo é indexado uma única vez e consultado por todos.
+1. Go to **Builder → Agents → \[Select your Agent] → Tools**
+2. Click **Add Tool +**
+3. Choose the **Knowledge Tool** from the list
+4. In the configuration window:
+   * Select one or more **Knowledge Bases** to link
+   * Adjust retrieval parameters (if available)
+   * Save changes
 
-Use essa abordagem quando o conhecimento é transversal a todos os agentes do squad (ex.: políticas gerais da empresa). Para conhecimento especializado de um agente específico (ex.: catálogo de produtos consultado apenas pelo agente de vendas), conecte a base diretamente ao agente, não ao squad.
+Once linked, the Agent will automatically begin using the data for contextual reasoning and responses.
 
-## Cenário de Exemplo
+***
 
-Uma empresa de e-commerce tem três agentes: Suporte, Vendas e Financeiro. Cada um usa bases específicas:
+## 🧩 Linking to a Squad
 
-- **Suporte**: base "Perguntas Frequentes" + base "Políticas de Troca e Devolução"
-- **Vendas**: base "Catálogo de Produtos 2025" + base "Promoções Vigentes"
-- **Financeiro**: base "Condições de Parcelamento" + base "FAQ Pagamentos"
+When Agents belong to a **Squad**, any Knowledge Base connected to those Agents via the Knowledge Tool becomes available to the entire Squad context.\
+This enables shared knowledge environments for teams of Agents collaborating on the same workflow.
 
-Quando um cliente pergunta sobre prazo de entrega, o agente de Suporte busca nas duas bases conectadas a ele, recupera os trechos relevantes da base "Políticas de Troca e Devolução" e responde com os prazos reais da empresa.
+***
 
-## Boas Práticas
+## 💬 Example Scenario
 
-- Antes de conectar a base ao agente, verifique se os documentos estão com status **Indexado**. Documentos em **Processando** ainda não contribuem para as buscas e podem gerar a impressão de que a base não funciona.
-- Ajuste o threshold de forma incremental: reduza em 0.05 por vez e reavalie o comportamento do agente após cada ajuste. Mudanças drásticas tornam difícil isolar o efeito.
-- Separe conhecimentos com propósitos muito distintos em bases diferentes. Uma base "FAQ de Suporte" e uma base "Catálogo de Produtos" devem ser bases separadas — facilita a manutenção e permite desconectar uma sem afetar a outra.
-- Para bases com conteúdo técnico e denso, aumente o top-k para 7 a 10. Para bases de Q&A com respostas curtas, top-k de 3 é suficiente e reduz o custo de tokens.
+**Knowledge Base:** *Timely Commercial Knowledge*\
+**Linked via:** *Knowledge Tool*\
+**Used by:**
+
+* Agent Ju da Timely → Handles customer inquiries
+* Agent Alfred → Builds custom workflows
+* Squad da Timely → Combines both agents in collaborative operations
+
+All three entities reference the same Knowledge Base.\
+If the base is updated or retrained, the changes immediately propagate to all Agents and Squads that use it.
+
+***
+
+## 🧭 Best Practices
+
+* **Keep one source of truth.** Reuse Knowledge Bases across Agents when possible.
+* **Modularize content.** Create separate bases for topics like Sales, Product, and Support.
+* **Test context boundaries.** Ensure Agents are not over-retrieving from unrelated sources.
+* **Monitor performance.** Retrain or clean content periodically for consistency.

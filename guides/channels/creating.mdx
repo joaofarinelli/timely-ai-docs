@@ -1,34 +1,44 @@
 ---
-title: "Criando um Canal"
-description: "Fluxo geral para criar e ativar qualquer tipo de canal na Timely.ai — parâmetros de configuração, gestão e solução de problemas."
+title: "Creating a Channel"
 ---
 
-Um canal conecta um agente de IA à plataforma de mensagens onde o cliente está. Antes de o agente processar qualquer mensagem, é necessário criar ao menos um canal e autenticá-lo. O fluxo de criação é similar para todos os tipos, com variações na etapa de credenciais.
+Click **“New Channel”** to begin the configuration process.\
+Each channel type requires a slightly different setup flow, depending on the external platform.
 
-## Parâmetros gerais de configuração
+***
 
-| Campo | Descrição |
-|-------|-----------|
-| **Nome interno** | Identificador do canal nos filtros da Inbox e nos relatórios. Exemplos: "WhatsApp Suporte BR", "Widget Site Principal" |
-| **Tipo de canal** | WhatsApp WABA, Instagram, Widget Web, Telegram ou Slack |
-| **Agente vinculado** | Agente de IA que processará as mensagens recebidas neste canal |
-| **Status** | Ativo (processando mensagens) ou Pausado (canal conectado mas agente suspenso) |
-| **Credenciais** | Token, App Secret ou dados OAuth dependendo do tipo de canal escolhido |
+## **General Configuration Parameters**
 
-## Gestão de canais
+| Field                            | Description                                                                                     |
+| -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Type**                         | Selects the communication channel (Widget, WhatsApp (Evo Go), WhatsApp (Official), or Instagram). |
+| **Name**                         | Internal name used to identify the channel in the CRM list.                                     |
+| **Description**                  | Optional internal note for context or control.                                                  |
+| **Channel Responder**            | Defines which Agent or Squad will handle the conversations from this channel.                   |
+| **Customized Prompt (optional)** | Overrides the Agent’s main prompt, applying a custom instruction only for this channel.         |
+| **Delay to Answer**              | Sets a delay (in seconds) before the Agent responds to a user message.                          |
 
-| Ação | Descrição |
-|------|-----------|
-| **Pausar** | Mantém as credenciais salvas mas suspende o processamento de novas mensagens — útil para manutenção sem precisar reconectar |
-| **Reconectar** | Reinicia o fluxo de autenticação quando as credenciais expiram ou são revogadas na plataforma de origem |
-| **Editar nome** | Altera o nome interno sem interromper a conexão ou afetar o histórico de conversas |
-| **Excluir** | Remove o canal e encerra o processamento permanentemente; conversas existentes permanecem no histórico |
-| **Testar conexão** | Envia uma requisição de verificação à API da plataforma e exibe o status da resposta |
+## **Channel Management**
 
-## Solução de problemas
+Once created, channels are displayed in the **Channels Dashboard**.
 
-| Problema | Causa provável | Solução |
-|----------|---------------|---------|
-| Canal fica em "Aguardando verificação" | Token inválido ou permissões insuficientes na plataforma de origem | Revise as credenciais e confirme que as permissões necessárias foram concedidas antes de salvar |
-| Mensagens chegam mas agente não responde | Agente não está vinculado ao canal ou está desativado | Acesse **Agentes → [agente] → Canais** e confirme que o canal aparece como conectado |
-| Canal desconecta automaticamente | Token de curta duração expirado (comum em Instagram e WhatsApp WABA) | Gere um token de longa duração no gerenciador da plataforma e atualize as credenciais na Timely.ai |
+| Action                     | Description                                                      |
+| -------------------------- | ---------------------------------------------------------------- |
+| **Toggle Active/Inactive** | Enables or disables message routing for the selected channel.    |
+| **Edit Settings**          | Opens the configuration modal to modify responder or prompt.     |
+| **View Configuration**     | For Widget channels, shows embed code and customization options. |
+| **Delete Channel**         | Permanently removes the channel and its routing link.            |
+
+Each active channel is monitored automatically, ensuring continuous connectivity and message delivery.\
+If authentication expires (e.g., expired WhatsApp token), the channel status will display as inactive until reconnected.
+
+***
+
+## **Troubleshooting**
+
+| Issue                                  | Possible Cause                | Solution                                                    |
+| -------------------------------------- | ----------------------------- | ----------------------------------------------------------- |
+| QR Code expires before scanning        | Delay during setup            | Reload and rescan within 40 seconds.                        |
+| No pop-up window for WhatsApp Official | Browser blocked pop-ups       | Enable pop-ups in browser settings.                         |
+| Instagram connection fails             | Wrong account permissions     | Use an account with messaging access enabled.               |
+| Widget not loading on site             | Script not embedded correctly | Re-copy the embed code and ensure it’s inside the `<body>`. |

@@ -1,3 +1,81 @@
 ---
 title: "Code Execution Tool"
 ---
+
+The **Code Execution Tool** allows your Agent to run predefined code during a conversation.\
+It is useful for scenarios where the Agent needs to perform calculations, transform data, validate inputs, or execute custom business logic that goes beyond standard Tools.
+
+***
+
+## 🔹 How It Works
+
+* You configure the Tool with a **description** that explains in plain language what the code does.
+
+  > The Agent decides to call this Tool based on that description.
+* You can define **properties (variables)** that the Agent will collect from the user before running the code.
+  * Each property has a name, type, and description.
+  * The description tells the Agent how to extract and format the data from the conversation.
+* The Tool contains a **code block**, where you implement the function `main()`.
+  * The Agent will pass the collected properties as inputs.
+  * The function should return the processed output.
+* **Important:** If the Agent decides to use the Tool but some properties are missing, it will **first ask the user for those values**, then execute the code.
+
+***
+
+## 🔹 Configuration Fields
+
+When creating a Code Execution Tool:
+
+1. **Name** → A clear label, e.g. `Discount Calculator`
+2. **Description** → Natural language explanation, e.g.\
+   *“Executes a calculation to determine the final price after discount.”*
+3. **Properties** → Variables collected from the user, e.g.:
+   * `price` (number) → *“The original product price in USD.”*
+   * `discount` (number) → *“The discount percentage to apply.”*
+4. **Code** → A JavaScript function inside `main()` that processes the input and returns the result.
+
+***
+
+## 🔹 Example Setup
+
+**Name:** Discount Calculator\
+**Description:** *“Executes a calculation to return the final product price after applying a discount.”*
+
+**Properties:**
+
+* `price` (number) → *“The original price in USD.”*
+* `discount` (number) → *“Discount percentage (0–100).”*
+
+**Code Example:**
+
+```javascript
+function main({{price}}, {{discount}}) {
+  const finalPrice = price - (price * (discount / 100));
+  return { finalPrice };
+}
+```
+
+## 🔹 Example Use Case
+
+User: *“The product costs 200 dollars, and I have a 15% discount. What’s the final price?”*
+
+1. Agent decides to use the **Discount Calculator Tool**.
+2. Properties collected: `price = 200`, `discount = 15`.
+3. Code executes: `200 - (200 * 0.15) = 170`.
+4. Agent responds: *“The final price after discount is **170 USD**.”*
+
+***
+
+## 🔹 Best Practices
+
+* **Keep the description simple** → this ensures the Agent knows when to use the Tool.
+* **Validate inputs** inside your code (e.g., check if numbers are positive).
+* **Return structured outputs** in JSON, so the Agent can use the result consistently.
+* **Test internally** before exposing the Tool to users.
+
+***
+
+## ✅ Key Takeaway
+
+The Code Execution Tool gives your Agent flexibility to handle **custom logic**.\
+With clear property descriptions and well-written code, your Agent can dynamically collect inputs, process them, and deliver accurate results in real time.

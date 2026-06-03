@@ -1,93 +1,163 @@
 ---
-title: "Integrando Tabelas com Agentes"
-description: "Configure o agente para consultar, filtrar, inserir e atualizar linhas em tabelas durante conversas. Arquitetura de permissões, fluxos de dados e boas práticas."
+title: "Integrating Tables with Agents"
 ---
 
-## Como a Integração Funciona
+Timely.ai allows Agents to interact with **Tables** (also known internally as *Datagrids*) through specialized **Tools** that provide permission-based access to perform specific operations — such as inserting, updating, or retrieving data.
 
-Quando uma tabela é conectada a um agente, o agente recebe ferramentas para interagir com os dados em tempo real. Cada mensagem do usuário pode acionar uma ou mais ações na tabela — busca para formular uma resposta, inserção para registrar informações coletadas ou atualização para modificar um registro existente.
+These Tools act as **capability enablers**: each one grants a distinct level of interaction between the Agent and the Table.\
+Without an appropriate Datagrid Tool assigned, an Agent cannot read or write data to that Table.
 
-O agente decide qual ação executar com base nas instruções do prompt de sistema e no contexto da conversa. As ações são executadas pela função `datagrid-tool-exec`, que valida permissões, tipos de dado e limites antes de modificar qualquer registro.
+***
 
-## Ferramentas de Datagrid Disponíveis
+## 🧠 How Integration Works
 
-### Inserção de Linha (insert_row)
+Each Table can be linked to one or multiple Agents.\
+However, instead of a direct connection, integration is managed through **Datagrid Tools** — each representing a precise permission scope.
 
-A ação `insert_row` cria um novo registro na tabela com os valores coletados pelo agente durante a conversa. O agente só executa a inserção após coletar os campos obrigatórios — definidos na configuração de cada coluna. Se um campo obrigatório não foi informado pelo usuário, o agente solicita antes de prosseguir.
+When a Datagrid Tool is attached to an Agent, it defines *what kind of actions that Agent can perform* on the target Table.
 
-> Caso de uso típico: o agente coleta nome, e-mail e interesse de um lead durante a conversa e insere os dados na tabela "Leads" ao final, sem intervenção humana.
+> ⚙️ **Note:**\
+> Workflows currently **cannot** interact directly with Tables.\
+> Only Agents can perform these operations, and if needed, they can **pass the retrieved data to a Workflow** through a Request Node.
 
-### Atualização de Linha (update_row)
+***
 
-A ação `update_row` modifica os valores de um registro existente. Para atualizar, o agente primeiro localiza a linha via busca (semântica ou por similaridade), obtém o `row_id` e então executa a atualização com os novos valores.
+## 🧩 Available Datagrid Tools
 
-> Caso de uso típico: o usuário informa que quer atualizar seu e-mail de contato. O agente busca o registro pelo nome, solicita o novo e-mail e executa o `update_row` com o campo atualizado.
+Below is a list of the available **Datagrid interaction Tools** and their purposes:
 
-### Busca Semântica de Linha (semantic_search)
+### 1. 🔵 Datagrid Row Insertion
 
-A ação `semantic_search` converte a consulta do agente em embedding e executa busca por similaridade coseno nas colunas com indexação semântica ativa. Retorna linhas ordenadas por relevância semântica, com score de similaridade.
+**Function:**\
+Allows the Agent to insert a new row into a specific Table based on structured or contextual information gathered during a conversation.
 
-> Caso de uso típico: o usuário pergunta sobre produtos para cabelo seco e o agente executa `semantic_search` na tabela de catálogo, encontrando linhas com "hidratação", "nutrição capilar" e "tratamento para fios ressecados" mesmo sem correspondência exata de palavras.
+**Typical use cases:**
 
-### Busca por Similaridade de Linha (similarity_search)
+* Logging user inquiries or form submissions.
+* Saving contact data, tickets, or feedback.
 
-A ação `similarity_search` executa busca por similaridade de texto sem vetorização — mais rápida e sem custo de API de embeddings, porém menos capaz para variações de linguagem. Ideal para identificadores, SKUs e termos técnicos onde a correspondência aproximada é mais útil que a semântica.
+**Example:**
 
-> Caso de uso típico: o usuário informa o código do produto "NK-AIR-42" e o agente executa `similarity_search` para localizar exatamente aquele registro no catálogo.
+> “Store this user’s question in the *Unanswered Questions* table.”
 
-### Nota Final
+***
 
-As quatro ações podem ser combinadas num mesmo agente. Um agente de atendimento pode usar `semantic_search` para consultar o catálogo, `insert_row` para registrar leads e `update_row` para modificar status de pedidos — tudo configurado a partir do prompt de sistema.
+### 2. 🔵 Datagrid Row Update
 
-## Arquitetura de Permissões
+**Function:**\
+Allows the Agent to modify existing rows in a Table by matching a unique identifier or condition.
 
-Cada ação é ativada individualmente ao conectar a tabela ao agente. Não é necessário conceder todas as ações — ative apenas o que o caso de uso requer.
+**Typical use cases:**
 
-| Ferramenta | Nível de Permissão | Leitura/Escrita | Acesso Semântico |
-|------------|-------------------|-----------------|------------------|
-| `semantic_search` | Consulta | Somente leitura | Sim — requer colunas com busca semântica ativa |
-| `similarity_search` | Consulta | Somente leitura | Não — busca textual sem vetorização |
-| `insert_row` | Escrita | Escrita (criação) | Não aplicável |
-| `update_row` | Escrita | Escrita (modificação) | Não — localiza a linha por `row_id` obtido previamente por busca |
+* Updating the status of a contact or request.
+* Changing the sentiment field in a feedback record.
 
-## Conectando uma Tabela ao Agente
+**Example:**
 
-<Steps>
-  <Step title="Acesse o agente">
-    No menu lateral, clique em **Agentes** e selecione o agente que usará a tabela.
-  </Step>
-  <Step title="Abra a aba de Ferramentas">
-    Dentro da configuração do agente, acesse a aba **Ferramentas** (ou **Tabelas**). A lista de tabelas disponíveis no workspace é exibida.
-  </Step>
-  <Step title="Adicione a tabela">
-    Clique em **+ Adicionar tabela** e selecione a tabela desejada. Apenas tabelas do mesmo workspace estão disponíveis.
-  </Step>
-  <Step title="Configure as ações e instrua no prompt">
-    Selecione quais ações o agente pode executar (consulta, inserção, atualização). Em seguida, no prompt de sistema do agente, adicione instruções específicas sobre quando e como usar a tabela: qual ação usar, quais campos coletar e qual comportamento adotar quando a busca não retornar resultados.
-  </Step>
-</Steps>
+> “Update the *status* field of chat `5edca67d-dd2d...` to `resolved`.”
 
-## Exemplo — Usando Múltiplas Ferramentas
+***
 
-> Um agente de atendimento para uma clínica tem acesso à tabela "Agenda de Profissionais". Quando o usuário pergunta "tem horário disponível com a Dra. Ana amanhã?", o agente executa `semantic_search` com a query "Dra. Ana disponível amanhã" e recupera os horários cadastrados. Ao confirmar o agendamento, o agente executa `update_row` para decrementar as vagas disponíveis no horário escolhido e `insert_row` na tabela "Agendamentos" para registrar os dados do paciente.
+### 3. 🔵 Datagrid Row Semantic Search
 
-## Fluxo de Dados — Agente + Tabela
+**Function:**\
+Grants the Agent permission to **search Table rows using semantic understanding** — meaning queries are based on contextual similarity, not only keywords.
 
-Quando o agente recebe uma mensagem do usuário, o fluxo de dados segue a sequência:
+**Typical use cases:**
 
-1. O LLM processa a mensagem e identifica a intenção (consulta, coleta de dados, atualização).
-2. Com base nas instruções do prompt, o agente decide qual ferramenta de datagrid acionar.
-3. A função `datagrid-tool-exec` recebe a requisição, valida permissões e tipos de dado e executa a ação no banco de dados.
-4. O resultado (linhas encontradas, confirmação de inserção ou atualização) é retornado ao LLM.
-5. O LLM formula a resposta final ao usuário com base nos dados retornados pela tabela.
+* Retrieving questions similar to a current user inquiry.
+* Searching for feedback containing specific intent or emotion.
 
-Ações de inserção e atualização são permanentes e imediatas — não há desfazer automático pela interface do agente. Dados incorretos inseridos pelo agente precisam ser corrigidos manualmente na interface da tabela.
+**Example:**
 
-## Boas Práticas
+> “Find all feedbacks that mention onboarding issues.”
 
-| Recomendação | Descrição |
-|--------------|-----------|
-| Seja específico no prompt | O agente tem acesso a várias ferramentas simultaneamente. Instruções vagas podem fazer o agente não usar a tabela quando deveria, ou usar quando não deveria. Indique explicitamente quando cada ação deve ser acionada. |
-| Limite as ações ao mínimo necessário | Se a tabela é um catálogo somente leitura, não ative inserção nem atualização. Reduz o risco de dados incorretos e simplifica o comportamento esperado do agente. |
-| Use campos obrigatórios com critério | Campos obrigatórios garantem que o agente colete informações críticas antes de inserir. Em excesso, tornam a conversa longa e podem frustrar o usuário. |
-| Teste com casos extremos | Simule usuários que pulam perguntas, dão respostas vagas ou fornecem dados no formato errado. Verifique como o agente lida com cada situação antes de ativar em produção. |
+***
+
+### 4. 🔵 Datagrid Row Similarity Search
+
+**Function:**\
+Allows the Agent to perform **similarity-based vector searches** among Table rows, often used for advanced matching or clustering operations.
+
+**Typical use cases:**
+
+* Identifying duplicate records or repeated questions.
+* Finding content with semantic similarity to a new input.
+
+**Example:**
+
+> “Search for entries similar to this user’s message.”
+
+***
+
+## 🔐 Permission-Based Architecture
+
+Each Datagrid Tool represents a **permission level** within the Agent’s operational scope:
+
+| Tool                               | Permission Level     | Read / Write | Semantic Access |
+| ---------------------------------- | -------------------- | ------------ | --------------- |
+| **Datagrid Row Insertion**         | Create               | ✅ Write      | ❌               |
+| **Datagrid Row Update**            | Modify               | ✅ Write      | ❌               |
+| **Datagrid Row Semantic Search**   | Query (contextual)   | ✅ Read       | ✅               |
+| **Datagrid Row Similarity Search** | Query (vector-based) | ✅ Read       | ✅               |
+
+> ⚙️ Assigning a tool effectively grants that Agent the associated Table capability.\
+> Without it, the Agent cannot perform those actions, even if it references the Table in conversation.
+
+***
+
+## 🔗 Connecting a Table to an Agent
+
+To link a Table to an Agent, follow these steps:
+
+1. Open the **Agent Builder**.
+2. Go to the **Tools** tab.
+3. Click **Add Tool +** and select one of the **Datagrid Row Tools**.
+4. Configure:
+   * The **target Table** you want the Agent to access.
+   * Any specific parameters or permissions.
+
+Once added, the Agent can interact with the Table within the defined tool boundaries.
+
+***
+
+## 🔁 Example — Using Multiple Tools
+
+An Agent may require more than one Datagrid Tool to fully manage a Table.\
+For example, a *Support Agent* may need:
+
+* **Datagrid Row Insertion** → to record new issues.
+* **Datagrid Row Update** → to mark them as resolved.
+* **Datagrid Row Semantic Search** → to check if a similar issue already exists.
+
+Each of these tools would be individually added to the Agent to grant the corresponding capabilities.
+
+***
+
+## 🧩 Data Flow Example (Agent + Workflow)
+
+While Workflows cannot access Tables directly, Agents can serve as **data intermediaries**:
+
+1. The Agent performs a **Semantic Search** in a Table.
+2. It retrieves the result in context.
+3. The Agent then sends this structured data forward through a **Request Node** (e.g., HTTP or Workflow call).
+4. The Workflow processes the received data for automation or analytics purposes.
+
+This architecture maintains **data integrity**, ensures **AI-controlled access**, and prevents unauthorized manipulation of Table data.
+
+***
+
+## ⚙️ Best Practices
+
+| Recommendation                      | Description                                                                             |
+| ----------------------------------- | --------------------------------------------------------------------------------------- |
+| **Use precise column descriptions** | Helps the Agent understand each field’s purpose when inserting or updating data.        |
+| **Assign only necessary Tools**     | Avoid giving Agents permissions they don’t need (e.g., write access when only reading). |
+| **Combine Tools logically**         | Agents can use multiple Datagrid Tools for full CRUD-like control when needed.          |
+| **Monitor output via logs**         | Review Agent logs to confirm correct table operations and semantic matches.             |
+| **Avoid redundancy**                | Use Similarity Search only when precise vector comparison is required.                  |
+
+### Final Note
+
+In Timely.ai, Tables are not just passive data containers — they’re part of the **Agent’s extended cognitive framework**.\
+By combining Tables with the right Datagrid Tools, your Agents gain the ability to **reason contextually, act autonomously, and persist knowledge** — safely, intelligently, and under precise permission control.

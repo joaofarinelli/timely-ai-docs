@@ -158,8 +158,6 @@
                       "guides/inbox/human-support/roles"
                     ]
                   },
-                  "guides/inbox/quick-replies",
-                  "guides/inbox/tags-and-notes"
                 ]
               },
               {
@@ -191,14 +189,11 @@
                   "guides/knowledge/overview",
                   "guides/knowledge/creating",
                   "guides/knowledge/linking-agent",
-                  "guides/knowledge/best-practices",
-                  "guides/knowledge/documents",
-                  "guides/knowledge/qa",
-                  "guides/knowledge/website-crawler"
+                  "guides/knowledge/best-practices"
                 ]
               },
               {
-                "group": "Datagrids",
+                "group": "Tables",
                 "pages": [
                   "guides/tables/overview",
                   "guides/tables/creating",
@@ -207,51 +202,13 @@
                 ]
               },
               {
-                "group": "CRM",
-                "pages": [
-                  "guides/crm/contacts",
-                  "guides/crm/leads-pipeline"
-                ]
-              },
-              {
-                "group": "Time AI",
-                "pages": [
-                  "guides/time-ai/overview"
-                ]
-              },
-              {
-                "group": "Analytics",
-                "pages": [
-                  "guides/analytics/dashboard",
-                  "guides/analytics/reports-export"
-                ]
-              },
-              {
-                "group": "Billing",
-                "pages": [
-                  "guides/billing/plans",
-                  "guides/billing/credits",
-                  "guides/billing/promo-referrals"
-                ]
-              },
-              {
-                "group": "Time e Permissões",
-                "pages": [
-                  "guides/team/members",
-                  "guides/team/permissions",
-                  "guides/team/workspaces",
-                  "guides/team/api-keys"
-                ]
-              },
-              {
-                "group": "Configurações",
+                "group": "Settings",
                 "pages": [
                   "guides/settings/overview",
                   "guides/settings/profile",
                   "guides/settings/company",
                   "guides/settings/providers",
-                  "guides/settings/usage",
-                  "guides/settings/subscriptions"
+                  "guides/settings/usage"
                 ]
               }
             ]
@@ -440,21 +397,6 @@
             ]
           },
           {
-            "tab": "AI",
-            "groups": [
-              {
-                "group": "Skills",
-                "pages": [
-                  "ai/overview",
-                  "ai/llms-txt",
-                  "ai/cursor",
-                  "ai/claude",
-                  "ai/vscode"
-                ]
-              }
-            ]
-          },
-          {
             "tab": "HTTP",
             "groups": [
               {
@@ -610,8 +552,6 @@
                       "en/guides/inbox/human-support/roles"
                     ]
                   },
-                  "en/guides/inbox/quick-replies",
-                  "en/guides/inbox/tags-and-notes"
                 ]
               },
               {
@@ -643,56 +583,16 @@
                   "en/guides/knowledge/overview",
                   "en/guides/knowledge/creating",
                   "en/guides/knowledge/linking-agent",
-                  "en/guides/knowledge/best-practices",
-                  "en/guides/knowledge/documents",
-                  "en/guides/knowledge/qa",
-                  "en/guides/knowledge/website-crawler"
+                  "en/guides/knowledge/best-practices"
                 ]
               },
               {
-                "group": "Datagrids",
+                "group": "Tables",
                 "pages": [
                   "en/guides/tables/overview",
                   "en/guides/tables/creating",
                   "en/guides/tables/semantic-search",
                   "en/guides/tables/integrating-agents"
-                ]
-              },
-              {
-                "group": "CRM",
-                "pages": [
-                  "en/guides/crm/contacts",
-                  "en/guides/crm/leads-pipeline"
-                ]
-              },
-              {
-                "group": "Time AI",
-                "pages": [
-                  "en/guides/time-ai/overview"
-                ]
-              },
-              {
-                "group": "Analytics",
-                "pages": [
-                  "en/guides/analytics/dashboard",
-                  "en/guides/analytics/reports-export"
-                ]
-              },
-              {
-                "group": "Billing",
-                "pages": [
-                  "en/guides/billing/plans",
-                  "en/guides/billing/credits",
-                  "en/guides/billing/promo-referrals"
-                ]
-              },
-              {
-                "group": "Team & Permissions",
-                "pages": [
-                  "en/guides/team/members",
-                  "en/guides/team/permissions",
-                  "en/guides/team/workspaces",
-                  "en/guides/team/api-keys"
                 ]
               },
               {
@@ -702,8 +602,7 @@
                   "en/guides/settings/profile",
                   "en/guides/settings/company",
                   "en/guides/settings/providers",
-                  "en/guides/settings/usage",
-                  "en/guides/settings/subscriptions"
+                  "en/guides/settings/usage"
                 ]
               }
             ]
@@ -887,21 +786,6 @@
                   "en/webhooks/external/telegram",
                   "en/webhooks/external/stripe",
                   "en/webhooks/external/hotmart"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "AI",
-            "groups": [
-              {
-                "group": "Skills",
-                "pages": [
-                  "en/ai/overview",
-                  "en/ai/llms-txt",
-                  "en/ai/cursor",
-                  "en/ai/claude",
-                  "en/ai/vscode"
                 ]
               }
             ]

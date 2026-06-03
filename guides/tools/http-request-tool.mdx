@@ -1,3 +1,169 @@
 ---
 title: "HTTP Request Tool"
+description: "Let your Agent call external APIs to retrieve data, create or update records, trigger third-party actions, or sync information in real time — beyond the native Timely.ai ecosystem."
 ---
+
+---
+
+## 🔹 How the HTTP Request Tool Works
+
+1. You define the Tool with a **clear natural-language description** explaining when it should be used.
+2. The Agent reads this description to decide **if and when** the Tool applies during a conversation.
+3. You define **Properties (variables)** that the Agent must collect (e.g., ID, email, date).
+4. If required properties are missing, the Agent will **ask the user for them first**.
+5. Once all required data is available, the Agent executes the HTTP request using your configuration.
+
+This ensures that every request is **complete, contextual, and accurate** before execution.
+
+---
+
+## 🔹 Supported HTTP Methods
+
+The HTTP Request Tool supports all standard REST methods:
+
+- **GET** → Retrieve information
+- **POST** → Create new resources
+- **PUT** → Update existing resources
+- **PATCH** → Perform partial updates
+- **DELETE** → Remove resources
+
+---
+
+## ⚙️ Configuration Fields
+
+When creating an HTTP Request Tool, you configure:
+
+- **Name**
+- **Description** (what the Tool does and when to use it)
+- **URL**
+- **Method**
+- **Headers**
+- **Query parameters**
+- **Body**
+- **Properties (variables)**
+
+Each property includes:
+
+- Type (string, number, etc.)
+- Description (used by the Agent to ask the user correctly)
+- Required / optional flag
+
+---
+
+## 🧩 Property Picker (Variable Insertion)
+
+When editing Headers, Query, or Body, Timely.ai provides a **Property Picker**.
+
+Instead of typing variables manually (`{{variableName}}`), you can:
+
+1. Click inside any field (Headers, Query, or Body).
+2. A floating list appears showing all defined properties.
+3. Click a property to automatically insert it in the correct format.
+
+💡 **Example** <br />
+If a property is called `userId`, selecting it automatically inserts:
+
+```
+{{userId}}
+```
+
+This eliminates syntax errors and significantly speeds up configuration.
+
+---
+
+## 🤖 cURL Import Assistant
+
+Timely.ai includes a Creation Assistant that allows you to import a full HTTP configuration directly from a cURL command.
+
+### How it works:
+1. Click the **magic wand / assistant icon** when creating an HTTP Request Tool.
+2. Paste a full curl command (or describe the request).
+3. The Assistant automatically:
+    - Detects the **HTTP method**
+    - Extracts the **URL**
+    - Parses **headers**
+    - Converts request body fields into **Properties**
+    - Pre-fills the Tool configuration
+
+This is especially useful when:
+
+- You already have API examples from documentation
+- You are migrating existing integrations
+- You want to avoid manual configuration errors
+
+💡 **Example cURL**
+
+```
+curl -X POST "https://api.example.com/users" \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John","email":"john@email.com"}'
+```
+
+The Assistant will automatically generate:
+
+- URL
+- Method: POST
+- Headers
+- Body
+- Properties (`name`, `email`)
+
+You can then refine descriptions and required fields before saving.
+
+---
+
+## 🔹 Example Setup
+
+**Name:** Customer API Lookup <br />
+**Description:**
+“Allows the Agent to retrieve customer information from the external CRM using a customer ID.”
+
+**Property:**
+- `id` (number) → “Customer ID provided by the user. Must be numeric.”
+
+**Configuration:**
+- URL: https://api.crm.com/customers/{{id}}
+- Method: GET
+- Headers:
+```
+{
+  "Authorization": "Bearer {{api_key}}"
+}
+```
+**Example POST Body:**
+```
+{
+  "name": "{{name}}",
+  "email": "{{email}}",
+  "project_type": "{{project_type}}"
+}
+```
+
+If `project_type` is missing, the Agent will ask the user for it before executing the request.
+
+---
+
+## 🧠 Best Practices
+
+- Be explicit in property descriptions <br />
+*Example:* “Date of birth in format YYYY-MM-DD.”
+- Keep Tools focused — one Tool per clear API action.
+- Always test requests using the **Internal Chat** before publishing.
+- Avoid hardcoding secrets directly in requests.
+- For complex APIs, split actions into multiple Tools.
+- Use the **Property Picker** and **cURL Assistant** to reduce errors.
+
+---
+
+## ✅ Key Takeaway
+
+The HTTP Request Tool is the **bridge between your Agent and the external world**.
+
+By combining:
+
+- Clear descriptions
+- Well-defined properties
+- The Property Picker
+- The cURL Import Assistant
+
+You enable your Agents to safely, dynamically, and intelligently interact with any external API — asking for missing data when needed and executing only when everything is ready.
