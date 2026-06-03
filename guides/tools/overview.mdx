@@ -1,98 +1,181 @@
 ---
-title: "Ferramentas: Visão Geral"
-description: "Entenda o que são ferramentas na Timely.ai, quando usá-las e quais tipos estão disponíveis para o seu agente."
+title: "Tools: Overview"
 ---
 
-## Entendendo as ferramentas e quando utilizá-las
+## Understanding Tools and When to Use Them
 
-Ferramentas (tools) são capacidades extras que o agente pode acionar de forma autônoma durante uma conversa. Em vez de apenas gerar texto com base no que sabe, o agente passa a poder interagir com sistemas externos — buscar um registro, inserir um lead, criar um evento, consultar um documento — tudo dentro do fluxo natural da conversa.
+In Timely.ai, **Tools** are what extend an Agent’s capabilities beyond its core **Role + Prompt**.
 
-A decisão de usar ou não uma ferramenta pertence ao próprio modelo de linguagem. Ao receber uma mensagem do usuário, o LLM avalia o contexto, identifica se alguma ação externa é necessária para responder bem e, em caso afirmativo, escolhe a ferramenta mais adequada. Esse mecanismo é o *tool calling* nativo dos grandes modelos — não exige lógica de roteamento manual nem fluxos condicionais programados por você.
+By default, an Agent can only respond using the instructions defined in its Prompt. <br />
+Whenever you want an Agent to **interact with data, trigger actions, integrate with systems, or escalate to humans**, you must create and configure the appropriate Tools.
 
-Ferramentas são indicadas quando a resposta ideal depende de informações que não estão no prompt e que mudam com frequência (preços, disponibilidade, histórico de um cliente), ou quando o agente precisa executar uma ação no mundo — registrar dados, agendar uma reunião, atualizar um status. Se a informação for estática e raramente mudar, basta incluí-la diretamente no prompt ou na base de conhecimento.
+---
 
-<Note>
-Habilitar muitas ferramentas simultaneamente aumenta o espaço de raciocínio do modelo e pode elevar o custo por resposta. Prefira ativar apenas as ferramentas que o agente realmente precisa para o seu caso de uso específico.
-</Note>
+## How the Agent Uses Tools
 
-## Como o agente usa ferramentas
+Agents decide to use a Tool based on the **Tool description**.
 
-O agente não segue uma ordem fixa de chamadas. A cada turno da conversa, o modelo avalia o contexto acumulado e decide se precisa acionar alguma ferramenta. O ciclo é:
+- If the Agent determines a Tool is needed but required inputs are missing, it will **ask the user for the missing information first**
+- Once all required properties are available, the Agent executes the Tool
+- If all logic and information fit inside the Prompt, **no Tool is required**
 
-1. O modelo lê a mensagem do usuário e o histórico da conversa.
-2. Se identificar que precisa de dados externos ou precisa executar uma ação, seleciona a ferramenta mais adequada e monta os argumentos.
-3. A ferramenta é executada e o resultado retorna ao modelo.
-4. O modelo incorpora o resultado e gera a resposta ao usuário.
+<Tip>
+Best practice: Tools should only be created when they are truly necessary. Fewer Tools lead to more predictable behavior.
+</Tip>
 
-Esse ciclo pode se repetir múltiplas vezes em uma única interação — o agente pode buscar um horário livre no Google Calendar e, na sequência, criar um evento com link do Google Meet, tudo antes de responder ao usuário.
+---
+
+## Types of Tools in Timely.ai
+
+Below are the Tools currently available in the platform and when to use each one.
+
+---
+
+### 📡 HTTP Request
+
+Allows the Agent to perform API calls to external services.
+
+**Supported methods:** <br />
+GET, POST, PUT, DELETE, PATCH
+
+**Use when:**
+- Integrating with third-party systems
+- Fetching or sending data to external APIs
+
+---
+
+### ⚙️ Code Execution
+
+Allows the Agent to execute custom code snippets.
+
+**Use when:**
+- Performing calculations
+- Transforming data
+- Applying custom logic not covered by other Tools
+
+---
+
+### 🌐 Agentic Web Search
+
+Allows the Agent to search the web for up-to-date information.
+
+**Use when:**
+- Information is not available in Knowledge Bases
+- Real-time or external context is required
+
+---
+
+### 🎫 Ticket Creation
+
+Creates a ticket and transfers the conversation to a human in the Timely.ai CRM.
+
+**Important:**
+- Requires a **CRM Team** to exist
+- This is the **only native way** to escalate a conversation to humans
+
+---
+
+### 📚 Knowledge Base Search
+
+Allows the Agent to search within a Knowledge Base created in Timely.ai.
+
+**Use when:**
+- Information is too large or dynamic for the Prompt
+- You need structured, searchable documentation or FAQs
+
+---
+
+### ⏰ Follow Up
+
+Allows the Agent to send **follow-up messages after conversation inactivity**.
+
+**Use when:**
+
+- Re-engaging users
+- Reminding users to complete an action
+- Continuing conversations automatically
+
+---
+
+### 📄 PDF Reader
+
+Allows the Agent to read and extract information from PDF files.
+
+Allows the Agent to read and reason over the **entire content of a PDF as a single contextual document**, without chunking or semantic fragmentation.
+
+---
+
+### 📊 Table Tools
+
+Tables are native databases inside Timely.ai. <br />
+Each type of interaction requires its own Tool.
+
+Available Table Tools:
+
+- **Table Row Insertion** — insert new records
+- **Table Row Update**— update existing records
+- **Table Row Semantic** Search — search by meaning using natural language
+- **Table Row Similarity Search** — search by vector similarity (closest matches)
+
+**Use when:**
+
+- Managing leads, customers, tickets, or structured data
+- Persisting information across conversations
 
 <Warning>
-Ferramentas com escrita (inserção, atualização, exclusão de registros) devem ser ativadas apenas quando o caso de uso exige — e sempre acompanhadas de um prompt bem orientado. O agente pode executar ações irreversíveis se as instruções forem ambíguas.
+Tables must be created before configuring their Tools.
 </Warning>
 
-## Tipos de ferramentas na Timely.ai
+---
 
-A Timely.ai oferece ferramentas de diferentes categorias, cada uma com um propósito específico:
+### 🔄 Workflow Execution
 
-### Requisição HTTP
+Executes a pre-built Workflow.
 
-Permite que o agente faça chamadas a APIs externas via HTTP. Você configura a URL, o método (GET, POST, PUT, PATCH, DELETE), os cabeçalhos e o corpo da requisição. O agente monta os parâmetros dinamicamente com base no contexto da conversa e injeta o retorno no contexto antes de responder.
+**Use when:**
 
-- Ideal para integrar sistemas que expõem uma API REST mas não têm suporte nativo na Timely.ai.
-- Suporta autenticação via header (Bearer token, API key) configurada na definição da ferramenta.
+- Orchestrating multi-step processes
+- Automating business logic (e.g., payments, onboarding, approvals)
 
-### Execução de código
+---
 
-Executa trechos de código gerados pelo próprio modelo em um ambiente isolado. Útil para cálculos complexos, transformações de dados e geração de relatórios dinâmicos que seriam difíceis de expressar apenas em linguagem natural.
+### 🧠 Contextual Memory
 
-### Busca na web
+Allows the Agent to store and retrieve information across conversations.
 
-Permite que o agente pesquise informações atualizadas na internet durante uma conversa. O resultado da busca é incorporado ao contexto antes de o modelo formular a resposta — útil para perguntas sobre eventos recentes, preços de mercado ou qualquer dado que muda com frequência e não está na base de conhecimento.
+**Examples:**
 
-### Busca na base de conhecimento
+- Name
+- Company
+- Budget
+- Preferences
 
-Aciona o mecanismo RAG da Timely.ai: a pergunta do usuário é convertida em um embedding vetorial (modelo `text-embedding-3-small`, 1.536 dimensões) e comparada com os chunks indexados na base de conhecimento do workspace. Os trechos mais relevantes são injetados no contexto antes da resposta.
+Memory works like **dynamic variables**, and the Agent relies on the Tool description to understand what should be extracted and stored.
 
-### Ferramentas de Datagrid
+---
 
-Conectam o agente às tabelas customizadas do workspace. As ações disponíveis são:
+## Best Practices
 
-- `semantic_search` — busca por similaridade semântica nos registros da tabela.
-- `similarity_search` — busca por correspondência aproximada de texto.
-- `insert_row` — insere um novo registro com os campos informados pelo agente.
-- `update_row` — atualiza um registro existente identificado pelo `row_id`.
 
-### Execução de workflow
+- **Keep it simple** — If information fits in the Prompt, don’t create a Tool
+- **Respect dependencies** — Create the resource first (Table, Workflow, CRM Team)
+- **Write clear descriptions** — Always explain Tools in natural language
+- **Test internally** — Use the Internal Chat to validate Tool behavior before publishing
 
-Aciona um workflow interno da Timely.ai como parte da resposta do agente. O agente chama o workflow com os parâmetros definidos, aguarda a conclusão e usa o resultado na conversa.
+---
 
-### Follow-up
+## Key Takeaway
 
-Agenda uma mensagem de acompanhamento para ser enviada ao usuário após um intervalo de tempo. O agente determina o conteúdo e o horário do follow-up com base no contexto da conversa — útil para lembretes, retomadas de contato e verificações pós-atendimento.
+Tools are what make Agents **active** inside Timely.ai.
 
-### Memória contextual
+They connect your Agent to:
 
-Permite que o agente persista informações sobre o contato entre conversas. O agente pode salvar preferências, histórico de interações ou qualquer dado relevante, e recuperar essas informações em sessões futuras sem que o usuário precise repetir o contexto.
+- Knowledge Bases
+- Tables
+- Workflows
+- External APIs
+- Humans
 
-### Leitura de PDF
-
-Extrai e processa o conteúdo de documentos PDF enviados pelo usuário durante a conversa. O texto extraído é incorporado ao contexto para que o agente possa responder perguntas sobre o documento, resumir seu conteúdo ou executar ações baseadas nas informações presentes no arquivo.
-
-### Integrações Composio
-
-Conectam o agente a **29 apps externos** através da camada de autenticação e execução da Composio — Google Calendar, Google Meet, Notion, Slack, Gmail, HubSpot, Stripe, GitHub, LinkedIn, Twitter/X, Meta Ads, Google Sheets, Browser Tool, Browse.ai e mais. Cada app expõe um conjunto de tools individuais que você pode ativar ou desativar na configuração do agente.
-
-### MCP (Model Context Protocol)
-
-Protocolo aberto da Anthropic que permite conectar o agente a qualquer servidor MCP externo — interno, de terceiros ou desenvolvido pelo seu time. Enquanto a Composio cobre apps populares com conectores prontos, o MCP permite expor ferramentas proprietárias (consultas a APIs internas, ERP, sistemas legados) sem depender de nenhum catálogo.
-
-## Boas práticas
-
-- Ative ferramentas de leitura antes de habilitar ferramentas de escrita e valide o comportamento no Playground.
-- Escreva descrições claras para cada ferramenta — o modelo usa esse texto para decidir quando acioná-la.
-- Ferramentas MCP e Composio injetam instruções de workflow no prompt do sistema, tornando o comportamento mais previsível.
-- Monitore o consumo de tokens por sessão ao adicionar múltiplas ferramentas — cada ferramenta ativa aumenta o tamanho do contexto.
-
-## Ponto-chave
-
-Ferramentas transformam o agente de um sistema de respostas em um agente capaz de agir. A escolha de quais ferramentas ativar — e com quais instruções — determina diretamente a qualidade, o custo e a segurança do comportamento do agente em produção.
+But remember: <br />
+**More Tools = more complexity**. <br />
+Start simple and only add what your Agent truly needs.

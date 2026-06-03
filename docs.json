@@ -100,9 +100,22 @@
                 "pages": [
                   "guides/tools/overview",
                   "guides/tools/composio",
-                  "guides/tools/mcp",
-                  "guides/tools/knowledge-search",
-                  "guides/tools/datagrid-tools"
+                  {
+                    "group": "Available Tools",
+                    "expanded": false,
+                    "pages": [
+                      "guides/tools/http-request-tool",
+                      "guides/tools/code-execution-tool",
+                      "guides/tools/agentic-web-search-tool",
+                      "guides/tools/ticket-creation-tool",
+                      "guides/tools/follow-up-tool",
+                      "guides/tools/knowledge-base-search-tool",
+                      "guides/tools/table-tools",
+                      "guides/tools/workflow-execution-tool",
+                      "guides/tools/contextual-memory-tool",
+                      "guides/tools/pdf-reader-tool"
+                    ]
+                  }
                 ]
               },
               {
@@ -539,9 +552,22 @@
                 "pages": [
                   "en/guides/tools/overview",
                   "en/guides/tools/composio",
-                  "en/guides/tools/mcp",
-                  "en/guides/tools/knowledge-search",
-                  "en/guides/tools/datagrid-tools"
+                  {
+                    "group": "Available Tools",
+                    "expanded": false,
+                    "pages": [
+                      "en/guides/tools/http-request-tool",
+                      "en/guides/tools/code-execution-tool",
+                      "en/guides/tools/agentic-web-search-tool",
+                      "en/guides/tools/ticket-creation-tool",
+                      "en/guides/tools/follow-up-tool",
+                      "en/guides/tools/knowledge-base-search-tool",
+                      "en/guides/tools/table-tools",
+                      "en/guides/tools/workflow-execution-tool",
+                      "en/guides/tools/contextual-memory-tool",
+                      "en/guides/tools/pdf-reader-tool"
+                    ]
+                  }
                 ]
               },
               {

@@ -1,75 +1,90 @@
 ---
-title: "Criando Squads"
-description: "Passo a passo para criar um squad, adicionar agentes, definir papéis de liderança e gerenciar o grupo ao longo do tempo."
+title: "Creating Squads"
+description: "This guide focuses on the **practical steps and management actions** involved in creating and maintaining Squads inside Timely.ai. <br /> <br />
+If you're looking for conceptual explanations about what Squads are and when to use each mode, refer to the previous article."
 ---
 
-Squads permitem que múltiplos agentes especializados atendam um mesmo canal de forma coordenada. Antes de criar um squad, garanta que os agentes que farão parte do grupo já estejam criados e configurados com seus respectivos modelos LLM e bases de conhecimento.
+---
 
-## Passo 1: Criar um squad
+## Step 1: Create a Squad
 
 <Steps>
-  <Step title="Acesse a seção Squads">
-    No menu lateral, clique em **Squads**. A lista de squads existentes é exibida.
+  <Step title="Open Squads Page">
+    In the left sidebar, click the **Builder** category, then open the **Squads** page.
   </Step>
-  <Step title="Inicie um novo squad">
-    Clique em **+ Novo squad** no canto superior direito da tela.
+  <Step title="Create New Squad">
+    Click the **New Squad** button in the top-right corner of the page, then select **Hierarchical** or **Horizontal** mode based on your needs.
   </Step>
-  <Step title="Defina o nome">
-    No campo **Nome**, escreva uma identificação clara — por exemplo, "Suporte Técnico" ou "Vendas Inbound". O nome aparece nos relatórios e no painel de squads. Limite de 100 caracteres.
+  <Step title="Set the Name">
+    In the **Name** field, enter a clear identifier — for example, "Technical Support" or "Inbound Sales".
   </Step>
-  <Step title="Adicione uma descrição (opcional)">
-    O campo **Descrição** é opcional, mas recomendado para times maiores. Use-o para registrar o propósito do squad e os tipos de conversa que ele deve receber.
+  <Step title="Add a description (optional)">
+    The **Description** field is optional, but recommended for larger teams. Use it to document the Squad's purpose and the types of conversations it should handle.
   </Step>
-  <Step title="Escolha o modo de operação">
-    Selecione **Hierárquico** ou **Horizontal** clicando no card correspondente. A escolha determina qual papel de liderança você precisará definir nos próximos passos e não pode ser alterada depois que o squad for criado.
+  <Step title="Click Create Squad">
+    Confirm creation. The Squad is saved in an inactive state — you still need to add Agents before linking it to a channel.
   </Step>
-  <Step title="Clique em Criar squad">
-    Confirme a criação. O squad é salvo em estado inativo — você ainda precisa adicionar agentes antes de vinculá-lo a um canal.
+  <Step title="Assign">
+    Assign the **Manager** Agent (Hierarchical mode), or the **Principal Agent** (Horizontal mode).
   </Step>
-  <Step title="Revise o resumo">
-    A tela de detalhes do squad é aberta automaticamente. Confirme o nome, a descrição e o modo antes de prosseguir para a adição de agentes.
+  <Step title="Save the Squad">
+    Click **Save** to apply all Squad settings.
   </Step>
 </Steps>
 
-## Passo 2: Adicionar agentes ao squad
+---
 
-Na tela de detalhes do squad, clique em **Adicionar agente** para incluir membros:
+## Step 2: Add Agents to the Squad
 
-- O limite é de **20 agentes ativos** por squad. Agentes desativados não contam para esse limite.
-- Cada agente mantém sua própria configuração de LLM, personalidade e integrações — o squad não sobrescreve essas configurações.
+Once the Squad is created, you can add Agents in two ways:
 
-Ao adicionar um agente, selecione o papel adequado conforme o modo do squad:
+- **Link an existing Agent** <br /> Use the link icon to attach an Agent to the Squad.
+- **Create a new Agent** <br /> Use the + button to create a new Agent that is automatically linked to the Squad.
 
-- **Modo Hierárquico:** defina um agente como `manager` e os demais como `member`.
-- **Modo Horizontal:** defina um agente como `principal` e os demais como `member` ou `specialist`.
+Each Squad can contain multiple Agents, but only one Manager or Principal at a time.
 
-## Promovendo um agente a Manager ou Principal
+---
 
-Após adicionar um agente ao squad, você pode alterar o papel dele diretamente na lista de membros do squad:
+## Promoting an Agent to Manager / Principal
 
-- Clique no menu de opções ao lado do nome do agente.
-- Selecione **Alterar papel**.
-- Escolha o novo papel no seletor exibido.
-- Confirme a alteração.
+You can change leadership at any time.
 
-<Note>
-  Cada squad aceita apenas um `manager` (modo hierárquico) ou um `principal` (modo horizontal). Promover um segundo agente ao papel de liderança substitui o anterior automaticamente.
-</Note>
+- In the Squad's **Agents list**, open the Agent's options menu
+- Select **Promote to Manager** (or Principal)
+- The previous Manager/Principal is replaced automatically
 
-## Copiando o Squad ID
+This is useful when:
 
-O Squad ID é o identificador único do squad, necessário para vinculações programáticas via API ou para referência em integrações:
+- Reorganizing responsibilities
+- Testing different orchestration strategies
+- Iterating on Squad behavior without recreating it
 
-- Na tela de detalhes do squad, localize o campo **ID do squad** no painel de informações.
-- Clique no ícone de cópia ao lado do ID para copiá-lo para a área de transferência.
+---
+
+## Copying the Squad ID
+
+Each Squad has a unique identifier.
+
+- Open the Squad's options menu
+- Click **Copy ID**
+
+The **Squad ID** is useful for:
+
+- Advanced inspection and debugging
+- API-based interactions
+- Referencing Squads in external systems or logs
 
 <Tip>
-  Guarde o Squad ID em um local seguro se você planeja usar a API da Timely.ai para criar ou atualizar vínculos de canal programaticamente. O ID não muda mesmo se o nome do squad for alterado.
+Tip: Keep the Squad ID handy when working with APIs or internal diagnostics.
 </Tip>
 
-## Gerenciando squads ao longo do tempo
+---
 
-- **Adicionar agentes:** use o botão **Adicionar agente** a qualquer momento. O limite de 20 agentes ativos se aplica sempre.
-- **Remover agentes:** clique no menu de opções do agente e selecione **Remover do squad**. Squads com conversas ativas (`hasActiveConversations`) não podem ser excluídos — transfira ou encerre as conversas abertas antes.
-- **Editar nome e descrição:** clique em **Editar squad** no painel de detalhes para atualizar essas informações.
-- **Excluir o squad:** disponível no menu de opções da lista de squads. A ação é irreversível — os canais vinculados ao squad param de receber novas conversas imediatamente.
+## Managing Squads Over Time
+
+Best practices for ongoing management:
+
+- Keep Squad descriptions updated to reflect their real purpose
+- Avoid adding Agents without a clear role
+- Regularly review who acts as Manager/Principal
+- Prefer **small Squads** with clear responsibilities

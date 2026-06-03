@@ -1,0 +1,29 @@
+---
+title: "HTTP Request Tool"
+description: "The **HTTP Request Tool** allows your Agent to interact with external APIs and services, extending its capabilities beyond the native Timely.ai ecosystem. <br /> <br />
+With it, your Agent can retrieve data, create or update records, trigger third-party actions, or synchronize information with external systems in real time."
+---
+
+---
+
+## 🔹 How the HTTP Request Tool Works
+
+1. You define the Tool with a **clear natural-language description** explaining when it should be used.
+2. The Agent reads this description to decide **if and when** the Tool applies during a conversation.
+3. You define **Properties (variables)** that the Agent must collect (e.g., ID, email, date).
+4. If required properties are missing, the Agent will **ask the user for them first**.
+5. Once all required data is available, the Agent executes the HTTP request using your configuration.
+
+This ensures that every request is **complete, contextual, and accurate** before execution.
+
+---
+
+## 🔹 Supported HTTP Methods
+
+The HTTP Request Tool supports all standard REST methods:
+
+- **GET** → Retrieve information
+- **POST** → Create new resources
+- **PUT** → Update existing resources
+- **PATCH** → Perform partial updates
+- **DELETE** → Remove resources
