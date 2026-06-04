@@ -1,0 +1,110 @@
+---
+title: "How to Fix Follow-ups Not Triggering"
+icon: "Clock"
+---
+
+Follow-ups are powerful for re-engagement, but they fail silently when **Conversation Stage** or **Scheduling Prompt** are misconfigured. This guide shows exactly what goes wrong and how to fix it.
+
+> 💡 **Tip:** While creating or editing Follow-ups, you can use the **AI Assistant** available in the tool modal to get contextual help. If you're unsure about how to structure your Conversation Stage or Scheduling Prompt, click the AI button for instant guidance.
+
+***
+
+### 🧠 How Follow-ups Actually Work
+
+**Critical concept:** The Agent evaluates follow-up conditions **at the moment it sends a message** — not in the future.
+
+* The Agent **cannot predict** if the user will reply
+* It **evaluates the present state**: Is information missing? Is the conversation open?
+* If the condition matches → it schedules the follow-up message
+
+**This is why future assumptions break follow-ups:**
+
+❌ **Wrong:** "If the user doesn't reply..." (Agent can't know this yet) ✅ **Right:** "The user asked about pricing but didn't confirm the plan" (present state)
+
+***
+
+### 🔧 Troubleshooting: Why Follow-ups Don't Trigger
+
+#### 1️⃣ Conversation Stage Uses Future Assumptions
+
+**Problem:** You write conditions about what *might* happen, not what *is* happening.
+
+| ❌ Wrong                               | ✅ Correct                                                 |
+| ------------------------------------- | --------------------------------------------------------- |
+| "If the user doesn't reply in 10 min" | "User asked for proposal but hasn't shared details"       |
+| "If they need more time"              | "User showed interest but paused the conversation"        |
+| "If they don't choose"                | "User requested info but stopped before selecting option" |
+
+**Fix:** Describe the **current conversation state**, not future outcomes.
+
+***
+
+#### 2️⃣ Scheduling Prompt Is Too Vague
+
+**Problem:** No specific time or unclear action.
+
+| ❌ Wrong           | ✅ Correct                                              |
+| ----------------- | ------------------------------------------------------ |
+| "Follow up later" | "After 30 minutes, ask if they need help choosing"     |
+| "Send a reminder" | "In 1 hour, remind them support is available"          |
+| "Check in"        | "After 10 minutes, ask if I can send the full catalog" |
+
+**Fix:** Always include **time + specific action**.
+
+***
+
+#### 3️⃣ Ignoring WhatsApp/Instagram 24-Hour Window
+
+**Problem:** Follow-up scheduled beyond 24 hours from user's last message.
+
+**Solution:** On WhatsApp/Instagram, follow-ups must be within 24 hours. After that, the message won't deliver (Meta's policy).
+
+***
+
+#### 4️⃣ Follow-up Canceled by User Response
+
+**Problem:** User replies before the scheduled time → all pending follow-ups auto-cancel.
+
+**This is expected behavior.** If the user re-engages, the Agent may schedule new follow-ups based on updated context.
+
+***
+
+### 📋 Before/After Examples
+
+#### Example 1: Car Sales Agent
+
+| Aspect                 | ❌ Before                      | ✅ After                                                       |
+| ---------------------- | ----------------------------- | ------------------------------------------------------------- |
+| **Conversation Stage** | "If customer doesn't respond" | "Customer asked about models but hasn't specified preference" |
+| **Scheduling Prompt**  | "Send follow-up"              | "After 15 minutes, ask which model interests them most"       |
+| **Result**             | Never triggers                | Triggers when condition matches                               |
+
+#### Example 2: Pricing Inquiry
+
+| Aspect                 | ❌ Before                 | ✅ After                                                    |
+| ---------------------- | ------------------------ | ---------------------------------------------------------- |
+| **Conversation Stage** | "If they need more info" | "User requested pricing but didn't confirm plan selection" |
+| **Scheduling Prompt**  | "Follow up later today"  | "In 2 hours, check if they're ready to choose a plan"      |
+| **Result**             | Vague, unreliable        | Clear, predictable                                         |
+
+***
+
+### ✅ Validation Checklist
+
+Before activating follow-ups, verify:
+
+* [ ] **Conversation Stage** describes present state (not "if user doesn't...")
+* [ ] **Scheduling Prompt** includes specific time (10 min, 1 hour, etc.)
+* [ ] **Scheduling Prompt** includes specific action (ask, remind, check)
+* [ ] On WhatsApp/Instagram: follow-up is within 24 hours of user's last message
+* [ ] You tested in Internal Chat and saw the follow-up schedule correctly
+* [ ] You understand that user replies before scheduled time = auto-cancel
+
+***
+
+### 🚀 Next Steps
+
+* Review your existing follow-ups against this checklist
+* Edit Conversation Stages to describe present context
+* Update Scheduling Prompts with specific times and actions
+* Test in Internal Chat before deploying to production

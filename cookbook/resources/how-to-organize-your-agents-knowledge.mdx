@@ -1,0 +1,292 @@
+---
+title: "How to organize your Agents knowledge"
+icon: "Books"
+---
+
+## 📋Tables
+
+### When to Use
+
+Tables are structured, live databases. Each row is a record. Each column is a typed field. The agent reads, creates, updates, and deletes via **Table Actions**.
+
+Use Tables when:
+
+* Data **changes frequently** and needs to be written by the agent in real time
+* Data has a **fixed, predictable structure** — defined columns with types
+* You need to **persist information across conversations**
+* The use case involves CRUD operations
+
+**Examples:**<br />
+
+* Leads: name, email, phone, status, contact date
+* Inventory: SKU, name, price, stock
+* Schedule: client, date, time, service type
+* Tickets: ID, description, status, assignee
+
+> **Golden rule:** if the agent is going to *write* to that data, it's a Table.
+
+***
+
+### URL and Image Columns
+
+Tables work with typed columns. Beyond the basic types (text, number, boolean, date), there are two specialized types for external references.
+
+**URL Column**
+
+Stores web addresses as the primary cell value. The system recognizes that field as a link — not generic text.
+
+**When to use:**
+
+* Each record has an associated link the agent needs to return
+* Catalogs with a link to a purchase page
+* Articles with a link to external access
+* Records with links to forms, videos, or landing pages
+
+**Example:**
+
+Table: Course Catalog
+
+* name (text): “Advanced Digital Marketing”
+* category (text): “Marketing”
+* price (number): 497
+* enrollment\_link (URL): “[https://site.com/courses/marketing”](https://site.com/courses/marketing%E2%80%9D)
+* active (boolean): true
+
+**Image Column**
+
+Stores URLs pointing to image files. The difference from the URL type is visual semantics — the system knows the content is an image.
+
+**When to use:**
+
+* Product catalogs with photos
+* Digital menus
+* Portfolios with thumbnails
+* Profiles with avatars
+
+**Example:**
+
+Table: Menu
+
+* name (text): “Grilled Chicken”
+* price (number): 18.90
+* photo (image): “[https://cdn.restaurant.com/chicken.jpg”](https://cdn.restaurant.com/chicken.jpg%E2%80%9D)
+* available (boolean): true
+
+| Aspect      | URL               | Image                             |
+| ----------- | ----------------- | --------------------------------- |
+| Content     | Any link          | Link to an image file             |
+| Rendering   | Clickable link    | Image displayed (where supported) |
+| Typical use | Page, form, video | Product photo, thumbnail          |
+
+***
+
+### Semantic Search and Non-Searchable Items
+
+Semantic search in Tables is fundamentally different from a SQL query.
+
+**Exact match:**
+
+```sql
+SELECT * FROM products WHERE name = 'nike sneaker'
+-- Only finds if the field is exactly "nike sneaker"
+```
+
+Semantic search:\
+\
+Query: "sports footwear for running"
+\
+→ Finds: "Nike Air Max Sneaker", "Adidas Running Shoe"
+\
+→ Even with no words in common with the query
+
+***
+
+### Searchable vs Non-Searchable Columns
+
+Not all columns should be included in the semantic index.
+
+**Include in embedding:**
+
+* Descriptive fields: name, description, category, tags
+* Fields the user will reference in natural language
+
+**Exclude from embedding:**
+
+* Internal IDs (`PRD-00847`)
+* Dates and timestamps
+* Booleans (`true/false`)
+* Exact numeric values (`97.50`, `12`)
+* URLs and images
+* Internal control fields
+
+> Including non-semantic fields pollutes the index. The model cannot create meaningful embeddings from `"true"` or `"PRD-00847"`. This reduces search precision with no benefit.
+
+### How to Handle Non-Searchable Items
+
+📍**Strategy 1 — Separate search from filtering**
+
+The agent first runs semantic search on descriptive columns, then applies exact filters on numeric/boolean columns.
+
+User: "I want running sneakers under $100 that are in stock"
+
+1. Semantic search: "running sneakers" → name, description, category columns
+2. Filter: price `<=` 100 AND available = true
+3. Returns items that passed both
+
+📍**Strategy 2 — Derived text fields**
+
+To make normally non-searchable data easier to query, create an auxiliary column that describes it:
+
+price\_range (text): "budget" / "mid-range" / "premium"
+\
+\-- Instead of letting the search try to interpret "89.90"
+
+📍Strategy 3 — Explicit prompt instruction
+
+"When searching for products in the Table, use semantic search on the
+\
+'description' and 'category' fields. Then filter by 'available = true'.
+\
+For price range, use the 'price\_range' field, not the numeric field."
+
+***
+
+## 📚 Knowledge Base
+
+### When to Use
+
+Knowledge Bases are knowledge repositories for semantic lookup. The agent does not write to them — it only reads via the **Knowledge Base Search Tool**.
+
+Use a Knowledge Base when:
+
+* Content is textual, unstructured, or semi-structured
+* Content is meant to **answer questions**, not to be manipulated
+* Volume is too large for the Prompt (above \~5000 characters)
+* Content changes editorially — you update it, not the agent
+* You need similarity-based semantic search
+
+**Examples:**
+
+```
+- Product manual
+- Return and refund policy
+- FAQ with dozens of questions
+- Technical documentation
+- Descriptive catalog with narrative specifications
+- Contracts and terms of service
+```
+
+> **Golden rule:** if the agent is only going to *read/consult*, it's a KB (if long) or Prompt (if short and static).
+
+***
+
+### Query Scoped by Document
+
+By default, KB Search scans **all documents** in the base simultaneously. A scoped query restricts the search to **one specific document**.
+
+**When to Use**
+
+**KB with documents from very different contexts**
+
+```
+KB contains: product A manual, product B manual, privacy policy
+
+User: "How do I reset it?"
+
+Global search may return chunks from the wrong documents.
+Scoped search to "product_a_manual.pdf" → only the right context.
+```
+
+**Multi-context agent with dynamic scoping**
+
+```
+1. User states they have Product X
+2. Agent stores in Contextual Memory: product = "product_x"
+3. KB Search scoped to: document = "product_x_manual.pdf"
+4. All answers come only from that manual
+```
+
+**Compliance and information isolation**
+
+```
+User: "What does my contract say about termination?"
+→ Agent scopes to that specific client's contract
+→ Never returns clauses from other clients' contracts
+```
+
+**Very large KBs**
+
+Scoping reduces the search space and improves both precision and speed.
+
+**How to Implement in the Prompt**
+
+```
+"When the user asks questions about their contract, use KB Search scoped
+to the document identified by the {contract_id} variable from
+Contextual Memory."
+```
+
+**When Not to Scope**
+
+* The question is genuinely cross-document
+* You don't know in advance which document is relevant
+* Small KB with few homogeneous documents
+
+### 📄 PDF Reader Tool
+
+### When to Use
+
+Use when the document **does not exist beforehand** — it is brought by the user at the moment of interaction.
+
+**Use cases:**
+
+```
+- User sends a résumé → agent analyzes and scores the application
+- User sends a bank statement → agent categorizes expenses
+- User sends a commercial proposal → agent summarizes key points
+- User sends a medical report → agent explains it in plain language
+- User sends a contract → agent flags problematic clauses
+```
+
+The document is different for every user. It makes no sense to index it in a KB because each instance is unique. The agent only needs the content for that conversation.
+
+### PDF Reader vs Knowledge Base
+
+| Dimension                | PDF Reader                         | Knowledge Base                  |
+| ------------------------ | ---------------------------------- | ------------------------------- |
+| When the document exists | At runtime (user sends it)         | Pre-loaded in configuration     |
+| Who provides it          | The user, during the conversation  | The agent creator               |
+| Reading type             | Direct file reading                | Semantic search on vector index |
+| Persistence              | Temporary (lasts the conversation) | Permanent                       |
+| Volume                   | One document at a time             | Multiple indexed documents      |
+
+> **Pitfall:** using KB to process documents the user sends. KB does not accept uploads at execution time.
+
+> **Pitfall:** using PDF Reader for documents that are always the same. Inefficient — processes the same file repeatedly with no semantic search.
+
+### Using Both Together
+
+There are scenarios where both make sense in the same solution.
+
+**Contract analysis agent:**
+
+```
+Knowledge Base:
+→ Current legislation, case law, standard templates
+→ Always available for any query
+
+PDF Reader:
+→ The specific contract the user just sent
+→ Agent reads the contract and cross-references with KB legislation
+```
+
+**Onboarding agent:**
+
+```
+Knowledge Base:
+→ Company handbook, code of conduct, benefits, policies
+
+PDF Reader:
+→ The specific employment contract of the new hire
+→ Agent explains the clauses of that particular contract
+```

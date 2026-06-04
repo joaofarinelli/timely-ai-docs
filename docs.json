@@ -397,14 +397,31 @@
             ]
           },
           {
-            "tab": "HTTP",
+            "tab": "CookBook",
             "groups": [
               {
-                "group": "Collections",
+                "group": "Welcome",
                 "pages": [
-                  "http/overview",
-                  "http/postman",
-                  "http/bruno"
+                  "cookbook/overview"
+                ]
+              },
+              {
+                "group": "Channels",
+                "pages": [
+                  "cookbook/channels/how-to-diagnose-issues-with-your-official-whatsapp-connection",
+                  "cookbook/channels/how-to-disconnect-your-whatsapp-business-account-from-another-integration-or-automation"
+                ]
+              },
+              {
+                "group": "Tools",
+                "pages": [
+                  "cookbook/tools/how-to-fix-follow-ups-not-triggering"
+                ]
+              },
+              {
+                "group": "Resources",
+                "pages": [
+                  "cookbook/resources/how-to-organize-your-agents-knowledge"
                 ]
               }
             ]
@@ -791,14 +808,18 @@
             ]
           },
           {
-            "tab": "HTTP",
+            "tab": "CookBook",
             "groups": [
               {
-                "group": "Collections",
+                "group": "Welcome",
                 "pages": [
-                  "en/http/overview",
-                  "en/http/postman",
-                  "en/http/bruno"
+                  "en/cookbook/overview"
+                ]
+              },
+              {
+                "group": "Channels",
+                "pages": [
+                  "cookbook/channels/how-to-diagnose-issues-with-your-official-whatsapp-connection"
                 ]
               }
             ]
