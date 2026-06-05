@@ -1,0 +1,113 @@
+---
+title: "Deploy & Rollback"
+---
+
+## 🚀 Deploy (Publishing Changes)
+
+A **Deploy** is the action of promoting your Draft version to Production.
+
+***
+
+## What happens during a Deploy
+
+* Your Draft becomes the new **live version**
+* A version is saved in history (e.g., v23)
+* A new Draft is automatically created
+
+***
+
+## ⚠️ Impact of Deploy
+
+### Conversations
+
+* Ongoing conversations continue normally
+* New messages follow the updated behavior
+
+***
+
+### Channels
+
+If an Agent or Squad is removed:
+
+* The channel is automatically **deactivated**
+* The responder is unassigned
+
+***
+
+### Responders
+
+* Removed Agents/Squads are no longer available
+* Channels depending on them stop working
+
+***
+
+## 📡 Channel Behavior
+
+* If the assigned Agent/Squad exists → works normally
+* If removed → channel becomes inactive
+
+***
+
+## 🔄 Rollback (Reverting Versions)
+
+A **Rollback** restores your configuration to a previous version.
+
+> ⚠️ Rollback is global and affects all versioned entities.
+
+***
+
+### How to Rollback
+
+1. Open **Version History**
+2. Select a version
+3. Click **Edit this version**
+4. Confirm
+
+***
+
+### What Happens
+
+* The current Draft is permanently discarded
+* A new Draft is created from the selected version
+* You can review and deploy again
+
+***
+
+### 📌 Plan Limitations
+
+* Freemium → No rollback
+* Starter → 1 version back
+* Pro / Agency / Enterprise → Unlimited
+
+***
+
+### ⚠️ Restrictions
+
+* No partial rollback
+* Cannot rollback only one component
+* Cannot rollback to current Draft
+
+***
+
+## 🧾 Impact on CRM
+
+CRM data is not versioned.
+
+### Preserved:
+
+* Tickets
+* History
+* Tags
+* Assignments
+
+### What changes:
+
+* Only Agent behavior
+
+***
+
+## ✅ Key Takeaway
+
+* Deploy makes your changes live
+* Rollback safely restores previous versions
+* Neither affects stored data or conversation history

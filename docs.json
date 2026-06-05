@@ -59,6 +59,14 @@
             "tab": "Guias",
             "groups": [
               {
+                "group": "Versions",
+                "pages": [
+                  "guides/versions/overview",
+                  "guides/versions/deploy-and-rollback",
+                  "guides/versions/safe-usage-and-best-practices"
+                ]
+              },
+              {
                 "group": "Agentes",
                 "pages": [
                   "guides/agents/overview",

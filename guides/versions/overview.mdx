@@ -1,0 +1,170 @@
+---
+title: "Versioning Overview"
+---
+
+The **Versioning system** in Timely.ai allows you to safely update your Agents and related components using a **Draft environment**, without affecting what is currently running in production.
+
+This ensures safe iteration, proper testing, and controlled releases.
+
+***
+
+## 🔄 What is Versioned
+
+Versioning applies to **configuration entities** — everything that defines how your Agent behaves:
+
+* Agents
+* Squads
+* Tools
+* MCPs
+* Voices
+* Components
+* Conditional Prompts
+
+These elements can be edited safely in Draft and only affect production after a **Deploy**.
+
+***
+
+## 🚫 What is NOT Versioned
+
+Some parts of the platform are always live and are **not affected by versioning**:
+
+#### Operational Data
+
+* Channels
+* Conversations / Chats
+* Tickets
+* Tags
+* Executions
+
+### Data & Storage
+
+* Knowledge Bases
+* Tables / Datagrid
+
+### System Configuration
+
+* Users and Workspaces
+* Connections
+* Providers
+* API Keys
+* Billing / Subscription
+
+***
+
+### 📌 Key Implication
+
+> Versioning changes **behavior**, not **data**.
+
+Deploying or rolling back will NOT modify:
+
+* Conversation history
+* CRM records
+* Stored data
+
+***
+
+## 🔎 Core Concepts
+
+### Draft
+
+A private environment where you can:
+
+* Edit Agents and all versioned components
+* Test changes safely using the **Internal Chat**
+* Iterate without impacting real users
+
+***
+
+### Production
+
+The version currently active in the platform.
+
+It is used in:
+
+* Channels (WhatsApp, Instagram, Widget, API)
+* CRM conversations
+* All live user interactions
+
+Only changes that are **deployed** affect Production.
+
+***
+
+### History
+
+All deployed versions are stored as history:
+
+* Identified as versions (v1, v2, v3…)
+* Used for comparison and rollback
+
+***
+
+## 🧭 How to Use Versioning
+
+The recommended workflow is simple and safe:
+
+***
+
+### ✏️ Editing your Agent
+
+Whenever you want to make changes:
+
+1. Work in the **Draft** version
+2. Make all necessary updates (Agent, Tools, etc.)
+3. Test using the **Internal Chat**
+
+> These changes do not affect production until you publish.
+
+***
+
+### 🚀 Publishing changes
+
+When you are satisfied:
+
+1. Click **Publish**
+2. Review the changes (Diff)
+3. Confirm the Deploy
+
+After publishing:
+
+* The new version goes live
+* All channels use the updated behavior
+
+***
+
+### 🔄 Rolling back to a previous version
+
+If needed:
+
+1. Go to **Version History**
+2. Select a previous version
+3. Click **Edit this version** (Rollback)
+4. Confirm
+
+What happens:
+
+* The current Draft is replaced
+* You can review the version
+* Then publish again to apply it to production
+
+***
+
+## 🧪 Testing in Draft
+
+Before publishing, you can test using the **Internal Chat**:
+
+* Validate responses
+* Test tools and flows
+* Simulate real interactions
+
+***
+
+## ✅ Key Takeaway
+
+Versioning allows you to:
+
+* Build safely in Draft
+* Test before going live
+* Deploy with confidence
+* Revert changes when needed
+
+All without impacting your live users or data.

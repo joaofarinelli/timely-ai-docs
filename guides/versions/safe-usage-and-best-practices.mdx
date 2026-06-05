@@ -1,0 +1,138 @@
+---
+title: "Safe Usage & Best Practices"
+---
+
+## 🧪 Testing in Draft
+
+Before publishing, you should always test your changes using the **Internal Chat**.
+
+***
+
+### What to Test
+
+* Agent responses
+* Tool execution
+* Conversation flows
+* Edge cases
+
+***
+
+### Why Testing Matters
+
+Even small changes can impact behavior.
+
+Testing ensures:
+
+* Stability
+* Predictability
+* Better user experience
+
+***
+
+## ⚠️ Important Behaviors to Understand
+
+### Deploy is immediate
+
+Once you deploy:
+
+* All new messages follow the updated behavior instantly
+* There is no gradual rollout
+
+***
+
+### Draft is completely isolated
+
+* Changes in Draft do NOT affect production
+* You can test freely without risk
+
+***
+
+### Rollback replaces Draft
+
+When performing a rollback:
+
+* Your current Draft is lost
+* It is replaced by the selected version
+
+***
+
+## 🚨 Common Mistakes to Avoid
+
+### Publishing without validation
+
+May cause:
+
+* Broken flows
+* Missing tools
+* Unexpected behavior
+
+***
+
+### Skipping testing
+
+Leads to:
+
+* Bugs in production
+* Poor user experience
+
+***
+
+### Large unvalidated changes
+
+Avoid:
+
+* Editing too many things at once
+* Deploying without iteration
+
+***
+
+## 📌 Best Practices
+
+### Work in small iterations
+
+* Make small changes
+* Test frequently
+* Deploy with confidence
+
+***
+
+### Always follow this workflow
+
+1. Edit in Draft
+2. Test using Internal Chat
+3. Review changes before publishing *(use Diff when needed)*
+4. Deploy
+5. Monitor behavior
+
+***
+
+### Use Diff as a safety tool
+
+Diff helps you:
+
+* Understand what changed
+* Identify removals or additions
+* Validate critical updates before deploy
+
+> Use Diff when you want extra confidence before publishing.
+
+***
+
+### Use Rollback as a safety net
+
+* Not as a primary workflow
+* Only when necessary
+
+***
+
+## ✅ Key Takeaway
+
+To use Versioning effectively:
+
+* Always work in Draft
+* Always test before publishing
+* Validate your changes
+* Deploy carefully
+* Rollback only when necessary
+
+This ensures safe, predictable, and reliable updates to your Agents.
