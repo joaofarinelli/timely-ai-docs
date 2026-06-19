@@ -517,7 +517,6 @@
                 "group": "Tools",
                 "pages": [
                   "en/guides/tools/overview",
-                  "en/guides/tools/composio",
                   {
                     "group": "Available Tools",
                     "expanded": false,
