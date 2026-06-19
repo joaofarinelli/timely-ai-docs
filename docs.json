@@ -107,7 +107,6 @@
                 "group": "Ferramentas",
                 "pages": [
                   "guides/tools/overview",
-                  "guides/tools/composio",
                   {
                     "group": "Available Tools",
                     "expanded": false,
