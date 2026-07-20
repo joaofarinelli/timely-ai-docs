@@ -59,7 +59,7 @@ async function requestWithRetry(url, options, maxAttempts = 3) {
 ```
 
 <Tip>
-  If you operate at high volumes and hit the limit frequently, consider distributing the load across multiple workspaces or contact us at **contato@timelyai.com.br** to discuss custom limits on an Enterprise plan.
+  If you operate at high volumes and hit the limit frequently, consider distributing the load across multiple workspaces or contact us at **contato@rovax.io** to discuss custom limits on an Enterprise plan.
 </Tip>
 
 ## Pagination
@@ -115,7 +115,7 @@ The API uses semantic HTTP statuses. All errors follow the same envelope format:
 | `404 Not Found` | Resource does not exist or does not belong to your workspace | Verify the ID and the active workspace |
 | `409 Conflict` | Resource already exists (e.g., channel with the same name, duplicate webhook) | Adjust the payload or update the existing resource |
 | `429 Too Many Requests` | Limit of 100 req/min reached | Use the `Retry-After` header to wait |
-| `500 Internal Server Error` | Unexpected error on the Timely.ai server | Try again. If it persists, open a ticket at **contato@timelyai.com.br** |
+| `500 Internal Server Error` | Unexpected error on the Rovax.io server | Try again. If it persists, open a ticket at **contato@rovax.io** |
 
 ### Internal error codes (`error.code`)
 

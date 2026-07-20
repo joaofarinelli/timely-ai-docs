@@ -7,13 +7,13 @@ The Slack channel connects your Agent to your Slack Workspace. Unlike customer-f
 
 ## Prerequisites
 
-- A **Slack App** created at [api.slack.com/apps](https://api.slack.com/apps) with the correct scopes, **or** use Timely.ai's guided installation that creates the app automatically
+- A **Slack App** created at [api.slack.com/apps](https://api.slack.com/apps) with the correct scopes, **or** use Rovax.io's guided installation that creates the app automatically
 - **Workspace administrator** role in Slack (or approval from an admin to install the app)
 - **HTTPS** configured on your domain to receive Slack events
-- An **Agent** created and active in Timely.ai
+- An **Agent** created and active in Rovax.io
 
 <Note>
-  Timely.ai's Slack integration uses OAuth 2.0 with CSRF protection via HMAC-SHA256 on the `state` parameter. No credentials are stored in plain text.
+  Rovax.io's Slack integration uses OAuth 2.0 with CSRF protection via HMAC-SHA256 on the `state` parameter. No credentials are stored in plain text.
 </Note>
 
 ## Step-by-step connection
@@ -36,7 +36,7 @@ The Slack channel connects your Agent to your Slack Workspace. Unlike customer-f
   </Step>
 
   <Step title="Authorize the scopes">
-    Timely.ai requests the following bot scopes:
+    Rovax.io requests the following bot scopes:
 
     <Tabs>
       <Tab title="Read">
@@ -50,7 +50,7 @@ The Slack channel connects your Agent to your Slack Workspace. Unlike customer-f
       </Tab>
     </Tabs>
 
-    Click **Allow** to complete authorization. Slack redirects back to Timely.ai.
+    Click **Allow** to complete authorization. Slack redirects back to Rovax.io.
   </Step>
 
   <Step title="Configure monitored channels">
@@ -105,10 +105,10 @@ The Slack channel connects your Agent to your Slack Workspace. Unlike customer-f
 
 ### Slash commands
 
-With the `commands` scope, the bot automatically registers the `/timely` slash command. Users can use:
+With the `commands` scope, the bot automatically registers the `/rovax` slash command. Users can use:
 
 ```
-/timely what is the status of order #12345?
+/rovax what is the status of order #12345?
 ```
 
 The Agent responds in ephemeral mode (visible only to the user who sent the command) by default. This behavior can be adjusted in the Agent settings.
@@ -131,11 +131,11 @@ Slash commands arrive via:
 POST https://[YOUR-SUPABASE].supabase.co/functions/v1/slack-commands
 ```
 
-Slack requires the endpoint to respond within **3 seconds**. Timely.ai uses asynchronous processing to guarantee this window. For details about the payload and supported events, see [External Webhooks → Slack](/en/guides/channels/types/slack).
+Slack requires the endpoint to respond within **3 seconds**. Rovax.io uses asynchronous processing to guarantee this window. For details about the payload and supported events, see [External Webhooks → Slack](/en/guides/channels/types/slack).
 
 ### Signature verification
 
-All Slack requests include the `X-Slack-Signature` header. Timely.ai verifies the signature using the `SLACK_SIGNING_SECRET` before processing any event.
+All Slack requests include the `X-Slack-Signature` header. Rovax.io verifies the signature using the `SLACK_SIGNING_SECRET` before processing any event.
 
 ## Limits and best practices
 
@@ -144,7 +144,7 @@ All Slack requests include the `X-Slack-Signature` header. Timely.ai verifies th
 - **Token renewal** — Slack OAuth tokens do not expire, but are invalidated if the app is uninstalled or scopes are changed. Reconnect the Channel if the bot stops responding.
 - **Private channels** — the bot must be explicitly invited to private channels. The invitation is not automatic even after OAuth installation.
 - **Use `all_messages` with caution** — in very active channels, this mode can generate a high volume of LLM calls. Monitor usage in **Analytics → Usage by channel**.
-- **Encrypted tokens** — Timely.ai stores the bot token encrypted. Never expose the token in logs or frontend environment variables.
+- **Encrypted tokens** — Rovax.io stores the bot token encrypted. Never expose the token in logs or frontend environment variables.
 
 <Tip>
   For internal support teams, use `dm_only` mode combined with an escalation flow: the Agent resolves simple questions and hands off to a human attendant when necessary.
@@ -162,11 +162,11 @@ All Slack requests include the `X-Slack-Signature` header. Timely.ai verifies th
   </Accordion>
 
   <Accordion title="Invalid signature error on events">
-    The `SLACK_SIGNING_SECRET` configured in Timely.ai does not match the Signing Secret of your Slack App. Go to [api.slack.com/apps](https://api.slack.com/apps) → your app → **Basic information → App credentials** and copy the correct Signing Secret.
+    The `SLACK_SIGNING_SECRET` configured in Rovax.io does not match the Signing Secret of your Slack App. Go to [api.slack.com/apps](https://api.slack.com/apps) → your app → **Basic information → App credentials** and copy the correct Signing Secret.
   </Accordion>
 
-  <Accordion title="Slash command /timely does not appear in Slack">
-    Slack commands become available a few minutes after installation. If after 10 minutes the command does not appear, reinstall the app in the Workspace: disconnect the Channel in Timely.ai and reconnect via OAuth.
+  <Accordion title="Slash command /rovax does not appear in Slack">
+    Slack commands become available a few minutes after installation. If after 10 minutes the command does not appear, reinstall the app in the Workspace: disconnect the Channel in Rovax.io and reconnect via OAuth.
   </Accordion>
 
   <Accordion title="Bot replies in the channel instead of in thread">

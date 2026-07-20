@@ -24,13 +24,13 @@ When the integration is active:
     Click **Connect Google Calendar**. A Google authorization window will open.
   </Step>
   <Step title="Authorize the scopes">
-    Select the Google account and grant the requested permissions. Timely.ai requests access to:
+    Select the Google account and grant the requested permissions. Rovax.io requests access to:
     - Read and write events (`calendar.events`)
     - Read the list of calendars (`calendar`)
     - Basic profile information (`userinfo.email`, `userinfo.profile`)
   </Step>
   <Step title="Choose the calendar">
-    After authorizing, select which calendar in the Google account will be synchronized. You can choose the primary calendar or a secondary calendar dedicated to Timely.ai appointments.
+    After authorizing, select which calendar in the Google account will be synchronized. You can choose the primary calendar or a secondary calendar dedicated to Rovax.io appointments.
   </Step>
 </Steps>
 
@@ -38,11 +38,11 @@ After completing the flow, the connection status appears as **Connected** with t
 
 ## Authorization Callback
 
-The OAuth flow redirects back to `https://app.timelyai.com.br/calendar-callback` after authorization. This page finalizes the token exchange automatically — you do not need to do anything other than wait for the redirect.
+The OAuth flow redirects back to `https://app.rovax.io/calendar-callback` after authorization. This page finalizes the token exchange automatically — you do not need to do anything other than wait for the redirect.
 
 If the redirect fails, check:
 - Popups are not blocked in the browser
-- You are logged in to the correct Timely.ai account during the flow
+- You are logged in to the correct Rovax.io account during the flow
 
 ## Availability Synchronization
 
@@ -82,4 +82,4 @@ To disconnect, go to **Scheduling → Connected calendars** and click **Disconne
 | Appointments do not appear in Google | Expired token | Reconnect the account through the same OAuth flow |
 | "Access denied" error in the flow | Scope revoked by the Google account | Go to [myaccount.google.com/permissions](https://myaccount.google.com/permissions), revoke the app, then reconnect |
 | Wrong calendar selected | Incorrect initial selection | Disconnect and reconnect, choosing the correct calendar |
-| Misaligned timezones | Timely calendar timezone different from Google | Verify and standardize the timezone in **Calendar settings** |
+| Misaligned timezones | Rovax calendar timezone different from Google | Verify and standardize the timezone in **Calendar settings** |

@@ -24,13 +24,13 @@ Quando a integração está ativa:
     Clique em **Conectar Google Calendar**. Uma janela de autorização do Google será aberta.
   </Step>
   <Step title="Autorize os escopos">
-    Selecione a conta Google e conceda as permissões solicitadas. A Timely.ai solicita acesso para:
+    Selecione a conta Google e conceda as permissões solicitadas. A Rovax.io solicita acesso para:
     - Leitura e escrita de eventos (`calendar.events`)
     - Leitura da lista de calendários (`calendar`)
     - Informações básicas do perfil (`userinfo.email`, `userinfo.profile`)
   </Step>
   <Step title="Escolha o calendário">
-    Após autorizar, selecione qual calendário da conta Google será sincronizado. Você pode escolher o calendário principal ou um calendário secundário dedicado a agendamentos da Timely.ai.
+    Após autorizar, selecione qual calendário da conta Google será sincronizado. Você pode escolher o calendário principal ou um calendário secundário dedicado a agendamentos da Rovax.io.
   </Step>
 </Steps>
 
@@ -38,11 +38,11 @@ Após concluir, o status da conexão aparece como **Conectado** com o e-mail da 
 
 ## Callback de autorização
 
-O fluxo OAuth redireciona de volta para `https://app.timelyai.com.br/calendar-callback` após a autorização. Essa página finaliza a troca de tokens automaticamente — você não precisa fazer nada além de aguardar o redirecionamento.
+O fluxo OAuth redireciona de volta para `https://app.rovax.io/calendar-callback` após a autorização. Essa página finaliza a troca de tokens automaticamente — você não precisa fazer nada além de aguardar o redirecionamento.
 
 Se o redirecionamento falhar, verifique:
 - Popups não estão bloqueados no navegador
-- Você está logado na conta correta da Timely.ai durante o fluxo
+- Você está logado na conta correta da Rovax.io durante o fluxo
 
 ## Sincronização de disponibilidade
 
@@ -82,4 +82,4 @@ Para desconectar, vá em **Agendamento → Calendários conectados** e clique em
 | Agendamentos não aparecem no Google | Token expirado | Reconecte a conta pelo mesmo fluxo OAuth |
 | Erro "acesso negado" no fluxo | Escopo revogado pela conta Google | Acesse [myaccount.google.com/permissions](https://myaccount.google.com/permissions) e revogue o app, depois reconecte |
 | Calendário errado selecionado | Seleção inicial incorreta | Desconecte e reconecte escolhendo o calendário correto |
-| Fusos horários desalinhados | Fuso do calendário Timely diferente do Google | Verifique e padronize o fuso em **Configurações do calendário** |
+| Fusos horários desalinhados | Fuso do calendário Rovax diferente do Google | Verifique e padronize o fuso em **Configurações do calendário** |

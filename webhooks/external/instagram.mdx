@@ -3,7 +3,7 @@ title: "Instagram (Meta Graph API)"
 description: "Formato dos webhooks da Instagram Graph API — mensagens DM, respostas a stories e menções recebidas pelo seu perfil"
 ---
 
-Quando você conecta seu perfil Instagram na Timely.ai, a plataforma registra um webhook no Facebook App associado à sua conta Instagram Business. A Meta passa a enviar eventos desse perfil para a Timely, que os normaliza e os repassa para os [webhooks do seu workspace](/webhooks/overview).
+Quando você conecta seu perfil Instagram na Rovax.io, a plataforma registra um webhook no Facebook App associado à sua conta Instagram Business. A Meta passa a enviar eventos desse perfil para a Rovax, que os normaliza e os repassa para os [webhooks do seu workspace](/webhooks/overview).
 
 Esta página documenta o formato bruto que a Meta envia — útil para depuração e para quem mantém integrações diretas.
 
@@ -16,7 +16,7 @@ Para receber eventos do Instagram via webhook, seu app na Meta precisa ter:
 - Campo `instagram` selecionado nas assinaturas de webhook
 
 <Info>
-  A Timely.ai gerencia toda essa configuração automaticamente quando você conecta o Instagram pelo dashboard em **Configurações → Canais → Instagram**. Você só precisa desta documentação se estiver integrando diretamente com a Graph API.
+  A Rovax.io gerencia toda essa configuração automaticamente quando você conecta o Instagram pelo dashboard em **Configurações → Canais → Instagram**. Você só precisa desta documentação se estiver integrando diretamente com a Graph API.
 </Info>
 
 ## Validação da assinatura
@@ -229,7 +229,7 @@ app.post("/webhook/instagram", (req, res) => {
 
 <CardGroup cols={2}>
   <Card title="Webhooks da plataforma" icon="bell" href="/webhooks/overview">
-    Eventos normalizados que a Timely.ai envia para o seu servidor.
+    Eventos normalizados que a Rovax.io envia para o seu servidor.
   </Card>
   <Card title="Canais — API Reference" icon="plug" href="/api-reference/channels/referencia">
     Conecte e gerencie canais Instagram via API.

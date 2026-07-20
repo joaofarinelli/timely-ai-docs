@@ -1,6 +1,6 @@
 ---
 title: "Agent Node (Agent Request)"
-description: "Expose a workflow as a tool for Timely.ai AI agents."
+description: "Expose a workflow as a tool for Rovax.io AI agents."
 ---
 
 <Note>
@@ -9,7 +9,7 @@ description: "Expose a workflow as a tool for Timely.ai AI agents."
 
 ## How It Works
 
-The **Agent Request** trigger turns a workflow into a tool that AI agents configured in Timely can trigger during a conversation. When the agent identifies that it needs to execute the workflow, it assembles the parameters defined in the node and fires the call.
+The **Agent Request** trigger turns a workflow into a tool that AI agents configured in Rovax can trigger during a conversation. When the agent identifies that it needs to execute the workflow, it assembles the parameters defined in the node and fires the call.
 
 - Parameters arrive via `{{ $trigger.parameters.param_name }}`
 - The workflow queries external APIs, processes data, and can return a structured response to the agent

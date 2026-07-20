@@ -1,11 +1,11 @@
 ---
 title: "Webhook Node"
-description: "Receive external HTTP requests and use the payload as the entry point of your workflow in Timely.ai."
+description: "Receive external HTTP requests and use the payload as the entry point of your workflow in Rovax.io."
 ---
 
 ## How It Works
 
-The Webhook node generates a dedicated HTTP endpoint for your workflow. When an external system — an e-commerce platform, a form, an ERP, or any other service — sends a request to that URL, Timely validates the call and starts execution immediately.
+The Webhook node generates a dedicated HTTP endpoint for your workflow. When an external system — an e-commerce platform, a form, an ERP, or any other service — sends a request to that URL, Rovax validates the call and starts execution immediately.
 
 The full request payload is available to all downstream nodes via `{{ $trigger }}`. This includes the request body (`$trigger.body`), the headers sent (`$trigger.headers`), query string parameters (`$trigger.query`), and the HTTP method used (`$trigger.method`).
 
@@ -36,7 +36,7 @@ Requests without authentication are appropriate for callbacks between services w
 
 ### Bearer Authentication
 
-When set to **Bearer Token**, Timely validates the `Authorization` header on every incoming request. Requests that do not include the header or that present a token different from the one configured receive `401 Unauthorized` automatically, without triggering workflow execution.
+When set to **Bearer Token**, Rovax validates the `Authorization` header on every incoming request. Requests that do not include the header or that present a token different from the one configured receive `401 Unauthorized` automatically, without triggering workflow execution.
 
 | Field | Detail |
 |---|---|

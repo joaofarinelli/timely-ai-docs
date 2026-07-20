@@ -1,9 +1,9 @@
 ---
 title: "What is an Agent?"
-description: "Understand the complete structure of an agent in Timely.ai — identity, behavior, capabilities, tools, and where it operates."
+description: "Understand the complete structure of an agent in Rovax.io — identity, behavior, capabilities, tools, and where it operates."
 ---
 
-An agent is the central entity in Timely.ai. It receives messages from your customers, processes them with a language model, queries knowledge bases, triggers external tools, and returns responses — all autonomously, on the channels you configure.
+An agent is the central entity in Rovax.io. It receives messages from your customers, processes them with a language model, queries knowledge bases, triggers external tools, and returns responses — all autonomously, on the channels you configure.
 
 ## Agent identity
 
@@ -33,7 +33,7 @@ The system prompt is the agent's most important instruction. It defines personal
 - **What it can do** — list of permitted capabilities
 - **What it must not do** — explicit restrictions to avoid unwanted responses
 
-Timely's prompt editor offers real-time quality analysis, prioritized improvement suggestions, automatic version history, and one-click AI improvement. The character limit is controlled by the platform's `PROMPT_MAX_LENGTH` constant.
+Rovax's prompt editor offers real-time quality analysis, prioritized improvement suggestions, automatic version history, and one-click AI improvement. The character limit is controlled by the platform's `PROMPT_MAX_LENGTH` constant.
 
 <Note>
 Long prompts increase token cost per execution. Use the knowledge base for business-specific information and keep the prompt focused on behavior and tone.
@@ -45,7 +45,7 @@ Beyond identity, four parameters control how the agent processes and formulates 
 
 ### Temperature
 
-Temperature is a numeric value from 0.00 to 1.00 that controls response variability. Low values produce consistent and predictable responses; high values produce more varied and creative responses. Timely uses four ranges with labels:
+Temperature is a numeric value from 0.00 to 1.00 that controls response variability. Low values produce consistent and predictable responses; high values produce more varied and creative responses. Rovax uses four ranges with labels:
 
 - **0.00–0.15** — Methodical: responses nearly identical for the same question
 - **0.16–0.35** — Conservative: minimal variation in phrasing
@@ -114,7 +114,7 @@ Beyond base language processing, each agent can be equipped with additional reso
 Memory allows the agent to retain information from previous conversations with the same contact. With active memory, the agent recognizes returning customers, recalls context from past interactions, and avoids asking for information that has already been provided.
 
 - Ideal for long-term relationships where history matters
-- Requires the contact to be identified in Timely's CRM
+- Requires the contact to be identified in Rovax's CRM
 
 ### Knowledge bases
 
@@ -154,7 +154,7 @@ MCPs are an advanced feature aimed at technical teams. For most use cases, Compo
 
 ## Acting through tools
 
-An agent in Timely is not just a chat interface — it can execute real actions in external systems. Tools are the bridge between the conversation and the real world.
+An agent in Rovax is not just a chat interface — it can execute real actions in external systems. Tools are the bridge between the conversation and the real world.
 
 Available tools via Composio include:
 
@@ -202,9 +202,9 @@ An agent can be published simultaneously on multiple channels:
 
 The same agent can serve across all channels with the same base prompt, differentiating behavior by channel via conditional prompts when needed.
 
-## Why Timely agents are different
+## Why Rovax agents are different
 
-Timely is not a fixed-flow chatbot or a generic assistant. Each agent combines adaptive reasoning with access to real tools, a semantic knowledge base, and complete traceability of every execution.
+Rovax is not a fixed-flow chatbot or a generic assistant. Each agent combines adaptive reasoning with access to real tools, a semantic knowledge base, and complete traceability of every execution.
 
 - Every message is processed with full context from the conversation, contact, and configured instructions
 - Tools are called autonomously based on message content — not fixed keywords

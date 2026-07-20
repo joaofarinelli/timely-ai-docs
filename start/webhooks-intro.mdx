@@ -3,21 +3,21 @@ title: "Webhooks"
 description: "Receba eventos em tempo real, valide assinaturas HMAC-SHA256 e lide com retentativas"
 ---
 
-Webhooks são HTTP POSTs que a Timely.ai envia para a URL que você configurar sempre que um evento acontece — mensagem recebida, conversa encerrada, handoff para humano, entre outros. É a forma mais eficiente de reagir a eventos em tempo real sem precisar fazer polling na API.
+Webhooks são HTTP POSTs que a Rovax.io envia para a URL que você configurar sempre que um evento acontece — mensagem recebida, conversa encerrada, handoff para humano, entre outros. É a forma mais eficiente de reagir a eventos em tempo real sem precisar fazer polling na API.
 
 ## Como funciona
 
 ```
 Cliente envia mensagem
        ↓
-Timely.ai processa
+Rovax.io processa
        ↓
 POST para sua URL com o payload do evento
        ↓
 Seu servidor responde 2xx em até 10 segundos
 ```
 
-Se o seu servidor não responder `2xx` dentro de 10 segundos, a Timely.ai trata como falha e agenda uma retentativa.
+Se o seu servidor não responder `2xx` dentro de 10 segundos, a Rovax.io trata como falha e agenda uma retentativa.
 
 ## Estrutura do payload
 
@@ -47,7 +47,7 @@ O campo `event` identifica o tipo. Os demais campos do `data` variam por evento 
 
 ## Validando a assinatura HMAC-SHA256
 
-Cada requisição inclui o header `X-Timely-Signature` com uma assinatura que garante que o payload veio da Timely.ai e não foi adulterado.
+Cada requisição inclui o header `X-Rovax-Signature` com uma assinatura que garante que o payload veio da Rovax.io e não foi adulterado.
 
 A assinatura é gerada assim:
 
@@ -63,10 +63,10 @@ Implemente a validação no seu handler antes de processar qualquer dado:
     import crypto from "crypto";
 
     function validateSignature(req) {
-      const signature = req.headers["x-timely-signature"];
-      const timestamp  = req.headers["x-timely-timestamp"];
+      const signature = req.headers["x-rovax-signature"];
+      const timestamp  = req.headers["x-rovax-timestamp"];
       const body       = JSON.stringify(req.body);
-      const secret     = process.env.TIMELY_WEBHOOK_SECRET;
+      const secret     = process.env.ROVAX_WEBHOOK_SECRET;
 
       const expected = crypto
         .createHmac("sha256", secret)
@@ -80,7 +80,7 @@ Implemente a validação no seu handler antes de processar qualquer dado:
       );
     }
 
-    app.post("/webhook/timely", (req, res) => {
+    app.post("/webhook/rovax", (req, res) => {
       if (!validateSignature(req)) {
         return res.status(401).send("Assinatura inválida");
       }
@@ -97,10 +97,10 @@ Implemente a validação no seu handler antes de processar qualquer dado:
     app = Flask(__name__)
 
     def validate_signature(req):
-        signature = req.headers.get("X-Timely-Signature", "")
-        timestamp  = req.headers.get("X-Timely-Timestamp", "")
+        signature = req.headers.get("X-Rovax-Signature", "")
+        timestamp  = req.headers.get("X-Rovax-Timestamp", "")
         body       = req.get_data(as_text=True)
-        secret     = os.environ["TIMELY_WEBHOOK_SECRET"].encode()
+        secret     = os.environ["ROVAX_WEBHOOK_SECRET"].encode()
 
         expected = hmac.new(
             secret,
@@ -110,7 +110,7 @@ Implemente a validação no seu handler antes de processar qualquer dado:
 
         return hmac.compare_digest(signature, expected)
 
-    @app.post("/webhook/timely")
+    @app.post("/webhook/rovax")
     def webhook():
         if not validate_signature(request):
             abort(401)
@@ -127,7 +127,7 @@ Implemente a validação no seu handler antes de processar qualquer dado:
 
 ## Retentativas com backoff exponencial
 
-Se o seu servidor não responder `2xx`, a Timely.ai tenta reenviar o evento nos seguintes intervalos:
+Se o seu servidor não responder `2xx`, a Rovax.io tenta reenviar o evento nos seguintes intervalos:
 
 | Tentativa | Aguarda |
 |---|---|
@@ -145,10 +145,10 @@ Após 5 tentativas sem sucesso, o evento é marcado como **falha permanente** e 
 
 ## Idempotência
 
-Devido às retentativas, o mesmo evento pode chegar mais de uma vez. Use o campo `event_id` (presente no header `X-Timely-Event-Id`) como chave de idempotência para evitar processamento duplicado:
+Devido às retentativas, o mesmo evento pode chegar mais de uma vez. Use o campo `event_id` (presente no header `X-Rovax-Event-Id`) como chave de idempotência para evitar processamento duplicado:
 
 ```js
-const eventId = req.headers["x-timely-event-id"];
+const eventId = req.headers["x-rovax-event-id"];
 if (await alreadyProcessed(eventId)) {
   return res.status(200).send("already processed");
 }
@@ -164,11 +164,11 @@ await markAsProcessed(eventId);
   </Step>
   <Step title="Via API">
     ```bash
-    curl -X POST https://api.timelyai.com.br/v1/webhooks \
+    curl -X POST https://api.rovax.io/v1/webhooks \
       -H "x-api-key: SUA_CHAVE" \
       -H "Content-Type: application/json" \
       -d '{
-        "url": "https://seusite.com.br/webhook/timely",
+        "url": "https://seusite.com.br/webhook/rovax",
         "events": ["message.received", "conversation.closed"],
         "description": "Handler principal do CRM"
       }'

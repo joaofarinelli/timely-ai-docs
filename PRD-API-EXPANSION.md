@@ -1,18 +1,18 @@
-# PRD — Expansão da API Pública Timely.ai v1
+# PRD — Expansão da API Pública Rovax.io v1
 
 **Versão:** 1.0
 **Data:** 2026-03-02
-**Autor:** Time de Engenharia Timely.ai
+**Autor:** Time de Engenharia Rovax.io
 
 ---
 
 ## 1. Visão Geral
 
 ### 1.1 Objetivo
-Expandir a API pública do Timely.ai para cobrir todas as funcionalidades da plataforma, replicando e adaptando o escopo completo de endpoints disponíveis na API do GPT Maker (referência: `developer.gptmaker.ai`), adaptados ao domínio e arquitetura do Timely.ai.
+Expandir a API pública do Rovax.io para cobrir todas as funcionalidades da plataforma, replicando e adaptando o escopo completo de endpoints disponíveis na API do GPT Maker (referência: `developer.gptmaker.ai`), adaptados ao domínio e arquitetura do Rovax.io.
 
 ### 1.2 Estado Atual (AS-IS)
-A API pública atual (`api.timelyai.com.br/v1`) possui **21 operações** em **6 grupos**:
+A API pública atual (`api.rovax.io/v1`) possui **21 operações** em **6 grupos**:
 
 | Grupo | Endpoints | Operações |
 |-------|-----------|-----------|
@@ -45,7 +45,7 @@ Expandir para **~80+ operações** em **14 grupos**, adicionando 8 novos domíni
 - **Contacts**: adicionar busca avançada por workspace
 
 ### 1.4 Métricas de Sucesso
-- 100% dos endpoints do GPT Maker replicados e adaptados ao Timely.ai
+- 100% dos endpoints do GPT Maker replicados e adaptados ao Rovax.io
 - Documentação OpenAPI 3.1.0 completa para cada endpoint
 - Documentação Mintlify atualizada com novos grupos no sidebar
 - Zero breaking changes nos endpoints existentes
@@ -563,9 +563,9 @@ Expandir para **~80+ operações** em **14 grupos**, adicionando 8 novos domíni
 
 ---
 
-## 5. Comparativo GPT Maker → Timely.ai
+## 5. Comparativo GPT Maker → Rovax.io
 
-| GPT Maker (v2) | Timely.ai (v1) | Status |
+| GPT Maker (v2) | Rovax.io (v1) | Status |
 |----------------|----------------|--------|
 | `POST /v2/workspace/{id}/agents` | `POST /v1/agents` | NOVO |
 | `GET /v2/agent/{id}` | `GET /v1/agents/{id}` | NOVO |

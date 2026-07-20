@@ -1,18 +1,18 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Timely.ai API",
-    "description": "Timely.ai REST API for AI-powered customer service automation. Manage agents, conversations, contacts, and integrations.",
+    "title": "Rovax.io API",
+    "description": "Rovax.io REST API for AI-powered customer service automation. Manage agents, conversations, contacts, and integrations.",
     "version": "1.0.0",
     "contact": {
-      "name": "Timely.ai",
-      "email": "contato@timelyai.com.br",
-      "url": "https://timelyai.com.br"
+      "name": "Rovax.io",
+      "email": "contato@rovax.io",
+      "url": "https://rovax.io"
     }
   },
   "servers": [
     {
-      "url": "https://api.timelyai.com.br",
+      "url": "https://api.rovax.io",
       "description": "Production"
     }
   ],

@@ -1,22 +1,22 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Timely.ai",
+  "name": "Rovax.io",
   "colors": {
-    "primary": "#2563EB",
-    "light": "#2563EB",
-    "dark": "#2563EB"
+    "primary": "#F59E0B",
+    "light": "#F9BF54",
+    "dark": "#A86A06"
   },
   "favicon": "/favicon.svg",
   "appearance": {
-    "default": "dark",
-    "strict": true
+    "default": "system",
+    "strict": false
   },
   "styling": {
     "eyebrows": "section"
   },
   "logo": {
-    "light": "/logo/dark.svg",
+    "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
   "navigation": {
@@ -27,13 +27,13 @@
           "links": [
             {
               "label": "Suporte",
-              "href": "mailto:contato@timelyai.com.br"
+              "href": "mailto:contato@rovax.io"
             }
           ],
           "primary": {
             "type": "button",
             "label": "Dashboard",
-            "href": "https://app.timelyai.com.br"
+            "href": "https://app.rovax.io"
           }
         },
         "tabs": [
@@ -445,13 +445,13 @@
           "links": [
             {
               "label": "Support",
-              "href": "mailto:contato@timelyai.com.br"
+              "href": "mailto:contato@rovax.io"
             }
           ],
           "primary": {
             "type": "button",
             "label": "Dashboard",
-            "href": "https://app.timelyai.com.br"
+            "href": "https://app.rovax.io"
           }
         },
         "tabs": [
@@ -841,7 +841,7 @@
       "anchors": [
         {
           "anchor": "YouTube",
-          "href": "https://www.youtube.com/@ai.timely",
+          "href": "https://www.youtube.com/@rovax.io",
           "icon": "youtube"
         },
         {
@@ -864,13 +864,13 @@
   },
   "footer": {
     "socials": {
-      "instagram": "https://instagram.com/ai.timely",
-      "youtube": "https://www.youtube.com/@ai.timely"
+      "instagram": "https://instagram.com/rovax.io",
+      "youtube": "https://www.youtube.com/@rovax.io"
     }
   },
   "api": {
     "mdx": {
-      "server": "https://api.timelyai.com.br",
+      "server": "https://api.rovax.io",
       "auth": {
         "method": "key",
         "name": "x-api-key"

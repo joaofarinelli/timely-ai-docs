@@ -1,9 +1,9 @@
 ---
 title: "Make.com Integration"
-description: "Connect Timely.ai to Make.com via webhooks to orchestrate automations with hundreds of external apps without code."
+description: "Connect Rovax.io to Make.com via webhooks to orchestrate automations with hundreds of external apps without code."
 ---
 
-The integration with [Make.com](https://www.make.com) (formerly Integromat) allows your Make scenarios to trigger actions in Timely.ai and Timely.ai events to start Make scenarios — all via bidirectional webhooks.
+The integration with [Make.com](https://www.make.com) (formerly Integromat) allows your Make scenarios to trigger actions in Rovax.io and Rovax.io events to start Make scenarios — all via bidirectional webhooks.
 
 <Frame>
   <img src="/images/screenshots/placeholder-make-integration.png" alt="Make.com integration configuration" />
@@ -11,18 +11,18 @@ The integration with [Make.com](https://www.make.com) (formerly Integromat) allo
 
 ## How the integration works
 
-Timely.ai exposes a dedicated endpoint (`make-webhook`) that receives payloads from Make. In the opposite direction, you configure a Make Webhook URL as the destination for actions in your agents or workflows.
+Rovax.io exposes a dedicated endpoint (`make-webhook`) that receives payloads from Make. In the opposite direction, you configure a Make Webhook URL as the destination for actions in your agents or workflows.
 
 ```
-Make → POST /functions/v1/make-webhook → Timely.ai
-Timely.ai → POST webhook_url → Make (scenario Webhook trigger)
+Make → POST /functions/v1/make-webhook → Rovax.io
+Rovax.io → POST webhook_url → Make (scenario Webhook trigger)
 ```
 
 ## Configuring the integration
 
 <Steps>
   <Step title="Open the agent">
-    In the Timely.ai panel, access the agent you want to connect to Make and go to the **Tools / Integrations** tab.
+    In the Rovax.io panel, access the agent you want to connect to Make and go to the **Tools / Integrations** tab.
   </Step>
   <Step title="Enable the Make integration">
     Click **Configure** next to Make.com. The configuration dialog will open.
@@ -48,7 +48,7 @@ Timely.ai → POST webhook_url → Make (scenario Webhook trigger)
   The **API Key** field is stored with encryption at rest. It is never returned in API responses — only indicated as configured.
 </Note>
 
-## Receiving data from Make in Timely.ai
+## Receiving data from Make in Rovax.io
 
 The `make-webhook` endpoint accepts payloads with the following minimum structure:
 
@@ -86,9 +86,9 @@ The token is configured in the `MAKE_WEBHOOK_SECRET` environment variable. Reque
 | `agent_id` | string (UUID) | No | Agent that will execute the action |
 | `scenario_id` | string | No | Make scenario ID for tracking |
 | `execution_id` | string | No | Make execution ID for deduplication |
-| `action` | string | No | Action to execute in Timely.ai |
+| `action` | string | No | Action to execute in Rovax.io |
 | `data` | object | No | Additional action data |
 
 <Tip>
-  Use the `execution_id` field sent by Make to ensure idempotency — if the same event is delivered twice (Make retry), Timely.ai can ignore the duplicate.
+  Use the `execution_id` field sent by Make to ensure idempotency — if the same event is delivered twice (Make retry), Rovax.io can ignore the duplicate.
 </Tip>

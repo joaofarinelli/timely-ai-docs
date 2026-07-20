@@ -1,14 +1,14 @@
 ---
 title: "First request"
 icon: "paper-plane"
-description: "Generate your API key and make your first call to the Timely.ai API in under 5 minutes"
+description: "Generate your API key and make your first call to the Rovax.io API in under 5 minutes"
 ---
 
 Grab a coffee. You'll generate a key, confirm the API is alive, list your agents, and send a message — all in sequence, all with copy-ready examples.
 
 <Steps>
   <Step title="Generate your API key">
-    Go to the [Dashboard](https://app.timelyai.com.br) → **Settings → API Keys → New key**.
+    Go to the [Dashboard](https://app.rovax.io) → **Settings → API Keys → New key**.
 
     1. Give it a descriptive name (e.g., `backend-production`, `n8n-integration`)
     2. Select the required scopes — for this quickstart, check `agents:read`, `conversations:write`, and `messages:send`
@@ -27,12 +27,12 @@ Grab a coffee. You'll generate a key, confirm the API is alive, list your agents
 
     <CodeGroup>
     ```bash cURL
-    curl https://api.timelyai.com.br/v1/health \
+    curl https://api.rovax.io/v1/health \
       -H "x-api-key: YOUR_KEY"
     ```
     ```js Node.js
-    const res = await fetch("https://api.timelyai.com.br/v1/health", {
-      headers: { "x-api-key": process.env.TIMELY_KEY }
+    const res = await fetch("https://api.rovax.io/v1/health", {
+      headers: { "x-api-key": process.env.ROVAX_KEY }
     });
     console.log(await res.json());
     ```
@@ -40,8 +40,8 @@ Grab a coffee. You'll generate a key, confirm the API is alive, list your agents
     import httpx, os
 
     r = httpx.get(
-        "https://api.timelyai.com.br/v1/health",
-        headers={"x-api-key": os.environ["TIMELY_KEY"]}
+        "https://api.rovax.io/v1/health",
+        headers={"x-api-key": os.environ["ROVAX_KEY"]}
     )
     print(r.json())
     ```
@@ -67,13 +67,13 @@ Grab a coffee. You'll generate a key, confirm the API is alive, list your agents
 
     <CodeGroup>
     ```bash cURL
-    curl "https://api.timelyai.com.br/v1/agents?page=1&per_page=10" \
+    curl "https://api.rovax.io/v1/agents?page=1&per_page=10" \
       -H "x-api-key: YOUR_KEY"
     ```
     ```js Node.js
     const res = await fetch(
-      "https://api.timelyai.com.br/v1/agents?page=1&per_page=10",
-      { headers: { "x-api-key": process.env.TIMELY_KEY } }
+      "https://api.rovax.io/v1/agents?page=1&per_page=10",
+      { headers: { "x-api-key": process.env.ROVAX_KEY } }
     );
     const { data, meta } = await res.json();
     console.log(`Total agents: ${meta.total}`);
@@ -83,9 +83,9 @@ Grab a coffee. You'll generate a key, confirm the API is alive, list your agents
     import httpx, os
 
     r = httpx.get(
-        "https://api.timelyai.com.br/v1/agents",
+        "https://api.rovax.io/v1/agents",
         params={"page": 1, "per_page": 10},
-        headers={"x-api-key": os.environ["TIMELY_KEY"]}
+        headers={"x-api-key": os.environ["ROVAX_KEY"]}
     )
     body = r.json()
     for agent in body["data"]:
@@ -101,7 +101,7 @@ Grab a coffee. You'll generate a key, confirm the API is alive, list your agents
 
     <CodeGroup>
     ```bash cURL
-    curl -X POST https://api.timelyai.com.br/v1/messages/send \
+    curl -X POST https://api.rovax.io/v1/messages/send \
       -H "x-api-key: YOUR_KEY" \
       -H "Content-Type: application/json" \
       -d '{
@@ -115,10 +115,10 @@ Grab a coffee. You'll generate a key, confirm the API is alive, list your agents
       }'
     ```
     ```js Node.js
-    const res = await fetch("https://api.timelyai.com.br/v1/messages/send", {
+    const res = await fetch("https://api.rovax.io/v1/messages/send", {
       method: "POST",
       headers: {
-        "x-api-key": process.env.TIMELY_KEY,
+        "x-api-key": process.env.ROVAX_KEY,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -134,9 +134,9 @@ Grab a coffee. You'll generate a key, confirm the API is alive, list your agents
     import httpx, os
 
     r = httpx.post(
-        "https://api.timelyai.com.br/v1/messages/send",
+        "https://api.rovax.io/v1/messages/send",
         headers={
-            "x-api-key": os.environ["TIMELY_KEY"],
+            "x-api-key": os.environ["ROVAX_KEY"],
             "Content-Type": "application/json"
         },
         json={

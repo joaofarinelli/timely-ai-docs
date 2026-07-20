@@ -3,18 +3,18 @@ title: "Telegram Bot API"
 description: "Formato dos updates do Telegram recebidos pelo bot — mensagens, edições, callbacks e outros tipos de evento"
 ---
 
-O Telegram usa um modelo chamado **Updates** para notificar bots sobre qualquer interação: mensagens recebidas, edições, cliques em botões inline, entradas em grupos e muito mais. Quando você conecta um bot Telegram na Timely.ai, a plataforma configura automaticamente um webhook na Telegram Bot API para receber esses updates e transformá-los nos eventos do workspace.
+O Telegram usa um modelo chamado **Updates** para notificar bots sobre qualquer interação: mensagens recebidas, edições, cliques em botões inline, entradas em grupos e muito mais. Quando você conecta um bot Telegram na Rovax.io, a plataforma configura automaticamente um webhook na Telegram Bot API para receber esses updates e transformá-los nos eventos do workspace.
 
 Esta página documenta o formato bruto dos updates — útil para depuração ou integrações diretas com a API do Telegram.
 
 ## Como o webhook é registrado
 
-A Timely.ai chama o método `setWebhook` da Bot API apontando para seus servidores:
+A Rovax.io chama o método `setWebhook` da Bot API apontando para seus servidores:
 
 ```
 POST https://api.telegram.org/bot{TOKEN}/setWebhook
 {
-  "url": "https://webhooks.timelyai.com.br/telegram/{CHANNEL_ID}",
+  "url": "https://webhooks.rovax.io/telegram/{CHANNEL_ID}",
   "allowed_updates": ["message", "edited_message", "callback_query", "my_chat_member"]
 }
 ```
@@ -26,7 +26,7 @@ curl https://api.telegram.org/bot{SEU_TOKEN}/getWebhookInfo
 ```
 
 <Info>
-  Se você gerencia o bot diretamente (sem a Timely como intermediário), nunca configure dois webhooks no mesmo token — o Telegram entrega cada update para apenas um endpoint.
+  Se você gerencia o bot diretamente (sem a Rovax como intermediário), nunca configure dois webhooks no mesmo token — o Telegram entrega cada update para apenas um endpoint.
 </Info>
 
 ## Estrutura base de um Update
@@ -131,7 +131,7 @@ Enviado quando o usuário edita uma mensagem já enviada. Contém os mesmos camp
 ```
 
 <Note>
-  A Timely.ai trata `edited_message` como uma atualização da mensagem original. O histórico de edições não é armazenado — apenas o conteúdo mais recente é exibido na conversa.
+  A Rovax.io trata `edited_message` como uma atualização da mensagem original. O histórico de edições não é armazenado — apenas o conteúdo mais recente é exibido na conversa.
 </Note>
 
 ## Payload: callback_query
@@ -151,7 +151,7 @@ Disparado quando o usuário clica em um botão inline de um teclado. Muito usado
     },
     "message": {
       "message_id": 45,
-      "from": { "id": 111111111, "is_bot": true, "first_name": "Timely Bot" },
+      "from": { "id": 111111111, "is_bot": true, "first_name": "Rovax Bot" },
       "chat": { "id": 987654321, "type": "private" },
       "date": 1713456950,
       "text": "Como posso te ajudar?",
@@ -223,7 +223,7 @@ Em produção, persista os IDs processados em Redis ou banco — não em memóri
 
 <CardGroup cols={2}>
   <Card title="Webhooks da plataforma" icon="bell" href="/webhooks/overview">
-    Eventos normalizados que a Timely.ai dispara para o seu servidor.
+    Eventos normalizados que a Rovax.io dispara para o seu servidor.
   </Card>
   <Card title="Canais — API Reference" icon="plug" href="/api-reference/channels/referencia">
     Gerencie canais Telegram via API.

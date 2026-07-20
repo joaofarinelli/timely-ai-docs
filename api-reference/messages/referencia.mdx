@@ -12,13 +12,13 @@ Para listar mensagens dentro do contexto de uma conversa específica, use os end
 
 ## Estrutura de uma mensagem
 
-Uma mensagem na Timely.ai representa qualquer unidade de comunicação trocada em uma conversa: texto, imagem, áudio, vídeo, documento ou mensagem interativa (botões, listas). Cada mensagem registra o remetente (contato, agente IA ou humano), o canal de origem, o status de entrega e os metadados da plataforma (como o `wamid` do WhatsApp ou o `message_id` do Telegram).
+Uma mensagem na Rovax.io representa qualquer unidade de comunicação trocada em uma conversa: texto, imagem, áudio, vídeo, documento ou mensagem interativa (botões, listas). Cada mensagem registra o remetente (contato, agente IA ou humano), o canal de origem, o status de entrega e os metadados da plataforma (como o `wamid` do WhatsApp ou o `message_id` do Telegram).
 
 ## Campos principais
 
 | Campo | Tipo | Descrição |
 |-------|------|-----------|
-| `id` | string (UUID) | ID único da mensagem na Timely |
+| `id` | string (UUID) | ID único da mensagem na Rovax |
 | `conversation_id` | string (UUID) | Conversa à qual pertence |
 | `channel_id` | string (UUID) | Canal pelo qual foi enviada/recebida |
 | `content` | string | Conteúdo textual da mensagem |

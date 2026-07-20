@@ -3,7 +3,7 @@ title: "WhatsApp Business API (Meta)"
 description: "Raw format of WhatsApp Business API webhooks — how to configure, validate, and process message and status payloads"
 ---
 
-The Meta **WhatsApp Business API (WABA)** sends events directly to an endpoint you register in the Facebook App. When you connect a WhatsApp number in Timely.ai, our platform receives those events, processes them, and transforms them into the workspace's [internal webhooks](/en/webhooks/overview). This page documents the raw format that Meta sends — useful for debugging, direct integrations, or when you need to understand what arrives before any transformation.
+The Meta **WhatsApp Business API (WABA)** sends events directly to an endpoint you register in the Facebook App. When you connect a WhatsApp number in Rovax.io, our platform receives those events, processes them, and transforms them into the workspace's [internal webhooks](/en/webhooks/overview). This page documents the raw format that Meta sends — useful for debugging, direct integrations, or when you need to understand what arrives before any transformation.
 
 ## Configure the webhook in the Facebook App
 
@@ -43,17 +43,17 @@ The Meta **WhatsApp Business API (WABA)** sends events directly to an endpoint y
   </Step>
 </Steps>
 
-## Difference between Meta webhook and Timely webhook
+## Difference between Meta webhook and Rovax webhook
 
-| Aspect | Meta webhook (raw) | Timely webhook (platform) |
+| Aspect | Meta webhook (raw) | Rovax webhook (platform) |
 |--------|--------------------|---------------------------|
-| Source | Meta → your server | Timely → your server |
-| Authentication | `X-Hub-Signature-256` with App Secret | `X-Timely-Signature` with your secret |
+| Source | Meta → your server | Rovax → your server |
+| Authentication | `X-Hub-Signature-256` with App Secret | `X-Rovax-Signature` with your secret |
 | Format | Meta envelope with `entry[].changes[]` | Normalized payload by event type |
-| Contact resolved | No — only the `wa_id` | Yes — includes Timely `contact_id` |
+| Contact resolved | No — only the `wa_id` | Yes — includes Rovax `contact_id` |
 | Transformation | None — raw Meta data | Enriched with workspace context |
 
-If you use Timely as an intermediary (the default case), you do not need to register a webhook with Meta — Timely handles that for you. This documentation is for cases where you connect WABA directly or need to debug the full flow.
+If you use Rovax as an intermediary (the default case), you do not need to register a webhook with Meta — Rovax handles that for you. This documentation is for cases where you connect WABA directly or need to debug the full flow.
 
 ## Signature validation
 
@@ -196,7 +196,7 @@ Statuses arrive when the message changes state: `sent` → `delivered` → `read
 }
 ```
 
-To download the media, make a `GET https://graph.facebook.com/v19.0/{MEDIA_ID}` request with your access token. Timely.ai performs this download automatically and stores the public URL in the `media_url` field of the normalized message.
+To download the media, make a `GET https://graph.facebook.com/v19.0/{MEDIA_ID}` request with your access token. Rovax.io performs this download automatically and stores the public URL in the `media_url` field of the normalized message.
 
 ## Key payload fields
 
@@ -215,7 +215,7 @@ To download the media, make a `GET https://graph.facebook.com/v19.0/{MEDIA_ID}` 
 
 <CardGroup cols={2}>
   <Card title="Platform webhooks" icon="bell" href="/en/webhooks/overview">
-    Understand Timely.ai's normalized outbound webhooks.
+    Understand Rovax.io's normalized outbound webhooks.
   </Card>
   <Card title="Channels — API Reference" icon="plug" href="/en/api-reference/channels/referencia">
     Manage WhatsApp channels via API.

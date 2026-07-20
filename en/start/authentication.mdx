@@ -4,21 +4,21 @@ icon: "key"
 description: "How to use API keys, permission scopes, and credential rotation"
 ---
 
-Authentication with the Timely.ai API is done via an **API key** sent on every request in the `x-api-key` header. No OAuth, no sessions — just the key.
+Authentication with the Rovax.io API is done via an **API key** sent on every request in the `x-api-key` header. No OAuth, no sessions — just the key.
 
 ## Sending the key
 
 ```http
 GET /v1/agents HTTP/1.1
-Host: api.timelyai.com.br
+Host: api.rovax.io
 x-api-key: tly_live_xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-For environment variables, always store the key as `TIMELY_API_KEY` and reference it via `process.env` (Node), `os.environ` (Python), or `os.Getenv` (Go). Never hardcode it.
+For environment variables, always store the key as `ROVAX_API_KEY` and reference it via `process.env` (Node), `os.environ` (Python), or `os.Getenv` (Go). Never hardcode it.
 
 ## Creating an API key
 
-1. Go to [app.timelyai.com.br](https://app.timelyai.com.br)
+1. Go to [app.rovax.io](https://app.rovax.io)
 2. Navigate to **Settings → API Keys → New key**
 3. Give it a name that identifies its use (e.g., `crm-integration`, `n8n-automations`)
 4. Select the required scopes (principle of least privilege)

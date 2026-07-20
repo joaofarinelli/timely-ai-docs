@@ -6,9 +6,9 @@ description: "Endpoints to connect MCP servers to agents — expand AI action ca
 
 ## Concept
 
-**MCP Servers** (Model Context Protocol) are external servers that expose tools and resources so that Timely.ai agents can perform real-world actions during a conversation. Instead of the agent simply responding with text, it can use MCP tools to query a database, create a calendar event, look up an order in e-commerce, send an email, or any other action the MCP server supports.
+**MCP Servers** (Model Context Protocol) are external servers that expose tools and resources so that Rovax.io agents can perform real-world actions during a conversation. Instead of the agent simply responding with text, it can use MCP tools to query a database, create a calendar event, look up an order in e-commerce, send an email, or any other action the MCP server supports.
 
-The MCP protocol is an open standard — any compatible server can be connected to a Timely agent. You can use publicly available community servers or develop your own to integrate your company's internal systems.
+The MCP protocol is an open standard — any compatible server can be connected to a Rovax agent. You can use publicly available community servers or develop your own to integrate your company's internal systems.
 
 ## How the Integration Works
 
@@ -19,7 +19,7 @@ customer sends message
 AI agent processes and decides to use a tool
     │
     ▼
-Timely.ai calls the MCP Server with the tool parameters
+Rovax.io calls the MCP Server with the tool parameters
     │
     ▼
 MCP Server executes the action and returns the result
@@ -34,7 +34,7 @@ agent incorporates the result into the response to the customer
 add server (URL + configuration)
     │
     ▼
-connect → Timely handshakes with the server
+connect → Rovax handshakes with the server
     │
     ▼
 list available tools

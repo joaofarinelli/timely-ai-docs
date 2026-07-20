@@ -3,13 +3,13 @@ title: "Telegram"
 description: "Conecte um bot Telegram ao seu agente usando o token do BotFather — setup em menos de 5 minutos, sem aprovação de conta comercial"
 ---
 
-O canal Telegram usa a API de bots do Telegram. Você cria um bot pelo **BotFather** (o bot oficial do Telegram para gerenciar outros bots), copia o token gerado e cola na Timely.ai. A plataforma configura o webhook automaticamente.
+O canal Telegram usa a API de bots do Telegram. Você cria um bot pelo **BotFather** (o bot oficial do Telegram para gerenciar outros bots), copia o token gerado e cola na Rovax.io. A plataforma configura o webhook automaticamente.
 
 ## Pré-requisitos
 
 - Uma conta no **Telegram** (pessoal ou de equipe)
 - Acesso ao **BotFather** no Telegram para criar o bot e obter o token
-- Um **agente** criado e ativo na Timely.ai
+- Um **agente** criado e ativo na Rovax.io
 
 <Note>
   Diferente do WhatsApp e do Instagram, o Telegram não exige conta comercial verificada, CNPJ ou aprovação de terceiros. Qualquer conta Telegram pode criar um bot.
@@ -27,8 +27,8 @@ O canal Telegram usa a API de bots do Telegram. Você cria um bot pelo **BotFath
 
     O BotFather vai pedir:
 
-    1. **Nome do bot** — nome amigável que aparece nas conversas (ex: "Suporte Timely")
-    2. **Username do bot** — deve terminar em `bot` (ex: `suporte_timely_bot`)
+    1. **Nome do bot** — nome amigável que aparece nas conversas (ex: "Suporte Rovax")
+    2. **Username do bot** — deve terminar em `bot` (ex: `suporte_rovax_bot`)
 
     Ao final, o BotFather exibe o **token de acesso** no formato:
 
@@ -44,11 +44,11 @@ O canal Telegram usa a API de bots do Telegram. Você cria um bot pelo **BotFath
   </Step>
 
   <Step title="Acesse Canais no dashboard">
-    No menu lateral da Timely.ai, acesse **Canais → Adicionar canal** e selecione **Telegram**.
+    No menu lateral da Rovax.io, acesse **Canais → Adicionar canal** e selecione **Telegram**.
   </Step>
 
   <Step title="Cole o token e conecte">
-    Informe o **token do bot** no campo correspondente. O token precisa estar no formato `número:string` (ex: `123456789:ABCdef...`). A Timely.ai valida o token com a API do Telegram antes de prosseguir.
+    Informe o **token do bot** no campo correspondente. O token precisa estar no formato `número:string` (ex: `123456789:ABCdef...`). A Rovax.io valida o token com a API do Telegram antes de prosseguir.
 
     <Frame>
       ![Tela de configuração do bot Telegram](/images/screenshots/placeholder-telegram-setup.png)
@@ -56,7 +56,7 @@ O canal Telegram usa a API de bots do Telegram. Você cria um bot pelo **BotFath
   </Step>
 
   <Step title="Webhook configurado automaticamente">
-    Ao confirmar o token válido, a Timely.ai:
+    Ao confirmar o token válido, a Rovax.io:
 
     1. Chama `setWebhook` na API do Telegram apontando para `https://[SEU-SUPABASE].supabase.co/functions/v1/telegram-webhook`
     2. Gera um **webhook secret** aleatório para validar requisições
@@ -74,7 +74,7 @@ O canal Telegram usa a API de bots do Telegram. Você cria um bot pelo **BotFath
   </Step>
 
   <Step title="Teste o bot">
-    Abra o Telegram, procure pelo username do seu bot (ex: `@suporte_timely_bot`) e envie uma mensagem. O agente deve responder em até 2 segundos.
+    Abra o Telegram, procure pelo username do seu bot (ex: `@suporte_rovax_bot`) e envie uma mensagem. O agente deve responder em até 2 segundos.
   </Step>
 </Steps>
 
@@ -116,7 +116,7 @@ Mensagens chegam via:
 POST https://[SEU-SUPABASE].supabase.co/functions/v1/telegram-webhook
 ```
 
-A Timely.ai valida o header `X-Telegram-Bot-Api-Secret-Token` em cada requisição. Para detalhes sobre o payload e eventos suportados, veja [Webhooks externos → Telegram](/webhooks/external/telegram).
+A Rovax.io valida o header `X-Telegram-Bot-Api-Secret-Token` em cada requisição. Para detalhes sobre o payload e eventos suportados, veja [Webhooks externos → Telegram](/webhooks/external/telegram).
 
 ## Limites e boas práticas
 
@@ -124,7 +124,7 @@ A Timely.ai valida o header `X-Telegram-Bot-Api-Secret-Token` em cada requisiç�
 - **Tamanho de arquivos** — bots podem receber arquivos de até 20 MB e enviar até 50 MB.
 - **Token único por bot** — um token corresponde a um único bot. Para múltiplos canais Telegram, crie bots separados no BotFather.
 - **Bot não pode iniciar conversa** — diferente de alguns canais, bots do Telegram só podem enviar mensagens para usuários que já iniciaram uma conversa com `/start`. Use isso na configuração do prompt.
-- **Rotação de token** — se suspeitar que o token foi comprometido, revogue-o no BotFather com `/revoke` e gere um novo. Atualize na Timely.ai em **Canais → [sua integração Telegram] → Editar**.
+- **Rotação de token** — se suspeitar que o token foi comprometido, revogue-o no BotFather com `/revoke` e gere um novo. Atualize na Rovax.io em **Canais → [sua integração Telegram] → Editar**.
 
 ## Troubleshooting
 
@@ -140,7 +140,7 @@ A Timely.ai valida o header `X-Telegram-Bot-Api-Secret-Token` em cada requisiç�
     curl https://api.telegram.org/bot{TOKEN}/getWebhookInfo
     ```
 
-    O campo `url` deve apontar para `https://[SEU-SUPABASE].supabase.co/functions/v1/telegram-webhook`. Se estiver vazio, desconecte e reconecte o canal na Timely.ai para forçar o `setWebhook`.
+    O campo `url` deve apontar para `https://[SEU-SUPABASE].supabase.co/functions/v1/telegram-webhook`. Se estiver vazio, desconecte e reconecte o canal na Rovax.io para forçar o `setWebhook`.
   </Accordion>
 
   <Accordion title="Bot responde em DMs mas não em grupos">
@@ -152,6 +152,6 @@ A Timely.ai valida o header `X-Telegram-Bot-Api-Secret-Token` em cada requisiç�
   </Accordion>
 
   <Accordion title="Como trocar o token sem perder o histórico?">
-    Acesse **Canais → [integração Telegram] → Editar**, atualize o token e salve. A Timely.ai chama `setWebhook` com o novo token automaticamente. O histórico de conversas fica preservado no banco de dados da Timely.ai.
+    Acesse **Canais → [integração Telegram] → Editar**, atualize o token e salve. A Rovax.io chama `setWebhook` com o novo token automaticamente. O histórico de conversas fica preservado no banco de dados da Rovax.io.
   </Accordion>
 </AccordionGroup>

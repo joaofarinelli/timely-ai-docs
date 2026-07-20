@@ -6,7 +6,7 @@ description: "Endpoints utilitários para verificar o status da API e inspeciona
 
 ## Conceito
 
-O grupo **System** reúne os endpoints mais simples da API da Timely.ai: um health check público e um endpoint de introspecção da sua API key. Eles são o ponto de partida natural para qualquer integração — você usa o health check para confirmar que a API está acessível e o endpoint `/v1/me` para verificar se a sua key tem os escopos necessários antes de fazer chamadas mais complexas.
+O grupo **System** reúne os endpoints mais simples da API da Rovax.io: um health check público e um endpoint de introspecção da sua API key. Eles são o ponto de partida natural para qualquer integração — você usa o health check para confirmar que a API está acessível e o endpoint `/v1/me` para verificar se a sua key tem os escopos necessários antes de fazer chamadas mais complexas.
 
 Esses endpoints não realizam operações no workspace. São somente leitura e não consomem créditos.
 
@@ -49,10 +49,10 @@ O endpoint `GET /v1/me` retorna as informações da key usada na requisição: n
 
 ```bash
 # Verificar se a API está acessível
-curl https://api.timelyai.com.br/v1/health
+curl https://api.rovax.io/v1/health
 
 # Inspecionar a API key configurada
-curl https://api.timelyai.com.br/v1/me \
+curl https://api.rovax.io/v1/me \
   -H "x-api-key: SUA_API_KEY"
 ```
 

@@ -1,14 +1,14 @@
 ---
 title: "Glossary"
-description: "Timely.ai platform technical terms explained in plain language"
+description: "Rovax.io platform technical terms explained in plain language"
 ---
 
-Quick reference for the main concepts in Timely.ai. Use ⌘K to search for a specific term.
+Quick reference for the main concepts in Rovax.io. Use ⌘K to search for a specific term.
 
 ## Platform and organization
 
 **Company**
-The billing and data-isolation unit. Every account in Timely belongs to a single company. Data never leaks between companies — each one has its own logical database via Row Level Security in Supabase.
+The billing and data-isolation unit. Every account in Rovax belongs to a single company. Data never leaks between companies — each one has its own logical database via Row Level Security in Supabase.
 
 **Workspace**
 A subdivision of a company. A company can have multiple workspaces (e.g., "Sales", "Support", "SDR"). Agents, channels, and conversations belong to a specific workspace. Users can have different roles in different workspaces.
@@ -28,10 +28,10 @@ A configurable AI assistant with a personality, language model, tools, and knowl
 The language engine powering the agent. We support OpenAI, Anthropic, Groq, and custom providers via your own credentials in the workspace.
 
 **Prompt**
-The base instruction that defines how the agent behaves. Timely provides a visual editor, version history, automatic improvement, and support for **conditional prompts** (which change based on conversation variables).
+The base instruction that defines how the agent behaves. Rovax provides a visual editor, version history, automatic improvement, and support for **conditional prompts** (which change based on conversation variables).
 
 **RAG (Retrieval-Augmented Generation)**
-A technique where the agent retrieves relevant excerpts from the knowledge base before responding, reducing hallucination. Timely indexes content via embeddings and performs semantic search. See [Knowledge Base](/en/guides/knowledge/overview).
+A technique where the agent retrieves relevant excerpts from the knowledge base before responding, reducing hallucination. Rovax indexes content via embeddings and performs semantic search. See [Knowledge Base](/en/guides/knowledge/overview).
 
 **Handoff**
 The transfer of a conversation from the AI agent to a human attendant (or between agents). Can be triggered by a conditional prompt or manually.
@@ -73,18 +73,18 @@ A custom spreadsheet-style table for storing structured information (e.g., a rea
 A credential for authenticating REST API calls. Sent in the `x-api-key` header. Can have a limited scope and be rotated at any time.
 
 **Webhook**
-An HTTP POST that Timely sends to your URL when an event occurs (message received, conversation closed, etc.). Signed with **HMAC-SHA256** in the `X-Timely-Signature` header.
+An HTTP POST that Rovax sends to your URL when an event occurs (message received, conversation closed, etc.). Signed with **HMAC-SHA256** in the `X-Rovax-Signature` header.
 
 **MCP Server (Model Context Protocol)**
 An external server that exposes tools to the agent via the MCP protocol. Allows you to plug any custom capability into the agent.
 
 **Composio**
-A managed integrations platform. Timely uses Composio to connect 29 apps (Notion, Google Sheets, HubSpot, Stripe, Slack, GitHub, etc.) with managed OAuth.
+A managed integrations platform. Rovax uses Composio to connect 29 apps (Notion, Google Sheets, HubSpot, Stripe, Slack, GitHub, etc.) with managed OAuth.
 
 ## Automation
 
 **Workflow**
-A visual drag-and-drop flow with triggers, conditions, and actions. Similar to n8n/Make but native to Timely. Executes in response to events (new message, lead created, etc.).
+A visual drag-and-drop flow with triggers, conditions, and actions. Similar to n8n/Make but native to Rovax. Executes in response to events (new message, lead created, etc.).
 
 **Follow-up**
 A rule that sends an automatic message after a time delay or condition (e.g., "24 hours with no reply → send a reminder"). Managed via API and dashboard.
@@ -106,7 +106,7 @@ An initial free-of-charge test period. Expires automatically — check `check-tr
 ## Internal copilot
 
 **Time AI**
-Timely.ai's internal ChatGPT-style copilot for the team: executes actions on the platform, answers business questions, and triggers automations via natural language.
+Rovax.io's internal ChatGPT-style copilot for the team: executes actions on the platform, answers business questions, and triggers automations via natural language.
 
 **Worker**
 A persistent async session of an agent running a long task (analyses, research, processing). Unlike live chat — it has its own history and supports media.

@@ -9,7 +9,7 @@ description: "Understand the Model Context Protocol (MCP) — Anthropic's open s
 
 Before MCP, integrating tools into an AI agent was manual and fragmented work: each platform had its own tool calling format, and the same tool server had to be rewritten to work with different systems. MCP eliminates this fragmentation with a single protocol.
 
-- An MCP server developed once works with any compatible client — the Timely.ai agent, Claude Desktop, code editors with AI support, and others.
+- An MCP server developed once works with any compatible client — the Rovax.io agent, Claude Desktop, code editors with AI support, and others.
 - The agent automatically discovers the tools available on the server via the protocol — no manual documentation, no static mapping.
 - Public MCP servers developed by the community can be connected directly to your agent without modification.
 - Proprietary tools (internal APIs, ERPs, legacy systems) become accessible to the agent without exposing a public REST API.
@@ -22,7 +22,7 @@ In practice, MCP works as a universal interface between the agent and any extern
 - An MCP server that aggregates multiple internal APIs and exposes a simplified interface to the agent — the agent calls one tool and the server orchestrates the necessary calls.
 - A public MCP server for web search, file management, or browser control — connected to the agent with no adaptation required.
 
-> The Timely.ai agent acts as an MCP client: it maintains a session with each configured server, discovers the available tools, and registers them in the model context. When the LLM decides to trigger a server tool, the client executes the call via SSE or HTTP, receives the result, and injects it into the context before the next iteration.
+> The Rovax.io agent acts as an MCP client: it maintains a session with each configured server, discovers the available tools, and registers them in the model context. When the LLM decides to trigger a server tool, the client executes the call via SSE or HTTP, receives the result, and injects it into the context before the next iteration.
 
 ## Key characteristics
 

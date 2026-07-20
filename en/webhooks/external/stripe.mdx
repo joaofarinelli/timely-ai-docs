@@ -1,28 +1,28 @@
 ---
 title: "Stripe"
-description: "Stripe events consumed by Timely.ai — how payments and subscriptions are processed and reflected in your workspace"
+description: "Stripe events consumed by Rovax.io — how payments and subscriptions are processed and reflected in your workspace"
 ---
 
-Timely.ai uses **Stripe** as its payment platform for plan charges, credits, and add-ons. When a relevant event occurs in your Stripe account (a subscription is created, an invoice is paid, a payment fails), Stripe sends a webhook to Timely's servers, which updates the workspace status and may trigger [internal events](/en/webhooks/overview) for your server.
+Rovax.io uses **Stripe** as its payment platform for plan charges, credits, and add-ons. When a relevant event occurs in your Stripe account (a subscription is created, an invoice is paid, a payment fails), Stripe sends a webhook to Rovax's servers, which updates the workspace status and may trigger [internal events](/en/webhooks/overview) for your server.
 
-This page documents the Stripe events that Timely consumes, the payload formats, and how you can use this in your automations.
+This page documents the Stripe events that Rovax consumes, the payload formats, and how you can use this in your automations.
 
-## How Timely receives Stripe events
+## How Rovax receives Stripe events
 
 ```
-Stripe → POST to Timely.ai servers
-         → Timely processes the event
+Stripe → POST to Rovax.io servers
+         → Rovax processes the event
          → Updates workspace status (credits, plan, billing)
          → Triggers internal webhook to your server (if configured)
 ```
 
-You don't need to configure anything in Stripe — Timely manages the webhook endpoint directly. What you can do is **subscribe to Timely's internal webhooks** for billing events (such as `credit.depleted` or `plan.changed`) and react in your automations.
+You don't need to configure anything in Stripe — Rovax manages the webhook endpoint directly. What you can do is **subscribe to Rovax's internal webhooks** for billing events (such as `credit.depleted` or `plan.changed`) and react in your automations.
 
 ## Consumed events
 
 ### `checkout.session.completed`
 
-Triggered when a customer successfully completes a checkout session. Timely uses this event to:
+Triggered when a customer successfully completes a checkout session. Rovax uses this event to:
 
 - Activate the purchased plan in the workspace
 - Add acquired credits
@@ -55,7 +55,7 @@ Triggered when a customer successfully completes a checkout session. Timely uses
 }
 ```
 
-The `metadata.workspace_id` field is inserted by Timely when creating the session to correlate the payment with the correct workspace.
+The `metadata.workspace_id` field is inserted by Rovax when creating the session to correlate the payment with the correct workspace.
 
 ### `invoice.paid`
 
@@ -81,7 +81,7 @@ Triggered on every successfully paid invoice — both on the first charge and on
       "lines": {
         "data": [
           {
-            "description": "Timely Pro — Maio 2026",
+            "description": "Rovax Pro — Maio 2026",
             "amount": 19700,
             "period": {
               "start": 1713456789,
@@ -95,7 +95,7 @@ Triggered on every successfully paid invoice — both on the first charge and on
 }
 ```
 
-Upon receiving `invoice.paid`, Timely renews the workspace's access period and reloads the plan's monthly credits.
+Upon receiving `invoice.paid`, Rovax renews the workspace's access period and reloads the plan's monthly credits.
 
 ### `invoice.payment_failed`
 
@@ -129,7 +129,7 @@ Triggered when a charge attempt fails (card declined, insufficient funds, etc.).
 }
 ```
 
-After a payment failure, Timely enters a grace period (typically 3 days) and sends notifications to the workspace owner.
+After a payment failure, Rovax enters a grace period (typically 3 days) and sends notifications to the workspace owner.
 
 ### `customer.subscription.updated`
 
@@ -155,7 +155,7 @@ Triggered on any subscription change: upgrade, downgrade, scheduled cancellation
           {
             "price": {
               "id": "price_1NabcXYZ5",
-              "nickname": "Timely Pro Mensal",
+              "nickname": "Rovax Pro Mensal",
               "unit_amount": 19700,
               "currency": "brl",
               "recurring": { "interval": "month" }
@@ -195,11 +195,11 @@ Triggered when the subscription is effectively terminated (not just scheduled �
 }
 ```
 
-Upon receiving this event, Timely moves the workspace to the free plan (if available) or suspends access.
+Upon receiving this event, Rovax moves the workspace to the free plan (if available) or suspends access.
 
-## Stripe events to Timely events mapping
+## Stripe events to Rovax events mapping
 
-| Stripe event | Action in Timely | Timely internal webhook |
+| Stripe event | Action in Rovax | Rovax internal webhook |
 |--------------|------------------|-------------------------|
 | `checkout.session.completed` | Activates plan, adds credits | `plan.changed` |
 | `invoice.paid` | Renews period, reloads credits | — |
@@ -219,14 +219,14 @@ All Stripe events include:
 | `type` | Event type |
 
 <Warning>
-  In test environments, the `livemode` field is `false`. Timely processes Stripe test and production events separately. Never mix test and production API keys.
+  In test environments, the `livemode` field is `false`. Rovax processes Stripe test and production events separately. Never mix test and production API keys.
 </Warning>
 
 ## Next steps
 
 <CardGroup cols={2}>
   <Card title="Billing events" icon="credit-card" href="/en/webhooks/events/billing-events">
-    Timely's internal webhooks for credit and plan events.
+    Rovax's internal webhooks for credit and plan events.
   </Card>
   <Card title="Webhooks — API Reference" icon="bell" href="/en/api-reference/webhooks/referencia">
     Configure endpoints to receive events from your workspace.

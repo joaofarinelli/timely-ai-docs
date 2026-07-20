@@ -1,6 +1,6 @@
 ---
 title: "Model Selection"
-description: "In Timely.ai, each Agent can be powered by a specific **Provider** and **Model**. <br />
+description: "In Rovax.io, each Agent can be powered by a specific **Provider** and **Model**. <br />
 This configuration defines:
 
 - Which **LLM** is used for reasoning
@@ -28,21 +28,21 @@ This positioning reflects the recommended workflow:
 
 There are two ways to connect LLMs to your Agents.
 
-<h3 style={{ marginTop: '1rem' }}>Option 1 — Using Timely.ai Provider</h3>
+<h3 style={{ marginTop: '1rem' }}>Option 1 — Using Rovax.io Provider</h3>
 
-When you select **Timely.ai** as the provider, your Agent uses models natively available on the platform (such as *Claude Sonnet* 4.6 or *GPT-5.4*).
+When you select **Rovax.io** as the provider, your Agent uses models natively available on the platform (such as *Claude Sonnet* 4.6 or *GPT-5.4*).
 
 In this mode:
 
-- You've used up your **Timely.ai internal usage quota** per execution.
-- Authentication and billing are fully managed by Timely.ai
+- You've used up your **Rovax.io internal usage quota** per execution.
+- Authentication and billing are fully managed by Rovax.io
 - No API key configuration is required
 
 This is the recommended option for most users who want a fully managed experience with instant access to multiple LLMs.
 
 <h3 style={{ marginTop: '1rem' }}>Option 2 — Adding a Custom Provider</h3>
 
-You can also connect your **own LLM provider**, bypassing Timely.ai internal usage quota.
+You can also connect your **own LLM provider**, bypassing Rovax.io internal usage quota.
 
 To configure a custom provider, go to:
 
@@ -61,7 +61,7 @@ When an Agent uses a custom provider:
 
 - It consumes your **own API credits**
 - Billing happens directly with the external provider
-- Timely.ai does not charge credits for model execution
+- Rovax.io does not charge credits for model execution
 
 <Warning>
 **Security note**: API tokens are stored in encrypted form and are only used when invoking the selected model for your Agent.
@@ -85,7 +85,7 @@ You can change the model at any time without modifying the Agent’s Prompt or l
 ## Best Practices
 
 - Always define the **Prompt first**, then select the model
-- Use **Timely.ai Provider** for faster setup and predictable billing
+- Use **Rovax.io Provider** for faster setup and predictable billing
 - Use **custom providers** when you need:
   - Cost optimization at scale
   - Enterprise contracts

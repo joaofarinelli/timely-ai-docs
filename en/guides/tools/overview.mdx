@@ -1,6 +1,6 @@
 ---
 title: "Tools: Overview"
-description: "Understand what tools are in Timely.ai, when to use them, and which types are available for your agent."
+description: "Understand what tools are in Rovax.io, when to use them, and which types are available for your agent."
 ---
 
 ## Understanding tools and when to use them
@@ -30,15 +30,15 @@ This cycle can repeat multiple times in a single interaction — the agent can l
 Tools with write access (inserting, updating, deleting records) should only be activated when the use case requires it — and always accompanied by a well-guided prompt. The agent can execute irreversible actions if the instructions are ambiguous.
 </Warning>
 
-## Types of tools in Timely.ai
+## Types of tools in Rovax.io
 
-Timely.ai offers tools of different categories, each with a specific purpose:
+Rovax.io offers tools of different categories, each with a specific purpose:
 
 ### HTTP request
 
 Allows the agent to make calls to external APIs via HTTP. You configure the URL, method (GET, POST, PUT, PATCH, DELETE), headers, and request body. The agent dynamically builds the parameters based on the conversation context and injects the response into the context before replying.
 
-- Ideal for integrating systems that expose a REST API but do not have native support in Timely.ai.
+- Ideal for integrating systems that expose a REST API but do not have native support in Rovax.io.
 - Supports authentication via header (Bearer token, API key) configured in the tool definition.
 
 ### Code execution
@@ -51,7 +51,7 @@ Allows the agent to search for up-to-date information on the internet during a c
 
 ### Knowledge search
 
-Triggers Timely.ai's RAG mechanism: the user's question is converted into a vector embedding (model `text-embedding-3-small`, 1,536 dimensions) and compared with the chunks indexed in the workspace knowledge base. The most relevant excerpts are injected into the context before the response.
+Triggers Rovax.io's RAG mechanism: the user's question is converted into a vector embedding (model `text-embedding-3-small`, 1,536 dimensions) and compared with the chunks indexed in the workspace knowledge base. The most relevant excerpts are injected into the context before the response.
 
 ### Datagrid tools
 
@@ -64,7 +64,7 @@ Connect the agent to the workspace's custom tables. Available actions are:
 
 ### Workflow execution
 
-Triggers an internal Timely.ai workflow as part of the agent's response. The agent calls the workflow with the defined parameters, waits for completion, and uses the result in the conversation.
+Triggers an internal Rovax.io workflow as part of the agent's response. The agent calls the workflow with the defined parameters, waits for completion, and uses the result in the conversation.
 
 ### Follow-up
 

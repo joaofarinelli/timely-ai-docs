@@ -1,3 +1,61 @@
+/* Hero banner da home — âmbar sobre grafite (dark) / âmbar sobre osso (light) */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 32px;
+  text-align: center;
+  background: linear-gradient(180deg, #FAF9F5 0%, #F5F2EA 40%, #FDECC8 80%, #FBD68E 100%);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.hero-banner__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+}
+
+.hero-banner__title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+  color: #101114;
+}
+
+.hero-banner__subtitle {
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 14px 0 0;
+  color: #565B67;
+}
+
+html.dark .hero-banner,
+body.dark .hero-banner,
+.dark .hero-banner,
+[data-theme="dark"] .hero-banner {
+  background: linear-gradient(180deg, #0B0C0E 0%, #101114 40%, #4D3003 80%, #7A4D04 100%);
+  border-bottom-color: rgba(245, 158, 11, 0.45);
+}
+
+html.dark .hero-banner__title,
+body.dark .hero-banner__title,
+.dark .hero-banner__title,
+[data-theme="dark"] .hero-banner__title {
+  color: #F5F2EA;
+}
+
+html.dark .hero-banner__subtitle,
+body.dark .hero-banner__subtitle,
+.dark .hero-banner__subtitle,
+[data-theme="dark"] .hero-banner__subtitle {
+  color: #C2C6CF;
+}
+
 /* Pill toggle (Carregar mais / Mostrar menos) — anchor :target pattern */
 .more-wrapper {
   margin-top: 8px;
@@ -22,8 +80,8 @@
   display: inline-block;
   padding: 12px 32px;
   border-radius: 9999px;
-  background: #2563EB;
-  color: #ffffff !important;
+  background: #F59E0B;
+  color: #1A1205 !important;
   font-weight: 600;
   font-size: 14px;
   text-decoration: none !important;
@@ -35,8 +93,8 @@
 }
 
 .load-btn:hover {
-  background: #1d4ed8;
-  color: #ffffff !important;
+  background: #F7AE2E;
+  color: #1A1205 !important;
 }
 
 .load-btn:active {

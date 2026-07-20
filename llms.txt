@@ -1,11 +1,11 @@
-Timely AI API Documentation
+Rovax.io API Documentation
 ===========================
 
-API Name: Timely AI | API v1
+API Name: Rovax.io | API v1
 Version: 1.0.0
-Base URL: https://api.timelyai.com.br
-Contact: contato@timelyai.com.br
-Website: https://app.timelyai.com.br
+Base URL: https://api.rovax.io
+Contact: contato@rovax.io
+Website: https://app.rovax.io
 
 Description: REST API for managing contacts, leads, opportunities, pipeline, and conversations in your CRM.
 
@@ -15,7 +15,7 @@ AUTHENTICATION
 
 Method: API Key via header
 Header name: x-api-key
-Obtain your key at: https://app.timelyai.com.br/developers
+Obtain your key at: https://app.rovax.io/developers
 
 All endpoints require authentication unless otherwise noted.
 Include the header in every request:
@@ -124,7 +124,7 @@ Response 200:
   - timestamp: string (date-time, example: "2025-01-15T10:30:00.000Z")
 
 Example:
-  curl https://api.timelyai.com.br/v1/health
+  curl https://api.rovax.io/v1/health
 
 
 --- GET /v1/me ---
@@ -141,7 +141,7 @@ Response 200:
     - is_active: boolean -- Whether the API key is active
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/me
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/me
 
 
 CONTACTS
@@ -163,7 +163,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/contacts?page=1&limit=20&status=active"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/contacts?page=1&limit=20&status=active"
 
 
 --- POST /v1/contacts ---
@@ -187,7 +187,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"customer_name":"Joao Silva","customer_email":"joao@empresa.com","customer_phone":"+5547999999999"}' \
-    https://api.timelyai.com.br/v1/contacts
+    https://api.rovax.io/v1/contacts
 
 
 --- GET /v1/contacts/{id} ---
@@ -199,7 +199,7 @@ Response 200:
   data: Contact object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/contacts/CONTACT_UUID
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/contacts/CONTACT_UUID
 
 
 --- PUT /v1/contacts/{id} ---
@@ -224,7 +224,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"status":"inactive"}' \
-    https://api.timelyai.com.br/v1/contacts/CONTACT_UUID
+    https://api.rovax.io/v1/contacts/CONTACT_UUID
 
 
 --- DELETE /v1/contacts/{id} ---
@@ -236,7 +236,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/contacts/CONTACT_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/contacts/CONTACT_UUID
 
 
 LEADS
@@ -258,7 +258,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/leads?status=qualified"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/leads?status=qualified"
 
 
 --- POST /v1/leads ---
@@ -280,7 +280,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"customer_name":"Maria Souza","score":75,"status":"qualified"}' \
-    https://api.timelyai.com.br/v1/leads
+    https://api.rovax.io/v1/leads
 
 
 --- GET /v1/leads/{id} ---
@@ -292,7 +292,7 @@ Response 200:
   data: Lead object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/leads/LEAD_UUID
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/leads/LEAD_UUID
 
 
 --- PUT /v1/leads/{id} ---
@@ -316,7 +316,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"status":"won","score":95}' \
-    https://api.timelyai.com.br/v1/leads/LEAD_UUID
+    https://api.rovax.io/v1/leads/LEAD_UUID
 
 
 --- DELETE /v1/leads/{id} ---
@@ -328,7 +328,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/leads/LEAD_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/leads/LEAD_UUID
 
 
 OPPORTUNITIES
@@ -350,7 +350,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/opportunities?stage=proposal"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/opportunities?stage=proposal"
 
 
 --- POST /v1/opportunities ---
@@ -368,7 +368,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"title":"Projeto de automacao","value":15000,"probability":70,"stage":"proposal"}' \
-    https://api.timelyai.com.br/v1/opportunities
+    https://api.rovax.io/v1/opportunities
 
 
 --- GET /v1/opportunities/{id} ---
@@ -380,7 +380,7 @@ Response 200:
   data: Opportunity object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/opportunities/OPP_UUID
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/opportunities/OPP_UUID
 
 
 --- PUT /v1/opportunities/{id} ---
@@ -400,7 +400,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"stage":"won","probability":100}' \
-    https://api.timelyai.com.br/v1/opportunities/OPP_UUID
+    https://api.rovax.io/v1/opportunities/OPP_UUID
 
 
 --- DELETE /v1/opportunities/{id} ---
@@ -412,7 +412,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/opportunities/OPP_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/opportunities/OPP_UUID
 
 
 PIPELINE
@@ -426,7 +426,7 @@ Response 200:
   data: array of PipelineColumn objects
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/pipeline/columns
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/pipeline/columns
 
 
 CONVERSATIONS
@@ -449,7 +449,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/conversations?channel=whatsapp"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/conversations?channel=whatsapp"
 
 
 --- GET /v1/conversations/{id} ---
@@ -461,7 +461,7 @@ Response 200:
   data: Conversation object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/conversations/CONV_UUID
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/conversations/CONV_UUID
 
 
 --- DELETE /v1/conversations/{id} ---
@@ -473,7 +473,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/conversations/CONV_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/conversations/CONV_UUID
 
 
 --- GET /v1/conversations/{id}/messages ---
@@ -490,7 +490,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages?order=asc"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/conversations/CONV_UUID/messages?order=asc"
 
 
 --- POST /v1/conversations/{id}/messages ---
@@ -508,7 +508,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"content":"Ola, como posso ajudar?"}' \
-    https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages
+    https://api.rovax.io/v1/conversations/CONV_UUID/messages
 
 
 --- DELETE /v1/conversations/{id}/messages ---
@@ -520,7 +520,7 @@ Response 200:
   data: { deleted: boolean, count: integer }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/conversations/CONV_UUID/messages
 
 
 --- PUT /v1/conversations/{id}/messages/{messageId} ---
@@ -537,7 +537,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"content":"Mensagem editada com novo conteudo"}' \
-    https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages/MSG_UUID
+    https://api.rovax.io/v1/conversations/CONV_UUID/messages/MSG_UUID
 
 
 --- DELETE /v1/conversations/{id}/messages/{messageId} ---
@@ -551,7 +551,7 @@ Response 200:
 
 Example:
   curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/conversations/CONV_UUID/messages/MSG_UUID
+    https://api.rovax.io/v1/conversations/CONV_UUID/messages/MSG_UUID
 
 
 --- POST /v1/conversations/{id}/human-handoff ---
@@ -572,7 +572,7 @@ Response 200:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"reason":"Cliente solicitou falar com um atendente"}' \
-    https://api.timelyai.com.br/v1/conversations/CONV_UUID/human-handoff
+    https://api.rovax.io/v1/conversations/CONV_UUID/human-handoff
 
 
 --- POST /v1/conversations/{id}/ai-resume ---
@@ -588,7 +588,7 @@ Response 200:
 
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/conversations/CONV_UUID/ai-resume
+    https://api.rovax.io/v1/conversations/CONV_UUID/ai-resume
 
 
 AGENTS
@@ -609,7 +609,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/agents?status=active"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/agents?status=active"
 
 
 --- POST /v1/agents ---
@@ -628,7 +628,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"Assistente de Vendas","model":"gpt-4o","communication_style":"formal"}' \
-    https://api.timelyai.com.br/v1/agents
+    https://api.rovax.io/v1/agents
 
 
 --- GET /v1/agents/{id} ---
@@ -640,7 +640,7 @@ Response 200:
   data: Agent object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID
 
 
 --- PUT /v1/agents/{id} ---
@@ -663,7 +663,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"temperature":0.8,"max_tokens":4096}' \
-    https://api.timelyai.com.br/v1/agents/AGENT_UUID
+    https://api.rovax.io/v1/agents/AGENT_UUID
 
 
 --- DELETE /v1/agents/{id} ---
@@ -675,7 +675,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID
 
 
 --- POST /v1/agents/{id}/activate ---
@@ -687,7 +687,7 @@ Response 200:
   data: Agent object
 
 Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/activate
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/activate
 
 
 --- POST /v1/agents/{id}/deactivate ---
@@ -699,7 +699,7 @@ Response 200:
   data: Agent object
 
 Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/deactivate
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/deactivate
 
 
 --- GET /v1/agents/{id}/settings ---
@@ -711,7 +711,7 @@ Response 200:
   data: AgentSettings object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/settings
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/settings
 
 
 --- PUT /v1/agents/{id}/settings ---
@@ -732,7 +732,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"model":"claude-3.7-sonnet","temperature":0.7,"language":"pt-BR"}' \
-    https://api.timelyai.com.br/v1/agents/AGENT_UUID/settings
+    https://api.rovax.io/v1/agents/AGENT_UUID/settings
 
 
 --- GET /v1/agents/{id}/webhooks ---
@@ -744,7 +744,7 @@ Response 200:
   data: AgentWebhooks object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/webhooks
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/webhooks
 
 
 --- PUT /v1/agents/{id}/webhooks ---
@@ -764,7 +764,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"webhooks":[{"url":"https://example.com/webhook","events":["message.received"],"is_active":true}]}' \
-    https://api.timelyai.com.br/v1/agents/AGENT_UUID/webhooks
+    https://api.rovax.io/v1/agents/AGENT_UUID/webhooks
 
 
 --- POST /v1/agents/{id}/conversation ---
@@ -786,7 +786,7 @@ Response 200:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"message":"Ola, preciso de ajuda com meu pedido"}' \
-    https://api.timelyai.com.br/v1/agents/AGENT_UUID/conversation
+    https://api.rovax.io/v1/agents/AGENT_UUID/conversation
 
 
 --- POST /v1/agents/{id}/context ---
@@ -804,7 +804,7 @@ Response 200:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"conversation_id":"CONV_UUID","content":"O cliente e VIP e tem prioridade no atendimento"}' \
-    https://api.timelyai.com.br/v1/agents/AGENT_UUID/context
+    https://api.rovax.io/v1/agents/AGENT_UUID/context
 
 
 --- GET /v1/agents/{id}/credits ---
@@ -823,7 +823,7 @@ Response 200:
       - conversations: integer
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/credits
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/credits
 
 
 --- GET /v1/agents/{id}/behavior-history ---
@@ -838,7 +838,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agents/AGENT_UUID/behavior-history
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/behavior-history
 
 
 TRAININGS
@@ -860,7 +860,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"type":"text","content":"Nossa empresa oferece servicos de automacao...","name":"Info da empresa"}' \
-    https://api.timelyai.com.br/v1/agents/AGENT_UUID/trainings
+    https://api.rovax.io/v1/agents/AGENT_UUID/trainings
 
 
 --- GET /v1/agents/{id}/trainings ---
@@ -879,7 +879,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/agents/AGENT_UUID/trainings?type=text&status=completed"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/agents/AGENT_UUID/trainings?type=text&status=completed"
 
 
 --- PUT /v1/trainings/{id} ---
@@ -895,7 +895,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"content":"Conteudo de treinamento atualizado..."}' \
-    https://api.timelyai.com.br/v1/trainings/TRAINING_UUID
+    https://api.rovax.io/v1/trainings/TRAINING_UUID
 
 
 --- DELETE /v1/trainings/{id} ---
@@ -907,7 +907,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/trainings/TRAINING_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/trainings/TRAINING_UUID
 
 
 CHANNELS
@@ -926,7 +926,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"WhatsApp Principal","type":"whatsapp","agent_id":"AGENT_UUID"}' \
-    https://api.timelyai.com.br/v1/channels
+    https://api.rovax.io/v1/channels
 
 
 --- GET /v1/channels ---
@@ -945,7 +945,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/channels?type=whatsapp&status=active"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/channels?type=whatsapp&status=active"
 
 
 --- PUT /v1/channels/{id} ---
@@ -962,7 +962,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"WhatsApp Vendas"}' \
-    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID
+    https://api.rovax.io/v1/channels/CHANNEL_UUID
 
 
 --- DELETE /v1/channels/{id} ---
@@ -974,7 +974,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID
 
 
 --- GET /v1/channels/{id}/config ---
@@ -991,7 +991,7 @@ Response 200:
     - business_hours: object|null -- Business hours configuration
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/config
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID/config
 
 
 --- PUT /v1/channels/{id}/config ---
@@ -1011,7 +1011,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"welcome_message":"Ola! Como posso ajudar?","auto_reply":true}' \
-    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/config
+    https://api.rovax.io/v1/channels/CHANNEL_UUID/config
 
 
 --- GET /v1/channels/{id}/qr-code ---
@@ -1025,7 +1025,7 @@ Response 200:
     - expires_at: string (date-time) -- QR code expiration date
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/qr-code
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID/qr-code
 
 
 --- POST /v1/channels/{id}/conversation ---
@@ -1045,7 +1045,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"customer_name":"Joao Silva","customer_phone":"+5547999999999","initial_message":"Ola, gostaria de mais informacoes."}' \
-    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/conversation
+    https://api.rovax.io/v1/channels/CHANNEL_UUID/conversation
 
 
 --- GET /v1/channels/{id}/widget/links ---
@@ -1060,7 +1060,7 @@ Response 200:
     - embed_code: string -- HTML embed code
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/widget/links
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID/widget/links
 
 
 --- PUT /v1/channels/{id}/widget/settings ---
@@ -1075,14 +1075,14 @@ Request body (JSON, required):
   - subtitle: string|null (optional) -- Widget subtitle
   - welcome_message: string|null (optional) -- Widget welcome message
   - avatar_url: string|null (optional) -- Widget avatar URL
-  - show_branding: boolean (optional) -- Show Timely AI branding on widget
+  - show_branding: boolean (optional) -- Show Rovax.io branding on widget
 Response 200:
   data: WidgetSettings object
 
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"primary_color":"#6366f1","position":"bottom-right","title":"Fale conosco"}' \
-    https://api.timelyai.com.br/v1/channels/CHANNEL_UUID/widget/settings
+    https://api.rovax.io/v1/channels/CHANNEL_UUID/widget/settings
 
 
 CUSTOM FIELDS
@@ -1097,7 +1097,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/custom-fields
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/custom-fields
 
 
 --- POST /v1/custom-fields ---
@@ -1115,7 +1115,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"Cargo","field_type":"text"}' \
-    https://api.timelyai.com.br/v1/custom-fields
+    https://api.rovax.io/v1/custom-fields
 
 
 --- PUT /v1/custom-fields/{id} ---
@@ -1135,7 +1135,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"Job Title","is_required":true}' \
-    https://api.timelyai.com.br/v1/custom-fields/FIELD_UUID
+    https://api.rovax.io/v1/custom-fields/FIELD_UUID
 
 
 --- PUT /v1/custom-fields/{id}/archive ---
@@ -1147,7 +1147,7 @@ Response 200:
   data: CustomField object
 
 Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/custom-fields/FIELD_UUID/archive
+  curl -X PUT -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/custom-fields/FIELD_UUID/archive
 
 
 INTERACTIONS
@@ -1170,7 +1170,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/interactions?status=active&agent_id=AGENT_UUID"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/interactions?status=active&agent_id=AGENT_UUID"
 
 
 --- GET /v1/interactions/{id}/messages ---
@@ -1186,7 +1186,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.timelyai.com.br/v1/interactions/INTERACTION_UUID/messages"
+  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/interactions/INTERACTION_UUID/messages"
 
 
 --- DELETE /v1/interactions/{id} ---
@@ -1198,7 +1198,7 @@ Response 200:
   data: { closed: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/interactions/INTERACTION_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/interactions/INTERACTION_UUID
 
 
 INTENTIONS
@@ -1217,7 +1217,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/intentions
 
 
 --- POST /v1/agent/{id}/intentions ---
@@ -1237,7 +1237,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"Agendamento","description":"Cliente quer agendar uma reuniao","examples":["quero marcar uma reuniao","agendar horario"]}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions
+    https://api.rovax.io/v1/agent/AGENT_UUID/intentions
 
 
 --- PUT /v1/agent/{id}/intentions/{intentionId} ---
@@ -1258,7 +1258,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"Agendamento de Reuniao","action_type":"schedule"}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
+    https://api.rovax.io/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
 
 
 --- DELETE /v1/agent/{id}/intentions/{intentionId} ---
@@ -1272,7 +1272,7 @@ Response 200:
 
 Example:
   curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
+    https://api.rovax.io/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
 
 
 IDLE ACTIONS
@@ -1291,7 +1291,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions
 
 
 --- POST /v1/agent/{id}/idle-actions ---
@@ -1311,7 +1311,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"Lembrete de inatividade","trigger_after_minutes":30,"action_type":"message"}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions
+    https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions
 
 
 --- PUT /v1/agent/{id}/idle-actions/{actionId} ---
@@ -1332,7 +1332,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"trigger_after_minutes":60,"is_active":false}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
+    https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
 
 
 --- DELETE /v1/agent/{id}/idle-actions/{actionId} ---
@@ -1346,7 +1346,7 @@ Response 200:
 
 Example:
   curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
+    https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
 
 
 TRANSFER RULES
@@ -1365,7 +1365,7 @@ Response 200:
   pagination: Pagination object
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules
 
 
 --- POST /v1/agent/{id}/transfer-rules ---
@@ -1387,7 +1387,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"name":"Transferir para vendas","condition_type":"keyword","target_type":"department","priority":1}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules
+    https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules
 
 
 --- PUT /v1/agent/{id}/transfer-rules/{ruleId} ---
@@ -1410,7 +1410,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"priority":0,"is_active":false}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
+    https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
 
 
 --- DELETE /v1/agent/{id}/transfer-rules/{ruleId} ---
@@ -1424,7 +1424,7 @@ Response 200:
 
 Example:
   curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
+    https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
 
 
 MCP (Model Context Protocol)
@@ -1446,7 +1446,7 @@ Response 201:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"url":"https://mcp.example.com/api","name":"My MCP Server","type":"http"}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/add
+    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/add
 
 
 --- POST /v1/agent/{id}/mcp/connect ---
@@ -1465,7 +1465,7 @@ Response 200:
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"url":"https://mcp.example.com/api"}' \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/connect
+    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/connect
 
 
 --- GET /v1/agent/{id}/mcp/tools ---
@@ -1477,7 +1477,7 @@ Response 200:
   data: array of MCPTool objects
 
 Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/tools
+  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/mcp/tools
 
 
 --- PUT /v1/agent/{id}/mcp/tools/{toolId}/active ---
@@ -1491,7 +1491,7 @@ Response 200:
 
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/active
+    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/active
 
 
 --- PUT /v1/agent/{id}/mcp/tools/{toolId}/inactive ---
@@ -1505,7 +1505,7 @@ Response 200:
 
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/inactive
+    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/inactive
 
 
 --- POST /v1/agent/{id}/mcp/sync-tools ---
@@ -1518,7 +1518,7 @@ Response 200:
 
 Example:
   curl -X POST -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/sync-tools
+    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/sync-tools
 
 
 --- DELETE /v1/agent/{id}/mcp/{mcpId} ---
@@ -1532,7 +1532,7 @@ Response 200:
 
 Example:
   curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/agent/AGENT_UUID/mcp/MCP_UUID
+    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/MCP_UUID
 
 
 CHATS
@@ -1547,7 +1547,7 @@ Response 200:
   data: { deleted: boolean, id: string (uuid) }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID
 
 
 --- DELETE /v1/chats/{id}/messages ---
@@ -1559,7 +1559,7 @@ Response 200:
   data: { deleted: boolean }
 
 Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID/messages
+  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID/messages
 
 
 --- DELETE /v1/chats/{id}/messages/{messageId} ---
@@ -1573,7 +1573,7 @@ Response 200:
 
 Example:
   curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.timelyai.com.br/v1/chats/CHAT_UUID/messages/MSG_UUID
+    https://api.rovax.io/v1/chats/CHAT_UUID/messages/MSG_UUID
 
 
 --- PUT /v1/chats/{id}/messages/{messageId} ---
@@ -1590,7 +1590,7 @@ Response 200:
 Example:
   curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
     -d '{"content":"Novo conteudo da mensagem"}' \
-    https://api.timelyai.com.br/v1/chats/CHAT_UUID/messages/MSG_UUID
+    https://api.rovax.io/v1/chats/CHAT_UUID/messages/MSG_UUID
 
 
 --- POST /v1/chats/{id}/start-human ---
@@ -1602,7 +1602,7 @@ Response 200:
   data: { id: string (uuid), ai_mode: string (e.g., "paused") }
 
 Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID/start-human
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID/start-human
 
 
 --- POST /v1/chats/{id}/stop-human ---
@@ -1614,7 +1614,7 @@ Response 200:
   data: { id: string (uuid), ai_mode: string (e.g., "auto") }
 
 Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.timelyai.com.br/v1/chats/CHAT_UUID/stop-human
+  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID/stop-human
 
 
 ===============================================================================

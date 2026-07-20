@@ -12,13 +12,13 @@ To list messages within the context of a specific conversation, use the endpoint
 
 ## Message Structure
 
-A message in Timely.ai represents any unit of communication exchanged in a conversation: text, image, audio, video, document, or interactive message (buttons, lists). Each message records the sender (contact, AI agent, or human), the source channel, delivery status, and platform metadata (such as the WhatsApp `wamid` or Telegram `message_id`).
+A message in Rovax.io represents any unit of communication exchanged in a conversation: text, image, audio, video, document, or interactive message (buttons, lists). Each message records the sender (contact, AI agent, or human), the source channel, delivery status, and platform metadata (such as the WhatsApp `wamid` or Telegram `message_id`).
 
 ## Main Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string (UUID) | Unique message ID in Timely |
+| `id` | string (UUID) | Unique message ID in Rovax |
 | `conversation_id` | string (UUID) | Conversation it belongs to |
 | `channel_id` | string (UUID) | Channel through which it was sent/received |
 | `content` | string | Text content of the message |

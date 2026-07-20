@@ -1,16 +1,16 @@
 ---
 title: "Introdução"
-description: "API REST do Timely.ai para automação de atendimento com IA."
+description: "API REST do Rovax.io para automação de atendimento com IA."
 ---
 
 <Note>
-  Esta documentação é destinada a desenvolvedores que desejam integrar seus sistemas com o Timely.ai.
+  Esta documentação é destinada a desenvolvedores que desejam integrar seus sistemas com o Rovax.io.
   Para informações sobre o uso da plataforma, consulte os [Guias](/index).
 </Note>
 
 ## Visão geral
 
-A API do Timely.ai permite gerenciar programaticamente todos os recursos da plataforma:
+A API do Rovax.io permite gerenciar programaticamente todos os recursos da plataforma:
 
 - **Agentes** — criação, configuração e gerenciamento de agentes IA
 - **Treinamentos** — gestão da base de conhecimento dos agentes
@@ -26,7 +26,7 @@ A API do Timely.ai permite gerenciar programaticamente todos os recursos da plat
 ## Base URL
 
 ```
-https://api.timelyai.com.br
+https://api.rovax.io
 ```
 
 Todos os endpoints utilizam o prefixo `/v1`.
@@ -37,10 +37,10 @@ Todas as requisições (exceto `/v1/health`) requerem autenticação via header 
 
 ```bash
 curl -H "x-api-key: sua_chave_aqui" \
-  https://api.timelyai.com.br/v1/me
+  https://api.rovax.io/v1/me
 ```
 
-Para obter sua chave de API, acesse a [página de desenvolvedores](https://app.timelyai.com.br/developers).
+Para obter sua chave de API, acesse a [página de desenvolvedores](https://app.rovax.io/developers).
 
 ## Scopes
 

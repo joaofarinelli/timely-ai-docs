@@ -3,7 +3,7 @@ title: "Webhooks"
 description: "Receive real-time notifications about everything happening in your workspace — conversations, messages, contacts, appointments, and more"
 ---
 
-Webhooks are HTTP `POST` requests that Timely.ai automatically sends to the URL you configure whenever a relevant event occurs in your workspace. Instead of polling the API, you receive data instantly — no latency, no wasted requests.
+Webhooks are HTTP `POST` requests that Rovax.io automatically sends to the URL you configure whenever a relevant event occurs in your workspace. Instead of polling the API, you receive data instantly — no latency, no wasted requests.
 
 ## Why use webhooks
 
@@ -24,8 +24,8 @@ With webhooks you can:
   <Step title="An event occurs">
     A contact sends a message, a conversation is closed, an appointment is created — anything you subscribed to.
   </Step>
-  <Step title="Timely.ai sends a POST">
-    We send a `POST` with the event's JSON payload to your URL, including the `X-Timely-Signature` header so you can validate authenticity.
+  <Step title="Rovax.io sends a POST">
+    We send a `POST` with the event's JSON payload to your URL, including the `X-Rovax-Signature` header so you can validate authenticity.
   </Step>
   <Step title="You respond with 2xx">
     Your server must respond with any `2xx` status within **10 seconds**. If it doesn't respond, we begin retrying.
@@ -43,20 +43,20 @@ With webhooks you can:
     # Forwarding: https://abc123.ngrok.io -> localhost:3000
     ```
 
-    Set `https://abc123.ngrok.io/webhooks/timely` as the URL in the dashboard. Remember to update it every time you restart ngrok.
+    Set `https://abc123.ngrok.io/webhooks/rovax` as the URL in the dashboard. Remember to update it every time you restart ngrok.
 
     <Tip>
       The `POST /v1/webhooks/{id}/test` endpoint sends a test event without needing to generate a real one in the workspace.
     </Tip>
   </Tab>
   <Tab title="Production">
-    Always use HTTPS with a valid certificate. Timely.ai rejects HTTP URLs in production. Make sure your URL responds in under 10 seconds — move heavy processing to an async queue.
+    Always use HTTPS with a valid certificate. Rovax.io rejects HTTP URLs in production. Make sure your URL responds in under 10 seconds — move heavy processing to an async queue.
   </Tab>
 </Tabs>
 
 ## Security: HMAC signature validation
 
-Every delivery includes the `X-Timely-Signature` header in the format `sha256=HEX`. This value is the HMAC-SHA256 of the request body using the **secret** generated when the webhook was created.
+Every delivery includes the `X-Rovax-Signature` header in the format `sha256=HEX`. This value is the HMAC-SHA256 of the request body using the **secret** generated when the webhook was created.
 
 **Never skip validation.** Any server on the internet could post fake data to your URL if you don't verify the signature.
 
@@ -66,10 +66,10 @@ Every delivery includes the `X-Timely-Signature` header in the format `sha256=HE
 import crypto from "crypto";
 import { Request, Response } from "express";
 
-const WEBHOOK_SECRET = process.env.TIMELY_WEBHOOK_SECRET!;
+const WEBHOOK_SECRET = process.env.ROVAX_WEBHOOK_SECRET!;
 
 export function verifySignature(req: Request, res: Response, next: Function) {
-  const signature = req.headers["x-timely-signature"] as string;
+  const signature = req.headers["x-rovax-signature"] as string;
   const rawBody = (req as any).rawBody as Buffer; // body-parser com verify
 
   if (!signature || !rawBody) {
@@ -100,10 +100,10 @@ import hmac
 import os
 from flask import request, abort
 
-WEBHOOK_SECRET = os.environ["TIMELY_WEBHOOK_SECRET"]
+WEBHOOK_SECRET = os.environ["ROVAX_WEBHOOK_SECRET"]
 
 def verify_signature():
-    signature = request.headers.get("X-Timely-Signature", "")
+    signature = request.headers.get("X-Rovax-Signature", "")
     raw_body = request.get_data()
 
     expected = "sha256=" + hmac.new(
@@ -128,8 +128,8 @@ import (
 )
 
 func verifySignature(r *http.Request) bool {
-    secret := os.Getenv("TIMELY_WEBHOOK_SECRET")
-    sig := r.Header.Get("X-Timely-Signature")
+    secret := os.Getenv("ROVAX_WEBHOOK_SECRET")
+    sig := r.Header.Get("X-Rovax-Signature")
     body, _ := io.ReadAll(r.Body)
 
     mac := hmac.New(sha256.New, []byte(secret))
@@ -148,7 +148,7 @@ func verifySignature(r *http.Request) bool {
 
 ## Automatic retries
 
-If your URL does not respond with `2xx` within 10 seconds, Timely.ai automatically retries with exponential backoff:
+If your URL does not respond with `2xx` within 10 seconds, Rovax.io automatically retries with exponential backoff:
 
 | Attempt | Wait before retry |
 |---------|-------------------|
@@ -176,11 +176,11 @@ After **5 consecutive failures**, the webhook is marked as `failing` and you rec
   </Tab>
   <Tab title="API">
     ```bash
-    curl -X POST https://api.timelyai.com.br/v1/webhooks \
+    curl -X POST https://api.rovax.io/v1/webhooks \
       -H "x-api-key: YOUR_API_KEY" \
       -H "Content-Type: application/json" \
       -d '{
-        "url": "https://your-server.com/webhooks/timely",
+        "url": "https://your-server.com/webhooks/rovax",
         "events": ["message.received", "conversation.created", "contact.created"],
         "description": "CRM sync"
       }'

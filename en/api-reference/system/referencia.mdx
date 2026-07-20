@@ -6,7 +6,7 @@ description: "Utility endpoints to check API status and inspect your API key"
 
 ## Concept
 
-The **System** group contains the simplest endpoints in the Timely.ai API: a public health check and an API key introspection endpoint. They are the natural starting point for any integration — you use the health check to confirm the API is reachable and the `/v1/me` endpoint to verify your key has the necessary scopes before making more complex calls.
+The **System** group contains the simplest endpoints in the Rovax.io API: a public health check and an API key introspection endpoint. They are the natural starting point for any integration — you use the health check to confirm the API is reachable and the `/v1/me` endpoint to verify your key has the necessary scopes before making more complex calls.
 
 These endpoints do not perform operations on the workspace. They are read-only and do not consume credits.
 
@@ -49,10 +49,10 @@ The `GET /v1/me` endpoint returns information about the key used in the request:
 
 ```bash
 # Check if the API is reachable
-curl https://api.timelyai.com.br/v1/health
+curl https://api.rovax.io/v1/health
 
 # Inspect the configured API key
-curl https://api.timelyai.com.br/v1/me \
+curl https://api.rovax.io/v1/me \
   -H "x-api-key: YOUR_API_KEY"
 ```
 

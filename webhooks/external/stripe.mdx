@@ -1,28 +1,28 @@
 ---
 title: "Stripe"
-description: "Eventos Stripe consumidos pela Timely.ai — como pagamentos e assinaturas são processados e refletidos no seu workspace"
+description: "Eventos Stripe consumidos pela Rovax.io — como pagamentos e assinaturas são processados e refletidos no seu workspace"
 ---
 
-A Timely.ai usa o **Stripe** como plataforma de pagamentos para cobranças de plano, créditos e add-ons. Quando um evento relevante acontece na sua conta Stripe (uma assinatura é criada, uma fatura é paga, um pagamento falha), o Stripe envia um webhook para os servidores da Timely, que atualiza o status do workspace e pode disparar [eventos internos](/webhooks/overview) para o seu servidor.
+A Rovax.io usa o **Stripe** como plataforma de pagamentos para cobranças de plano, créditos e add-ons. Quando um evento relevante acontece na sua conta Stripe (uma assinatura é criada, uma fatura é paga, um pagamento falha), o Stripe envia um webhook para os servidores da Rovax, que atualiza o status do workspace e pode disparar [eventos internos](/webhooks/overview) para o seu servidor.
 
-Esta página documenta os eventos Stripe que a Timely consome, o formato dos payloads e como você pode usar isso nas suas automações.
+Esta página documenta os eventos Stripe que a Rovax consome, o formato dos payloads e como você pode usar isso nas suas automações.
 
-## Como a Timely recebe eventos do Stripe
+## Como a Rovax recebe eventos do Stripe
 
 ```
-Stripe → POST para servidores Timely.ai
-         → Timely processa o evento
+Stripe → POST para servidores Rovax.io
+         → Rovax processa o evento
          → Atualiza status do workspace (créditos, plano, billing)
          → Dispara webhook interno para seu servidor (se configurado)
 ```
 
-Você não precisa configurar nada no Stripe — a Timely gerencia o endpoint de webhook diretamente. O que você pode fazer é **assinar os webhooks internos da Timely** para eventos de billing (como `credit.depleted` ou `plan.changed`) e reagir nas suas automações.
+Você não precisa configurar nada no Stripe — a Rovax gerencia o endpoint de webhook diretamente. O que você pode fazer é **assinar os webhooks internos da Rovax** para eventos de billing (como `credit.depleted` ou `plan.changed`) e reagir nas suas automações.
 
 ## Eventos consumidos
 
 ### `checkout.session.completed`
 
-Disparado quando um cliente finaliza uma sessão de checkout com sucesso. A Timely usa esse evento para:
+Disparado quando um cliente finaliza uma sessão de checkout com sucesso. A Rovax usa esse evento para:
 
 - Ativar o plano comprado no workspace
 - Adicionar créditos adquiridos
@@ -55,7 +55,7 @@ Disparado quando um cliente finaliza uma sessão de checkout com sucesso. A Time
 }
 ```
 
-O campo `metadata.workspace_id` é inserido pela Timely na criação da sessão para correlacionar o pagamento com o workspace correto.
+O campo `metadata.workspace_id` é inserido pela Rovax na criação da sessão para correlacionar o pagamento com o workspace correto.
 
 ### `invoice.paid`
 
@@ -81,7 +81,7 @@ Disparado em toda fatura paga com sucesso — tanto na primeira cobrança quanto
       "lines": {
         "data": [
           {
-            "description": "Timely Pro — Maio 2026",
+            "description": "Rovax Pro — Maio 2026",
             "amount": 19700,
             "period": {
               "start": 1713456789,
@@ -95,7 +95,7 @@ Disparado em toda fatura paga com sucesso — tanto na primeira cobrança quanto
 }
 ```
 
-Ao receber `invoice.paid`, a Timely renova o período de acesso do workspace e recarrega os créditos mensais do plano.
+Ao receber `invoice.paid`, a Rovax renova o período de acesso do workspace e recarrega os créditos mensais do plano.
 
 ### `invoice.payment_failed`
 
@@ -129,7 +129,7 @@ Disparado quando uma tentativa de cobrança falha (cartão recusado, saldo insuf
 }
 ```
 
-Após falha de pagamento, a Timely entra em período de graça (geralmente 3 dias) e envia notificações para o owner do workspace.
+Após falha de pagamento, a Rovax entra em período de graça (geralmente 3 dias) e envia notificações para o owner do workspace.
 
 ### `customer.subscription.updated`
 
@@ -155,7 +155,7 @@ Disparado em qualquer mudança na assinatura: upgrade, downgrade, cancelamento a
           {
             "price": {
               "id": "price_1NabcXYZ5",
-              "nickname": "Timely Pro Mensal",
+              "nickname": "Rovax Pro Mensal",
               "unit_amount": 19700,
               "currency": "brl",
               "recurring": { "interval": "month" }
@@ -195,11 +195,11 @@ Disparado quando a assinatura é efetivamente encerrada (não agendada — efeti
 }
 ```
 
-Ao receber esse evento, a Timely move o workspace para o plano gratuito (se disponível) ou suspende o acesso.
+Ao receber esse evento, a Rovax move o workspace para o plano gratuito (se disponível) ou suspende o acesso.
 
-## Mapeamento de eventos Stripe para eventos Timely
+## Mapeamento de eventos Stripe para eventos Rovax
 
-| Evento Stripe | Ação na Timely | Webhook interno Timely |
+| Evento Stripe | Ação na Rovax | Webhook interno Rovax |
 |--------------|----------------|------------------------|
 | `checkout.session.completed` | Ativa plano, adiciona créditos | `plan.changed` |
 | `invoice.paid` | Renova período, recarrega créditos | — |
@@ -219,14 +219,14 @@ Todos os eventos Stripe incluem:
 | `type` | Tipo do evento |
 
 <Warning>
-  Em ambientes de teste, o campo `livemode` é `false`. A Timely processa separadamente eventos de teste e produção do Stripe. Nunca misture as API keys de teste e produção.
+  Em ambientes de teste, o campo `livemode` é `false`. A Rovax processa separadamente eventos de teste e produção do Stripe. Nunca misture as API keys de teste e produção.
 </Warning>
 
 ## Próximos passos
 
 <CardGroup cols={2}>
   <Card title="Eventos de billing" icon="credit-card" href="/webhooks/events/billing-events">
-    Webhooks internos da Timely para eventos de crédito e plano.
+    Webhooks internos da Rovax para eventos de crédito e plano.
   </Card>
   <Card title="Webhooks — API Reference" icon="bell" href="/api-reference/webhooks/referencia">
     Configure endpoints para receber eventos do seu workspace.

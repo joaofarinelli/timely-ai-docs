@@ -1,11 +1,11 @@
 ---
 title: "Nó Webhook"
-description: "Receba requisições HTTP externas e use o payload como ponto de entrada do seu workflow na Timely.ai."
+description: "Receba requisições HTTP externas e use o payload como ponto de entrada do seu workflow na Rovax.io."
 ---
 
 ## Como Funciona
 
-O nó Webhook gera um endpoint HTTP dedicado ao seu workflow. Quando um sistema externo — um e-commerce, um formulário, um ERP ou qualquer serviço — envia uma requisição para essa URL, a Timely valida a chamada e inicia a execução imediatamente.
+O nó Webhook gera um endpoint HTTP dedicado ao seu workflow. Quando um sistema externo — um e-commerce, um formulário, um ERP ou qualquer serviço — envia uma requisição para essa URL, a Rovax valida a chamada e inicia a execução imediatamente.
 
 O payload completo da requisição fica disponível para todos os nós seguintes via `{{ $trigger }}`. Isso inclui o corpo da requisição (`$trigger.body`), os headers enviados (`$trigger.headers`), os parâmetros de query string (`$trigger.query`) e o método HTTP utilizado (`$trigger.method`).
 
@@ -36,7 +36,7 @@ Requisições sem autenticação são adequadas para callbacks entre serviços d
 
 ### Bearer Authentication
 
-Quando definida como **Bearer Token**, a Timely valida o header `Authorization` em cada requisição recebida. Requisições que não incluam o header ou que apresentem um token diferente do configurado recebem `401 Unauthorized` automaticamente, sem acionar a execução do workflow.
+Quando definida como **Bearer Token**, a Rovax valida o header `Authorization` em cada requisição recebida. Requisições que não incluam o header ou que apresentem um token diferente do configurado recebem `401 Unauthorized` automaticamente, sem acionar a execução do workflow.
 
 | Campo | Detalhe |
 |---|---|

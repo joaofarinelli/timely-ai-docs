@@ -6,9 +6,9 @@ description: "Endpoints to create and manage outbound webhooks — receive real-
 
 ## Concept
 
-Timely.ai **Webhooks** are HTTP `POST` notifications automatically sent to the URL you configure whenever a relevant event occurs in the workspace — a message received, a conversation closed, a contact created, a channel disconnected, and more. Instead of polling the API periodically to check whether something changed, you receive the data as soon as the event occurs.
+Rovax.io **Webhooks** are HTTP `POST` notifications automatically sent to the URL you configure whenever a relevant event occurs in the workspace — a message received, a conversation closed, a contact created, a channel disconnected, and more. Instead of polling the API periodically to check whether something changed, you receive the data as soon as the event occurs.
 
-Each webhook has a **secret** generated at creation time, used to sign deliveries with HMAC-SHA256 in the `X-Timely-Signature` header. This ensures only Timely.ai can send events to your endpoint.
+Each webhook has a **secret** generated at creation time, used to sign deliveries with HMAC-SHA256 in the `X-Rovax-Signature` header. This ensures only Rovax.io can send events to your endpoint.
 
 To understand how to validate the signature and implement a webhook receiver, see the [webhooks overview](/en/webhooks/overview).
 
@@ -18,7 +18,7 @@ To understand how to validate the signature and implement a webhook receiver, se
 create webhook (URL + events + generated secret)
     │
     ▼
-active → Timely delivers events to the URL
+active → Rovax delivers events to the URL
     │
     ├── event occurs → delivery (success or failure)
     │       │

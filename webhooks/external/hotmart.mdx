@@ -1,14 +1,14 @@
 ---
 title: "Hotmart"
-description: "Eventos Hotmart consumidos pela Timely.ai — compras, cancelamentos e assinaturas para automações de cobrança e acesso"
+description: "Eventos Hotmart consumidos pela Rovax.io — compras, cancelamentos e assinaturas para automações de cobrança e acesso"
 ---
 
-A **Hotmart** é uma plataforma de venda de produtos digitais amplamente usada no Brasil. A Timely.ai permite que você integre eventos da Hotmart com seus agentes de IA — por exemplo, liberar acesso automático a um grupo, enviar mensagem de boas-vindas via WhatsApp ou atualizar um contato no CRM toda vez que uma compra for aprovada.
+A **Hotmart** é uma plataforma de venda de produtos digitais amplamente usada no Brasil. A Rovax.io permite que você integre eventos da Hotmart com seus agentes de IA — por exemplo, liberar acesso automático a um grupo, enviar mensagem de boas-vindas via WhatsApp ou atualizar um contato no CRM toda vez que uma compra for aprovada.
 
 A integração funciona em dois modelos:
 
-1. **Webhook direto**: a Hotmart envia eventos para um endpoint da Timely (ou seu próprio servidor), que aciona automações no workspace.
-2. **Integração nativa**: configure a URL de webhook gerada pelo seu agente Timely diretamente no painel da Hotmart.
+1. **Webhook direto**: a Hotmart envia eventos para um endpoint da Rovax (ou seu próprio servidor), que aciona automações no workspace.
+2. **Integração nativa**: configure a URL de webhook gerada pelo seu agente Rovax diretamente no painel da Hotmart.
 
 ## Configurar a URL de webhook na Hotmart
 
@@ -17,7 +17,7 @@ A integração funciona em dois modelos:
     Vá para **Ferramentas → Webhooks** na conta da Hotmart (produtor ou coprodutor).
   </Step>
   <Step title="Adicione um novo webhook">
-    Clique em **Adicionar webhook** e informe a URL. Para enviar eventos para um agente Timely, use o endpoint gerado em **Configurações → Canais → Webhook de entrada** do seu workspace.
+    Clique em **Adicionar webhook** e informe a URL. Para enviar eventos para um agente Rovax, use o endpoint gerado em **Configurações → Canais → Webhook de entrada** do seu workspace.
   </Step>
   <Step title="Selecione os eventos">
     Selecione `PURCHASE_COMPLETE`, `PURCHASE_CANCELED`, `PURCHASE_REFUNDED`, `SUBSCRIPTION_CANCELLATION` e outros conforme sua necessidade.
@@ -233,16 +233,16 @@ Disparado quando uma assinatura recorrente é cancelada (pelo comprador ou pelo 
 
 <CardGroup cols={2}>
   <Card title="Boas-vindas via WhatsApp" icon="whatsapp">
-    Ao receber `PURCHASE_COMPLETE`, dispare uma mensagem automática pelo agente Timely usando o `phone` do comprador.
+    Ao receber `PURCHASE_COMPLETE`, dispare uma mensagem automática pelo agente Rovax usando o `phone` do comprador.
   </Card>
   <Card title="Revogar acesso" icon="user-slash">
-    Ao receber `SUBSCRIPTION_CANCELLATION`, remova o contato de grupos ou marque como inativo no CRM da Timely.
+    Ao receber `SUBSCRIPTION_CANCELLATION`, remova o contato de grupos ou marque como inativo no CRM da Rovax.
   </Card>
   <Card title="Recuperação de boleto" icon="file-invoice">
     Ao receber `PURCHASE_EXPIRED`, inicie um fluxo de recuperação com mensagem e novo link de pagamento.
   </Card>
   <Card title="Atualização de CRM" icon="address-book">
-    Sincronize dados do comprador como contato na Timely usando a API de Contacts.
+    Sincronize dados do comprador como contato na Rovax usando a API de Contacts.
   </Card>
 </CardGroup>
 
@@ -253,6 +253,6 @@ Disparado quando uma assinatura recorrente é cancelada (pelo comprador ou pelo 
     Crie e atualize contatos programaticamente ao receber eventos da Hotmart.
   </Card>
   <Card title="Webhooks — API Reference" icon="bell" href="/api-reference/webhooks/referencia">
-    Configure endpoints para receber eventos do seu workspace Timely.
+    Configure endpoints para receber eventos do seu workspace Rovax.
   </Card>
 </CardGroup>

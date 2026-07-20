@@ -1,5 +1,5 @@
 {
-  "name": "timely-ai-docs",
+  "name": "rovax-docs",
   "private": true,
   "scripts": {
     "dev": "mintlify dev"

@@ -23,7 +23,7 @@ Before routing real traffic to your integration, go through this checklist. Each
   </Accordion>
 
   <Accordion title="Webhook secret configured and validated">
-    Confirm that the handler validates the `X-Timely-Signature` header before processing any event. Test with a tampered payload — it should return `401`.
+    Confirm that the handler validates the `X-Rovax-Signature` header before processing any event. Test with a tampered payload — it should return `401`.
   </Accordion>
 
   <Accordion title="Credential rotation planned">
@@ -35,7 +35,7 @@ Before routing real traffic to your integration, go through this checklist. Each
 
 <AccordionGroup>
   <Accordion title="Production URL and API key are correct">
-    Confirm the code points to `https://api.timelyai.com.br/v1` and that the `x-api-key` belongs to the production workspace — not a test workspace. In CI/CD, use separate environment variables per stage.
+    Confirm the code points to `https://api.rovax.io/v1` and that the `x-api-key` belongs to the production workspace — not a test workspace. In CI/CD, use separate environment variables per stage.
   </Accordion>
 
   <Accordion title="Retry with backoff implemented">
@@ -58,7 +58,7 @@ Before routing real traffic to your integration, go through this checklist. Each
     Confirm the webhook URL is accessible from the internet (not `localhost`). Test with:
 
     ```bash
-    curl -X POST https://yoursite.com/webhook/timely \
+    curl -X POST https://yoursite.com/webhook/rovax \
       -H "Content-Type: application/json" \
       -d '{"test": true}'
     ```
@@ -69,7 +69,7 @@ Before routing real traffic to your integration, go through this checklist. Each
   </Accordion>
 
   <Accordion title="Idempotency implemented">
-    The handler uses `X-Timely-Event-Id` to deduplicate events delivered more than once during retries.
+    The handler uses `X-Rovax-Event-Id` to deduplicate events delivered more than once during retries.
   </Accordion>
 
   <Accordion title="Failure log configured">
@@ -109,7 +109,7 @@ Before routing real traffic to your integration, go through this checklist. Each
   </Accordion>
 
   <Accordion title="Support contact saved">
-    Save **contato@timelyai.com.br** in your incident contacts list. For critical issues, include "URGENT" in the subject line.
+    Save **contato@rovax.io** in your incident contacts list. For critical issues, include "URGENT" in the subject line.
   </Accordion>
 </AccordionGroup>
 
@@ -131,5 +131,5 @@ Before routing real traffic to your integration, go through this checklist. Each
 </CardGroup>
 
 <Note>
-  Checked everything? Go ahead. For any last-minute questions, reach us at **contato@timelyai.com.br**.
+  Checked everything? Go ahead. For any last-minute questions, reach us at **contato@rovax.io**.
 </Note>

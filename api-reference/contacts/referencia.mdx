@@ -1,12 +1,12 @@
 ---
 title: "Referência de Contacts"
 sidebarTitle: "Referência"
-description: "Endpoints para criar, atualizar e gerenciar contatos no CRM da Timely.ai"
+description: "Endpoints para criar, atualizar e gerenciar contatos no CRM da Rovax.io"
 ---
 
 ## Conceito
 
-**Contacts** são os registros de clientes no CRM integrado da Timely.ai. Toda conversa que chega por qualquer canal (WhatsApp, Instagram, Telegram, widget) é automaticamente associada a um contato — criado com base no identificador do canal (número de telefone, IGSID, chat_id do Telegram) ou vinculado a um contato existente por email ou telefone.
+**Contacts** são os registros de clientes no CRM integrado da Rovax.io. Toda conversa que chega por qualquer canal (WhatsApp, Instagram, Telegram, widget) é automaticamente associada a um contato — criado com base no identificador do canal (número de telefone, IGSID, chat_id do Telegram) ou vinculado a um contato existente por email ou telefone.
 
 Você também pode criar e atualizar contatos via API para sincronizar com seu CRM externo, plataformas de e-commerce, sistemas de cobrança ou qualquer outra fonte de dados. Os contatos suportam campos personalizados via [Custom Fields](/api-reference/custom-fields/referencia), o que permite adaptar o CRM às necessidades específicas do seu negócio.
 
@@ -28,13 +28,13 @@ Você também pode criar e atualizar contatos via API para sincronizar com seu C
 
 ## Deduplicação automática
 
-A Timely tenta evitar contatos duplicados ao criar automaticamente durante uma conversa. A deduplicação usa a seguinte prioridade:
+A Rovax tenta evitar contatos duplicados ao criar automaticamente durante uma conversa. A deduplicação usa a seguinte prioridade:
 
 1. Identificador do canal (phone para WhatsApp, IGSID para Instagram)
 2. Email (se disponível)
 3. Telefone normalizado (E.164)
 
-Ao criar via API, se já existir um contato com o mesmo `phone` ou `email`, a Timely retorna o contato existente em vez de criar um duplicado.
+Ao criar via API, se já existir um contato com o mesmo `phone` ou `email`, a Rovax retorna o contato existente em vez de criar um duplicado.
 
 ## Endpoints disponíveis
 
