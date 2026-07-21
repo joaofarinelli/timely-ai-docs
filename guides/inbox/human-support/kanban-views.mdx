@@ -1,0 +1,84 @@
+---
+title: "Visualizações Kanban"
+description: "Organize as conversas do atendimento humano em quadros configuráveis: filtros por canal, tags como colunas ordenadas e arrastar-e-soltar que atualiza as tags da conversa."
+---
+
+As Visualizações Kanban organizam as conversas do atendimento humano em quadros configuráveis.
+
+Cada visualização limita quais canais aparecem no quadro e usa as tags selecionadas como colunas ordenadas.
+
+## O que você pode configurar
+
+Ao criar ou editar uma visualização, você define:
+
+* **Nome**
+* **Descrição**
+* **Canais**
+* **Tags usadas como colunas**
+
+A Rovax sempre exibe uma coluna **Sem tag**.
+
+Essa coluna contém as conversas que não correspondem a nenhuma tag de coluna configurada.
+
+## Como funciona a atribuição de colunas
+
+Cada conversa aparece em apenas uma coluna.
+
+A Rovax resolve a coluna principal usando a primeira tag da conversa que corresponde à ordem das colunas da visualização.
+
+Se a conversa não tiver nenhuma tag correspondente, ela vai para **Sem tag**.
+
+Ao reordenar as colunas, você também altera a prioridade usada para classificar as conversas.
+
+## Trabalhando com o quadro
+
+No quadro, você pode:
+
+* Reordenar as colunas de tags
+* Arrastar cards dentro de uma coluna
+* Mover cards entre colunas
+* Abrir a conversa no [Histórico de conversas](/guides/inbox/chat-history) em uma nova aba
+
+Cada card exibe:
+
+* Canal
+* Título ou nome da conversa
+* Tags adicionais
+* Data de criação
+* Data de atualização
+
+## O que acontece ao mover um card
+
+Mover um card atualiza a posição no quadro e as tags da conversa.
+
+A Rovax remove a tag da coluna anterior e aplica a tag da coluna de destino.
+
+Se você mover o card para **Sem tag**, a Rovax remove a tag da coluna atual e mantém a conversa fora de todas as colunas de tags configuradas.
+
+A ordem dos cards é persistida por visualização e por coluna resolvida.
+
+## Atualizando colunas
+
+Você pode alterar a ordem das colunas de tags a qualquer momento.
+
+Uma visualização precisa manter pelo menos uma coluna de tag configurada.
+
+Se você remover uma tag usada como coluna, a Rovax atualiza a visualização e reclassifica as conversas afetadas.
+
+As posições armazenadas dos cards afetados também são limpas quando necessário.
+
+## Atualizações em tempo real
+
+Os quadros Kanban são atualizados em tempo real.
+
+Quadros abertos se atualizam quando os dados de um card mudam, quando a ordem das colunas muda ou quando um card específico é atualizado.
+
+## Permissões
+
+As Visualizações Kanban exigem a permissão `workspace.permissions.customerSupport`.
+
+## Limitações atuais
+
+* Os campos dos cards são fixos na interface atual
+* O filtro por tags adicionais ainda não está totalmente implementado de ponta a ponta
+* O comportamento de coluna lateral não está disponível nesta versão

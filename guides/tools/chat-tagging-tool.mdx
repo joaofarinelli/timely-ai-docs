@@ -1,0 +1,103 @@
+---
+title: "Chat Tagging Tool"
+---
+
+Use the **Chat Tagging Tool** to enable automatic chat tagging.
+
+After each Agent response, the Agent can classify the conversation using approved tags. Tags are applied at the chat level. This works without creating a ticket.
+
+***
+
+## 🔎 What It Does
+
+The Chat Tagging Tool lets an Agent keep chat tags aligned with the conversation context.
+
+The Agent can:
+
+* Add or remove existing tags on the current chat
+* Use only tags selected in the tool's **Allowed Tags**
+* Evaluate the full conversation context, not only the latest message
+
+The Agent cannot create new CRM tags. It can only assign or remove existing tags preselected in the tool configuration.
+
+## ⚙️ How to enable automatic chat tagging
+
+<Steps>
+  <Step title="Create the tags">
+    Go to **CRM → Tags**. Create the tags that the Agent may manage.
+
+    Give each tag a clear name and description. For example, use `Billing`, `Refund`, or `Priority`.
+  </Step>
+
+  <Step title="Create a Chat Tagging Tool">
+    Create a tool with the **Chat Tagging** type.
+
+    Add a clear name and description. The description should define the categories the Agent should identify.
+  </Step>
+
+  <Step title="Select the allowed tags">
+    In **Allowed Tags**, select the existing CRM tags this tool may manage.
+
+    Only these tags can be added or removed by this tool.
+  </Step>
+
+  <Step title="Activate and attach the tool">
+    Keep the tool active. Then link it to the Agent that should tag chats automatically.
+
+    There is no separate tagging toggle. The tool must be active and have valid allowed tags.
+
+    After replies, the Agent can automatically update the chat's allowed tags when the conversation context changes.
+  </Step>
+</Steps>
+
+## 🧠 How it works
+
+The Agent receives the allowed tags, their descriptions, and the managed tags currently on the chat.
+
+It uses this information and the conversation context to determine the desired classification. It cannot manage any tag outside the selected **Allowed Tags**.
+
+## ⏱️ Execution behavior
+
+The Chat Tagging Tool works in **post-response mode**. It is evaluated after the Agent sends a response.
+
+The tool is called only when the desired managed tag state differs from the current state. If nothing should change, no tool call is made.
+
+This avoids unnecessary updates during interactions that do not change the chat classification.
+
+## 🔄 Synchronization rules
+
+When a change is needed, the Agent returns the final desired state for the tool's allowed tags. The system then synchronizes only that managed set.
+
+The system:
+
+* Adds allowed tags included in the desired state
+* Removes allowed tags that should no longer remain
+* Prevents duplicate tags
+
+Tags outside the tool's allowed set remain unchanged. This includes manual and operational tags that the tool does not manage.
+
+## 👀 Visibility in Inbox
+
+Chat tags are stored at the **chat level**.
+
+They are:
+
+* Visible in **Inbox → Chat History**
+* Visible in **Inbox → Human Support → Tickets**
+* Available as filters in both areas
+
+This helps teams find and prioritize conversations by category.
+
+## 📌 Best practices
+
+* Select only stable categories the Agent should manage.
+* Write distinct descriptions for tags with similar meanings.
+* Keep manual or operational tags outside **Allowed Tags** when they must persist.
+
+***
+
+## ✅ Key Takeaway
+
+The Chat Tagging Tool enables automatic chat tagging after an Agent response.
+
+Create tags in **CRM → Tags**, select them as **Allowed Tags**, activate the tool, and link it to an Agent. The Agent can then update only those existing tags when the conversation classification changes.

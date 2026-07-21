@@ -1,0 +1,50 @@
+---
+title: "Duplicating an Agent"
+description: "Duplicate an Agent to reuse its configuration in the current Draft: what gets copied, which resources are shared, and how failures are handled."
+---
+
+Duplicate an Agent to reuse its configuration in the current Draft. The original Agent remains unchanged.
+
+### Before you start
+
+You can duplicate Agents only in the current Draft. Draft changes do not affect Production until you deploy them.
+
+### Duplicate an Agent
+
+1. Open **Builder** and go to the Agent list.
+2. Open the Agent's actions menu.
+3. Select **Duplicate**.
+
+The new Agent appears in the list when duplication completes. The Draft is marked as changed.
+
+<Info>
+Wait for the confirmation before making other Draft changes. Builder locks Draft mutations while duplication runs.
+</Info>
+
+### What gets copied
+
+The duplicate receives its own Agent configuration. It includes:
+
+* Name, role, prompt, model, provider, reasoning, temperature, timezone, planning, iterations, and code runtime.
+* A duplicated Agent image and the same Voice.
+* New Task records with the same Task configuration.
+
+The duplicate receives the next available name. For example, `Support Agent` becomes `Support Agent (1)`. Names remain within the 50-character limit.
+
+### Shared resources
+
+Tools and MCPs are not duplicated as new entities. The new Agent links to the same active Tools and MCPs in the current Draft.
+
+Changes to those shared Tools or MCPs can affect both Agents. Create separate resources before editing them independently.
+
+### What is not copied
+
+Squad membership is not copied. The duplicated Agent starts without a Squad.
+
+Add the Agent to a Squad manually when needed.
+
+### If duplication fails
+
+Builder shows an error and unlocks the Draft. No Agent is added to the list.
+
+Duplication is atomic. A failed operation does not leave a partially created Agent visible.

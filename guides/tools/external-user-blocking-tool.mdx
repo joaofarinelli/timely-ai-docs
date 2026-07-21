@@ -1,0 +1,57 @@
+---
+title: "External User Blocking Tool"
+---
+
+Use the **External User Blocking Tool** to stop confirmed bot-to-bot conversations.
+
+The tool is native to the main chat Agent. It has no configuration or input fields.
+
+***
+
+### 🔎 When the tool is available
+
+The tool is available only during a main chat flow. It requires a chat owned by an external user.
+
+It supports these channels:
+
+* Instagram
+* Telegram
+* WhatsApp, including Waha
+* Widget
+
+The tool is unavailable for API and Rovax channels. It is also unavailable outside chat context.
+
+### 🛡️ When to use it
+
+Use this tool only when the Agent has absolute certainty that it is talking to another bot.
+
+Do not use it for suspected automation or ambiguous behavior. Blocking stops future messages from that external user.
+
+<Warning>
+The certainty requirement is guided by the tool instruction. It is not enforced by a separate blocking rule.
+</Warning>
+
+### ⚙️ What happens when the Agent blocks a user
+
+The system resolves the target from the current chat owner. The Agent cannot choose or provide another user.
+
+Before blocking, the system confirms that:
+
+* The external user exists in the workspace.
+* The external user owns the current chat.
+
+If the user is already blocked, the tool succeeds without changes. Otherwise, it marks the external user as blocked.
+
+The chat updates immediately in the interface. The workspace owner also receives an email notification.
+
+### 📬 Owner notification
+
+The notification identifies the blocked external user by ID. It directs the owner to locate that user in **Inbox → Chat History**.
+
+The email does not include a direct link to the chat.
+
+### ✅ Result
+
+After the user is blocked, existing platform rules reject new messages from that user. This prevents the automated exchange from continuing.
+
+The workspace owner can review the event in Chat History.

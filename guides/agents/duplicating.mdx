@@ -1,0 +1,50 @@
+---
+title: "Duplicando um agente"
+description: "Duplique um agente para reutilizar sua configuração no Rascunho atual: o que é copiado, quais recursos são compartilhados e como falhas são tratadas."
+---
+
+Duplique um agente para reutilizar sua configuração no Rascunho atual. O agente original permanece inalterado.
+
+### Antes de começar
+
+Você só pode duplicar agentes no Rascunho atual. Alterações no Rascunho não afetam a Produção até que você faça o deploy.
+
+### Duplicar um agente
+
+1. Abra o **Builder** e acesse a lista de agentes.
+2. Abra o menu de ações do agente.
+3. Selecione **Duplicar**.
+
+O novo agente aparece na lista quando a duplicação é concluída. O Rascunho é marcado como alterado.
+
+<Info>
+Aguarde a confirmação antes de fazer outras alterações no Rascunho. O Builder bloqueia mutações do Rascunho enquanto a duplicação está em andamento.
+</Info>
+
+### O que é copiado
+
+A duplicata recebe sua própria configuração de agente. Ela inclui:
+
+* Nome, role, prompt, modelo, provedor, reasoning, temperatura, fuso horário, planejamento, iterações e runtime de código.
+* Uma imagem de agente duplicada e a mesma Voz.
+* Novos registros de Tarefas com a mesma configuração de Tarefa.
+
+A duplicata recebe o próximo nome disponível. Por exemplo, `Agente de Suporte` se torna `Agente de Suporte (1)`. Os nomes permanecem dentro do limite de 50 caracteres.
+
+### Recursos compartilhados
+
+Tools e MCPs não são duplicados como novas entidades. O novo agente vincula-se às mesmas Tools e MCPs ativos no Rascunho atual.
+
+Alterações nessas Tools ou MCPs compartilhados podem afetar ambos os agentes. Crie recursos separados antes de editá-los de forma independente.
+
+### O que não é copiado
+
+A participação em Squad não é copiada. O agente duplicado começa sem Squad.
+
+Adicione o agente a um Squad manualmente quando necessário.
+
+### Se a duplicação falhar
+
+O Builder exibe um erro e desbloqueia o Rascunho. Nenhum agente é adicionado à lista.
+
+A duplicação é atômica. Uma operação com falha não deixa um agente parcialmente criado visível.

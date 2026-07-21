@@ -1,0 +1,84 @@
+---
+title: "Kanban Views"
+description: "Organize human support chats into configurable boards: channel filters, tags as ordered columns, and drag-and-drop that updates chat tags."
+---
+
+Kanban Views organize human support chats into configurable boards.
+
+Each view limits which channels appear on the board and uses selected tags as ordered columns.
+
+## What you can configure
+
+When you create or edit a view, you define:
+
+* **Name**
+* **Description**
+* **Channels**
+* **Tags used as columns**
+
+Rovax always shows a **No tag** column.
+
+This column contains chats that do not match any configured column tag.
+
+## How column assignment works
+
+Each chat appears in one column only.
+
+Rovax resolves the main column using the first chat tag that matches the view's column order.
+
+If a chat has no matching tag, it goes to **No tag**.
+
+When you reorder columns, you also change the priority used to classify chats.
+
+## Working with the board
+
+From the board, you can:
+
+* Reorder tag columns
+* Drag cards within a column
+* Move cards between columns
+* Open the chat in [Chat History](/en/guides/inbox/chat-history) in a new tab
+
+Each card shows:
+
+* Channel
+* Chat title or name
+* Additional tags
+* Created date
+* Updated date
+
+## What happens when you move a card
+
+Moving a card updates the board position and the chat tags.
+
+Rovax removes the previous column tag and applies the destination column tag.
+
+If you move the card to **No tag**, Rovax removes the current column tag and keeps the chat outside all configured tag columns.
+
+Card order is persisted per view and per resolved column.
+
+## Updating columns
+
+You can change the order of the tag columns at any time.
+
+A view must keep at least one configured tag column.
+
+If you remove a tag used as a column, Rovax updates the view and reclassifies affected chats.
+
+Stored positions for affected cards are also cleared when needed.
+
+## Real-time updates
+
+Kanban boards update in real time.
+
+Open boards refresh when card data changes, column order changes, or a specific card is updated.
+
+## Permissions
+
+Kanban Views require the `workspace.permissions.customerSupport` permission.
+
+## Current limitations
+
+* Card fields are fixed in the current UI
+* Additional tag filtering is not fully implemented end to end
+* Side column behavior is not available in the current release
