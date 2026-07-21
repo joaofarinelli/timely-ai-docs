@@ -1,60 +1,82 @@
 ---
 title: "Creating Tables"
-description: "How to create a table (datagrid) in Rovax.io: name, description, column types, semantic search, required fields, and row management."
+description: "Learn how to create a Table (Datagrid), configure typed columns — including Select — and add records."
 ---
 
-## Step 1 — Create a New Table
+## Step 1 — Create a Table
 
-In the sidebar, go to **Tables** (or **Datagrids**). The screen displays all existing tables in the workspace. To create a new one:
+In the sidebar, go to **Tables**. The screen displays every table in the workspace.
 
-- Click **+ Add table** in the upper right corner
-- A creation modal will appear with two required fields
-- **Name**: up to 50 characters. Choose a descriptive name — the agent uses the name to identify which table to query when multiple are available. Examples: "Product Catalog", "October 2025 Schedule", "WhatsApp Leads".
+1. Click **+ Add table**.
+2. Enter a **Name** of up to 50 characters.
+3. Optionally, add a **Description** of up to 250 characters. The agent uses it to understand the table's purpose.
+4. Click **Create table**.
+
+Use names that make the purpose clear, such as `Product catalog`, `WhatsApp leads`, or `October schedule`.
 
 ## Step 2 — Add Columns
 
-With the table created, add the columns that structure the data. Click **+ Add column** on the table screen. The column creation form opens.
-
-### To add a column:
-
-Fill in the form fields:
+With the table open, click **+ Add column** and fill in:
 
 | Field | Description | Requirements |
-|-------|-----------|------------|
-| **Name** | Column identifier. The agent uses the name to understand what each field represents. | Maximum 50 characters. Use clear names: `price_usd`, `available`, `product_description`. |
-| **Description** | Explanation of the column's purpose for the agent. The more specific, the better the agent understands when and how to fill in the field. | Minimum 3 characters, maximum 250. |
-| **Type** | Defines what value the column accepts. Cannot be changed after creation. | `String`, `Number`, or `Boolean`. |
-| **Semantic search** | When enabled, vectorizes values for natural language search. Available only for `String` columns. | Optional. Recommended for columns with descriptive text. |
+|-------|-------------|--------------|
+| **Name** | Identifies the field for users and agents. | Up to 50 characters. |
+| **Description** | Explains when and how the field should be filled in. | 3 to 250 characters. |
+| **Type** | Defines which values the column accepts. | Cannot be changed after creation. |
+| **Semantic search** | Enables meaning-based search. | Optional and available only for `String`. |
+| **Required field** | Requires the agent to collect a value before inserting the record. | Optional. |
 
 <Note>
-  The column type is permanent. Plan the types before creating columns — if you need to change from `Number` to `String` later, you will need to create a new column and migrate the data manually.
+  The column type is permanent. If you need a different type later, create a new column and migrate the data.
 </Note>
 
-## Supported Column Types
+## Available Column Types
 
 | Type | Description | Examples |
-|------|-----------|---------|
-| `String` | Free text of any length. Supports semantic search when enabled. | product name, description, status, URL, category |
-| `Number` | Numeric value, integer or decimal. Allows numeric comparisons by the agent. | price in USD, quantity in stock, rating from 1 to 5, capacity |
-| `Boolean` | True or false. Ideal for flags and binary conditions. | available, active, featured, accepts installments |
+|------|-------------|----------|
+| `String` | Free text. Supports semantic search. | name, description, notes, URL |
+| `Number` | Integer or decimal value. | price, quantity, score, capacity |
+| `Boolean` | True or false value. | available, active, approved |
+| `File` | A file attached to the record. | contract, image, receipt |
+| `Select` | One option chosen from a predefined list. Each option has a label, color, and position. | stage, status, priority, category |
 
-## Step 3 — Add and Edit Rows
+### Configure a Select Column
 
-With the columns defined, populate the table with data. There are three ways to add rows:
+After choosing **Select** as the type:
 
-- **Manual entry**: click **+ Add row** in the data grid and fill in values cell by cell directly in the interface. Useful for small tables or individual records.
-- **CSV import**: on the table screen, click **Import CSV**. The file must have headers matching exactly the names of the created columns. Values of incompatible types will generate import errors.
+1. Enter a label for each option.
+2. Choose the color that identifies the option.
+3. Use the arrows to set the order.
+4. Click **Add option** to include more values.
 
-The grid editor works like a spreadsheet — clicking a cell opens the inline editor, Tab advances to the next cell, and changes are saved individually per cell immediately.
+A Select column must have at least one option and supports up to 50. Labels must be unique and can contain up to 50 characters.
 
-## Step 4 — Update or Delete Tables
-
-Tables can be edited at any time: add new columns, rename existing columns, or adjust descriptions. To delete a table:
-
-1. In the table list, click the options menu for the desired table.
-2. Select **Delete table**.
-3. Confirm the deletion in the dialog box.
+The options can also become the columns of a [Kanban view](/en/guides/tables/kanban). For example, `New`, `In progress`, and `Done` form a three-stage workflow.
 
 <Warning>
-  Deleting a table is permanent and irreversible. All data (rows and columns) is erased, and agents that were using the table lose access to it immediately. Disconnect the table from agents before deleting to avoid errors in ongoing conversations.
+  When you delete an option, records using it move to **No value**. Review those records and assign a new value when needed.
+</Warning>
+
+## Step 3 — Add and Edit Records
+
+After defining the columns, populate the table in one of these ways:
+
+- **Manual entry**: click **+ Add row** and edit cells directly in the grid.
+- **XLSX import**: click **Import**, upload an `.xlsx` workbook, map the columns, and review the data before completing the import.
+- **Agent**: connect Datagrid tools so an agent can insert or update records during conversations.
+
+In a Select cell, choose one of the configured options or use **Clear** to leave it empty. For XLSX imports, use the label of an existing option in the workbook; matching is case-insensitive.
+
+## Step 4 — Update or Delete the Table
+
+You can edit the table name and description, add columns, and adjust Select options at any time.
+
+To delete a table:
+
+1. Open the options menu in the table list.
+2. Select **Delete table**.
+3. Confirm the deletion.
+
+<Warning>
+  Deletion is permanent. All rows and columns are erased, and connected agents lose access immediately.
 </Warning>

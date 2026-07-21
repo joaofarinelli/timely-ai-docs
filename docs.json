@@ -202,10 +202,11 @@
                 ]
               },
               {
-                "group": "Tables",
+                "group": "Tabelas (Datagrids)",
                 "pages": [
                   "guides/tables/overview",
                   "guides/tables/creating",
+                  "guides/tables/kanban",
                   "guides/tables/semantic-search",
                   "guides/tables/integrating-agents"
                 ]
@@ -585,6 +586,7 @@
                 "pages": [
                   "en/guides/tables/overview",
                   "en/guides/tables/creating",
+                  "en/guides/tables/kanban",
                   "en/guides/tables/semantic-search",
                   "en/guides/tables/integrating-agents"
                 ]

@@ -1,0 +1,94 @@
+---
+title: "Kanban and CRM with Tables"
+description: "Turn a Table into a reusable Kanban board by using a Select column to represent stages."
+---
+
+The **Kanban** view organizes Table records as cards grouped by stage. It uses a `Select` column as the source of the board columns: each option becomes a stage, and each table row becomes a card.
+
+Table and Kanban are two views of the same data. Switching views does not copy records, and moving a card updates the value in the corresponding Select column.
+
+| In the Table | On the Kanban board |
+|--------------|---------------------|
+| `Select` column | Board grouping criterion |
+| Column option | Board stage |
+| Row | Card |
+| Selected cell value | Current card stage |
+| Empty cell | **No value** column |
+
+## Before You Start
+
+Create at least:
+
+- one `Select` column whose options represent the stages;
+- one `String` column that can be used as the card title.
+
+For example, in a sales CRM, create a `Stage` column with `New lead`, `Qualified`, `Proposal`, and `Won` options.
+
+<Tip>
+  You can create multiple Select columns in the same table — for example, `Stage`, `Priority`, and `Owner` — and choose which one groups the board.
+</Tip>
+
+## Configure the Board
+
+<Steps>
+  <Step title="Open the Kanban view">
+    Open the table and switch from **Table** to **Kanban** above the records.
+  </Step>
+  <Step title="Open the settings">
+    Click **Board**. If the table has not been configured yet, click **Configure board** in the empty state.
+  </Step>
+  <Step title="Choose the grouping">
+    Under **Group by**, select the Select column whose options should become stages.
+  </Step>
+  <Step title="Define the card content">
+    Under **Card title**, choose a String column. Then select up to four **Card fields** to display supporting information.
+  </Step>
+</Steps>
+
+The board configuration is stored with the table and shared across the workspace. Each person can switch between Table and Kanban without changing the records.
+
+## Work with Cards
+
+- **Move between stages**: drag a card to another column. The Select value is updated automatically.
+- **Reorder within a stage**: drag the card to a different position in the same column.
+- **Edit a record**: click a card to open the side panel with every field in the row.
+- **Create in a specific stage**: click **Add** at the bottom of a column. The form opens with that stage already selected.
+- **Create from the global button**: click **Add item**. The record starts in the first configured stage.
+- **Remove the stage**: move the card to **No value** or clear the corresponding cell in the Table view.
+- **Search**: use the search field above the board to filter cards by values in any column, including Select option labels.
+
+Cards also display their creation and update dates. Hover over a date to see the complete timestamp.
+
+## Reorder and Edit Stages
+
+Board columns follow the option order in the Select column. Owners and Managers can reorder them in two ways:
+
+- drag a stage header directly on the Kanban board;
+- edit the Select column and use the arrows next to each option.
+
+Renaming an option or changing its color updates both the Table cells and the Kanban board.
+
+<Warning>
+  Deleting an option does not delete records. Associated cards move to **No value** and need a new stage.
+</Warning>
+
+## Use It as a Reusable CRM
+
+The Kanban board does not enforce a fixed CRM model. Define the columns, stages, and card content for your process:
+
+| Process | Grouping column | Example options |
+|---------|-----------------|-----------------|
+| Sales | Sales stage | New lead, Qualified, Proposal, Won |
+| Support | Status | Open, In progress, Waiting for customer, Resolved |
+| Recruiting | Phase | Application, Screening, Interview, Offer, Hired |
+| Projects | Progress | Backlog, In progress, Review, Done |
+
+Combine the Select field with Datagrid insertion and update tools so agents can create cards and change stages during a conversation. The agent can provide an option label without knowing its internal identifier; values that do not match an existing option are rejected.
+
+## Permissions
+
+| Action | Allowed roles |
+|--------|---------------|
+| Configure the board, edit options, and reorder stages | Owner and Manager |
+| Create, edit, reorder, and move cards | Owner, Manager, and Attendant |
+| View and search records | Roles with access to the table |

@@ -1,0 +1,94 @@
+---
+title: "Kanban e CRM com Tabelas"
+description: "Transforme uma Tabela em um quadro Kanban reutilizável usando uma coluna de Seleção para representar os estágios."
+---
+
+A visualização **Kanban** organiza os registros de uma Tabela em cards distribuídos por estágio. Ela usa uma coluna do tipo `Seleção` como fonte das colunas do quadro: cada opção vira um estágio, e cada linha da tabela vira um card.
+
+Tabela e Kanban são duas visualizações dos mesmos dados. Alternar entre elas não cria uma cópia dos registros, e mover um card atualiza o valor da coluna de Seleção correspondente.
+
+| Na Tabela | No Kanban |
+|-----------|------------|
+| Coluna do tipo `Seleção` | Critério de agrupamento do quadro |
+| Opção da coluna | Estágio do quadro |
+| Linha | Card |
+| Valor selecionado na célula | Estágio atual do card |
+| Célula vazia | Coluna **Sem valor** |
+
+## Antes de começar
+
+Crie pelo menos:
+
+- uma coluna do tipo `Seleção`, com as opções que representarão os estágios;
+- uma coluna do tipo `Texto`, que poderá ser usada como título dos cards.
+
+Por exemplo, em um CRM de vendas, crie uma coluna `Etapa` com as opções `Novo lead`, `Qualificado`, `Proposta` e `Ganho`.
+
+<Tip>
+  Você pode criar várias colunas de Seleção na mesma tabela — por exemplo, `Etapa`, `Prioridade` e `Responsável` — e escolher qual delas agrupa o quadro.
+</Tip>
+
+## Configurar o quadro
+
+<Steps>
+  <Step title="Abra a visualização Kanban">
+    Entre na tabela e, acima dos registros, alterne de **Tabela** para **Kanban**.
+  </Step>
+  <Step title="Abra as configurações">
+    Clique em **Quadro**. Se a tabela ainda não estiver configurada, clique em **Configurar quadro** no estado vazio.
+  </Step>
+  <Step title="Escolha como agrupar">
+    Em **Agrupar por**, selecione a coluna do tipo Seleção cujas opções devem formar os estágios.
+  </Step>
+  <Step title="Defina o conteúdo dos cards">
+    Em **Título do card**, escolha uma coluna de Texto. Depois, selecione até quatro **Campos do card** para exibir informações complementares.
+  </Step>
+</Steps>
+
+As configurações do quadro ficam associadas à tabela e são compartilhadas com o workspace. Cada pessoa pode alternar entre Tabela e Kanban sem alterar os dados.
+
+## Trabalhar com os cards
+
+- **Mover entre estágios**: arraste um card para outra coluna. O valor da coluna de Seleção é atualizado automaticamente.
+- **Reordenar no estágio**: arraste o card para outra posição dentro da mesma coluna.
+- **Editar um registro**: clique no card para abrir o painel lateral com todos os campos da linha.
+- **Criar no estágio certo**: clique em **Adicionar** no rodapé de uma coluna. O formulário já é aberto com aquele estágio selecionado.
+- **Criar pelo botão global**: clique em **Adicionar item**. O novo registro começa no primeiro estágio configurado.
+- **Remover o estágio**: mova o card para **Sem valor** ou limpe a célula correspondente na visualização Tabela.
+- **Pesquisar**: use a busca acima do quadro para filtrar os cards pelos valores de qualquer coluna, inclusive pelo nome de uma opção de Seleção.
+
+Os cards também exibem as datas de criação e atualização. Posicione o cursor sobre uma data para ver o horário completo.
+
+## Reordenar e editar os estágios
+
+As colunas seguem a ordem das opções da coluna de Seleção. Owners e Managers podem reorganizá-las de duas formas:
+
+- arrastando o cabeçalho do estágio diretamente no Kanban;
+- editando a coluna de Seleção e usando as setas ao lado de cada opção.
+
+Ao renomear ou trocar a cor de uma opção, a mudança aparece tanto nas células da Tabela quanto no Kanban.
+
+<Warning>
+  Excluir uma opção não exclui os registros. Os cards associados são movidos para **Sem valor** e precisam receber um novo estágio.
+</Warning>
+
+## Usar como CRM reutilizável
+
+O Kanban não exige um modelo fixo de CRM. Você define as colunas, os estágios e os dados que aparecem no card conforme o processo:
+
+| Processo | Coluna de agrupamento | Exemplos de opções |
+|----------|-----------------------|--------------------|
+| Vendas | Etapa comercial | Novo lead, Qualificado, Proposta, Ganho |
+| Suporte | Status | Aberto, Em atendimento, Aguardando cliente, Resolvido |
+| Recrutamento | Fase | Inscrição, Triagem, Entrevista, Oferta, Contratado |
+| Projetos | Andamento | Backlog, Em andamento, Revisão, Concluído |
+
+Combine o campo de Seleção com as ferramentas de inserção e atualização de Datagrid para que agentes criem cards e alterem estágios durante uma conversa. O agente pode informar o nome da opção, sem precisar conhecer seu identificador interno; valores que não correspondam a uma opção existente são rejeitados.
+
+## Permissões
+
+| Ação | Perfis permitidos |
+|------|-------------------|
+| Configurar o quadro, editar opções e reordenar estágios | Owner e Manager |
+| Criar, editar, reordenar e mover cards | Owner, Manager e Attendant |
+| Visualizar e pesquisar registros | Perfis com acesso à tabela |

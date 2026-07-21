@@ -5,13 +5,17 @@ description: "Understand the data model for tables (datagrids) in Rovax.io: core
 
 Tables — referred to internally as **datagrids** — are structured data stores that AI agents can query and populate during conversations. Unlike a Knowledge Base, which stores free text for semantic search, a table stores data in columns and rows with defined types, like a lightweight database directly accessible by the agent.
 
+The same records can be displayed as a **Table** or a **Kanban board**. When a `Select` column is used to group the board, each option becomes a stage. This makes it possible to build reusable CRMs, pipelines, and visual workflows without creating a separate data store.
+
 ## Core Concepts
 
 | Concept | Description |
 |----------|-----------|
 | **Table (Datagrid)** | A data structure with named and typed columns, organized into rows. Each table belongs to a workspace and can be connected to one or more agents. |
-| **Column** | Defines a field in the table. Each column has a name (up to 50 characters), description (3 to 250 characters), data type (`String`, `Number`, `Boolean`), and optional settings such as semantic search and required field. |
-| **Row** | A record in the table. Each row contains values for each defined column. Rows can be inserted manually through the interface, imported via CSV, or created by the agent during conversations. |
+| **Column** | Defines a field in the table. Each column has a name, description, data type (`String`, `Number`, `Boolean`, `File`, or `Select`), and optional settings such as semantic search and required field. |
+| **Row** | A record in the table. In the Kanban view, each row is displayed as a card. |
+| **Select** | A field with predefined options. Each option has a label, color, and position and can represent a category, priority, owner, or process stage. |
+| **Kanban Configuration** | Defines which Select column creates the stages, which field is used as the card title, and which additional fields appear on cards. |
 | **Datagrid Tool** | A capability made available to the agent for interacting with the table. The available actions are: `semantic_search`, `similarity_search`, `insert_row`, and `update_row`. Each action is activated individually per table. |
 | **Column Semantic Search** | When enabled on a `String` column, values are vectorized using the `text-embedding-3-small` model (1,536 dimensions) and indexed for similarity search — the agent finds rows by meaning, not just exact match. |
 
@@ -21,6 +25,7 @@ Tables — referred to internally as **datagrids** — are structured data store
 2. **Separation of structured and unstructured knowledge**: Knowledge Bases are ideal for free text — manuals, policies, FAQs. Tables are ideal for data with a defined structure — catalogs, schedules, inventories, records. Using each resource for what it was designed for improves agent accuracy.
 3. **Writing during the conversation**: unlike Knowledge Bases (read-only for the agent), tables allow the agent to insert and update data in real time — the agent collects information from the user and records it in a structured way in the table, without human intervention.
 4. **Updates independent of the prompt**: data changes in the table without needing to edit the agent prompt. A price updated in the table is immediately available for the agent on the next query.
+5. **Reusable visual workflows**: the same table can support sales, support, recruiting, project management, or any other stage-based process.
 
 Typical use cases where tables outperform other approaches:
 
@@ -28,3 +33,9 @@ Typical use cases where tables outperform other approaches:
 - Professional or event schedule with time slots and vacancies
 - Lead records collected during conversations
 - Inventory with real-time quantity tracking
+- Sales CRM with stages such as New lead, Qualified, Proposal, and Won
+- Support queue with Open, In progress, and Resolved stages
+
+<Card title="Create a Kanban view" icon="table-columns" href="/en/guides/tables/kanban">
+  Configure a Select column and organize table records as cards grouped by stage.
+</Card>

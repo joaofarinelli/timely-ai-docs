@@ -1,36 +1,40 @@
 ---
-title: "Tables — Overview"
+title: "Tabelas — Visão geral"
+description: "Entenda como as Tabelas (Datagrids) armazenam dados estruturados e podem ser usadas como grades, quadros Kanban e CRMs reutilizáveis."
 ---
 
-**Tables** in Rovax.io are dynamic data structures that allow your Agents to **store, access, and manage information** in real time.\
-They act as lightweight, AI-friendly databases that Agents can read from and write to — supporting structured workflows such as contact registration, lead tracking, unresolved inquiries, and feedback collection.
+As **Tabelas** — chamadas internamente de **Datagrids** — armazenam dados estruturados que podem ser consultados e preenchidos por agentes durante uma conversa. Cada tabela funciona como um banco de dados leve, organizado em colunas tipadas e linhas.
 
-A Table can be fully managed inside the Builder interface, with tools for creating, editing, and linking it to one or more Agents.
+Os mesmos registros podem ser visualizados como **Tabela** ou **Kanban**. Ao usar uma coluna do tipo `Seleção`, cada opção dessa coluna se transforma em um estágio do quadro. Isso permite montar CRMs, pipelines e outros fluxos visuais sem criar um módulo separado nem duplicar dados.
 
-***
+## Conceitos principais
 
-## 🧩 Core Concepts
+| Conceito | Descrição |
+|----------|-----------|
+| **Tabela (Datagrid)** | Estrutura com colunas tipadas e linhas. Cada tabela pertence a um workspace e pode ser conectada a um ou mais agentes. |
+| **Coluna** | Define um campo da tabela. Os tipos disponíveis são `Texto`, `Número`, `Booleano`, `Arquivo` e `Seleção`. |
+| **Linha** | Um registro da tabela. Na visualização Kanban, cada linha é exibida como um card. |
+| **Seleção** | Campo com opções predefinidas, cada uma com nome, cor e posição. Pode ser usado para categorias, prioridades, responsáveis ou estágios. |
+| **Configuração do Kanban** | Define qual coluna de Seleção cria os estágios, qual campo aparece como título e quais informações complementares aparecem nos cards. |
+| **Ferramenta de Datagrid** | Permissão disponibilizada ao agente para pesquisar, inserir ou atualizar registros da tabela. |
+| **Busca semântica** | Recurso disponível em colunas de Texto para que o agente encontre registros por significado, e não apenas por correspondência exata. |
 
-| Concept             | Description                                                                              |
-| ------------------- | ---------------------------------------------------------------------------------------- |
-| **Table**           | A dynamic dataset used by Agents to store or retrieve information.                       |
-| **Columns**         | Define the structure of your Table — similar to database fields.                         |
-| **Rows**            | Each entry or record in your Table.                                                      |
-| **Semantic Search** | A feature that allows Agents to query data using meaning and context, not only keywords. |
+## Por que usar Tabelas
 
-***
+1. **Dados em tempo real**: o agente consulta e atualiza informações sem depender de uma integração externa.
+2. **Estrutura previsível**: tipos de coluna e opções predefinidas evitam variações indesejadas nos dados.
+3. **Leitura e escrita durante a conversa**: o agente pode coletar informações, criar registros e atualizar o estágio de um processo.
+4. **Visualizações complementares**: trabalhe com os mesmos dados em formato de planilha ou de quadro, conforme a atividade.
+5. **Processos reutilizáveis**: adapte uma tabela para vendas, suporte, recrutamento, projetos ou qualquer outro fluxo baseado em estágios.
 
-## 💡 Why Tables Matter
+Exemplos de uso:
 
-Tables extend your Agents’ memory and logic capabilities by providing:
+- CRM de vendas com os estágios `Novo lead`, `Qualificado`, `Proposta` e `Ganho`
+- Fila de suporte com `Aberto`, `Em atendimento` e `Resolvido`
+- Recrutamento com `Inscrição`, `Entrevista`, `Oferta` e `Contratado`
+- Gestão de projetos com `Backlog`, `Em andamento`, `Revisão` e `Concluído`
+- Catálogo de produtos com preço, disponibilidade e descrição
 
-1. **Persistent storage** — Agents can log user interactions or unresolved questions.
-2. **Structured intelligence** — Data can be filtered, queried, and reasoned upon.
-3. **Collaboration** — Shared datasets can be used across multiple Agents or Squads.
-4. **Automation** — Tables integrate seamlessly with workflows, triggers, and tools.
-
-Example use cases:
-
-* “Unanswered Questions” log for training or review.
-* “Contacts” table for lead management.
-* “Feedbacks” table for quality tracking.
+<Card title="Criar uma visualização Kanban" icon="table-columns" href="/guides/tables/kanban">
+  Configure uma coluna de Seleção e transforme os registros da tabela em cards organizados por estágio.
+</Card>
