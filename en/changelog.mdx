@@ -5,6 +5,326 @@ description: "Product and API update history for Rovax.io"
 
 All relevant changes are recorded here in reverse chronological order. API breaking changes are highlighted with <span style={{ color: "#dc2626", fontWeight: 600 }}>⚠ Breaking</span>.
 
+## July 2026 (Jul 1–21)
+
+### Datagrids
+- **Kanban view** in datagrids: switch between table and board, group records by column, and drag cards between stages.
+- **Redesigned table** with column sorting, pagination, and full-row drag to reorder.
+- **Column reordering** by dragging the header, both in the table and in Kanban.
+- **New Select field type**, with an options editor, search by option name, and export/import that preserves labels.
+- **File columns**: upload images and PDFs straight into the table.
+- Add items per stage or through the global button in Kanban, with side-panel editing and board configuration.
+- Import and export datagrids in XLSX.
+- Kanban cards show creation and update dates, with a tidier footer.
+- Various visual and usability refinements to forms, cards, hover, and row selection.
+
+### Orion
+- **Autonomous agent building**: Orion plans and creates agents end to end, including missing connections as a step in the plan, with approval and safe resume on failure.
+- **Redesigned composer** and a cleaner conversation, with a new reasoning block and web search results.
+- Orion creates agents with an HTTP request tool and configures agent tools directly.
+- App connection flows resume where they left off after authorization, without repeating steps.
+- More consistent responses: no more duplicated blocks, infinite spinners, empty replies, or repeated preliminary messages.
+- Clearer error messages when an integration is missing to complete the task.
+- The Orion conversation list loads much faster.
+
+### Conversations & Support
+- **Ticket info panel** next to the chat, open by default and integrated into the layout.
+- Leaner conversation list and a wider chat, making better use of the screen.
+- Conversation tags consolidated in the panel's Tags tab, without the top bar.
+- Removed the "Take over conversation" button and the warning banner at the top of the conversation.
+- Fixed the ticket panel showing up empty for users who belong to multiple workspaces.
+- Conversations reconnect on their own when you return to the browser tab.
+
+### Agents & Workers
+- **New Assign Tag tool**: the agent tags conversations automatically based on context.
+- **Proactive WhatsApp sending** by the agent, without waiting for a customer message.
+- In the Workers chat, you can now cancel an in-progress response and edit/resend the last message.
+- No more duplicate messages on rapid sends or repeated clicks.
+- Google Calendar: full reading of calendars with many items.
+- Faster, smoother "thinking" indicator in Orion and Workers.
+
+### Pipeline & CRM
+- **Tag-based Kanban replaces pipelines**, with a simpler, more flexible flow for organizing opportunities.
+- Fix: cards no longer disappear when moved outside a column.
+
+### Workflows & Automations
+- **On-demand webhook testing**, working directly in the draft, with no need to publish.
+- Revamped automation engine, with more reliable execution and new execution modes integrated with agents.
+- Webhook trigger URL corrected to the permanent address.
+
+### Channels & Integrations
+- **Web Page channel**: an evolution of the on-site chat, with more security, cost control, and audio transcription.
+- **Slack per channel**: connect different agents to distinct channels in the same workspace, including private channels.
+- New native integrations: Google Drive, Google Docs, Discord, Zoom, Intercom, GitLab, Todoist, Resend, Mailchimp, SendGrid, ActiveCampaign, Pipedrive, HighLevel, Figma, Confluence, Box, Coinbase, Hugging Face, Algolia, Lusha, Tavily, ZenRows, DataRobot, and tldv.
+- Public chat page fixed and more stable.
+
+### Navigation & Interface
+- **New Rovax visual identity**, applied across the platform, emails, widget, and materials.
+- **Redesigned global search** in command palette style, also available inside Builder, CRM, and Settings.
+- **Smart sidebar**: collapses on detail screens and reopens on hover, with a floating panel and smooth animation.
+- New user button, notifications shortcut, and quick access to Help and Support in the sidebar.
+- Illustrated empty states across the platform and a new animation and transition system.
+- Refreshed icon set and various alignment, spacing, and scrolling refinements.
+
+### Settings
+- Profile page rebuilt with cards.
+- Workspace grouped with Organizations, Members, and Notifications in a single area.
+- Preferences replaced by a dedicated Language page.
+- Standardized settings page layout, with no duplicated titles or spacing.
+
+### Notifications
+- **Email notifications** for 6 operational events.
+- **In-app notification center**, with non-repeating WhatsApp disconnection alerts.
+
+### Builder & Publishing
+- Redesigned version selector, with an animated Deploy button, loading indicator, and early validation.
+- Deploy is disabled when there are no pending changes.
+- Publish dialog with a clearer change comparison.
+
+### Connections
+- Connection listing with pagination, filters, multi-select, and bulk delete.
+- Significantly faster connection loading.
+
+### Access & Security
+- **Email and password sign-in and sign-up** on new, clearer screens.
+- Improved data isolation between companies and workspaces.
+
+## June 2026
+
+### White Label
+- **Full White Label**: customize the platform with your brand — logo, colors, visual identity, and a login screen of your own, all applied automatically for your customers.
+- **Custom domain**: add your own domain, track DNS records and SSL certificate status in real time, and set which domain is primary.
+- **Automatic subdomain**: every brand gets its own ready-to-use address, with no manual setup.
+- **Emails with your brand**: transactional messages and invitations sent from your verified domain, with customizable templates.
+- **Members** and **Billing** tabs inside the White Label environment, with billing and subscription kept on your own domain.
+- Customer logo and name shown in the workspace selector, plus an option to remove the "powered by" badge.
+- Logo and image uploads are saved automatically while editing the visual identity.
+
+### Orion
+- **New Orion**: redesigned chat with a centered, more spacious layout, bubble-free messages, and a revamped home page with an animated greeting.
+- **Platform actions**: Orion creates and edits agents, squads, workflows, datagrids, knowledge bases, connections, and campaigns directly from the conversation.
+- **Audio recording**: talk to Orion using your microphone and the transcription appears right in the message field.
+- **Connect integrations from the conversation**: Orion opens the connection dialog without you leaving the chat.
+- **Live reasoning**: follow the agent's step-by-step work during a response, with descriptive labels per action; the history collapses at the end.
+- **Planning before acting**: Orion builds a plan and shows it in the activity trail before executing complex tasks.
+- **Web search** and **platform documentation lookup** as native tools, for more current and accurate answers.
+- Manage an agent's integrations and publish changes just by talking to Orion.
+- Conversation history loads faster, switching between conversations no longer loses messages, and the back button no longer leaves ghost conversations behind.
+
+### Agents
+- **Builder versioning**: work in a draft and publish when you're ready, without affecting the agent in production.
+- **Generative UI**: agents respond with charts, cards, tables, and forms inside the conversation — catalog expanded to 33 components, with incremental editing of the interfaces.
+- **Presentations**: agents create HTML decks, with PDF export that preserves slide layout.
+- **Terminal**: a new native tool that runs commands in an isolated per-conversation environment.
+- **Code execution**: a new tool for calculation and processing in a secure environment, available on all plans.
+- **File sending by URL** in agent responses.
+- **Contextual memory**: agents remember user information across conversations.
+- New language models in the catalog, with revised badges.
+- Various visual refinements in the agent editor (more compact side menu, avatars, buttons, and spacing).
+
+### Workers
+- **Audio recording with transcription** in the Workers chat as well.
+- Long runs (5 to 20+ minutes) are no longer interrupted by timeouts.
+- No more stuck runs or infinite loading after refreshing the page.
+- Switching between sessions no longer loses messages or typing indicators.
+- **Contextual memory** available on the Workers page.
+
+### Conversations & Support
+- **Global multi-select filter** by attendants, agents, and squads in the conversation list.
+- All / Waiting / Mine tabs redesigned as pills, with inline counts.
+- More compact conversation list with a cleaner look (revised borders, searches, and headers).
+- Fixed two distinct follow-up semantics and improved message delivery.
+
+### Channels & Integrations
+- **Manual WhatsApp Cloud API**: connect an official number directly, without needing to sign in through Facebook.
+- **When to reply**: a new per-channel filter to define whether the agent responds to text, audio, or both.
+- **Telegram**: native transcription of audio and voice messages, typing indicator on the official channel, and a fix for response delivery.
+- **WhatsApp**: responses quote the received audio when configured, message quoting fixed, and lower response time.
+- **Instagram**: permissions restored (messaging, publishing, and insights) and connection fixes.
+- New shortcut to open the add-channel dialog and a responsive channel selector.
+- WhatsApp connection status checked more reliably, and connections saved to the correct active workspace.
+- Many new integrations available: Salesforce, Monday, Typeform, Dropbox, OneDrive, Google Tasks, YouTube, Facebook, Meta Ads, PostHog, Cal.com, Reddit, Firecrawl, Gamma, OpenWeather, and more.
+
+### Connections
+- **New table-based connections page**, following the platform's visual standard.
+- **Redesigned new connection dialog**: integration overview, listing in horizontal rows, and animated transitions between steps.
+- Simplified credential collection for API key integrations.
+- Various visual refinements to icons, sizes, and spacing in the connection flow.
+
+### Marketplace
+- **Agent marketplace by vertical**: ready-made templates with pre-configured tools and direct handoff to Orion.
+- **Traffic Squad**: a new ready-made package for paid media management.
+- Minimalist card redesign, with 3D covers per template, light and dark theme versions, and real integration logos.
+- Marketplace promoted to a top-level item in the Studio section.
+
+### Analytics & Dashboard
+- **Rebuilt analytics page** with four fixed cards covering the last 6 months.
+- **Peak hours**: a new heatmap by day and hour.
+- The channels chart now shows the exact name of each integration.
+- Faster charts, with brand colors and correct readability in dark mode.
+
+### Billing & Usage
+- **Redesigned usage page**: billing cycle period, daily chart, and plan depletion forecast.
+- The chart now shows runs instead of credits.
+- Fixes in the plan change and checkout flows.
+- Resource limits corrected on active plans.
+
+### Navigation & Interface
+- **New visual system** for the platform, with a more modern, consistent finish across the entire application.
+- **Redesigned workspace selector** and smoother sidebar transitions.
+- **Global search (⌘K)**: the current page appears as the first option.
+- New global shortcut to sign out (Option+Shift+Q) and a support button in the sidebar footer.
+- Light mode fixed across the entire interface.
+- Agents, Datagrids, Knowledge, and Workflows tables unified under the same layout.
+- Menus, fields, and tooltips with standardized sizes and behaviors.
+
+### Mobile
+- **Mobile responsiveness** across the platform (first phase).
+
+### Settings
+- **Preferences** becomes the Settings home page.
+- **Providers**: a new page for managing AI providers.
+- Standardized settings routes, with correct highlighting of the active menu item.
+
+### Other
+- Link invitations now work with passwordless sign-in (email code and Google).
+- Blocked numbers system removed.
+
+## May 2026
+
+### Orion
+- **Full spreadsheet capability**: read, analyze, modify, and create spreadsheets, including chart generation.
+- **Campaigns from a spreadsheet**: upload a lead spreadsheet (CSV, XLSX, and XLS) in the chat and Orion assembles a campaign proposal ready for review.
+- **Campaign approval**: approve, edit, or reject the proposal in a dedicated card, with full editing of message, segmentation, and scheduling before sending.
+- **Real-time campaign control**: start, pause, resume, or cancel campaigns and track sends, replies, and opt-outs.
+- **Automatic opt-out**: replies containing opt-out keywords (also in Spanish and French) remove the contact from the campaign; lead replies are routed to the right agent and become conversations.
+- **Multiple conversations in parallel**: Orion keeps processing tasks even if you navigate to another conversation, and restores the history when you return.
+- **@ mentions** and a **"+" menu** in the message field: reference agents, channels, and integrations, attach files, and reach connectors in one click.
+- **New connector catalog**: a dialog with search, real app icons, an indication of what's active, and a details page with overview, connections, and capabilities.
+- **Resizable floating window** on all edges, so you can use Orion on top of any screen.
+- **Reworked history**: automatically generated conversation titles, a reorganized sidebar, and quick actions per message.
+- Create connections within the flow itself, with an automatic return after authorization.
+- Action confirmations in natural language, friendly names for each action, and reasoning shown in real time.
+- More reliable answers: data checked against the real database, no made-up information, and correct use of the current date and time.
+- Company memory feature removed.
+
+### Agents
+- **Native image generation**: agents create images in the conversation, with thumbnail preview, full-screen view, and download.
+- **Image editing**: upload an image and ask for changes — the agent uses the latest image in the conversation as the base.
+- **Self-scheduling agents**: the agent schedules its own follow-up and resumes the conversation at the right time.
+- **New conversational panel** with real-time field updates as the configuration is assembled.
+- **Faster and more reliable web search** for agents.
+- More consistent responses on long tasks: the agent reviews its own reasoning, runs tools in parallel, and recovers from failures on its own.
+- Long conversations retain important context, and long responses with integration content are no longer truncated.
+- New reasoning indicator, more informative than the old "thinking".
+- Removed the "Channels" and "Blocked numbers" tabs from agent settings.
+
+### Broadcasts (Campaigns)
+- **Redesigned campaign builder** with numbered steps, option cards, channel tables, a date/time picker, and clearer helper text.
+- **Message variables**: automatic suggestions as you type, colored highlighting in the editor, and a new first name variable.
+- **Word rotation**: use `{{option1||option2||option3}}` to automatically vary the text on each send.
+- **Block protection**: progressive warm-up per number, randomized intervals with human-like pacing, typing simulation, an exact daily limit, pauses between batches, and blocking of identical messages.
+- **Delivery and read receipts** reflected in campaign metrics.
+- A single time zone per campaign, applied to scheduling, sending windows, and end time.
+- Sends start more gradually, with no burst at the beginning of a broadcast.
+- The campaign name is now required to save or send.
+
+### Human Support
+- **New Human Support module**: teams, tags, segments, groups, and tickets in a complete support structure.
+- Ticket creation without requiring a defined team, and a full listing of available tags.
+- New design for the open-ticket action configuration panel.
+
+### Workers
+- **Chat attachments**: send images, PDFs, Office files, and CSVs in conversations with workers.
+- **Resilient streaming**: navigate between screens without losing an in-progress response; errors and interruptions are visible.
+- **Redesigned "Start conversation" dialog**: a single grid of agents and squads, with search and a more compact look.
+- Progressive history loading, a button to copy the response, and a balance that updates in real time.
+
+### Conversations & Support
+- Conversations screen rebuilt with a more organized layout and smoother navigation.
+- **Unified customer identity on WhatsApp**: no more duplicate conversations for the same contact; the customer's real name is always preserved.
+- Fixes that prevented messages from mixing between conversations on high-volume accounts.
+- Faster conversation list with more reliable real-time updates.
+- Error messages rewritten in plain language, with standardized notifications across the product.
+
+### Runs & Analytics
+- **New Runs page**, with detailed inspection of each agent run.
+- **Redesigned run details**: a second-by-second timeline, drag to navigate, a collapsible side panel, and a button to copy the entire run.
+- Runs interrupted by a failure recover automatically.
+- Analytics menu reorganized and positioned below CRM.
+
+### Channels & Integrations
+- **New WhatsApp foundation**, with better connection stability and send-rate control.
+- **Instagram** available both as a channel and as an integration, with 20 actions and localized descriptions.
+- **Google Ads**, **Google Analytics 4**, and **Meta Ads** available for agents to use.
+- Catalogs for **Notion** (27 actions), **Gmail**, **Twitter/X**, **Salesforce**, **HubSpot**, **Zendesk**, **Shopify**, **Stripe**, **GitHub**, **Jira**, **Linear**, **ClickUp**, **Trello**, **Asana**, **Airtable**, **Apollo**, **LinkedIn**, **Google Sheets**, **Mixpanel**, **Microsoft Teams**, **Google Maps**, and **Canva** expanded and revised in PT/EN.
+- Edit the connection used by a channel directly in the channel settings; the status now reflects the provider's real health.
+- Channel deletion works without errors and is processed in the background; channel error messages fixed.
+
+### Billing & Plans
+- **New usage-tier plan model**: pick your plan with a slider of run tiers, with a single product and direct signup — credits have been replaced by a more transparent usage meter.
+- **Three-pillar usage view**, with real measurement of consumption per run, per internal activity, and by Orion.
+- Plan menu in the header, showing run usage in real time.
+- Annual billing now displays the full yearly amount; plans show their commercial name and highlight the current plan.
+- Warnings and blocks when you hit the plan limit, with a direct shortcut to upgrade.
+
+### Appearance & Navigation
+- **New dark theme**, aligned with the brand design, with better contrast in dialogs and cards.
+- **Orion as the product home screen**, with a restructured sidebar.
+- **Help button** with WhatsApp support in the sidebar and animated icons.
+- Various visual refinements to buttons and dialogs, plus adaptations for small screens.
+
+### Settings & Access
+- **Redesigned API keys page**, including the key creation dialog.
+- **Availability toggle** for attendants right in the sidebar, with balanced conversation distribution.
+- Workspace permissions aligned between what the screen shows and what is enforced.
+- Google sign-up unblocked.
+
+## April 2026 (Apr 20–30)
+
+### Orion
+- **Agentic Orion**: the assistant performs real actions — it creates complete agents (role, prompt, model, steps, planning, and skills), updates settings, and builds workflows from a conversation.
+- **Confirmation before acting**: every write action goes through a clear confirmation that describes exactly what will change.
+- **Ready-to-apply proposals**: draft, validation, and analysis suggestions appear as cards you review and apply with one click.
+- **Assisted navigation**: Orion takes you straight to the screen, record, or filter mentioned in the conversation.
+- **Real-time responses**, showing what the assistant is doing at each step.
+- **Knowledge Base lookup**: Orion searches your documents to answer with your own company's information.
+- **Full agent overview**: a richer listing and per-agent details right in the chat.
+- Support for markdown tables, stop and clear conversation buttons, and various visual refinements in the chat.
+
+### Agents
+- **Usage per step**: each run shows the cost per step, with a new run-tracking experience.
+- **Agent Studio** gained an initial state guiding you through creating your first agent.
+- Tool errors now appear explicitly, preventing the agent from wrongly reporting success.
+- More consistent responses, with better adherence to the configured persona.
+
+### Knowledge Base
+- **Hybrid search with intelligent reranking**: far more accurate results, combining semantic and text search.
+- **Automatic document processing**: uploaded files start processing on their own, with retries on failure.
+- Better compatibility when reading PDFs and a fix for duplicate documents from the same source.
+
+### Pipeline / CRM
+- **Multiple pipelines**: create and manage several funnels, with their own pages and dedicated navigation.
+- Agents gain CRM tools and can look up records by phone number.
+- Attendants can move records between pipeline stages.
+
+### Connections, Channels & Integrations
+- **Connections hub**: a new page to connect accounts once per workspace and reuse them across multiple agents and channels, with a dedicated permission and a usage warning on deletion.
+- **Outlook Calendar**, **ClickUp**, **Calendly**, and **AbacatePay** available as new integrations.
+- Connection selection directly in channel and integration forms, with a shortcut to create a new one.
+- WhatsApp Business channel type displayed in the interface.
+
+### Plans & Usage
+- **Usage page**: track plan usage and utilization charts over time.
+- **New plan and limit structure**, with rewritten feature descriptions.
+
+### Conversations / Support
+- History scrolling fixed: no jumps when opening a conversation and no freezes when loading older messages.
+- Fixed duplicate messages in support conversations.
+
+### Public roadmap
+- **Public roadmap** in kanban format, to follow what's being built, with suggestions submitted right from the page.
+
 ## 2026-04-19
 
 ### Workers

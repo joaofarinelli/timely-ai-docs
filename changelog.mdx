@@ -5,6 +5,326 @@ description: "Histórico de atualizações do produto e da API Rovax.io"
 
 Todas as mudanças relevantes ficam registradas aqui em ordem cronológica reversa. Breaking changes da API são destacadas com <span style={{ color: "#dc2626", fontWeight: 600 }}>⚠ Breaking</span>.
 
+## Julho de 2026 (01–21/07)
+
+### Tabelas (Datagrids)
+- **Visão Kanban** nas tabelas: alterne entre tabela e quadro, agrupe registros por coluna e mova cards arrastando entre estágios.
+- **Tabela redesenhada** com ordenação por coluna, paginação e linha inteira arrastável para reordenar.
+- **Reordenação de colunas** arrastando o cabeçalho, tanto na tabela quanto no Kanban.
+- **Novo tipo de campo Seleção**, com editor de opções, busca pelo nome da opção e exportação/importação preservando os rótulos.
+- **Colunas de arquivo**: envie imagens e PDFs direto para dentro da tabela.
+- Adicione itens por estágio ou pelo botão global no Kanban, com edição em painel lateral e configuração do quadro.
+- Importe e exporte tabelas em XLSX.
+- Cards do Kanban mostram data de criação e atualização, com rodapé organizado.
+- Diversos ajustes visuais e de usabilidade em formulários, cards, hover e seleção de linhas.
+
+### Orion
+- **Construção autônoma de agentes**: o Orion planeja e cria agentes de ponta a ponta, incluindo conexões que faltam como etapa do plano, com aprovação e retomada segura em caso de falha.
+- **Composer redesenhado** e conversa mais limpa, com novo bloco de raciocínio e resultados de busca na web.
+- O Orion cria agentes com ferramenta de requisição HTTP e configura ferramentas do agente diretamente.
+- Fluxos de conexão com apps retomam de onde pararam após a autorização, sem repetir etapas.
+- Respostas mais consistentes: fim de blocos duplicados, spinners infinitos, respostas vazias e mensagens preliminares repetidas.
+- Mensagens de erro mais claras quando falta alguma integração para concluir a tarefa.
+- Lista de conversas do Orion carrega bem mais rápido.
+
+### Conversas e Atendimento
+- **Painel de informações do ticket** ao lado do chat, aberto por padrão e integrado ao layout.
+- Lista de conversas mais enxuta e chat mais largo, com melhor aproveitamento da tela.
+- Tags da conversa concentradas na aba Tags do painel, sem a barra no topo.
+- Removidos o botão "Assumir atendimento" e a faixa de aviso no topo da conversa.
+- Correção do painel de ticket que aparecia vazio para quem participa de vários workspaces.
+- Conversas reconectam sozinhas ao voltar para a aba do navegador.
+
+### Agentes e Workers
+- **Nova ferramenta Atribuir Tag**: o agente marca conversas automaticamente conforme o contexto.
+- **Envio proativo de WhatsApp** pelo agente, sem depender de mensagem do cliente.
+- No chat com Workers, agora é possível cancelar a resposta em andamento e editar/reenviar a última mensagem.
+- Fim das mensagens duplicadas em envios rápidos ou cliques repetidos.
+- Agenda do Google: leitura completa de calendários com muitos itens.
+- Indicador de "pensando" mais rápido e fluido no Orion e nos Workers.
+
+### Pipeline e CRM
+- **Kanban por tags substitui os pipelines**, com fluxo mais simples e flexível para organizar oportunidades.
+- Correção: cards não desaparecem mais ao serem movidos para fora da coluna.
+
+### Workflows e Automações
+- **Teste de webhook sob demanda**, funcionando direto no rascunho, sem precisar publicar.
+- Motor de automações revisado, com execução mais confiável e novos modos de execução integrados aos agentes.
+- URL do gatilho de webhook corrigida para o endereço definitivo.
+
+### Canais e Integrações
+- **Canal Página Web**: evolução do chat no site, com mais segurança, controle de custos e transcrição de áudio.
+- **Slack por canal**: conecte agentes diferentes a canais distintos do mesmo workspace, incluindo canais privados.
+- Novas integrações nativas: Google Drive, Google Docs, Discord, Zoom, Intercom, GitLab, Todoist, Resend, Mailchimp, SendGrid, ActiveCampaign, Pipedrive, HighLevel, Figma, Confluence, Box, Coinbase, Hugging Face, Algolia, Lusha, Tavily, ZenRows, DataRobot e tldv.
+- Página pública do chat corrigida e mais estável.
+
+### Navegação e Interface
+- **Nova identidade visual Rovax**, aplicada em toda a plataforma, e-mails, widget e materiais.
+- **Busca global redesenhada** no estilo command palette, disponível também dentro de Builder, CRM e Configurações.
+- **Menu lateral inteligente**: colapsa em telas de detalhe e reabre ao passar o mouse, com painel flutuante e animação suave.
+- Novo botão de usuário, atalho de notificações e acesso rápido a Ajuda e Suporte na barra lateral.
+- Estados vazios ilustrados em toda a plataforma e novo sistema de animações e transições.
+- Conjunto de ícones renovado e diversos ajustes de alinhamento, espaçamento e rolagem.
+
+### Configurações
+- Página de perfil reconstruída em cards.
+- Workspace agrupado com Organizações, Membros e Notificações em uma única área.
+- Preferências substituídas por uma página dedicada de Idioma.
+- Layout das páginas de configurações padronizado, sem títulos e espaçamentos duplicados.
+
+### Notificações
+- **Notificações por e-mail** para 6 eventos operacionais.
+- **Central de notificações in-app**, com alertas de desconexão de WhatsApp sem repetição.
+
+### Builder e Publicação
+- Seletor de versões redesenhado, com botão Deploy animado, indicador de carregamento e verificação antecipada.
+- Deploy fica desabilitado quando não há alterações pendentes.
+- Diálogo de publicação com comparação de alterações mais clara.
+
+### Conexões
+- Listagem de conexões com paginação, filtros, seleção múltipla e exclusão em lote.
+- Carregamento das conexões significativamente mais rápido.
+
+### Acesso e Segurança
+- **Login e cadastro por e-mail e senha** em telas novas e mais claras.
+- Melhorias de isolamento de dados entre empresas e workspaces.
+
+## Junho de 2026
+
+### White Label
+- **White Label completo**: personalize a plataforma com sua marca — logo, cores, identidade visual e login com a sua cara, tudo aplicado automaticamente para os seus clientes.
+- **Domínio próprio**: adicione seu domínio personalizado, acompanhe os registros de DNS e o status do certificado de segurança em tempo real, e defina qual é o domínio principal.
+- **Subdomínio automático**: cada marca ganha um endereço próprio pronto para uso, sem configuração manual.
+- **E-mails com a sua marca**: mensagens transacionais e convites enviados a partir do seu domínio verificado, com modelos personalizáveis.
+- Abas de **Membros** e **Faturamento** dentro do ambiente White Label, com cobrança e assinatura mantidas no seu próprio domínio.
+- Logo e nome do cliente exibidos no seletor de workspace, e opção de remover o selo "powered by".
+- Uploads de logo e imagens são salvos automaticamente ao editar a identidade visual.
+
+### Orion
+- **Novo Orion**: chat redesenhado com layout centralizado e mais respirável, mensagens sem balões e página inicial repaginada com saudação animada.
+- **Ações na plataforma**: o Orion cria e edita agentes, squads, workflows, tabelas, bases de conhecimento, conexões e campanhas diretamente pela conversa.
+- **Gravação de áudio**: fale com o Orion pelo microfone e a transcrição aparece direto no campo de mensagem.
+- **Conectar integrações pela conversa**: o Orion abre o diálogo de conexão sem que você precise sair do chat.
+- **Raciocínio ao vivo**: acompanhe o passo a passo do agente durante a resposta, com rótulos descritivos por ação; o histórico é recolhido ao final.
+- **Planejamento antes de agir**: o Orion monta um plano e o exibe na trilha de atividades antes de executar tarefas complexas.
+- **Busca na web** e **consulta à documentação da plataforma** como ferramentas nativas, para respostas mais atuais e precisas.
+- Gerencie as integrações de um agente e publique alterações falando com o Orion.
+- Histórico de conversas carrega mais rápido, alternar entre conversas não perde mensagens e o botão voltar não deixa mais conversas fantasmas.
+
+### Agentes
+- **Versionamento do Builder**: trabalhe em rascunho e publique quando estiver pronto, sem afetar o agente em produção.
+- **Interface generativa**: os agentes respondem com gráficos, cards, tabelas e formulários dentro da conversa — catálogo ampliado para 33 componentes, com edição incremental das interfaces.
+- **Apresentações**: agentes criam decks em HTML, com exportação em PDF preservando o layout dos slides.
+- **Terminal**: nova ferramenta nativa que executa comandos em um ambiente isolado por conversa.
+- **Execução de código**: nova ferramenta de cálculo e processamento em ambiente seguro, disponível para todos os planos.
+- **Envio de arquivos por URL** nas respostas dos agentes.
+- **Memória contextual**: os agentes lembram informações do usuário ao longo das conversas.
+- Novos modelos de linguagem no catálogo, com badges revisados.
+- Diversos ajustes visuais no editor de agentes (menu lateral mais compacto, avatares, botões e espaçamentos).
+
+### Workers
+- **Gravação de áudio com transcrição** também no chat de Workers.
+- Execuções longas (5 a 20+ minutos) não são mais interrompidas por tempo limite.
+- Fim das execuções travadas e do carregamento infinito após atualizar a página.
+- Alternar entre sessões não perde mais mensagens nem indicadores de digitação.
+- **Memória contextual** disponível na página de Workers.
+
+### Conversas e Atendimento
+- **Filtro global multi-seleção** por atendentes, agentes e squads na lista de conversas.
+- Abas Todos / Aguardando / Meus redesenhadas em formato de pílulas, com contagem inline.
+- Lista de conversas mais compacta e com visual mais limpo (bordas, buscas e cabeçalhos revisados).
+- Correção de duas semânticas distintas de follow-up e melhorias na entrega das mensagens.
+
+### Canais e Integrações
+- **WhatsApp Cloud API manual**: conecte um número oficial direto, sem precisar de login pelo Facebook.
+- **Quando responder**: novo filtro por canal para definir se o agente responde a texto, áudio ou ambos.
+- **Telegram**: transcrição nativa de áudios e mensagens de voz, indicador de digitação no canal oficial e correção da entrega das respostas.
+- **WhatsApp**: respostas citam o áudio recebido quando configurado, citações de mensagem corrigidas e menor tempo de resposta.
+- **Instagram**: permissões restauradas (mensagens, publicação e insights) e correções na conexão.
+- Novo atalho para abrir o diálogo de adicionar canal e seletor de canais responsivo.
+- Status de conexão do WhatsApp verificado de forma mais confiável, e conexões gravadas no workspace ativo correto.
+- Muitas integrações novas disponíveis: Salesforce, Monday, Typeform, Dropbox, OneDrive, Google Tasks, YouTube, Facebook, Meta Ads, PostHog, Cal.com, Reddit, Firecrawl, Gamma, OpenWeather, entre outras.
+
+### Conexões
+- **Nova página de conexões em tabela**, seguindo o padrão visual da plataforma.
+- **Diálogo de nova conexão redesenhado**: apresentação da integração, listagem em linhas horizontais e transições animadas entre etapas.
+- Coleta de credenciais simplificada para integrações por chave de API.
+- Diversos ajustes visuais de ícones, tamanhos e espaçamentos no fluxo de conexão.
+
+### Marketplace
+- **Marketplace de agentes por vertical**: templates prontos com ferramentas já pré-configuradas e handoff direto para o Orion.
+- **Squad de Tráfego**: novo pacote pronto para gestão de mídia paga.
+- Redesign minimalista dos cards, com capas 3D por template, versões para tema claro e escuro e logos reais das integrações.
+- Marketplace promovido a item principal na seção Studio.
+
+### Analytics e Dashboard
+- **Página de analytics refeita** com quatro cards fixos cobrindo os últimos 6 meses.
+- **Horários de pico**: novo mapa de calor por dia e hora.
+- Gráfico de canais passa a exibir o nome exato de cada integração.
+- Gráficos mais rápidos, com cores da marca e leitura correta no modo escuro.
+
+### Faturamento e Consumo
+- **Página de consumo redesenhada**: período do ciclo, gráfico diário e projeção de esgotamento do plano.
+- Gráfico passa a exibir execuções em vez de créditos.
+- Correções no fluxo de troca de plano e checkout.
+- Limites de recursos corrigidos em planos ativos.
+
+### Navegação e Interface
+- **Novo sistema visual** da plataforma, com acabamento mais moderno e consistente em toda a aplicação.
+- **Seletor de workspace redesenhado** e transições da barra lateral mais fluidas.
+- **Busca global (⌘K)**: a página atual aparece como primeira opção.
+- Novo atalho global para sair da conta (Option+Shift+Q) e botão de suporte no rodapé da barra lateral.
+- Modo claro corrigido em toda a interface.
+- Tabelas de Agentes, Tabelas, Conhecimento e Workflows unificadas no mesmo layout.
+- Menus, campos e tooltips com tamanhos e comportamentos padronizados.
+
+### Mobile
+- **Responsividade mobile** em toda a plataforma (primeira fase).
+
+### Configurações
+- **Preferências** vira a página inicial de Configurações.
+- **Provedores**: nova página para gestão dos provedores de IA.
+- Rotas de configurações padronizadas, com destaque correto do item ativo no menu.
+
+### Outros
+- Convites por link agora funcionam com login sem senha (código por e-mail e Google).
+- Sistema de números bloqueados removido.
+
+## Maio de 2026
+
+### Orion
+- **Capacidade completa de planilhas**: ler, analisar, modificar e criar planilhas, incluindo geração de gráficos.
+- **Campanhas por planilha**: envie uma planilha de leads (CSV, XLSX e XLS) no chat e o Orion monta uma proposta de campanha de disparo pronta para revisão.
+- **Aprovação de campanhas**: aprove, edite ou rejeite a proposta em um cartão dedicado, com edição completa de mensagem, segmentação e agendamento antes do disparo.
+- **Controle da campanha em tempo real**: inicie, pause, retome ou cancele campanhas e acompanhe enviados, respostas e cancelamentos.
+- **Descadastro automático**: respostas com palavras de opt-out (também em espanhol e francês) removem o contato da campanha; respostas de leads são roteadas para o agente certo e viram conversas.
+- **Várias conversas em paralelo**: o Orion continua processando tarefas mesmo se você navegar para outra conversa, e retoma o histórico ao voltar.
+- **Menções com @** e **menu "+"** no campo de mensagem: cite agentes, canais e integrações, anexe arquivos e acesse conectores com um clique.
+- **Novo catálogo de conectores**: diálogo com busca, ícones reais dos aplicativos, indicação do que está ativo e página de detalhes com visão geral, conexões e recursos.
+- **Janela flutuante redimensionável** por todas as bordas, para usar o Orion sobreposto a qualquer tela.
+- **Histórico reformulado**: títulos de conversa gerados automaticamente, barra lateral reorganizada e ações rápidas por mensagem.
+- Criação de conexões dentro do próprio fluxo, com retorno automático após a autorização.
+- Confirmações de ações em linguagem natural, nomes amigáveis para cada ação e raciocínio exibido em tempo real.
+- Respostas mais confiáveis: dados checados contra a base real, sem informações inventadas, e uso correto de data e hora atuais.
+- Removido o recurso de memória da empresa.
+
+### Agentes
+- **Geração de imagens nativa**: os agentes criam imagens na conversa, com prévia em miniatura, visualização em tela cheia e download.
+- **Edição de imagens**: envie uma imagem e peça alterações — o agente usa a última imagem da conversa como base.
+- **Agentes auto-agendáveis**: o agente programa o próprio retorno e retoma a conversa no momento certo.
+- **Novo painel conversacional** com atualização dos campos em tempo real enquanto a configuração é montada.
+- **Busca na web mais rápida e confiável** para os agentes.
+- Respostas mais consistentes em tarefas longas: o agente revisa o próprio raciocínio, executa ferramentas em paralelo e se recupera sozinho de falhas.
+- Conversas longas mantêm o contexto importante, e respostas longas com conteúdo de integrações não são mais cortadas.
+- Novo indicador de raciocínio, mais informativo que o antigo "pensando".
+- Removidas as abas "Canais" e "Números bloqueados" das configurações do agente.
+
+### Disparos (Campanhas)
+- **Criador de campanhas redesenhado** em etapas numeradas, com cartões de opção, tabelas de canais, seletor de data/hora e textos de apoio mais claros.
+- **Variáveis na mensagem**: sugestão automática ao digitar, destaque colorido no editor e nova variável de primeiro nome.
+- **Rotação de palavras**: use `{{opção1||opção2||opção3}}` para variar automaticamente o texto a cada envio.
+- **Proteção contra bloqueios**: aquecimento progressivo por número, intervalos aleatórios com ritmo humano, simulação de digitação, limite diário exato, pausa entre blocos e bloqueio de mensagens idênticas.
+- **Confirmações de entrega e leitura** refletidas nas métricas da campanha.
+- Fuso horário único por campanha, aplicado a agendamentos, janelas de envio e horário de término.
+- Envios iniciam de forma mais suave, sem rajada no começo do disparo.
+- Nome da campanha passa a ser obrigatório para salvar ou disparar.
+
+### Atendimento Humano
+- **Novo módulo de Atendimento Humano**: times, tags, segmentos, grupos e tickets em uma estrutura completa de suporte.
+- Criação de ticket sem exigir time definido e listagem completa de tags disponíveis.
+- Novo desenho do painel de configuração da ação de abrir ticket.
+
+### Workers
+- **Anexos no chat**: envie imagens, PDFs, arquivos do Office e CSVs nas conversas com os workers.
+- **Streaming resiliente**: navegue entre telas sem perder a resposta em andamento; erros e interrupções ficam visíveis.
+- **Diálogo "Iniciar conversa" redesenhado**: grade única de agentes e squads, com busca e visual mais compacto.
+- Carregamento progressivo do histórico, botão para copiar a resposta e saldo atualizado em tempo real.
+
+### Conversas e Atendimento
+- Tela de conversas reconstruída com layout mais organizado e navegação mais fluida.
+- **Identidade unificada do cliente no WhatsApp**: fim das conversas duplicadas para o mesmo contato; o nome real do cliente é sempre preservado.
+- Correções que evitavam mistura de mensagens entre conversas em contas com alto volume.
+- Lista de conversas mais rápida e com atualização em tempo real mais confiável.
+- Mensagens de erro reescritas em linguagem clara, com notificações padronizadas em todo o produto.
+
+### Execuções e Análises
+- **Nova página de Execuções**, com inspeção detalhada de cada rodada do agente.
+- **Detalhes da execução redesenhados**: linha do tempo por segundo, arraste para navegar, painel lateral recolhível e botão para copiar a execução inteira.
+- Execuções interrompidas por falha se recuperam automaticamente.
+- Menu Análises reorganizado, posicionado abaixo do CRM.
+
+### Canais e Integrações
+- **Nova base do WhatsApp**, com melhor estabilidade de conexão e controle de ritmo de envio.
+- **Instagram** disponível como canal e como integração, com 20 ações e descrições em português.
+- **Google Ads**, **Google Analytics 4** e **Meta Ads** disponíveis para uso pelos agentes.
+- Catálogos de **Notion** (27 ações), **Gmail**, **Twitter/X**, **Salesforce**, **HubSpot**, **Zendesk**, **Shopify**, **Stripe**, **GitHub**, **Jira**, **Linear**, **ClickUp**, **Trello**, **Asana**, **Airtable**, **Apollo**, **LinkedIn**, **Google Sheets**, **Mixpanel**, **Microsoft Teams**, **Google Maps** e **Canva** ampliados e revisados em PT/EN.
+- Edite a conexão usada por um canal diretamente na configuração do canal; o status passa a refletir a saúde real do provedor.
+- Exclusão de canal sem erro e processada em segundo plano; correções nas mensagens de erro dos canais.
+
+### Faturamento e Planos
+- **Novo modelo de planos por faixas de uso**: escolha o plano por um controle deslizante de faixas de execuções, com produto único e contratação direta — os créditos foram substituídos por um medidor de uso mais transparente.
+- **Visão de uso em 3 pilares**, com medição real de consumo por execução, por atividade interna e pelo Orion.
+- Menu de plano no cabeçalho, mostrando o uso de execuções em tempo real.
+- Cobrança anual passa a exibir o valor total do ano; planos exibem nome comercial e destaque do plano atual.
+- Avisos e bloqueios ao atingir o limite do plano, com atalho direto para upgrade.
+
+### Aparência e Navegação
+- **Novo tema escuro**, alinhado ao design da marca, com melhor contraste em diálogos e cartões.
+- **Orion como tela inicial** do produto, com a barra lateral reestruturada.
+- **Botão de Ajuda** com atendimento por WhatsApp na barra lateral e animações nos ícones.
+- Ajustes visuais diversos em botões e diálogos, e adaptações para telas pequenas.
+
+### Configurações e Acesso
+- **Página de chaves de API redesenhada**, incluindo o diálogo de criação de chave.
+- **Toggle de disponibilidade** do atendente direto na barra lateral, com distribuição de atendimentos equalizada.
+- Permissões de workspace alinhadas entre o que a tela mostra e o que é aplicado.
+- Cadastro via Google desbloqueado.
+
+## Abril de 2026 (20–30/04)
+
+### Orion
+- **Orion agêntico**: o assistente executa ações de verdade — cria agentes completos (função, prompt, modelo, etapas, planejamento e habilidades), atualiza configurações e monta workflows a partir de uma conversa.
+- **Confirmação antes de agir**: toda ação de escrita passa por uma confirmação clara, que descreve exatamente o que será alterado.
+- **Propostas prontas para aplicar**: sugestões de rascunho, validação e análise aparecem como cartões que você revisa e aplica com um clique.
+- **Navegação assistida**: o Orion leva você direto à tela, ao registro ou ao filtro citado na conversa.
+- **Respostas em tempo real**, com indicação do que o assistente está fazendo a cada passo.
+- **Consulta à Base de Conhecimento**: o Orion busca nos seus documentos para responder com informação da própria empresa.
+- **Visão completa dos agentes**: listagem mais rica e detalhamento de cada agente direto no chat.
+- Suporte a tabelas em markdown, botões de parar e limpar conversa, e diversos ajustes visuais no chat.
+
+### Agentes
+- **Consumo por etapa**: cada execução mostra o custo por passo, com nova experiência de acompanhamento de execuções.
+- **Agent Studio** ganhou estado inicial orientando a criação do primeiro agente.
+- Erros de ferramentas aparecem de forma explícita, evitando que o agente relate sucesso indevido.
+- Respostas mais consistentes, com melhor aderência à persona configurada.
+
+### Base de Conhecimento
+- **Busca híbrida com reordenação inteligente**: resultados muito mais precisos, combinando busca semântica e por texto.
+- **Processamento automático de documentos**: arquivos enviados entram em processamento sozinhos, com novas tentativas em caso de falha.
+- Melhor compatibilidade na leitura de PDFs e correção de duplicidade de documentos pela mesma origem.
+
+### Pipeline / CRM
+- **Múltiplos pipelines**: crie e gerencie vários funis, com páginas próprias e navegação dedicada.
+- Agentes ganham ferramentas de CRM e podem localizar registros por telefone.
+- Atendentes podem mover registros entre etapas do pipeline.
+
+### Conexões, Canais e Integrações
+- **Central de Conexões**: nova página para conectar contas uma única vez no workspace e reutilizá-las em vários agentes e canais, com permissão dedicada e aviso de uso ao excluir.
+- **Outlook Calendar**, **ClickUp**, **Calendly** e **AbacatePay** disponíveis como novas integrações.
+- Seleção de conexão direto nos formulários de canais e integrações, com atalho para criar uma nova.
+- Exibição do tipo de canal do WhatsApp Business na interface.
+
+### Planos e Consumo
+- **Página de Consumo**: acompanhe uso do plano e gráficos de utilização ao longo do tempo.
+- **Nova estrutura de planos e limites**, com descrições de recursos reescritas em português.
+
+### Conversas / Atendimento
+- Rolagem do histórico corrigida: sem saltos ao abrir a conversa nem travadas ao carregar mensagens antigas.
+- Correção de mensagens duplicadas no atendimento.
+
+### Roadmap público
+- **Roadmap público** em formato kanban, para acompanhar o que está sendo construído, com envio de sugestões pela própria página.
+
 ## 2026-04-19
 
 ### Workers
