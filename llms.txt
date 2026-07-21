@@ -189,11 +189,13 @@ PART 1 — DOCUMENTATION MAP
 - [Best Practices & Optimization](https://docs.rovax.io/guides/knowledge/best-practices)
   - Sections: 🧱 1. Structuring Your Knowledge; 🧠 2. Optimizing for Embeddings; 🌐 3. Bilingual and Multi-Language Knowledge; 🔄 4. Managing Updates and Retraining; 🧩 5. Multi-Agent and Squad Optimization; ⚙️ 6. Retrieval Optimization (for Developers); 🔐 7. Data Quality and Security; 🧭 8. Performance and Testing; 🧩 9. Advanced Techniques (Optional); ✅ Summary
 
-### Tables
-- [Tables — Overview](https://docs.rovax.io/guides/tables/overview)
-  - Sections: 🧩 Core Concepts; 💡 Why Tables Matter
-- [Creating Tables](https://docs.rovax.io/guides/tables/creating)
-  - Sections: 🪄 Step 1 — Create a New Table; 📋 Step 2 — Add Columns; 🔧 Supported Column Types; 🧱 Step 3 — Add and Edit Rows; 🧩 Step 4 — Update or Delete Tables
+### Tabelas (Datagrids)
+- [Tabelas — Visão geral](https://docs.rovax.io/guides/tables/overview) — Entenda como as Tabelas (Datagrids) armazenam dados estruturados e podem ser usadas como grades, quadros Kanban e CRMs reutilizáveis.
+  - Sections: Conceitos principais; Por que usar Tabelas
+- [Criando Tabelas](https://docs.rovax.io/guides/tables/creating) — Aprenda a criar uma Tabela (Datagrid), configurar colunas tipadas — incluindo Seleção — e adicionar registros.
+  - Sections: Etapa 1 — Criar uma Tabela; Etapa 2 — Adicionar colunas; Tipos de coluna disponíveis; Etapa 3 — Adicionar e editar registros; Etapa 4 — Atualizar ou excluir a Tabela
+- [Kanban e CRM com Tabelas](https://docs.rovax.io/guides/tables/kanban) — Transforme uma Tabela em um quadro Kanban reutilizável usando uma coluna de Seleção para representar os estágios.
+  - Sections: Antes de começar; Configurar o quadro; Trabalhar com os cards; Reordenar e editar os estágios; Usar como CRM reutilizável; Permissões
 - [Semantic Search](https://docs.rovax.io/guides/tables/semantic-search)
   - Sections: 🧩 When to Enable Semantic Search
 - [Integrating Tables with Agents](https://docs.rovax.io/guides/tables/integrating-agents)
@@ -279,7 +281,7 @@ PART 1 — DOCUMENTATION MAP
 
 ## Changelog
 - [Changelog](https://docs.rovax.io/changelog) — Histórico de atualizações do produto e da API Rovax.io
-  - Sections: 2026-04-19; 2026-04-18; 2026-04-19 — Documentação
+  - Sections: Julho de 2026 (01–21/07); Junho de 2026; Maio de 2026; Abril de 2026 (20–30/04); 2026-04-19; 2026-04-18; 2026-04-19 — Documentação
 
 -------------------------------------------------------------------------------
 # English — served at /en/
@@ -432,8 +434,10 @@ PART 1 — DOCUMENTATION MAP
 ### Tables
 - [Tables — Overview](https://docs.rovax.io/en/guides/tables/overview) — Understand the data model for tables (datagrids) in Rovax.io: core concepts, when to use tables versus Knowledge Bases, and typical use cases.
   - Sections: Core Concepts; Why Tables Matter
-- [Creating Tables](https://docs.rovax.io/en/guides/tables/creating) — How to create a table (datagrid) in Rovax.io: name, description, column types, semantic search, required fields, and row management.
-  - Sections: Step 1 — Create a New Table; Step 2 — Add Columns; Supported Column Types; Step 3 — Add and Edit Rows; Step 4 — Update or Delete Tables
+- [Creating Tables](https://docs.rovax.io/en/guides/tables/creating) — Learn how to create a Table (Datagrid), configure typed columns — including Select — and add records.
+  - Sections: Step 1 — Create a Table; Step 2 — Add Columns; Available Column Types; Step 3 — Add and Edit Records; Step 4 — Update or Delete the Table
+- [Kanban and CRM with Tables](https://docs.rovax.io/en/guides/tables/kanban) — Turn a Table into a reusable Kanban board by using a Select column to represent stages.
+  - Sections: Before You Start; Configure the Board; Work with Cards; Reorder and Edit Stages; Use It as a Reusable CRM; Permissions
 - [Semantic Search in Tables](https://docs.rovax.io/en/guides/tables/semantic-search) — How to enable semantic indexing on text columns, understand the available search types, and interpret similarity results.
   - Sections: Example:; When to Enable Semantic Search
 - [Integrating Tables with Agents](https://docs.rovax.io/en/guides/tables/integrating-agents) — Configure the agent to query, filter, insert, and update rows in tables during conversations. Permission architecture, data flows, and best practices.
@@ -511,7 +515,7 @@ PART 1 — DOCUMENTATION MAP
 
 ## Changelog
 - [Changelog](https://docs.rovax.io/en/changelog) — Product and API update history for Rovax.io
-  - Sections: 2026-04-19; 2026-04-18; 2026-04-19 — Documentation
+  - Sections: July 2026 (Jul 1–21); June 2026; May 2026; April 2026 (Apr 20–30); 2026-04-19; 2026-04-18; 2026-04-19 — Documentation
 
 -------------------------------------------------------------------------------
 # External links
