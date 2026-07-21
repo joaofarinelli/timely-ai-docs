@@ -1,2174 +1,2047 @@
-Rovax.io API Documentation
-===========================
+# Rovax.io Documentation
 
-API Name: Rovax.io | API v1
-Version: 1.0.0
-Base URL: https://api.rovax.io
-Contact: contato@rovax.io
-Website: https://app.rovax.io
+> Rovax.io is an AI Agent platform for customer support, sales, and multichannel
+> automation. You build Agents (identity, prompt, model, tools, knowledge), connect
+> them to channels (WhatsApp, Instagram, Widget, Telegram, Slack), orchestrate them
+> with Workflows and Squads, hand conversations to humans in the Inbox, and drive
+> everything programmatically through a REST API.
 
-Description: REST API for managing contacts, leads, opportunities, pipeline, and conversations in your CRM.
+Documentation: https://docs.rovax.io
+Application:   https://app.rovax.io
+API base URL:  https://api.rovax.io
+Support:       contato@rovax.io
+
+Languages: pt-BR is served at the root path (/...), English at /en/...
+Product concepts are identical across both; this file lists both trees.
+
+This file is generated from docs.json (navigation), the page front matter of every
+MDX file, and api-reference/openapi.en.json (the OpenAPI 3 contract).
+It has two parts:
+  Part 1 — Documentation map: every published page, its description, and its sections.
+  Part 2 — API reference: every endpoint with parameters, bodies, responses, and schemas.
 
 
-AUTHENTICATION
-===========================
+===============================================================================
+PART 1 — DOCUMENTATION MAP
+===============================================================================
 
-Method: API Key via header
-Header name: x-api-key
-Obtain your key at: https://app.rovax.io/developers
+-------------------------------------------------------------------------------
+# Portuguese (pt-BR) — served at /
+-------------------------------------------------------------------------------
 
-All endpoints require authentication unless otherwise noted.
-Include the header in every request:
+## Bem-vindo
+- [Bem-vindo à Rovax.io](https://docs.rovax.io) — Plataforma de agentes de IA para atendimento, vendas e automação multicanal
+
+## Comece aqui
+
+### Introdução
+- [O que é a Rovax.io?](https://docs.rovax.io/start/introduction) — Rovax.io is the all-in-one AI Agent Builder that empowers you to create, configure, and deploy intelligent Agents with flexibility and control.
+  - Sections: Por que usar a Rovax.io?; Diferenciais principais
+- [Key Concepts](https://docs.rovax.io/start/quickstart-product) — Rovax.io is built around a set of core concepts. Understanding these will help you design Agents more effectively and avoid unnecessary complexity.
+  - Sections: Agent; Role; Prompt; Temperature; Effort; Planning; Reasoning; Tools; Knowledge Base (KB); Workflows; MCP (Managed Connector Provider); Connection; CRM Team; Ticket Tool
+- [Platform Tour](https://docs.rovax.io/start/authentication) — Rovax.io is organized into clear and modular sections that guide how you navigate, build, and manage your AI ecosystem.
+  - Sections: Workspaces; Main Structure; Inbox; CRM; Analytics; Settings; Navigation; Command Palette; Summary
+- [Plans, Princing and Usage Limits](https://docs.rovax.io/start/quickstart-api) — > ⚠️ Disclaimer: This page explains the logic behind Rovax.io pricing model. For current plan details, limits, and pricing, always refer to the Plans page inside the platform — that's where you'll find the most up-to-date information. Rovax.io plans are designed to scale with your usage. Instead of…
+  - Sections: 📐 How Plans Work; 🔑 The Three Main Pillars; ⚙️ Secondary Limits; 🔄 Billing Cycles; 📊 Choosing the Right Plan; ✅ Key Takeaway
+
+## Guias
+
+### Versions
+- [Versioning Overview](https://docs.rovax.io/guides/versions/overview)
+  - Sections: 🔄 What is Versioned; 🚫 What is NOT Versioned; 🔎 Core Concepts; 🧭 How to Use Versioning; 🧪 Testing in Draft; ✅ Key Takeaway
+- [Deploy & Rollback](https://docs.rovax.io/guides/versions/deploy-and-rollback)
+  - Sections: 🚀 Deploy (Publishing Changes); What happens during a Deploy; ⚠️ Impact of Deploy; 📡 Channel Behavior; 🔄 Rollback (Reverting Versions); 🧾 Impact on CRM; ✅ Key Takeaway
+- [Safe Usage & Best Practices](https://docs.rovax.io/guides/versions/safe-usage-and-best-practices)
+  - Sections: 🧪 Testing in Draft; ⚠️ Important Behaviors to Understand; 🚨 Common Mistakes to Avoid; 📌 Best Practices; ✅ Key Takeaway
+
+### Agentes
+- [O que é um agente?](https://docs.rovax.io/guides/agents/overview) — In Rovax.io, an Agent is more than a chatbot. It is a configurable AI entity capable of reasoning, using tools, interacting with data, and collaborating with humans — all inside a single platform. Agents are designed to start simple (just a Role and a Prompt) and evolve progressively with Memory, Kn…
+  - Sections: Core Identity; Settings That Shape Behavior; Extending Agent Capabilities; Acting Through Tools; Conditional Prompts; Where Agents Operate; Why Rovax Agents Are Different
+
+#### Criando um agente
+- [Criando um agente do zero](https://docs.rovax.io/guides/agents/creating/from-scratch) — Passo a passo para criar um agente manualmente na Rovax.io: escolher o modelo, definir nome, role, prompt e salvar com controle total desde o início.
+  - Sections: Como criar; Próximos passos após a criação
+- [Criando com Orion AI](https://docs.rovax.io/guides/agents/creating/wizard) — Como usar o fluxo guiado da Rovax.io para criar um agente via conversa: o assistente faz as perguntas certas e gera o prompt automaticamente.
+  - Sections: Como funciona; Por que usar o assistente?
+- [Duplicando um agente](https://docs.rovax.io/guides/agents/duplicating) — Duplique um agente para reutilizar sua configuração no Rascunho atual: o que é copiado, quais recursos são compartilhados e como falhas são tratadas.
+
+#### Configurações do agente
+- [Agent Settings](https://docs.rovax.io/guides/agents/settings/overview) — Agent Settings define the complete behavioral, cognitive, and operational configuration of an Agent. Each parameter directly affects how the Agent interprets inputs, reasons about context, and executes actions using connected MCPs, Tools, and Workflows. This section details every configurable field…
+  - Sections: Summary
+- [Model Selection](https://docs.rovax.io/guides/agents/settings/model) — In Rovax.io, each Agent can be powered by a specific Provider and Model. This configuration defines: - Which LLM is used for reasoning - How billing and credit consumption are handled The model selection is part of the Agent configuration flow and is defined after the Prompt, ensuring that the Agent…
+  - Sections: Where to Select the Model; How Providers Work; Switching Models Per Agent; Best Practices
+- [Internal Name](https://docs.rovax.io/guides/agents/settings/internal-name)
+- [Role](https://docs.rovax.io/guides/agents/settings/role)
+- [Prompt](https://docs.rovax.io/guides/agents/settings/prompt) — The Prompt field defines the operational and communication logic of the Agent. It determines how the Agent should behave, speak, and execute its tasks.
+  - Sections: Voice & Tone; Procedures; Escalation Rules; Example Replies
+- [Temperature](https://docs.rovax.io/guides/agents/settings/temperature)
+- [Effort](https://docs.rovax.io/guides/agents/settings/effort)
+- [Capacities](https://docs.rovax.io/guides/agents/settings/capacities) — Extra Capabilities allow you to enable advanced execution features that change how an Agent reasons, plans, and contextualizes its responses. These capabilities are optional and should be enabled only when required, as they may impact response time and credit consumption.
+  - Sections: Planning; Reasoning; Date and Time; Best Practices
+- [Conditional Prompts](https://docs.rovax.io/guides/agents/settings/conditional-prompts) — Conditional Prompts allow you to define instructions that are executed only when specific conditions are met during a conversation.
+  - Sections: What Is a Conditional Prompt?; How Conditional Prompts Work; Examples of Use; Best Practices
+- [Internal Chat](https://docs.rovax.io/guides/agents/settings/internal-chat) — The Internal Chat is a live execution, testing, and inspection environment built directly into the Agent Builder. It allows you to interact with your Agent using the exact same configuration, reasoning engine, tools, and provider that will be used in production. More than a chat interface, the Inter…
+  - Sections: What You Can Do With the Internal Chat; Why the Internal Chat Matters
+
+### Squads
+- [What Are Squads](https://docs.rovax.io/guides/squads/overview) — Squads are a way to group multiple Agents under a shared goal. Instead of having isolated Agents, you can organize them to collaborate, specialize, and delegate interactions.
+  - Sections: 🔹 Key Concepts; 🔹 Management Modes; 🔹 Why Use Squads?
+- [Creating Squads](https://docs.rovax.io/guides/squads/creating) — This guide focuses on the practical steps and management actions involved in creating and maintaining Squads inside Rovax.io. If you're looking for conceptual explanations about what Squads are and when to use each mode, refer to the previous article.
+  - Sections: Step 1: Create a Squad; Step 2: Add Agents to the Squad; Promoting an Agent to Manager / Principal; Copying the Squad ID; Managing Squads Over Time
+
+### Ferramentas
+- [Tools: Overview](https://docs.rovax.io/guides/tools/overview)
+  - Sections: Understanding Tools and When to Use Them; How the Agent Uses Tools; Types of Tools in Rovax.io; Best Practices; Key Takeaway
+
+#### Available Tools
+- [HTTP Request Tool](https://docs.rovax.io/guides/tools/http-request-tool) — Let your Agent call external APIs to retrieve data, create or update records, trigger third-party actions, or sync information in real time — beyond the native Rovax.io ecosystem.
+  - Sections: 🔹 How the HTTP Request Tool Works; 🔹 Supported HTTP Methods; ⚙️ Configuration Fields; 🧩 Property Picker (Variable Insertion); 🤖 cURL Import Assistant; 🔹 Example Setup; 🧠 Best Practices; ✅ Key Takeaway
+- [Code Execution Tool](https://docs.rovax.io/guides/tools/code-execution-tool)
+  - Sections: 🔹 How It Works; 🔹 Configuration Fields; 🔹 Example Setup; 🔹 Example Use Case; 🔹 Best Practices; ✅ Key Takeaway
+- [Agentic Web Search Tool](https://docs.rovax.io/guides/tools/agentic-web-search-tool)
+  - Sections: 🔑 Key Concepts; ⚙️ Configuration Fields; 📘 Example Setup; 💡 Best Practices
+- [Ticket Creation Tool](https://docs.rovax.io/guides/tools/ticket-creation-tool)
+  - Sections: 🔎 What It Does; ⚙️ Configuration; 🆕 Automatic Tags on Ticket Creation; 🔄 Runtime Behavior; 📌 Example Use Cases; ✅ Best Practices; 🎯 Key Takeaway
+- [Chat Tagging Tool](https://docs.rovax.io/guides/tools/chat-tagging-tool)
+  - Sections: 🔎 What It Does; ⚙️ How to enable automatic chat tagging; 🧠 How it works; ⏱️ Execution behavior; 🔄 Synchronization rules; 👀 Visibility in Inbox; 📌 Best practices; ✅ Key Takeaway
+- [Follow Up Tool](https://docs.rovax.io/guides/tools/follow-up-tool)
+  - Sections: 🔎 What the Follow Up Tool Does; ⏱️ Channel Limitation (Important); 🧠 How Follow Ups Are Evaluated; ⚙️ Tool Configuration; 🔄 Runtime Behavior; 🔁 Fallback Follow Up (Optional); 📌 Practical Example; 🧠 Best Practices
+- [Knowledge Base Search Tool](https://docs.rovax.io/guides/tools/knowledge-base-search-tool)
+  - Sections: 🔎 What Is a Knowledge Base?; ⚙️ How the Tool Works; 🆕 Execution Options; 📐 When to Use a Knowledge Base; 🛠️ Setup Example; ✅ Best Practices; 🎯 Key Takeaway
+- [Table Tools](https://docs.rovax.io/guides/tools/table-tools)
+  - Sections: 📝 Insert Row in Table; ✏️ Update Row in Table; 🔎 Semantic Search in Table; 🔍 Similarity Search in Table; ✅ Best Practices
+- [Workflow Execution Tool](https://docs.rovax.io/guides/tools/workflow-execution-tool)
+  - Sections: 🔑 Key Concepts; 🛠️ Configuration; 📌 Example Use Cases; 🧠 How the Agent Uses It
+- [Contextual Memory Tool](https://docs.rovax.io/guides/tools/contextual-memory-tool)
+  - Sections: 🔑 Key Capabilities; 🛠️ How to Configure; 🌍 Example Use Cases; 📌 Best Practices
+- [PDF Reader Tool](https://docs.rovax.io/guides/tools/pdf-reader-tool)
+  - Sections: 🔎 What It Does; 🧠 How PDF Reader Works; 📚 PDF Reader vs Knowledge Base; 📄 Common Use Cases; ⚙️ Tool Configuration; 🧠 Best Practices; ✅ Key Takeaway
+- [External User Blocking Tool](https://docs.rovax.io/guides/tools/external-user-blocking-tool)
+
+### MCPS
+- [What are MCPs?](https://docs.rovax.io/guides/mcps/overview)
+  - Sections: 🚀 Why MCPs Matter; 🛠️ MCPs in Action; 📌 Key Characteristics
+- [How to Connect a New MCP](https://docs.rovax.io/guides/mcps/connecting)
+  - Sections: Step-by-step; Make MCP tools available to an Agent; Test internally (recommended); Troubleshooting
+
+### Workflows
+- [Workflows: Overview](https://docs.rovax.io/guides/workflows/overview)
+  - Sections: 🛠️ How Workflows Work; 🔑 Available Nodes; 📌 Why Use Workflows
+
+#### Nós do workflow
+- [Nós de Workflow](https://docs.rovax.io/guides/workflows/nodes/overview) — Índice de todos os nós disponíveis no editor de Workflows da Rovax.io.
+- [Nó Webhook](https://docs.rovax.io/guides/workflows/nodes/webhook) — Receba requisições HTTP externas e use o payload como ponto de entrada do seu workflow na Rovax.io.
+  - Sections: Como Funciona; Opções de Configuração; Opções de Autenticação; Modo de Teste do Nó; Comportamento de Resposta; Casos de Uso Comuns; Boas Práticas; Resumo
+- [Nó Agente (Requisição do Agente)](https://docs.rovax.io/guides/workflows/nodes/agent) — Exponha um workflow como ferramenta para agentes IA da Rovax.io.
+  - Sections: Como Funciona; Opções de Configuração; Casos de Uso Comuns
+- [Nó HTTP Request](https://docs.rovax.io/guides/workflows/nodes/http) — Chame qualquer API REST externa dentro do seu workflow — GET, POST, PUT, PATCH ou DELETE, com headers customizados e retry automático.
+  - Sections: Como Funciona; Opções de Configuração; Casos de Uso Comuns
+- [Nó Variáveis (Definir Variável)](https://docs.rovax.io/guides/workflows/nodes/variables) — Crie, armazene e transforme valores para reutilizar em qualquer ponto do workflow via {{ $vars.nome }}.
+  - Sections: Como Funciona; Opções de Configuração; Casos de Uso Comuns
+- [Nó LLM (Transformação IA)](https://docs.rovax.io/guides/workflows/nodes/llm) — Processe texto com um modelo de linguagem diretamente no workflow — sem persona de agente.
+  - Sections: Como Funciona; Opções de Configuração; Casos de Uso Comuns; Exemplo; Dica
+- [Nó Código JavaScript](https://docs.rovax.io/guides/workflows/nodes/javascript) — Execute JavaScript customizado em runtime isolado para transformar, validar ou combinar dados dentro do workflow.
+  - Sections: O que faz; Entrada e saída; Configuração; APIs disponíveis; Exemplos; Tratamento de erros; Limites; Próximos passos
+
+### Inbox
+- [Inbox — Visão Geral](https://docs.rovax.io/guides/inbox/overview) — Fila unificada de conversas de todos os canais conectados ao workspace: estrutura, abas e ações disponíveis.
+  - Sections: Estrutura principal; Navegação rápida
+- [Histórico de Conversas](https://docs.rovax.io/guides/inbox/chat-history) — Acesse e inspecione o histórico completo de mensagens de qualquer conversa para auditar atendimentos e aprimorar os agentes.
+  - Sections: Inspeção de mensagens; Otimização dos agentes
+
+#### Atendimento humano
+- [Tickets](https://docs.rovax.io/guides/inbox/human-support/tickets) — Transferência formal de conversas para atendimento humano: fluxo de handoff automático, interface do atendente e resumo gerado pelo agente.
+  - Sections: Interface do atendente; Resumo do agente
+- [Visualizações Kanban](https://docs.rovax.io/guides/inbox/human-support/kanban-views) — Organize as conversas do atendimento humano em quadros configuráveis: filtros por canal, tags como colunas ordenadas e arrastar-e-soltar que atualiza as tags da conversa.
+  - Sections: O que você pode configurar; Como funciona a atribuição de colunas; Trabalhando com o quadro; O que acontece ao mover um card; Atualizando colunas; Atualizações em tempo real; Permissões; Limitações atuais
+- [Times e Distribuição](https://docs.rovax.io/guides/inbox/human-support/teams) — Crie times de atendimento, adicione membros e configure o modo de distribuição de conversas entre atendentes.
+  - Sections: Times; Round Robin; Status e Responsabilidade
+- [Roles e Permissões](https://docs.rovax.io/guides/inbox/human-support/roles) — Matriz completa de roles na Rovax.io e o que cada nível pode fazer dentro da Inbox e do workspace.
+  - Sections: Roles disponíveis; Comportamento dos roles na Inbox; Role operacional: attendant; Roles administrativos na Inbox; Exemplo de uso; Resumo
+
+### Workers
+- [Workers](https://docs.rovax.io/guides/workers/overview)
+  - Sections: 🧠 What is Workers; 💡 When to Use Workers; 💬 How It Works; ➕ Starting a New Conversation; 🔄 Continuing Conversations; ✏️ Renaming Conversations; 🔍 Search; ⚠️ Production Behavior; 🔁 Workers vs Internal Chat; 📌 Best Practices; ✅ Key Takeaway
+
+### Canais
+- [Channels: Overview](https://docs.rovax.io/guides/channels/overview)
+  - Sections: Overview
+- [Creating a Channel](https://docs.rovax.io/guides/channels/creating)
+  - Sections: General Configuration Parameters; Channel Management; Troubleshooting
+
+#### Tipos de canal
+- [Widget](https://docs.rovax.io/guides/channels/types/widget)
+  - Sections: Customization Notes
+- [WhatsApp (Evo Go)](https://docs.rovax.io/guides/channels/types/whatsapp-waba)
+- [Instagram](https://docs.rovax.io/guides/channels/types/instagram)
+- [Telegram](https://docs.rovax.io/guides/channels/types/telegram) — Conecte um bot Telegram ao seu agente usando o token do BotFather — setup em menos de 5 minutos, sem aprovação de conta comercial
+  - Sections: Pré-requisitos; Passo a passo de conexão; Recursos suportados; Webhook de recebimento; Limites e boas práticas; Troubleshooting
+- [Slack](https://docs.rovax.io/guides/channels/types/slack) — Integração bidirecional com Slack — o agente responde a @mentions, DMs e slash commands diretamente nos seus canais
+  - Sections: Pré-requisitos; Passo a passo de conexão; Recursos suportados; Webhook de recebimento; Limites e boas práticas; Troubleshooting
+
+### Base de conhecimento
+- [Knowledge Base — Overview](https://docs.rovax.io/guides/knowledge/overview)
+  - Sections: 🧩 Core Concepts; 💡 Why It Matters; 🧠 How It Works; ⚙️ Supported Content Types; 📈 Knowledge Lifecycle; 🧭 Example
+- [Creating a Knowledge Base](https://docs.rovax.io/guides/knowledge/creating)
+  - Sections: 🪄 Step 1 — Open the Knowledge Module; 🧠 Step 2 — Define the Base; 📚 Step 3 — Add Items; 🔄 Step 4 — Training & Status; 🧩 Step 5 — Update or Manage; 💡 Tip
+- [Linking a Knowledge Base to an Agent](https://docs.rovax.io/guides/knowledge/linking-agent)
+  - Sections: 🧠 How Linking Works; ⚙️ Linking a Knowledge Base; 🧩 Linking to a Squad; 💬 Example Scenario; 🧭 Best Practices
+- [Best Practices & Optimization](https://docs.rovax.io/guides/knowledge/best-practices)
+  - Sections: 🧱 1. Structuring Your Knowledge; 🧠 2. Optimizing for Embeddings; 🌐 3. Bilingual and Multi-Language Knowledge; 🔄 4. Managing Updates and Retraining; 🧩 5. Multi-Agent and Squad Optimization; ⚙️ 6. Retrieval Optimization (for Developers); 🔐 7. Data Quality and Security; 🧭 8. Performance and Testing; 🧩 9. Advanced Techniques (Optional); ✅ Summary
+
+### Tables
+- [Tables — Overview](https://docs.rovax.io/guides/tables/overview)
+  - Sections: 🧩 Core Concepts; 💡 Why Tables Matter
+- [Creating Tables](https://docs.rovax.io/guides/tables/creating)
+  - Sections: 🪄 Step 1 — Create a New Table; 📋 Step 2 — Add Columns; 🔧 Supported Column Types; 🧱 Step 3 — Add and Edit Rows; 🧩 Step 4 — Update or Delete Tables
+- [Semantic Search](https://docs.rovax.io/guides/tables/semantic-search)
+  - Sections: 🧩 When to Enable Semantic Search
+- [Integrating Tables with Agents](https://docs.rovax.io/guides/tables/integrating-agents)
+  - Sections: 🧠 How Integration Works; 🧩 Available Datagrid Tools; 🔐 Permission-Based Architecture; 🔗 Connecting a Table to an Agent; 🔁 Example — Using Multiple Tools; 🧩 Data Flow Example (Agent + Workflow); ⚙️ Best Practices
+
+### Settings
+- [Overview](https://docs.rovax.io/guides/settings/overview)
+  - Sections: 🔹 Workspace Information; 🔹 Workspace and Subscription Relationship; 🔹 Actions
+- [Providers](https://docs.rovax.io/guides/settings/profile)
+  - Sections: 🔹 OpenAI; 🔹 Anthropic (Claude); Steps:; 🔹 Google Gemini (Google AI Studio); 4. OpenRouter; How to configure your provider inside Rovax.io; Option 1: Through Main Workspace page; Option 2: Through an Agent page; Configure the Provider
+- [Members](https://docs.rovax.io/guides/settings/company)
+  - Sections: 🔹 Adding Members; 🔹 Updating or Removing Members; 🔹 Roles and Permissions; 🔹 Removing Access; 🔹 Best Practices
+- [Billing](https://docs.rovax.io/guides/settings/providers)
+  - Sections: 🔹 Overview; 🔹 Adding or Updating a Payment Method; 🔹 Payment Statements; 🔹 Workspace and Billing Relationship; 🔹 Best Practices
+- [Usage](https://docs.rovax.io/guides/settings/usage)
+
+## API Reference
+
+### Introdução
+- [Introdução](https://docs.rovax.io/api-reference/introduction) — API REST do Rovax.io para automação de atendimento com IA.
+  - Sections: Visão geral; Base URL; Autenticação; Scopes; Rate limiting; Paginação; Formato de erros; Webhooks
+
+### System
+- [Referência de System](https://docs.rovax.io/api-reference/system/referencia) — Endpoints utilitários para verificar o status da API e inspecionar sua API key
+  - Sections: Conceito; Health check; Introspecção da API key; Campos principais; Endpoints disponíveis; Exemplo de uso; Próximos passos
+
+### Agents
+- [Referência de Agents](https://docs.rovax.io/api-reference/agents/referencia) — Endpoints para criar, configurar e gerenciar agentes de IA no seu workspace
+  - Sections: Conceito; Ciclo de vida; Campos principais; Endpoints disponíveis; Próximos passos
+
+### Trainings
+- [Referência de Trainings](https://docs.rovax.io/api-reference/trainings/referencia) — Endpoints para gerenciar a base de conhecimento dos agentes — documentos, FAQs e conteúdo de treinamento
+  - Sections: Conceito; Tipos de conteúdo suportados; Ciclo de vida; Campos principais; Endpoints disponíveis; Próximos passos
+
+### Channels
+- [Referência de Channels](https://docs.rovax.io/api-reference/channels/referencia) — Endpoints para conectar e gerenciar canais de comunicação — WhatsApp, Instagram, Telegram e widget de site
+  - Sections: Conceito; Tipos de canal; Ciclo de vida; Campos principais; Endpoints disponíveis; Próximos passos
+
+### Contacts
+- [Referência de Contacts](https://docs.rovax.io/api-reference/contacts/referencia) — Endpoints para criar, atualizar e gerenciar contatos no CRM da Rovax.io
+  - Sections: Conceito; Campos principais; Deduplicação automática; Endpoints disponíveis; Próximos passos
+
+### Conversations
+- [Referência de Conversations](https://docs.rovax.io/api-reference/conversations/referencia) — Endpoints para acessar o histórico de conversas, gerenciar mensagens e controlar handoff humano
+  - Sections: Conceito; Status da conversa; Ciclo de vida; Campos principais; Endpoints disponíveis; Próximos passos
+
+### Custom Fields
+- [Referência de Custom Fields](https://docs.rovax.io/api-reference/custom-fields/referencia) — Endpoints para criar e gerenciar campos personalizados no CRM — adapte o perfil dos contatos às necessidades do seu negócio
+  - Sections: Conceito; Tipos de campo disponíveis; Campos principais; Como usar em conjunto com Contacts; Endpoints disponíveis; Próximos passos
+
+### Chats
+- [Referência de Chats](https://docs.rovax.io/api-reference/chats/referencia) — Endpoints para operar em chats ativos — enviar mensagens como humano, gerenciar handoff e encerrar atendimentos
+  - Sections: Conceito; Handoff: como funciona; Campos principais de um Chat; Campos de uma mensagem de chat; Endpoints disponíveis; Próximos passos
+
+### Messages
+- [Referência de Messages](https://docs.rovax.io/api-reference/messages/referencia) — Endpoints para acessar e excluir mensagens individuais por ID
+  - Sections: Conceito; Estrutura de uma mensagem; Campos principais; Quando usar Messages vs Conversations vs Chats; Endpoints disponíveis; Próximos passos
+
+### MCPS
+- [Referência de MCP Servers](https://docs.rovax.io/api-reference/mcp-servers/referencia) — Endpoints para conectar servidores MCP aos agentes — expanda as capacidades de ação da IA com ferramentas externas
+  - Sections: Conceito; Como funciona a integração; Ciclo de vida de um MCP Server; Campos principais; Campos de uma Tool; Endpoints disponíveis; Próximos passos
+
+### Webhooks
+- [Referência de Webhooks](https://docs.rovax.io/api-reference/webhooks/referencia) — Endpoints para criar e gerenciar webhooks outbound — receba notificações em tempo real dos eventos do seu workspace
+  - Sections: Conceito; Ciclo de vida de um Webhook; Campos principais; Campos de uma Delivery; Categorias de eventos disponíveis; Endpoints disponíveis; Próximos passos
+
+## CookBook
+
+### Welcome
+- [Welcome to Cookbook](https://docs.rovax.io/cookbook/overview)
+
+### Channels
+- [How to diagnose issues with your Official WhatsApp connection](https://docs.rovax.io/cookbook/channels/how-to-diagnose-issues-with-your-official-whatsapp-connection)
+- [How to disconnect your WhatsApp Business account from another integration or automation](https://docs.rovax.io/cookbook/channels/how-to-disconnect-your-whatsapp-business-account-from-another-integration-or-automation)
+  - Sections: How to Disconnect a WhatsApp Account from Another Platform or Portfolio
+
+### Tools
+- [How to Fix Follow-ups Not Triggering](https://docs.rovax.io/cookbook/tools/how-to-fix-follow-ups-not-triggering)
+
+### Resources
+- [How to organize your Agents knowledge](https://docs.rovax.io/cookbook/resources/how-to-organize-your-agents-knowledge)
+  - Sections: 📋Tables; 📚 Knowledge Base
+
+## Changelog
+- [Changelog](https://docs.rovax.io/changelog) — Histórico de atualizações do produto e da API Rovax.io
+  - Sections: 2026-04-19; 2026-04-18; 2026-04-19 — Documentação
+
+-------------------------------------------------------------------------------
+# English — served at /en/
+-------------------------------------------------------------------------------
+
+## Welcome
+- [Welcome to Rovax.io](https://docs.rovax.io/en) — AI agent platform for customer support, sales, and multichannel automation
+
+## Get started
+
+### Introduction
+- [What is Rovax.io?](https://docs.rovax.io/en/start/introduction) — AI-powered customer service automation platform for WhatsApp, Instagram, web widget, and other channels.
+  - Sections: Why use Rovax.io?; Key differentiators
+- [First 10 minutes in the product](https://docs.rovax.io/en/start/quickstart-product) — From zero to your first conversation: create your account, configure an agent, and test it in real time
+  - Sections: What to explore next
+- [First request](https://docs.rovax.io/en/start/quickstart-api) — Generate your API key and make your first call to the Rovax.io API in under 5 minutes
+  - Sections: Next steps
+- [Authentication](https://docs.rovax.io/en/start/authentication) — How to use API keys, permission scopes, and credential rotation
+  - Sections: Sending the key; Creating an API key; Available scopes; Security best practices; Rotating a key; Common authentication errors
+
+## Guides
+
+### Agents
+- [What is an Agent?](https://docs.rovax.io/en/guides/agents/overview) — Understand the complete structure of an agent in Rovax.io — identity, behavior, capabilities, tools, and where it operates.
+  - Sections: Agent identity; Settings that shape behavior; Expanding agent capabilities; Acting through tools; Conditional prompts (Advanced); Where the agent operates; Why Rovax agents are different
+
+#### Creating an agent
+- [Creating an Agent from Scratch](https://docs.rovax.io/en/guides/agents/creating/from-scratch) — Step-by-step guide to manually creating an agent in Rovax.io: choosing the model, defining the name, role, prompt, and saving with full control from the start.
+  - Sections: How to create; Next steps after creation
+- [Creating with Orion AI](https://docs.rovax.io/en/guides/agents/creating/wizard) — How to use Rovax.io's guided flow to create an agent via conversation: the assistant asks the right questions and generates the prompt automatically.
+  - Sections: How it works; Why use the assistant?
+- [Duplicating an Agent](https://docs.rovax.io/en/guides/agents/duplicating) — Duplicate an Agent to reuse its configuration in the current Draft: what gets copied, which resources are shared, and how failures are handled.
+
+#### Agent settings
+- [Agent Settings](https://docs.rovax.io/en/guides/agents/settings/overview) — Summary of all configuration sections available for an agent in Rovax.io and what each one is for.
+  - Sections: Summary
+- [Model Selection](https://docs.rovax.io/en/guides/agents/settings/model) — How to choose the provider and LLM model for each agent in Rovax.io, capability comparison, credit cost, and selection best practices.
+  - Sections: Where to select the model; How providers work; Switching model per agent; Best practices
+- [Agent Internal Name](https://docs.rovax.io/en/guides/agents/settings/internal-name) — The internal name identifies the agent within the Rovax.io platform and appears in logs, reports, and selectors — never to the end customer.
+- [Agent Role](https://docs.rovax.io/en/guides/agents/settings/role) — How the role defines the agent's function and persona in Rovax.io, influencing the framing the model uses to interpret ambiguities and make decisions.
+  - Sections: Best practices; Example
+- [System Prompt](https://docs.rovax.io/en/guides/agents/settings/prompt) — How to use Rovax.io's prompt editor: recommended structure, real-time quality analysis, automatic AI improvement, and version history.
+- [Temperature](https://docs.rovax.io/en/guides/agents/settings/temperature) — How the temperature parameter affects the variability of agent responses, recommended ranges by use case, and how to configure the slider in Rovax.io.
+- [Effort (Reasoning Level)](https://docs.rovax.io/en/guides/agents/settings/effort) — How the effort parameter controls the depth of the agent's reasoning in Rovax.io, its impact on cost and latency, and when to use each level.
+- [Agent Capabilities](https://docs.rovax.io/en/guides/agents/settings/capacities) — Optional features you can enable per agent in Rovax.io: planning, reasoning, and automatic date and time.
+  - Sections: Planning; Reasoning; Date and time; Best practices
+- [Conditional Prompts](https://docs.rovax.io/en/guides/agents/settings/conditional-prompts) — How to use conditional prompts in Rovax.io to adapt agent behavior by customer segment, channel, or funnel stage without creating multiple agents.
+  - Sections: What is a conditional prompt?; How conditional prompts work; Usage examples; Best practices
+- [Internal Chat](https://docs.rovax.io/en/guides/agents/settings/internal-chat) — How to use Rovax.io's internal chat to test the agent directly on the platform, inspect executions, and validate behavior before publishing.
+  - Sections: What you can do with the internal chat; Why the internal chat matters
+
+### Squads
+- [What are Squads](https://docs.rovax.io/en/guides/squads/overview) — Understand how squads group specialized agents with automatic routing and intelligent handoff between them.
+  - Sections: Core concepts; Operation modes; Why use squads?
+- [Creating Squads](https://docs.rovax.io/en/guides/squads/creating) — Step-by-step guide to creating a squad, adding agents, defining leadership roles, and managing the group over time.
+  - Sections: Step 1: Create a squad; Step 2: Add agents to the squad; Promoting an agent to Manager or Principal; Copying the Squad ID; Managing squads over time
+
+### Tools
+- [Tools: Overview](https://docs.rovax.io/en/guides/tools/overview) — Understand what tools are in Rovax.io, when to use them, and which types are available for your agent.
+  - Sections: Understanding tools and when to use them; How the agent uses tools; Types of tools in Rovax.io; Best practices; Key point
+
+#### Available Tools
+- [HTTP Request Tool](https://docs.rovax.io/en/guides/tools/http-request-tool) — Let your Agent call external APIs to retrieve data, create or update records, trigger third-party actions, or sync information in real time — beyond the native Rovax.io ecosystem.
+  - Sections: 🔹 How the HTTP Request Tool Works; 🔹 Supported HTTP Methods; ⚙️ Configuration Fields; 🧩 Property Picker (Variable Insertion); 🤖 cURL Import Assistant; 🔹 Example Setup; 🧠 Best Practices; ✅ Key Takeaway
+- [Code Execution Tool](https://docs.rovax.io/en/guides/tools/code-execution-tool)
+- [Agentic Web Search Tool](https://docs.rovax.io/en/guides/tools/agentic-web-search-tool)
+- [Ticket Creation Tool](https://docs.rovax.io/en/guides/tools/ticket-creation-tool)
+- [Chat Tagging Tool](https://docs.rovax.io/en/guides/tools/chat-tagging-tool)
+  - Sections: 🔎 What It Does; ⚙️ How to enable automatic chat tagging; 🧠 How it works; ⏱️ Execution behavior; 🔄 Synchronization rules; 👀 Visibility in Inbox; 📌 Best practices; ✅ Key Takeaway
+- [Follow Up Tool](https://docs.rovax.io/en/guides/tools/follow-up-tool)
+- [Knowledge Base Search Tool](https://docs.rovax.io/en/guides/tools/knowledge-base-search-tool)
+- [Table Tools](https://docs.rovax.io/en/guides/tools/table-tools)
+- [Workflow Execution Tool](https://docs.rovax.io/en/guides/tools/workflow-execution-tool)
+- [Contextual Memory Tool](https://docs.rovax.io/en/guides/tools/contextual-memory-tool)
+- [PDF Reader Tool](https://docs.rovax.io/en/guides/tools/pdf-reader-tool)
+- [External User Blocking Tool](https://docs.rovax.io/en/guides/tools/external-user-blocking-tool)
+
+### MCPS
+- [What are MCPs?](https://docs.rovax.io/en/guides/mcps/overview) — Understand the Model Context Protocol (MCP) — Anthropic's open standard for connecting AI agents to external tool servers — and why it matters.
+  - Sections: Why MCP matters; MCPs in action; Key characteristics
+- [How to connect a new MCP](https://docs.rovax.io/en/guides/mcps/connecting) — Step-by-step guide to adding an MCP server to the agent, syncing tools, and activating them individually.
+  - Sections: Step-by-step; Making MCP tools available to an agent; Internal testing (recommended); Troubleshooting
+
+### Workflows
+- [Workflows: Overview](https://docs.rovax.io/en/guides/workflows/overview) — Orchestrate complex automations by connecting triggers, actions, and logic in a visual editor — no code required.
+  - Sections: How Workflows Work; Available Nodes; Why Use Workflows
+
+#### Workflow nodes
+- [Workflow Nodes](https://docs.rovax.io/en/guides/workflows/nodes/overview) — Index of all nodes available in the Rovax.io Workflows editor.
+- [Webhook Node](https://docs.rovax.io/en/guides/workflows/nodes/webhook) — Receive external HTTP requests and use the payload as the entry point of your workflow in Rovax.io.
+  - Sections: How It Works; Configuration Options; Authentication Options; Node Test Mode; Response Behavior; Common Use Cases; Best Practices; Summary
+- [Agent Node (Agent Request)](https://docs.rovax.io/en/guides/workflows/nodes/agent) — Expose a workflow as a tool for Rovax.io AI agents.
+  - Sections: How It Works; Configuration Options; Common Use Cases
+- [HTTP Request Node](https://docs.rovax.io/en/guides/workflows/nodes/http) — Call any external REST API from within your workflow — GET, POST, PUT, PATCH, or DELETE, with custom headers and automatic retry.
+  - Sections: How It Works; Configuration Options; Common Use Cases
+- [Variables Node (Set Variable)](https://docs.rovax.io/en/guides/workflows/nodes/variables) — Create, store, and transform values to reuse at any point in the workflow via {{ $vars.name }}.
+  - Sections: How It Works; Configuration Options; Common Use Cases
+- [LLM Node (AI Transformation)](https://docs.rovax.io/en/guides/workflows/nodes/llm) — Process text with a language model directly in the workflow — without an agent persona.
+  - Sections: How It Works; Configuration Options; Common Use Cases; Example; Tip
+- [JavaScript Code Node](https://docs.rovax.io/en/guides/workflows/nodes/javascript) — Run custom JavaScript in an isolated runtime to transform, validate, or combine data within the workflow.
+  - Sections: What It Does; Input and Output; Configuration; Available APIs; Examples; Error Handling; Limits; Next Steps
+
+### Inbox
+- [Inbox — Overview](https://docs.rovax.io/en/guides/inbox/overview) — Unified queue of Conversations from all channels connected to the Workspace: structure, tabs, and available actions.
+  - Sections: Main structure; Quick navigation
+- [Chat History](https://docs.rovax.io/en/guides/inbox/chat-history) — Access and inspect the complete message history of any Conversation to audit interactions and improve Agents.
+  - Sections: Message inspection; Agent optimization
+
+#### Human support
+- [Tickets](https://docs.rovax.io/en/guides/inbox/human-support/tickets) — Formal transfer of Conversations to human support: automatic handoff flow, attendant interface, and Agent-generated summary.
+  - Sections: Attendant interface; Agent summary
+- [Kanban Views](https://docs.rovax.io/en/guides/inbox/human-support/kanban-views) — Organize human support chats into configurable boards: channel filters, tags as ordered columns, and drag-and-drop that updates chat tags.
+  - Sections: What you can configure; How column assignment works; Working with the board; What happens when you move a card; Updating columns; Real-time updates; Permissions; Current limitations
+- [Teams and Distribution](https://docs.rovax.io/en/guides/inbox/human-support/teams) — Create support Teams, add members, and configure the Conversation distribution mode among attendants.
+  - Sections: Teams; Round Robin; Status and Responsibility
+- [Roles and Permissions](https://docs.rovax.io/en/guides/inbox/human-support/roles) — Complete Role matrix in Rovax.io and what each level can do within the Inbox and the Workspace.
+  - Sections: Available Roles; Role behavior in the Inbox; Operational Role: attendant; Administrative Roles in the Inbox; Usage examples; Summary
+
+### Workers
+- [Workers](https://docs.rovax.io/en/guides/workers/overview) — Work sessions directly with agents and squads for long tasks, analyses, and processing that do not fit into the customer service flow.
+  - Sections: What is Workers; When to use Workers; How it works; Starting a new conversation; Continuing conversations; Renaming conversations; Search; Behavior in production; Workers vs. Internal Chat; Best practices; Conclusion
+
+### Channels
+- [Channels — Overview](https://docs.rovax.io/en/guides/channels/overview) — Connect your Agent to the channels where your customers are: WhatsApp, Instagram, Widget, Telegram, and Slack.
+  - Sections: Overview
+- [Creating a Channel](https://docs.rovax.io/en/guides/channels/creating) — General flow for creating and activating any channel type in Rovax.io — configuration parameters, management, and troubleshooting.
+  - Sections: General configuration parameters; Channel management; Troubleshooting
+
+#### Channel types
+- [Web Widget](https://docs.rovax.io/en/guides/channels/types/widget) — Add a chat to your website in minutes with a JavaScript snippet — with voice support, visual customization, and multi-domain support.
+  - Sections: Step-by-step setup; Customization notes
+- [WhatsApp (Evo Go)](https://docs.rovax.io/en/guides/channels/types/whatsapp-waba)
+- [Instagram](https://docs.rovax.io/en/guides/channels/types/instagram) — Connect your Instagram Business account and handle DMs automatically via Meta OAuth.
+  - Sections: Connection flow
+- [Telegram](https://docs.rovax.io/en/guides/channels/types/telegram) — Connect a Telegram bot to your Agent using the BotFather token — setup in under 5 minutes, no commercial account approval required
+  - Sections: Prerequisites; Step-by-step connection; Supported features; Incoming webhook; Limits and best practices; Troubleshooting
+- [Slack](https://docs.rovax.io/en/guides/channels/types/slack) — Bidirectional Slack integration — the Agent responds to @mentions, DMs, and slash commands directly in your channels
+  - Sections: Prerequisites; Step-by-step connection; Supported features; Incoming webhook; Limits and best practices; Troubleshooting
+
+### Knowledge Base
+- [Knowledge Base — Overview](https://docs.rovax.io/en/guides/knowledge/overview) — Understand the core concepts of the Rovax.io Knowledge Base, how the RAG pipeline works, and what content types are supported.
+  - Sections: Core Concepts; Why It Matters; How It Works; Supported Content Types; Knowledge Lifecycle; Example
+- [Creating a Knowledge Base](https://docs.rovax.io/en/guides/knowledge/creating) — Step-by-step guide to creating a Knowledge Base in Rovax.io, adding content sources, and tracking processing status.
+  - Sections: Step 1 — Access the Knowledge Module; Step 2 — Define the Base; Step 3 — Add Items; Step 4 — Indexing and status; Step 5 — Update or Manage; Tip
+- [Connecting a KB to an Agent](https://docs.rovax.io/en/guides/knowledge/linking-agent) — How to activate a Knowledge Base on an agent, configure retrieval parameters, and best practices for multiple bases.
+  - Sections: How the Connection Works; Connecting a Knowledge Base; Connecting to a Squad; Example Scenario; Best Practices
+- [Best Practices and Optimization — Knowledge Base](https://docs.rovax.io/en/guides/knowledge/best-practices) — Document granularity, embedding optimization, multilingual content, update management, and retrieval monitoring for Knowledge Bases in Rovax.io.
+  - Sections: Structuring Knowledge; Optimizing for Embeddings; Bilingual and Multilingual Content; Managing Updates and Re-training; Optimization for Multi-Agent and Squads; Retrieval Optimization (for Developers); Data Quality and Security; Performance and Testing; Advanced Techniques (Optional)
+
+### Tables
+- [Tables — Overview](https://docs.rovax.io/en/guides/tables/overview) — Understand the data model for tables (datagrids) in Rovax.io: core concepts, when to use tables versus Knowledge Bases, and typical use cases.
+  - Sections: Core Concepts; Why Tables Matter
+- [Creating Tables](https://docs.rovax.io/en/guides/tables/creating) — How to create a table (datagrid) in Rovax.io: name, description, column types, semantic search, required fields, and row management.
+  - Sections: Step 1 — Create a New Table; Step 2 — Add Columns; Supported Column Types; Step 3 — Add and Edit Rows; Step 4 — Update or Delete Tables
+- [Semantic Search in Tables](https://docs.rovax.io/en/guides/tables/semantic-search) — How to enable semantic indexing on text columns, understand the available search types, and interpret similarity results.
+  - Sections: Example:; When to Enable Semantic Search
+- [Integrating Tables with Agents](https://docs.rovax.io/en/guides/tables/integrating-agents) — Configure the agent to query, filter, insert, and update rows in tables during conversations. Permission architecture, data flows, and best practices.
+  - Sections: How the Integration Works; Available Datagrid Tools; Permission Architecture; Connecting a Table to an Agent; Example — Using Multiple Tools; Data Flow — Agent + Table; Best Practices
+
+### Settings
+- [Settings Overview](https://docs.rovax.io/en/guides/settings/overview) — Map of Rovax.io Settings subsections, with fields, subscription links, and actions available by role.
+  - Sections: Workspace information; Link between workspace and subscription; Available actions
+- [User Profile](https://docs.rovax.io/en/guides/settings/profile) — Update your personal information, change your password, and manage your account security settings.
+  - Sections: Accessing profile settings; Profile data; Updating your profile photo; Saving changes; Account security; Notifications
+- [Company Settings](https://docs.rovax.io/en/guides/settings/company) — Manage company registration data, logo, industry, and NPS survey settings.
+  - Sections: Who can edit; Accessing company settings; Registration data; Saving changes; NPS Survey; Company logo
+- [Providers](https://docs.rovax.io/en/guides/settings/providers) — Connect and manage API keys for AI model providers to use in workspace agents.
+  - Sections: Connect and manage your AI model providers; OpenAI (GPT-5.1, GPT-5.2, etc.); Anthropic (Claude); Google Gemini (Google AI Studio); OpenRouter (Coming soon); How to configure the provider within Rovax.io; Option 1: From the main workspace page; Option 2: From an agent's page; Configure the provider
+- [Usage](https://docs.rovax.io/en/guides/settings/usage) — How to monitor credits, monthly renewable metrics, and permanent plan limits, and how to inspect consumption by agent and use your own providers to reduce costs.
+  - Sections: Overview; Renewable usage (resets monthly); Permanent usage (plan-based limits); Inspecting credit consumption by agent; Own providers; Best practices; Frequently asked questions
+
+## API Reference
+
+### Introduction
+- [Introduction](https://docs.rovax.io/en/api-reference/introduction) — Rovax.io REST API for AI-powered customer service automation.
+  - Sections: Overview; Base URL; Authentication; Scopes; Rate Limiting; Pagination; Error Format; Webhooks
+
+### System
+- [System Reference](https://docs.rovax.io/en/api-reference/system/referencia) — Utility endpoints to check API status and inspect your API key
+  - Sections: Concept; Health Check; API Key Introspection; Main Fields; Available Endpoints; Usage Example; Next Steps
+
+### Agents
+- [Agents Reference](https://docs.rovax.io/en/api-reference/agents/referencia) — Endpoints to create, configure, and manage AI agents in your workspace
+  - Sections: Concept; Lifecycle; Main Fields; Available Endpoints; Next Steps
+
+### Trainings
+- [Trainings Reference](https://docs.rovax.io/en/api-reference/trainings/referencia) — Endpoints to manage agent knowledge bases — documents, FAQs, and training content
+  - Sections: Concept; Supported Content Types; Lifecycle; Main Fields; Available Endpoints; Next Steps
+
+### Channels
+- [Channels Reference](https://docs.rovax.io/en/api-reference/channels/referencia) — Endpoints to connect and manage communication channels — WhatsApp, Instagram, Telegram, and website widget
+  - Sections: Concept; Channel Types; Lifecycle; Main Fields; Available Endpoints; Next Steps
+
+### Contacts
+- [Contacts Reference](https://docs.rovax.io/en/api-reference/contacts/referencia) — Endpoints to create, update, and manage contacts in the Rovax.io CRM
+  - Sections: Concept; Main Fields; Automatic Deduplication; Available Endpoints; Next Steps
+
+### Conversations
+- [Conversations Reference](https://docs.rovax.io/en/api-reference/conversations/referencia) — Endpoints to access conversation history, manage messages, and control human handoff
+  - Sections: Concept; Conversation Status; Lifecycle; Main Fields; Available Endpoints; Next Steps
+
+### Custom Fields
+- [Custom Fields Reference](https://docs.rovax.io/en/api-reference/custom-fields/referencia) — Endpoints to create and manage custom fields in the CRM — adapt contact profiles to your business needs
+  - Sections: Concept; Available Field Types; Main Fields; Using Together with Contacts; Available Endpoints; Next Steps
+
+### Chats
+- [Chats Reference](https://docs.rovax.io/en/api-reference/chats/referencia) — Endpoints to operate on active chats — send messages as a human agent, manage handoff, and close support sessions
+  - Sections: Concept; Handoff: How It Works; Main Chat Fields; Chat Message Fields; Available Endpoints; Next Steps
+
+### Messages
+- [Messages Reference](https://docs.rovax.io/en/api-reference/messages/referencia) — Endpoints to access and delete individual messages by ID
+  - Sections: Concept; Message Structure; Main Fields; When to Use Messages vs Conversations vs Chats; Available Endpoints; Next Steps
+
+### MCPS
+- [MCP Servers Reference](https://docs.rovax.io/en/api-reference/mcp-servers/referencia) — Endpoints to connect MCP servers to agents — expand AI action capabilities with external tools
+  - Sections: Concept; How the Integration Works; MCP Server Lifecycle; Main Fields; Tool Fields; Available Endpoints; Next Steps
+
+### Webhooks
+- [Webhooks Reference](https://docs.rovax.io/en/api-reference/webhooks/referencia) — Endpoints to create and manage outbound webhooks — receive real-time notifications of workspace events
+  - Sections: Concept; Webhook Lifecycle; Main Fields; Delivery Fields; Available Event Categories; Available Endpoints; Next Steps
+
+## CookBook
+
+### Welcome
+- [en/cookbook/overview](https://docs.rovax.io/en/cookbook/overview) — MISSING FILE (referenced in navigation)
+
+### Channels
+- [How to diagnose issues with your Official WhatsApp connection](https://docs.rovax.io/cookbook/channels/how-to-diagnose-issues-with-your-official-whatsapp-connection)
+
+## Changelog
+- [Changelog](https://docs.rovax.io/en/changelog) — Product and API update history for Rovax.io
+  - Sections: 2026-04-19; 2026-04-18; 2026-04-19 — Documentation
+
+-------------------------------------------------------------------------------
+# External links
+-------------------------------------------------------------------------------
+
+- YouTube: https://www.youtube.com/@rovax.io
+- WhatsApp: https://wa.me/5547988543326
+- Discord: https://discord.gg/2S3s6NCTHk
+- llms.txt: https://docs.rovax.io/llms.txt
+- Support email: contato@rovax.io
+
+
+===============================================================================
+PART 2 — API REFERENCE
+===============================================================================
+
+API: Rovax.io API (version 1.0.0)
+Server: https://api.rovax.io
+
+Rovax.io REST API for AI-powered customer service automation. Manage agents, conversations, contacts, and integrations.
+
+## Authentication
+
+- Scheme `ApiKeyAuth`: type=apiKey in=header name=x-api-key
+  API key obtained from the dashboard
+
+Send the key on every request unless an endpoint is marked as public:
   x-api-key: YOUR_API_KEY
-
-
-GENERAL NOTES
-===========================
-
-- All IDs are UUIDs
-- Timestamps are in ISO 8601 format
-- Paginated endpoints return a "pagination" object with: page, limit, total, total_pages
-- Default pagination: page=1, limit=20, max limit=100
-- Sort order default: desc
-- All responses are wrapped in a "data" key
-- Errors are returned in an "error" object with: code, message, status
-- Rate limiting headers: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After
-
-Available scopes:
-  contacts:read, contacts:write, leads:read, leads:write, pipeline:read, pipeline:write,
-  conversations:read, messages:read, chats:write, agents:read, agents:write,
-  trainings:read, trainings:write, channels:read, channels:write,
-  custom-fields:read, custom-fields:write, interactions:read, interactions:write,
-  intentions:read, intentions:write, idle-actions:read, idle-actions:write,
-  transfer-rules:read, transfer-rules:write, webhooks:read, webhooks:write,
-  mcp:read, mcp:write
-
-Common error responses:
-  401 - UNAUTHORIZED: Invalid or missing API key
-  403 - FORBIDDEN: Missing required scope
-  404 - NOT_FOUND: Resource not found
-  400 - VALIDATION_ERROR: Invalid request data
-  429 - RATE_LIMIT_EXCEEDED: Too many requests
-
-
-SHARED PARAMETERS
-===========================
-
-Page (query)
-  - name: page
-  - type: integer
-  - default: 1
-  - minimum: 1
-  - description: Page number (starts at 1)
-
-Limit (query)
-  - name: limit
-  - type: integer
-  - default: 20
-  - minimum: 1
-  - maximum: 100
-  - description: Items per page (max 100)
-
-Order (query)
-  - name: order
-  - type: string
-  - default: desc
-  - enum: asc, desc
-  - description: Sort direction
-
-Search (query)
-  - name: search
-  - type: string
-  - description: Search term (partial match, case-insensitive)
-
-IdPath (path)
-  - name: id
-  - type: string (uuid)
-  - required: true
-  - description: Unique resource ID (UUID)
-
-AgentIdPath (path)
-  - name: id
-  - type: string (uuid)
-  - required: true
-  - description: Agent ID (UUID)
-
-ToolIdPath (path)
-  - name: toolId
-  - type: string (uuid)
-  - required: true
-  - description: Tool ID (UUID)
-
-McpIdPath (path)
-  - name: mcpId
-  - type: string (uuid)
-  - required: true
-  - description: MCP server ID (UUID)
-
-
-===============================================================================
-ENDPOINTS
-===============================================================================
-
-
-SYSTEM
-===========================
-
---- GET /v1/health ---
-Summary: Health check
-Description: Checks if the API is running. Does not require authentication.
-Authentication: None
-Parameters: None
-Response 200:
-  - status: string (example: "ok")
-  - timestamp: string (date-time, example: "2025-01-15T10:30:00.000Z")
-
-Example:
-  curl https://api.rovax.io/v1/health
-
-
---- GET /v1/me ---
-Summary: API key information
-Description: Returns information about the API key used in the request, including scopes and permissions.
-Parameters: None
-Response 200:
-  data: ApiKeyInfo object
-    - id: string (uuid) -- API key ID
-    - company_id: string (uuid) -- Company ID
-    - workspace_id: string|null (uuid) -- Workspace ID (if applicable)
-    - key_name: string -- API key name
-    - scopes: array of strings -- Access scopes
-    - is_active: boolean -- Whether the API key is active
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/me
-
-
-CONTACTS
-===========================
-
---- GET /v1/contacts ---
-Summary: List contacts
-Description: Returns a paginated list of contacts. Supports filtering by status and searching by name, email, or phone.
-Scope required: contacts:read
-Parameters:
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, customer_name, customer_email, status)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - status: string (query, optional, enum: active, inactive, blocked)
-  - search: string (query, optional) -- Search term (partial, case-insensitive)
-Response 200:
-  data: array of Contact objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/contacts?page=1&limit=20&status=active"
-
-
---- POST /v1/contacts ---
-Summary: Create contact
-Description: Creates a new contact. Requires scope contacts:write.
-Scope required: contacts:write
-Request body (JSON, required):
-  - customer_name: string (required, 1-255 chars) -- Contact name
-  - customer_phone: string (optional, max 50 chars) -- Phone number
-  - customer_email: string (optional, email format, max 255 chars) -- Email
-  - customer_company: string (optional, max 255 chars) -- Company name
-  - customer_position: string (optional, max 255 chars) -- Job title
-  - tags: array of strings (optional) -- Tags for categorization
-  - notes: string (optional) -- Notes about the contact
-  - source: string (optional, max 100 chars) -- Contact origin (e.g., website, referral)
-  - status: string (optional, enum: active, inactive, blocked, default: active)
-  - metadata: object (optional) -- Free-form additional data
-Response 201:
-  data: Contact object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"customer_name":"Joao Silva","customer_email":"joao@empresa.com","customer_phone":"+5547999999999"}' \
-    https://api.rovax.io/v1/contacts
-
-
---- GET /v1/contacts/{id} ---
-Summary: Get contact
-Description: Returns details of a specific contact. Requires scope contacts:read.
-Parameters:
-  - id: string (path, required, uuid) -- Contact ID
-Response 200:
-  data: Contact object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/contacts/CONTACT_UUID
-
-
---- PUT /v1/contacts/{id} ---
-Summary: Update contact
-Description: Updates an existing contact. All fields are optional. Requires scope contacts:write.
-Parameters:
-  - id: string (path, required, uuid) -- Contact ID
-Request body (JSON, required):
-  - customer_name: string (optional, 1-255 chars)
-  - customer_phone: string (optional, max 50 chars)
-  - customer_email: string (optional, email, max 255 chars)
-  - customer_company: string (optional, max 255 chars)
-  - customer_position: string (optional, max 255 chars)
-  - tags: array of strings (optional)
-  - notes: string (optional)
-  - source: string (optional, max 100 chars)
-  - status: string (optional, enum: active, inactive, blocked)
-  - metadata: object (optional)
-Response 200:
-  data: Contact object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"status":"inactive"}' \
-    https://api.rovax.io/v1/contacts/CONTACT_UUID
-
-
---- DELETE /v1/contacts/{id} ---
-Summary: Delete contact
-Description: Permanently removes a contact. Requires scope contacts:write.
-Parameters:
-  - id: string (path, required, uuid) -- Contact ID
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/contacts/CONTACT_UUID
-
-
-LEADS
-===========================
-
---- GET /v1/leads ---
-Summary: List leads
-Description: Returns a paginated list of leads. Supports filtering by status and searching by name or email.
-Scope required: leads:read
-Parameters:
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, customer_name, status, score)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - status: string (query, optional, enum: new, contacted, qualified, proposal, negotiation, won, lost)
-  - search: string (query, optional)
-Response 200:
-  data: array of Lead objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/leads?status=qualified"
-
-
---- POST /v1/leads ---
-Summary: Create lead
-Description: Creates a new lead. Requires scope leads:write.
-Request body (JSON, required):
-  - customer_name: string (required, 1-255 chars)
-  - customer_phone: string (optional, max 50 chars)
-  - customer_email: string (optional, email, max 255 chars)
-  - status: string (optional, enum: new, contacted, qualified, proposal, negotiation, won, lost, default: new)
-  - score: integer (optional, 0-100)
-  - budget_range: string (optional, max 100 chars)
-  - pain_points: array of strings (optional)
-  - contact_id: string (optional, uuid) -- Associated contact ID
-  - qualification_data: object (optional) -- Free-form qualification data
-Response 201:
-  data: Lead object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"customer_name":"Maria Souza","score":75,"status":"qualified"}' \
-    https://api.rovax.io/v1/leads
-
-
---- GET /v1/leads/{id} ---
-Summary: Get lead
-Description: Returns details of a specific lead. Requires scope leads:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: Lead object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/leads/LEAD_UUID
-
-
---- PUT /v1/leads/{id} ---
-Summary: Update lead
-Description: Updates an existing lead. All fields are optional. Requires scope leads:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - customer_name: string (optional, 1-255 chars)
-  - customer_phone: string (optional, max 50 chars)
-  - customer_email: string (optional, email, max 255 chars)
-  - status: string (optional, enum: new, contacted, qualified, proposal, negotiation, won, lost)
-  - score: integer (optional, 0-100)
-  - budget_range: string (optional, max 100 chars)
-  - pain_points: array of strings (optional)
-  - contact_id: string (optional, uuid)
-  - qualification_data: object (optional)
-Response 200:
-  data: Lead object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"status":"won","score":95}' \
-    https://api.rovax.io/v1/leads/LEAD_UUID
-
-
---- DELETE /v1/leads/{id} ---
-Summary: Delete lead
-Description: Permanently removes a lead. Requires scope leads:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/leads/LEAD_UUID
-
-
-OPPORTUNITIES
-===========================
-
---- GET /v1/opportunities ---
-Summary: List opportunities
-Description: Returns a paginated list of opportunities. Supports filtering by stage and associated lead.
-Scope required: pipeline:read
-Parameters:
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, title, value, probability, stage)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - stage: string (query, optional, enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
-  - lead_id: string (query, optional, uuid) -- Filter by associated lead
-Response 200:
-  data: array of Opportunity objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/opportunities?stage=proposal"
-
-
---- POST /v1/opportunities ---
-Summary: Create opportunity
-Description: Creates a new business opportunity. Requires scope pipeline:write.
-Request body (JSON, required):
-  - title: string (required, 1-255 chars)
-  - lead_id: string (optional, uuid)
-  - value: number (optional, min: 0) -- Estimated value
-  - probability: integer (optional, 0-100) -- Closing probability percentage
-  - stage: string (optional, enum: prospecting, qualification, proposal, negotiation, closing, won, lost, default: prospecting)
-Response 201:
-  data: Opportunity object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"title":"Projeto de automacao","value":15000,"probability":70,"stage":"proposal"}' \
-    https://api.rovax.io/v1/opportunities
-
-
---- GET /v1/opportunities/{id} ---
-Summary: Get opportunity
-Description: Returns details of a specific opportunity. Requires scope pipeline:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: Opportunity object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/opportunities/OPP_UUID
-
-
---- PUT /v1/opportunities/{id} ---
-Summary: Update opportunity
-Description: Updates an existing opportunity. All fields are optional. Requires scope pipeline:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - title: string (optional, 1-255 chars)
-  - lead_id: string (optional, uuid)
-  - value: number (optional, min: 0)
-  - probability: integer (optional, 0-100)
-  - stage: string (optional, enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
-Response 200:
-  data: Opportunity object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"stage":"won","probability":100}' \
-    https://api.rovax.io/v1/opportunities/OPP_UUID
-
-
---- DELETE /v1/opportunities/{id} ---
-Summary: Delete opportunity
-Description: Permanently removes an opportunity. Requires scope pipeline:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/opportunities/OPP_UUID
-
-
-PIPELINE
-===========================
-
---- GET /v1/pipeline/columns ---
-Summary: List pipeline columns
-Description: Returns all sales pipeline columns, ordered by position. Requires scope pipeline:read.
-Parameters: None
-Response 200:
-  data: array of PipelineColumn objects
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/pipeline/columns
-
-
-CONVERSATIONS
-===========================
-
---- GET /v1/conversations ---
-Summary: List conversations
-Description: Returns a paginated list of conversations. Supports filtering by channel, status, and searching by customer name.
-Scope required: conversations:read
-Parameters:
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "last_message_at", enum: created_at, last_message_at, customer_name, channel, status)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - channel: string (query, optional) -- Filter by communication channel
-  - status: string (query, optional) -- Filter by conversation status
-  - search: string (query, optional) -- Search term
-Response 200:
-  data: array of Conversation objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/conversations?channel=whatsapp"
-
-
---- GET /v1/conversations/{id} ---
-Summary: Get conversation
-Description: Returns details of a specific conversation. Requires scope conversations:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: Conversation object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/conversations/CONV_UUID
-
-
---- DELETE /v1/conversations/{id} ---
-Summary: Delete conversation
-Description: Permanently removes a conversation and all its messages. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/conversations/CONV_UUID
-
-
---- GET /v1/conversations/{id}/messages ---
-Summary: List messages
-Description: Returns a paginated list of messages from a conversation. Requires scope messages:read.
-Parameters:
-  - id: string (path, required, uuid) -- Conversation ID
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "created_at")
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-Response 200:
-  data: array of Message objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/conversations/CONV_UUID/messages?order=asc"
-
-
---- POST /v1/conversations/{id}/messages ---
-Summary: Send message
-Description: Sends a new message in the conversation. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Conversation ID
-Request body (JSON, required):
-  - content: string (required, min 1 char) -- Message content
-  - type: string (optional, enum: text, image, audio, document, default: text) -- Message type
-  - media_url: string (optional, uri) -- Media URL (required for image, audio, document types)
-Response 201:
-  data: Message object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"content":"Ola, como posso ajudar?"}' \
-    https://api.rovax.io/v1/conversations/CONV_UUID/messages
-
-
---- DELETE /v1/conversations/{id}/messages ---
-Summary: Clear messages
-Description: Removes all messages from a conversation. The conversation is kept but becomes empty. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Conversation ID
-Response 200:
-  data: { deleted: boolean, count: integer }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/conversations/CONV_UUID/messages
-
-
---- PUT /v1/conversations/{id}/messages/{messageId} ---
-Summary: Edit message
-Description: Edits the content of a specific message in the conversation. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Conversation ID
-  - messageId: string (path, required, uuid) -- Message ID
-Request body (JSON, required):
-  - content: string (required, min 1 char) -- New message content
-Response 200:
-  data: Message object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"content":"Mensagem editada com novo conteudo"}' \
-    https://api.rovax.io/v1/conversations/CONV_UUID/messages/MSG_UUID
-
-
---- DELETE /v1/conversations/{id}/messages/{messageId} ---
-Summary: Delete message
-Description: Permanently removes an individual message from the conversation. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Conversation ID
-  - messageId: string (path, required, uuid) -- Message ID
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/conversations/CONV_UUID/messages/MSG_UUID
-
-
---- POST /v1/conversations/{id}/human-handoff ---
-Summary: Initiate human handoff
-Description: Transfers the conversation to human support. AI stops responding automatically until handling is resumed. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Conversation ID
-Request body (JSON, optional):
-  - attendant_id: string (optional, uuid) -- Specific human attendant ID (auto-distributed if not provided)
-  - reason: string (optional, max 500 chars) -- Reason for transfer
-Response 200:
-  data: HumanHandoffResponse object
-    - conversation_id: string (uuid)
-    - status: string (enum: human_active)
-    - attendant_id: string|null (uuid)
-    - transferred_at: string (date-time)
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"reason":"Cliente solicitou falar com um atendente"}' \
-    https://api.rovax.io/v1/conversations/CONV_UUID/human-handoff
-
-
---- POST /v1/conversations/{id}/ai-resume ---
-Summary: Resume AI handling
-Description: Resumes automatic AI handling after a period of human support. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Conversation ID
-Response 200:
-  data: AiResumeResponse object
-    - conversation_id: string (uuid)
-    - status: string (enum: ai_active)
-    - resumed_at: string (date-time)
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/conversations/CONV_UUID/ai-resume
-
-
-AGENTS
-===========================
-
---- GET /v1/agents ---
-Summary: List agents
-Description: Returns a paginated list of AI agents. Supports filtering by status and searching by name. Requires scope agents:read.
-Parameters:
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, name, status)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - status: string (query, optional, enum: active, inactive)
-  - search: string (query, optional)
-Response 200:
-  data: array of Agent objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/agents?status=active"
-
-
---- POST /v1/agents ---
-Summary: Create agent
-Description: Creates a new AI agent. Requires scope agents:write.
-Request body (JSON, required):
-  - name: string (required, 1-255 chars)
-  - description: string (optional, max 1000 chars)
-  - model: string (optional, enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus, default: gpt-4o)
-  - personality: string (optional, max 2000 chars)
-  - behavior_rules: array of strings (optional) -- Behavior rules
-  - communication_style: string (optional, enum: formal, normal, casual, default: normal)
-Response 201:
-  data: Agent object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"Assistente de Vendas","model":"gpt-4o","communication_style":"formal"}' \
-    https://api.rovax.io/v1/agents
-
-
---- GET /v1/agents/{id} ---
-Summary: Get agent
-Description: Returns details of a specific agent. Requires scope agents:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: Agent object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID
-
-
---- PUT /v1/agents/{id} ---
-Summary: Update agent
-Description: Updates an existing agent. All fields are optional. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - name: string (optional, 1-255 chars)
-  - description: string (optional, max 1000 chars)
-  - model: string (optional, enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
-  - personality: string (optional, max 2000 chars)
-  - behavior_rules: array of strings (optional)
-  - communication_style: string (optional, enum: formal, normal, casual)
-  - max_tokens: integer (optional)
-  - temperature: number (optional, 0-1)
-Response 200:
-  data: Agent object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"temperature":0.8,"max_tokens":4096}' \
-    https://api.rovax.io/v1/agents/AGENT_UUID
-
-
---- DELETE /v1/agents/{id} ---
-Summary: Delete agent
-Description: Permanently removes an agent. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID
-
-
---- POST /v1/agents/{id}/activate ---
-Summary: Activate agent
-Description: Activates an agent that is inactive. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: Agent object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/activate
-
-
---- POST /v1/agents/{id}/deactivate ---
-Summary: Deactivate agent
-Description: Deactivates an agent that is active. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: Agent object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/deactivate
-
-
---- GET /v1/agents/{id}/settings ---
-Summary: Get agent settings
-Description: Returns the settings of a specific agent. Requires scope agents:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: AgentSettings object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/settings
-
-
---- PUT /v1/agents/{id}/settings ---
-Summary: Update agent settings
-Description: Updates the settings of an agent. All fields are optional. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - model: string (optional, enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
-  - temperature: number (optional, 0-1)
-  - max_tokens: integer (optional)
-  - communication_style: string (optional, enum: formal, normal, casual)
-  - response_format: string|null (optional, enum: text, json, markdown, null)
-  - language: string|null (optional) -- Preferred response language (e.g., "pt-BR")
-Response 200:
-  data: AgentSettings object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"model":"claude-3.7-sonnet","temperature":0.7,"language":"pt-BR"}' \
-    https://api.rovax.io/v1/agents/AGENT_UUID/settings
-
-
---- GET /v1/agents/{id}/webhooks ---
-Summary: Get agent webhooks
-Description: Returns the webhooks configured for an agent. Requires scope agents:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: AgentWebhooks object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/webhooks
-
-
---- PUT /v1/agents/{id}/webhooks ---
-Summary: Update agent webhooks
-Description: Updates the webhooks of an agent. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - webhooks: array of objects
-    - url: string (uri) -- Webhook URL
-    - events: array of strings -- Events that trigger the webhook (e.g., conversation.started, conversation.ended, message.received)
-    - headers: object|null -- Custom headers sent with the webhook
-    - is_active: boolean -- Whether the webhook is active
-Response 200:
-  data: AgentWebhooks object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"webhooks":[{"url":"https://example.com/webhook","events":["message.received"],"is_active":true}]}' \
-    https://api.rovax.io/v1/agents/AGENT_UUID/webhooks
-
-
---- POST /v1/agents/{id}/conversation ---
-Summary: Converse with agent
-Description: Sends a message to the agent and receives a response. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - message: string (required, min 1 char) -- Message sent to the agent
-  - conversation_id: string (optional, uuid) -- Existing conversation ID (omit to start new conversation)
-  - type: string (optional, enum: text, image, audio, default: text)
-Response 200:
-  data: AgentConversationResponse object
-    - response: string -- Response generated by the agent
-    - conversation_id: string (uuid) -- Conversation ID
-    - tokens_used: integer -- Tokens consumed in the response
-    - model: string -- Model used for generation
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"message":"Ola, preciso de ajuda com meu pedido"}' \
-    https://api.rovax.io/v1/agents/AGENT_UUID/conversation
-
-
---- POST /v1/agents/{id}/context ---
-Summary: Add context
-Description: Adds context to an existing conversation with the agent. Requires scope agents:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - conversation_id: string (required, uuid) -- Conversation ID
-  - role: string (optional, enum: system, user, assistant, default: system) -- Context message role
-  - content: string (required, min 1 char) -- Context content to add
-Response 200:
-  data: { success: boolean }
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"conversation_id":"CONV_UUID","content":"O cliente e VIP e tem prioridade no atendimento"}' \
-    https://api.rovax.io/v1/agents/AGENT_UUID/context
-
-
---- GET /v1/agents/{id}/credits ---
-Summary: Agent credit consumption
-Description: Returns the agent's credit consumption for the period. Requires scope agents:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: AgentCredits object
-    - total_credits: number -- Total credits consumed in the period
-    - period_start: string (date-time)
-    - period_end: string (date-time)
-    - breakdown: array of objects
-      - date: string (date)
-      - credits: number
-      - conversations: integer
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/credits
-
-
---- GET /v1/agents/{id}/behavior-history ---
-Summary: Behavior history
-Description: Returns the agent's behavior change history. Requires scope agents:read.
-Parameters:
-  - id: string (path, required, uuid)
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-Response 200:
-  data: array of AgentBehaviorHistory objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agents/AGENT_UUID/behavior-history
-
-
-TRAININGS
-===========================
-
---- POST /v1/agents/{id}/trainings ---
-Summary: Create training
-Description: Creates a new training for an agent. Type can be text, URL, or file. Requires scope trainings:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - type: string (required, enum: text, url, file) -- Training type
-  - content: string (optional) -- Training content (required for text and url types)
-  - file_url: string (optional) -- File upload URL (for file type only)
-  - name: string (optional, max 255 chars) -- Training identifier name
-Response 201:
-  data: Training object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"type":"text","content":"Nossa empresa oferece servicos de automacao...","name":"Info da empresa"}' \
-    https://api.rovax.io/v1/agents/AGENT_UUID/trainings
-
-
---- GET /v1/agents/{id}/trainings ---
-Summary: List trainings
-Description: Returns a paginated list of trainings for an agent. Requires scope trainings:read.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, type, status)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - type: string (query, optional, enum: text, url, file) -- Filter by training type
-  - status: string (query, optional, enum: processing, completed, failed) -- Filter by training status
-Response 200:
-  data: array of Training objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/agents/AGENT_UUID/trainings?type=text&status=completed"
-
-
---- PUT /v1/trainings/{id} ---
-Summary: Update training
-Description: Updates an existing training. Only text-type trainings can be updated. Requires scope trainings:write.
-Parameters:
-  - id: string (path, required, uuid) -- Training ID
-Request body (JSON, required):
-  - content: string (optional) -- New training content (text type only)
-Response 200:
-  data: Training object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"content":"Conteudo de treinamento atualizado..."}' \
-    https://api.rovax.io/v1/trainings/TRAINING_UUID
-
-
---- DELETE /v1/trainings/{id} ---
-Summary: Delete training
-Description: Permanently removes a training. Requires scope trainings:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/trainings/TRAINING_UUID
-
-
-CHANNELS
-===========================
-
---- POST /v1/channels ---
-Summary: Create channel
-Description: Creates a new communication channel. Requires scope channels:write.
-Request body (JSON, required):
-  - name: string (required, 1-255 chars) -- Channel name
-  - type: string (required, enum: whatsapp, telegram, email, website) -- Channel type
-  - agent_id: string (required, uuid) -- Associated agent ID
-Response 201:
-  data: Channel object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"WhatsApp Principal","type":"whatsapp","agent_id":"AGENT_UUID"}' \
-    https://api.rovax.io/v1/channels
-
-
---- GET /v1/channels ---
-Summary: List channels
-Description: Returns a paginated list of communication channels. Supports filtering by type and status. Requires scope channels:read.
-Parameters:
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - sort: string (query, optional, default: "created_at", enum: created_at, updated_at, name, type, status)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - type: string (query, optional, enum: whatsapp, telegram, email, website)
-  - status: string (query, optional, enum: active, inactive, connecting, error)
-  - search: string (query, optional)
-Response 200:
-  data: array of Channel objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/channels?type=whatsapp&status=active"
-
-
---- PUT /v1/channels/{id} ---
-Summary: Update channel
-Description: Updates an existing channel. All fields are optional. Requires scope channels:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - name: string (optional, 1-255 chars)
-  - agent_id: string (optional, uuid) -- Associated agent ID
-Response 200:
-  data: Channel object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"WhatsApp Vendas"}' \
-    https://api.rovax.io/v1/channels/CHANNEL_UUID
-
-
---- DELETE /v1/channels/{id} ---
-Summary: Delete channel
-Description: Permanently removes a communication channel. Requires scope channels:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID
-
-
---- GET /v1/channels/{id}/config ---
-Summary: Get channel configuration
-Description: Returns the configuration of a specific channel. Requires scope channels:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: ChannelConfig object
-    - provider: string|null -- Channel provider
-    - api_key: string|null -- Provider API key
-    - welcome_message: string|null -- Welcome message
-    - auto_reply: boolean -- Auto-reply enabled
-    - business_hours: object|null -- Business hours configuration
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID/config
-
-
---- PUT /v1/channels/{id}/config ---
-Summary: Update channel configuration
-Description: Updates the configuration of an existing channel. Requires scope channels:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - provider: string|null (optional)
-  - api_key: string|null (optional)
-  - welcome_message: string|null (optional)
-  - auto_reply: boolean (optional)
-  - business_hours: object|null (optional)
-Response 200:
-  data: ChannelConfig object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"welcome_message":"Ola! Como posso ajudar?","auto_reply":true}' \
-    https://api.rovax.io/v1/channels/CHANNEL_UUID/config
-
-
---- GET /v1/channels/{id}/qr-code ---
-Summary: Get QR code
-Description: Returns the QR code for WhatsApp channel connection. Requires scope channels:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: ChannelQRCode object
-    - qr_code: string -- QR code in base64 format
-    - expires_at: string (date-time) -- QR code expiration date
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID/qr-code
-
-
---- POST /v1/channels/{id}/conversation ---
-Summary: Start conversation on channel
-Description: Starts a new conversation on a specific channel. Requires scope channels:write.
-Parameters:
-  - id: string (path, required, uuid) -- Channel ID
-Request body (JSON, required):
-  - contact_id: string (optional, uuid) -- Existing contact ID
-  - customer_name: string (optional, max 255 chars)
-  - customer_phone: string (optional, max 50 chars)
-  - customer_email: string (optional, email, max 255 chars)
-  - initial_message: string (optional) -- Initial conversation message
-Response 201:
-  data: Conversation object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"customer_name":"Joao Silva","customer_phone":"+5547999999999","initial_message":"Ola, gostaria de mais informacoes."}' \
-    https://api.rovax.io/v1/channels/CHANNEL_UUID/conversation
-
-
---- GET /v1/channels/{id}/widget/links ---
-Summary: Get widget links
-Description: Returns the widget embedding links for the channel. Requires scope channels:read.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: WidgetLinks object
-    - script_url: string -- Widget script URL
-    - iframe_url: string -- Widget iframe URL
-    - embed_code: string -- HTML embed code
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/channels/CHANNEL_UUID/widget/links
-
-
---- PUT /v1/channels/{id}/widget/settings ---
-Summary: Update widget settings
-Description: Updates the visual settings of the channel widget. Requires scope channels:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - primary_color: string|null (optional) -- Primary widget color (hex, e.g., "#6366f1")
-  - position: string (optional, enum: bottom-right, bottom-left) -- Widget position on page
-  - title: string|null (optional) -- Widget title
-  - subtitle: string|null (optional) -- Widget subtitle
-  - welcome_message: string|null (optional) -- Widget welcome message
-  - avatar_url: string|null (optional) -- Widget avatar URL
-  - show_branding: boolean (optional) -- Show Rovax.io branding on widget
-Response 200:
-  data: WidgetSettings object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"primary_color":"#6366f1","position":"bottom-right","title":"Fale conosco"}' \
-    https://api.rovax.io/v1/channels/CHANNEL_UUID/widget/settings
-
-
-CUSTOM FIELDS
-===========================
-
---- GET /v1/custom-fields ---
-Summary: List custom fields
-Description: Returns all custom fields for the company, ordered by display_order. Requires scope custom-fields:read.
-Parameters: None
-Response 200:
-  data: array of CustomField objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/custom-fields
-
-
---- POST /v1/custom-fields ---
-Summary: Create custom field
-Description: Creates a new custom field. Requires scope custom-fields:write.
-Request body (JSON, required):
-  - name: string (required, 1-255 chars) -- Field name
-  - field_type: string (optional, enum: text, number, date, select, multiselect, boolean, default: text)
-  - options: array of strings (optional) -- Options for select/multiselect types
-  - is_required: boolean (optional) -- Whether the field is required
-  - display_order: integer (optional, min: 0) -- Display order
-Response 201:
-  data: CustomField object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"Cargo","field_type":"text"}' \
-    https://api.rovax.io/v1/custom-fields
-
-
---- PUT /v1/custom-fields/{id} ---
-Summary: Update custom field
-Description: Updates an existing custom field. Requires scope custom-fields:write.
-Parameters:
-  - id: string (path, required, uuid)
-Request body (JSON, required):
-  - name: string (optional, 1-255 chars)
-  - field_type: string (optional, enum: text, number, date, select, multiselect, boolean)
-  - options: array of strings (optional)
-  - is_required: boolean (optional)
-  - display_order: integer (optional, min: 0)
-Response 200:
-  data: CustomField object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"Job Title","is_required":true}' \
-    https://api.rovax.io/v1/custom-fields/FIELD_UUID
-
-
---- PUT /v1/custom-fields/{id}/archive ---
-Summary: Archive custom field
-Description: Archives a custom field (sets is_archived=true). Requires scope custom-fields:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: CustomField object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/custom-fields/FIELD_UUID/archive
-
-
-INTERACTIONS
-===========================
-
---- GET /v1/interactions ---
-Summary: List interactions
-Description: Returns a paginated list of interactions (conversations) with filters. Requires scope interactions:read.
-Parameters:
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-  - status: string (query, optional, enum: active, closed, pending)
-  - channel: string (query, optional) -- Filter by communication channel
-  - agent_id: string (query, optional, uuid) -- Filter by agent ID
-  - from: string (query, optional, date-time) -- Start date (ISO 8601)
-  - to: string (query, optional, date-time) -- End date (ISO 8601)
-Response 200:
-  data: array of Conversation objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/interactions?status=active&agent_id=AGENT_UUID"
-
-
---- GET /v1/interactions/{id}/messages ---
-Summary: List interaction messages
-Description: Returns a paginated list of messages from an interaction. Requires scope interactions:read.
-Parameters:
-  - id: string (path, required, uuid) -- Interaction ID
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-Response 200:
-  data: array of Message objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" "https://api.rovax.io/v1/interactions/INTERACTION_UUID/messages"
-
-
---- DELETE /v1/interactions/{id} ---
-Summary: Close interaction
-Description: Closes an interaction (sets status='closed'). This is a soft delete operation. Requires scope interactions:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { closed: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/interactions/INTERACTION_UUID
-
-
-INTENTIONS
-===========================
-
---- GET /v1/agent/{id}/intentions ---
-Summary: List agent intentions
-Description: Returns a paginated list of intentions configured for the agent. Requires scope intentions:read.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-Response 200:
-  data: array of Intention objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/intentions
-
-
---- POST /v1/agent/{id}/intentions ---
-Summary: Create intention
-Description: Creates a new intention for the agent. Requires scope intentions:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - name: string (required, 1-255 chars) -- Intention name
-  - description: string (optional) -- Intention description
-  - examples: array of strings (optional) -- Example phrases
-  - action_type: string (optional, max 100 chars) -- Action type (e.g., "schedule")
-  - action_config: object (optional) -- Action configuration
-Response 201:
-  data: Intention object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"Agendamento","description":"Cliente quer agendar uma reuniao","examples":["quero marcar uma reuniao","agendar horario"]}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/intentions
-
-
---- PUT /v1/agent/{id}/intentions/{intentionId} ---
-Summary: Update intention
-Description: Updates an agent intention. Requires scope intentions:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - intentionId: string (path, required, uuid) -- Intention ID
-Request body (JSON, required):
-  - name: string (optional, 1-255 chars)
-  - description: string (optional)
-  - examples: array of strings (optional)
-  - action_type: string (optional, max 100 chars)
-  - action_config: object (optional)
-Response 200:
-  data: Intention object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"Agendamento de Reuniao","action_type":"schedule"}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
-
-
---- DELETE /v1/agent/{id}/intentions/{intentionId} ---
-Summary: Delete intention
-Description: Removes an intention from the agent. Requires scope intentions:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - intentionId: string (path, required, uuid) -- Intention ID
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/agent/AGENT_UUID/intentions/INTENTION_UUID
-
-
-IDLE ACTIONS
-===========================
-
---- GET /v1/agent/{id}/idle-actions ---
-Summary: List idle actions
-Description: Returns a paginated list of idle actions for the agent. Requires scope idle-actions:read.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-Response 200:
-  data: array of IdleAction objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions
-
-
---- POST /v1/agent/{id}/idle-actions ---
-Summary: Create idle action
-Description: Creates a new idle action for the agent. Triggered automatically after a period of customer inactivity. Requires scope idle-actions:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - name: string (required, 1-255 chars) -- Action name
-  - action_type: string (optional, enum: message, send_message, transfer, close, webhook, default: message)
-  - trigger_after_minutes: integer (required, 1-1440) -- Minutes of inactivity before trigger
-  - action_config: object (optional) -- Action configuration
-  - is_active: boolean (optional) -- Whether the action is active
-Response 201:
-  data: IdleAction object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"Lembrete de inatividade","trigger_after_minutes":30,"action_type":"message"}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions
-
-
---- PUT /v1/agent/{id}/idle-actions/{actionId} ---
-Summary: Update idle action
-Description: Updates an idle action for the agent. Requires scope idle-actions:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - actionId: string (path, required, uuid) -- Idle action ID
-Request body (JSON, required):
-  - name: string (optional, 1-255 chars)
-  - action_type: string (optional, enum: message, send_message, transfer, close, webhook)
-  - trigger_after_minutes: integer (optional, 1-1440)
-  - action_config: object (optional)
-  - is_active: boolean (optional)
-Response 200:
-  data: IdleAction object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"trigger_after_minutes":60,"is_active":false}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
-
-
---- DELETE /v1/agent/{id}/idle-actions/{actionId} ---
-Summary: Delete idle action
-Description: Removes an idle action from the agent. Requires scope idle-actions:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - actionId: string (path, required, uuid) -- Idle action ID
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/agent/AGENT_UUID/idle-actions/ACTION_UUID
-
-
-TRANSFER RULES
-===========================
-
---- GET /v1/agent/{id}/transfer-rules ---
-Summary: List transfer rules
-Description: Returns a paginated list of transfer rules for the agent, ordered by priority. Requires scope transfer-rules:read.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - page: integer (query, optional, default: 1)
-  - limit: integer (query, optional, default: 20, max: 100)
-  - order: string (query, optional, default: "desc", enum: asc, desc)
-Response 200:
-  data: array of TransferRule objects
-  pagination: Pagination object
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules
-
-
---- POST /v1/agent/{id}/transfer-rules ---
-Summary: Create transfer rule
-Description: Creates a new transfer rule for the agent. Requires scope transfer-rules:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - name: string (required, 1-255 chars) -- Rule name
-  - condition_type: string (required, enum: keyword, intent, time, custom)
-  - condition_config: object (optional, default: {}) -- Condition configuration
-  - target_type: string (required, enum: agent, team, department, webhook)
-  - target_id: string (optional, max 255 chars) -- Target entity ID
-  - priority: integer (optional, min: 0) -- Rule priority
-  - is_active: boolean (optional) -- Whether the rule is active
-Response 201:
-  data: TransferRule object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"name":"Transferir para vendas","condition_type":"keyword","target_type":"department","priority":1}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules
-
-
---- PUT /v1/agent/{id}/transfer-rules/{ruleId} ---
-Summary: Update transfer rule
-Description: Updates a transfer rule for the agent. Requires scope transfer-rules:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - ruleId: string (path, required, uuid) -- Transfer rule ID
-Request body (JSON, required):
-  - name: string (optional, 1-255 chars)
-  - condition_type: string (optional, enum: keyword, intent, time, custom)
-  - condition_config: object (optional)
-  - target_type: string (optional, enum: agent, team, department, webhook)
-  - target_id: string (optional, max 255 chars)
-  - priority: integer (optional, min: 0)
-  - is_active: boolean (optional)
-Response 200:
-  data: TransferRule object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"priority":0,"is_active":false}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
-
-
---- DELETE /v1/agent/{id}/transfer-rules/{ruleId} ---
-Summary: Delete transfer rule
-Description: Removes a transfer rule from the agent. Requires scope transfer-rules:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - ruleId: string (path, required, uuid) -- Transfer rule ID
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/agent/AGENT_UUID/transfer-rules/RULE_UUID
-
-
-MCP (Model Context Protocol)
-===========================
-
---- POST /v1/agent/{id}/mcp/add ---
-Summary: Add MCP server
-Description: Adds a new MCP server to the agent. Requires scope mcp:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - url: string (required, uri) -- MCP server URL
-  - type: string (optional, enum: sse, http, default: http) -- Connection type
-  - name: string (required, 1-255 chars) -- Server name
-  - auth_config: object (optional) -- Authentication configuration
-Response 201:
-  data: MCPServer object
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"url":"https://mcp.example.com/api","name":"My MCP Server","type":"http"}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/add
-
-
---- POST /v1/agent/{id}/mcp/connect ---
-Summary: Test MCP connection
-Description: Tests connectivity with an MCP server via HTTP request. Private/internal URLs are blocked for security. Requires scope mcp:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Request body (JSON, required):
-  - url: string (required, uri) -- MCP server URL to test
-Response 200:
-  data:
-    - status: string (enum: connected, unreachable) -- Connection status
-    - url: string (uri) -- Tested URL
-    - http_status: integer -- HTTP status code returned (if accessible)
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"url":"https://mcp.example.com/api"}' \
-    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/connect
-
-
---- GET /v1/agent/{id}/mcp/tools ---
-Summary: List MCP tools
-Description: Returns all available tools from the agent's MCP servers. Requires scope mcp:read.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Response 200:
-  data: array of MCPTool objects
-
-Example:
-  curl -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/agent/AGENT_UUID/mcp/tools
-
-
---- PUT /v1/agent/{id}/mcp/tools/{toolId}/active ---
-Summary: Activate MCP tool
-Description: Activates an MCP tool (removes from disabled tools list). Requires scope mcp:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - toolId: string (path, required, uuid) -- Tool ID
-Response 200:
-  data: { tool_id: string (uuid), active: true }
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/active
-
-
---- PUT /v1/agent/{id}/mcp/tools/{toolId}/inactive ---
-Summary: Deactivate MCP tool
-Description: Deactivates an MCP tool (adds to disabled tools list). Requires scope mcp:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - toolId: string (path, required, uuid) -- Tool ID
-Response 200:
-  data: { tool_id: string (uuid), active: false }
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/tools/TOOL_UUID/inactive
-
-
---- POST /v1/agent/{id}/mcp/sync-tools ---
-Summary: Sync MCP tools
-Description: Triggers MCP tool rediscovery via discovery service. Requires scope mcp:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-Response 200:
-  data: { status: string (e.g., "syncing"), agent_id: string (uuid) }
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/sync-tools
-
-
---- DELETE /v1/agent/{id}/mcp/{mcpId} ---
-Summary: Delete MCP server
-Description: Removes an MCP server and all associated tools. Requires scope mcp:write.
-Parameters:
-  - id: string (path, required, uuid) -- Agent ID
-  - mcpId: string (path, required, uuid) -- MCP server ID
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/agent/AGENT_UUID/mcp/MCP_UUID
-
-
-CHATS
-===========================
-
---- DELETE /v1/chats/{id} ---
-Summary: Soft delete chat
-Description: Soft deletes a conversation (sets status='deleted'). Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean, id: string (uuid) }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID
-
-
---- DELETE /v1/chats/{id}/messages ---
-Summary: Delete all messages
-Description: Removes all messages from a conversation. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID/messages
-
-
---- DELETE /v1/chats/{id}/messages/{messageId} ---
-Summary: Delete message
-Description: Removes a specific message from a conversation. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Chat ID
-  - messageId: string (path, required, uuid) -- Message ID
-Response 200:
-  data: { deleted: boolean }
-
-Example:
-  curl -X DELETE -H "x-api-key: YOUR_KEY" \
-    https://api.rovax.io/v1/chats/CHAT_UUID/messages/MSG_UUID
-
-
---- PUT /v1/chats/{id}/messages/{messageId} ---
-Summary: Edit message
-Description: Edits the content of an existing message. The message will be marked as edited. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid) -- Chat ID
-  - messageId: string (path, required, uuid) -- Message ID
-Request body (JSON, required):
-  - content: string (required, min 1 char) -- New message content
-Response 200:
-  data: Message object
-
-Example:
-  curl -X PUT -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
-    -d '{"content":"Novo conteudo da mensagem"}' \
-    https://api.rovax.io/v1/chats/CHAT_UUID/messages/MSG_UUID
-
-
---- POST /v1/chats/{id}/start-human ---
-Summary: Start human takeover
-Description: Pauses the AI agent and starts human support in the conversation. A system message is logged. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { id: string (uuid), ai_mode: string (e.g., "paused") }
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID/start-human
-
-
---- POST /v1/chats/{id}/stop-human ---
-Summary: Stop human takeover
-Description: Resumes AI agent control in the conversation. A system message is logged. Requires scope chats:write.
-Parameters:
-  - id: string (path, required, uuid)
-Response 200:
-  data: { id: string (uuid), ai_mode: string (e.g., "auto") }
-
-Example:
-  curl -X POST -H "x-api-key: YOUR_KEY" https://api.rovax.io/v1/chats/CHAT_UUID/stop-human
-
-
-===============================================================================
-SCHEMAS / DATA MODELS
-===============================================================================
-
-
---- Health ---
-  - status: string (example: "ok")
-  - timestamp: string (date-time)
-
-
---- ApiKeyInfo ---
-  - id: string (uuid) -- API key ID
-  - company_id: string (uuid) -- Company ID
-  - workspace_id: string|null (uuid) -- Workspace ID
-  - key_name: string -- API key name
-  - scopes: array of strings -- Access scopes (see AUTHENTICATION section for full list)
-  - is_active: boolean -- Whether the API key is active
-
-
---- Pagination ---
-  - page: integer -- Current page (example: 1)
-  - limit: integer -- Items per page (example: 20)
-  - total: integer -- Total items (example: 150)
-  - total_pages: integer -- Total pages (example: 8)
-
-
---- Error ---
-  - error: object
-    - code: string -- Error code (e.g., "VALIDATION_ERROR")
-    - message: string -- Descriptive error message
-    - status: integer -- HTTP status code
-
-
---- Contact ---
-  - id: string (uuid) -- Unique contact ID
-  - company_id: string (uuid) -- Company ID
-  - customer_name: string -- Contact name
-  - customer_phone: string|null -- Phone number (e.g., "+5547999999999")
-  - customer_email: string|null (email) -- Email address
-  - customer_company: string|null -- Company name
-  - customer_position: string|null -- Job title
-  - tags: array|null of strings -- Contact tags
-  - notes: string|null -- Notes about the contact
-  - source: string|null -- Contact origin
-  - status: string (enum: active, inactive, blocked)
-  - metadata: object|null -- Free-form additional data
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- ContactCreate ---
-  Required: customer_name
-  - customer_name: string (1-255 chars)
-  - customer_phone: string (max 50 chars)
-  - customer_email: string (email, max 255 chars)
-  - customer_company: string (max 255 chars)
-  - customer_position: string (max 255 chars)
-  - tags: array of strings
-  - notes: string
-  - source: string (max 100 chars)
-  - status: string (enum: active, inactive, blocked, default: active)
-  - metadata: object
-
-
---- ContactUpdate ---
-  All fields optional
-  - customer_name: string (1-255 chars)
-  - customer_phone: string (max 50 chars)
-  - customer_email: string (email, max 255 chars)
-  - customer_company: string (max 255 chars)
-  - customer_position: string (max 255 chars)
-  - tags: array of strings
-  - notes: string
-  - source: string (max 100 chars)
-  - status: string (enum: active, inactive, blocked)
-  - metadata: object
-
-
---- Lead ---
+Keys are created at https://app.rovax.io/developers
+
+## Conventions
+
+- Resource IDs are UUIDs; timestamps are ISO 8601.
+- List endpoints accept page, limit, order and return a pagination object
+  (page, limit, total, total_pages). Default page=1, limit=20, max limit=100.
+- Successful responses wrap the payload in a data key.
+- Errors return an error object: { code, message, status }.
+- Rate limit headers: X-RateLimit-Limit, X-RateLimit-Remaining,
+  X-RateLimit-Reset, Retry-After.
+
+## Reusable parameters
+
+- Page (page): in=query, type=integer, default=1, min=1
+  Page number
+- Limit (limit): in=query, type=integer, default=20, min=1, max=100
+  Items per page
+- Order (order): in=query, type=string, default=desc, enum=asc|desc
+  Sort direction
+- Search (search): in=query, type=string
+  Search term
+- AgentId (id): in=path, type=string, format=uuid, required
+  Agent ID
+- TrainingId (id): in=path, type=string, format=uuid, required
+  Training ID
+- ChannelId (id): in=path, type=string, format=uuid, required
+  Channel ID
+- ContactId (id): in=path, type=string, format=uuid, required
+  Contact ID
+- ConversationId (id): in=path, type=string, format=uuid, required
+  Conversation ID
+- MessageId (messageId): in=path, type=string, format=uuid, required
+  Message ID
+- ChatId (id): in=path, type=string, format=uuid, required
+  Chat ID
+- CustomFieldId (id): in=path, type=string, format=uuid, required
+  Custom field ID
+- WebhookId (id): in=path, type=string, format=uuid, required
+  Webhook ID
+- ToolId (toolId): in=path, type=string, format=uuid, required
+  MCP tool ID
+- McpId (mcpId): in=path, type=string, format=uuid, required
+  MCP server ID
+
+## Endpoint index
+
+Total: 72 operations across 11 groups.
+
+System:
+  GET    /v1/health                                           Health check
+  GET    /v1/me                                               API key information
+
+Agents:
+  GET    /v1/agents                                           List agents
+  POST   /v1/agents                                           Create agent
+  DELETE /v1/agents/{id}                                      Delete agent
+  GET    /v1/agents/{id}                                      Get agent
+  PUT    /v1/agents/{id}                                      Update agent
+  POST   /v1/agents/{id}/activate                             Activate agent
+  GET    /v1/agents/{id}/behavior-history                     Behavior history
+  POST   /v1/agents/{id}/context                              Inject context into agent
+  POST   /v1/agents/{id}/conversation                         Create conversation with agent
+  GET    /v1/agents/{id}/credits                              Get agent credits
+  POST   /v1/agents/{id}/deactivate                           Deactivate agent
+  GET    /v1/agents/{id}/settings                             Get agent settings
+  PUT    /v1/agents/{id}/settings                             Update agent settings
+  GET    /v1/agents/{id}/webhooks                             Get agent webhooks
+  PUT    /v1/agents/{id}/webhooks                             Update agent webhooks
+
+Trainings:
+  GET    /v1/agents/{id}/trainings                            List agent trainings
+  POST   /v1/agents/{id}/trainings                            Create training
+  DELETE /v1/trainings/{id}                                   Delete training
+  PUT    /v1/trainings/{id}                                   Update training
+
+Channels:
+  GET    /v1/channels                                         List channels
+  POST   /v1/channels                                         Create channel
+  DELETE /v1/channels/{id}                                    Delete channel
+  PUT    /v1/channels/{id}                                    Update channel
+  GET    /v1/channels/{id}/config                             Get channel configuration
+  PUT    /v1/channels/{id}/config                             Update channel configuration
+  POST   /v1/channels/{id}/conversation                       Start conversation on channel
+  GET    /v1/channels/{id}/qr-code                            Get channel QR code
+  GET    /v1/channels/{id}/widget/links                       Get widget links
+  PUT    /v1/channels/{id}/widget/settings                    Update widget settings
+
+Contacts:
+  GET    /v1/contacts                                         List contacts
+  POST   /v1/contacts                                         Create contact
+  DELETE /v1/contacts/{id}                                    Delete contact
+  GET    /v1/contacts/{id}                                    Get contact
+  PUT    /v1/contacts/{id}                                    Update contact
+
+Conversations:
+  GET    /v1/conversations                                    List conversations
+  DELETE /v1/conversations/{id}                               Close conversation
+  GET    /v1/conversations/{id}                               Get conversation
+  POST   /v1/conversations/{id}/ai-resume                     Resume AI agent
+  POST   /v1/conversations/{id}/human-handoff                 Start human handoff
+  DELETE /v1/conversations/{id}/messages                      Delete all messages
+  GET    /v1/conversations/{id}/messages                      List conversation messages
+  POST   /v1/conversations/{id}/messages                      Send message
+  DELETE /v1/conversations/{id}/messages/{messageId}          Delete message
+  PUT    /v1/conversations/{id}/messages/{messageId}          Edit message
+
+Custom Fields:
+  GET    /v1/custom-fields                                    List custom fields
+  POST   /v1/custom-fields                                    Create custom field
+  PUT    /v1/custom-fields/{id}                               Update custom field
+  PUT    /v1/custom-fields/{id}/archive                       Archive custom field
+
+Chats:
+  DELETE /v1/chats/{id}                                       Delete chat
+  DELETE /v1/chats/{id}/messages                              Delete chat messages
+  DELETE /v1/chats/{id}/messages/{messageId}                  Delete chat message
+  PUT    /v1/chats/{id}/messages/{messageId}                  Edit chat message
+  POST   /v1/chats/{id}/start-human                           Start human support
+  POST   /v1/chats/{id}/stop-human                            Stop human support
+
+Messages:
+  DELETE /v1/messages/{id}                                    Delete message
+  GET    /v1/messages/{id}                                    Get message
+
+MCP:
+  POST   /v1/agent/{id}/mcp/add                               Add MCP server
+  POST   /v1/agent/{id}/mcp/connect                           Connect MCP server
+  POST   /v1/agent/{id}/mcp/sync-tools                        Sync MCP tools
+  GET    /v1/agent/{id}/mcp/tools                             List MCP tools
+  PUT    /v1/agent/{id}/mcp/tools/{toolId}/active             Activate MCP tool
+  PUT    /v1/agent/{id}/mcp/tools/{toolId}/inactive           Deactivate MCP tool
+  DELETE /v1/agent/{id}/mcp/{mcpId}                           Remove MCP server
+
+Webhooks:
+  GET    /v1/webhooks                                         List webhooks
+  POST   /v1/webhooks                                         Create webhook
+  DELETE /v1/webhooks/{id}                                    Delete webhook
+  GET    /v1/webhooks/{id}                                    Get webhook
+  PUT    /v1/webhooks/{id}                                    Update webhook
+  GET    /v1/webhooks/{id}/deliveries                         List webhook deliveries
+  POST   /v1/webhooks/{id}/test                               Test webhook
+
+
+## Endpoints in detail
+
+
+-------------------------------------------------------------------------------
+### System
+-------------------------------------------------------------------------------
+Health check and API key introspection
+
+GET /v1/health
+  Summary: Health check
+  Description: Checks whether the API is running. Does not require authentication.
+  operationId: healthCheck
+  Auth: none (public endpoint)
+  Responses:
+    - 200: API is running
+        - status: string
+        - timestamp: string (date-time)
+
+GET /v1/me
+  Summary: API key information
+  Description: Returns information about the API key, including scopes and permissions.
+  operationId: getApiKeyInfo
+  Auth: x-api-key
+  Responses:
+    - 200: API key information
+        - data: object
+          - key_name: string
+          - company_id: string (uuid)
+          - workspace_id: string (uuid)
+          - scopes: array<string>
+          - permissions: object
+    - 401: Invalid or missing API key
+
+-------------------------------------------------------------------------------
+### Agents
+-------------------------------------------------------------------------------
+AI agents — creation, configuration, and management
+
+GET /v1/agents
+  Summary: List agents
+  Description: Returns a paginated list of AI agents.
+  operationId: listAgents
+  Auth: x-api-key
+  Parameters:
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+    - Order (reusable, see above)
+    - status (query): string (enum: active|inactive)
+  Responses:
+    - 200: List of agents
+        - data: array<Agent>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+    - 403: Insufficient scope for this operation
+
+POST /v1/agents
+  Summary: Create agent
+  Description: Creates a new AI agent.
+  operationId: createAgent
+  Auth: x-api-key
+  Request body (application/json) [required]:
+    CreateAgent (see Schemas)
+  Responses:
+    - 201: Agent created
+        - data: Agent
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 403: Insufficient scope for this operation
+
+DELETE /v1/agents/{id}
+  Summary: Delete agent
+  Description: Deletes an agent (soft delete).
+  operationId: deleteAgent
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Agent deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/agents/{id}
+  Summary: Get agent
+  Description: Returns details of a specific agent.
+  operationId: getAgent
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Agent details
+        - data: Agent
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/agents/{id}
+  Summary: Update agent
+  Description: Updates an existing agent.
+  operationId: updateAgent
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    UpdateAgent (see Schemas)
+  Responses:
+    - 200: Agent updated
+        - data: Agent
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/agents/{id}/activate
+  Summary: Activate agent
+  Description: Activates an agent to receive conversations.
+  operationId: activateAgent
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Agent activated
+        - data: Agent
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/agents/{id}/behavior-history
+  Summary: Behavior history
+  Description: Returns the history of behavior changes for an agent.
+  operationId: getAgentBehaviorHistory
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+  Responses:
+    - 200: Behavior history
+        - data: array<BehaviorHistory>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/agents/{id}/context
+  Summary: Inject context into agent
+  Description: Injects additional context for the agent's next response.
+  operationId: injectAgentContext
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    - conversation_id: string (uuid) [required]
+    - context: string [required] — Context to be injected
+  Responses:
+    - 200: Context injected
+        - data: object
+          - success: boolean
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/agents/{id}/conversation
+  Summary: Create conversation with agent
+  Description: Starts a new conversation with the agent via API.
+  operationId: createAgentConversation
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    - message: string [required] — Initial message
+    - contact_id: string (uuid) — Contact ID (optional)
+    - metadata: object — Additional metadata
+  Responses:
+    - 201: Conversation created
+        - data: object
+          - conversation_id: string (uuid)
+          - response: string
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/agents/{id}/credits
+  Summary: Get agent credits
+  Description: Returns the credit balance for an agent.
+  operationId: getAgentCredits
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Agent credits
+        - data: object
+          - credits_remaining: number
+          - credits_used: number
+          - credits_total: number
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/agents/{id}/deactivate
+  Summary: Deactivate agent
+  Description: Temporarily deactivates an agent.
+  operationId: deactivateAgent
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Agent deactivated
+        - data: Agent
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/agents/{id}/settings
+  Summary: Get agent settings
+  Description: Returns advanced settings for an agent.
+  operationId: getAgentSettings
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Agent settings
+        - data: AgentSettings
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/agents/{id}/settings
+  Summary: Update agent settings
+  Description: Updates advanced settings for an agent.
+  operationId: updateAgentSettings
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    AgentSettings (see Schemas)
+  Responses:
+    - 200: Settings updated
+        - data: AgentSettings
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/agents/{id}/webhooks
+  Summary: Get agent webhooks
+  Description: Returns the webhook configuration for an agent.
+  operationId: getAgentWebhooks
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Agent webhooks
+        - data: AgentWebhooks
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/agents/{id}/webhooks
+  Summary: Update agent webhooks
+  Description: Updates the webhook configuration for an agent.
+  operationId: updateAgentWebhooks
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    AgentWebhooks (see Schemas)
+  Responses:
+    - 200: Webhooks updated
+        - data: AgentWebhooks
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Trainings
+-------------------------------------------------------------------------------
+Agent knowledge bases
+
+GET /v1/agents/{id}/trainings
+  Summary: List agent trainings
+  Description: Returns trainings associated with the agent.
+  operationId: listAgentTrainings
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+  Responses:
+    - 200: List of trainings
+        - data: array<Training>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/agents/{id}/trainings
+  Summary: Create training
+  Description: Adds a new training to the agent's knowledge base.
+  operationId: createAgentTraining
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    CreateTraining (see Schemas)
+  Responses:
+    - 201: Training created
+        - data: Training
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+DELETE /v1/trainings/{id}
+  Summary: Delete training
+  Description: Removes a training from the knowledge base.
+  operationId: deleteTraining
+  Auth: x-api-key
+  Parameters:
+    - TrainingId (reusable, see above)
+  Responses:
+    - 200: Training deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/trainings/{id}
+  Summary: Update training
+  Description: Updates an existing training.
+  operationId: updateTraining
+  Auth: x-api-key
+  Parameters:
+    - TrainingId (reusable, see above)
+  Request body (application/json) [required]:
+    UpdateTraining (see Schemas)
+  Responses:
+    - 200: Training updated
+        - data: Training
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Channels
+-------------------------------------------------------------------------------
+Communication channels (WhatsApp, Telegram, Email, Website)
+
+GET /v1/channels
+  Summary: List channels
+  Description: Returns a list of communication channels.
+  operationId: listChannels
+  Auth: x-api-key
+  Parameters:
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+    - type (query): string (enum: whatsapp|telegram|email|website|instagram)
+  Responses:
+    - 200: List of channels
+        - data: array<Channel>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+
+POST /v1/channels
+  Summary: Create channel
+  Description: Creates a new communication channel.
+  operationId: createChannel
+  Auth: x-api-key
+  Request body (application/json) [required]:
+    CreateChannel (see Schemas)
+  Responses:
+    - 201: Channel created
+        - data: Channel
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+
+DELETE /v1/channels/{id}
+  Summary: Delete channel
+  Description: Removes a communication channel.
+  operationId: deleteChannel
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Responses:
+    - 200: Channel deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/channels/{id}
+  Summary: Update channel
+  Description: Updates an existing channel.
+  operationId: updateChannel
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Request body (application/json) [required]:
+    UpdateChannel (see Schemas)
+  Responses:
+    - 200: Channel updated
+        - data: Channel
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/channels/{id}/config
+  Summary: Get channel configuration
+  Description: Returns channel-specific settings.
+  operationId: getChannelConfig
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Responses:
+    - 200: Channel configuration
+        - data: ChannelConfig
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/channels/{id}/config
+  Summary: Update channel configuration
+  Description: Updates channel-specific settings.
+  operationId: updateChannelConfig
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Request body (application/json) [required]:
+    ChannelConfig (see Schemas)
+  Responses:
+    - 200: Configuration updated
+        - data: ChannelConfig
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/channels/{id}/conversation
+  Summary: Start conversation on channel
+  Description: Starts a new conversation through the channel.
+  operationId: createChannelConversation
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Request body (application/json) [required]:
+    - to: string [required] — Recipient (phone, email, etc.)
+    - message: string [required] — Initial message
+  Responses:
+    - 201: Conversation started
+        - data: object
+          - conversation_id: string (uuid)
+          - message_id: string (uuid)
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/channels/{id}/qr-code
+  Summary: Get channel QR code
+  Description: Returns the QR code for WhatsApp connection.
+  operationId: getChannelQrCode
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Responses:
+    - 200: Channel QR code
+        - data: object
+          - qr_code: string — QR code in base64
+          - status: string (enum: pending|connected|disconnected)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/channels/{id}/widget/links
+  Summary: Get widget links
+  Description: Returns links for embedding the widget on a website.
+  operationId: getChannelWidgetLinks
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Responses:
+    - 200: Widget links
+        - data: object
+          - embed_url: string (uri)
+          - script_tag: string
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/channels/{id}/widget/settings
+  Summary: Update widget settings
+  Description: Updates the widget's appearance and behavior.
+  operationId: updateChannelWidgetSettings
+  Auth: x-api-key
+  Parameters:
+    - ChannelId (reusable, see above)
+  Request body (application/json) [required]:
+    WidgetSettings (see Schemas)
+  Responses:
+    - 200: Settings updated
+        - data: WidgetSettings
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Contacts
+-------------------------------------------------------------------------------
+Customer records
+
+GET /v1/contacts
+  Summary: List contacts
+  Description: Returns a paginated list of contacts.
+  operationId: listContacts
+  Auth: x-api-key
+  Parameters:
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+    - Order (reusable, see above)
+    - Search (reusable, see above)
+    - status (query): string (enum: active|inactive|blocked)
+  Responses:
+    - 200: List of contacts
+        - data: array<Contact>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+
+POST /v1/contacts
+  Summary: Create contact
+  Description: Creates a new contact.
+  operationId: createContact
+  Auth: x-api-key
+  Request body (application/json) [required]:
+    CreateContact (see Schemas)
+  Responses:
+    - 201: Contact created
+        - data: Contact
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+
+DELETE /v1/contacts/{id}
+  Summary: Delete contact
+  Description: Removes a contact.
+  operationId: deleteContact
+  Auth: x-api-key
+  Parameters:
+    - ContactId (reusable, see above)
+  Responses:
+    - 200: Contact deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/contacts/{id}
+  Summary: Get contact
+  Description: Returns details of a contact.
+  operationId: getContact
+  Auth: x-api-key
+  Parameters:
+    - ContactId (reusable, see above)
+  Responses:
+    - 200: Contact details
+        - data: Contact
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/contacts/{id}
+  Summary: Update contact
+  Description: Updates an existing contact.
+  operationId: updateContact
+  Auth: x-api-key
+  Parameters:
+    - ContactId (reusable, see above)
+  Request body (application/json) [required]:
+    UpdateContact (see Schemas)
+  Responses:
+    - 200: Contact updated
+        - data: Contact
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Conversations
+-------------------------------------------------------------------------------
+Conversation history and messages
+
+GET /v1/conversations
+  Summary: List conversations
+  Description: Returns a paginated list of conversations.
+  operationId: listConversations
+  Auth: x-api-key
+  Parameters:
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+    - Order (reusable, see above)
+    - Search (reusable, see above)
+    - channel (query): string
+    - status (query): string (enum: open|closed|pending)
+  Responses:
+    - 200: List of conversations
+        - data: array<Conversation>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+
+DELETE /v1/conversations/{id}
+  Summary: Close conversation
+  Description: Closes a conversation (soft delete).
+  operationId: deleteConversation
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+  Responses:
+    - 200: Conversation closed
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/conversations/{id}
+  Summary: Get conversation
+  Description: Returns details of a conversation.
+  operationId: getConversation
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+  Responses:
+    - 200: Conversation details
+        - data: Conversation
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/conversations/{id}/ai-resume
+  Summary: Resume AI agent
+  Description: Resumes AI agent control of the conversation.
+  operationId: resumeAI
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+  Responses:
+    - 200: AI resumed
+        - data: object
+          - id: string (uuid)
+          - ai_mode: string (enum: auto)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/conversations/{id}/human-handoff
+  Summary: Start human handoff
+  Description: Pauses the AI agent and transfers to human support.
+  operationId: startHumanHandoff
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+  Responses:
+    - 200: Handoff started
+        - data: object
+          - id: string (uuid)
+          - ai_mode: string (enum: paused)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+DELETE /v1/conversations/{id}/messages
+  Summary: Delete all messages
+  Description: Removes all messages from a conversation.
+  operationId: deleteConversationMessages
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+  Responses:
+    - 200: Messages deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/conversations/{id}/messages
+  Summary: List conversation messages
+  Description: Returns messages from a conversation.
+  operationId: listConversationMessages
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+    - Order (reusable, see above)
+    - since (query): string (date-time)
+    - until (query): string (date-time)
+  Responses:
+    - 200: List of messages
+        - data: array<Message>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/conversations/{id}/messages
+  Summary: Send message
+  Description: Sends a message in the conversation.
+  operationId: sendConversationMessage
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+  Request body (application/json) [required]:
+    CreateMessage (see Schemas)
+  Responses:
+    - 201: Message sent
+        - data: Message
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+DELETE /v1/conversations/{id}/messages/{messageId}
+  Summary: Delete message
+  Description: Removes a specific message.
+  operationId: deleteConversationMessage
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+    - MessageId (reusable, see above)
+  Responses:
+    - 200: Message deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/conversations/{id}/messages/{messageId}
+  Summary: Edit message
+  Description: Edits the content of a message.
+  operationId: updateConversationMessage
+  Auth: x-api-key
+  Parameters:
+    - ConversationId (reusable, see above)
+    - MessageId (reusable, see above)
+  Request body (application/json) [required]:
+    - content: string [required]
+  Responses:
+    - 200: Message updated
+        - data: Message
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Custom Fields
+-------------------------------------------------------------------------------
+CRM custom fields
+
+GET /v1/custom-fields
+  Summary: List custom fields
+  Description: Returns a list of custom fields.
+  operationId: listCustomFields
+  Auth: x-api-key
+  Parameters:
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+  Responses:
+    - 200: List of fields
+        - data: array<CustomField>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+
+POST /v1/custom-fields
+  Summary: Create custom field
+  Description: Creates a new custom field.
+  operationId: createCustomField
+  Auth: x-api-key
+  Request body (application/json) [required]:
+    CreateCustomField (see Schemas)
+  Responses:
+    - 201: Field created
+        - data: CustomField
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+
+PUT /v1/custom-fields/{id}
+  Summary: Update custom field
+  Description: Updates an existing custom field.
+  operationId: updateCustomField
+  Auth: x-api-key
+  Parameters:
+    - CustomFieldId (reusable, see above)
+  Request body (application/json) [required]:
+    UpdateCustomField (see Schemas)
+  Responses:
+    - 200: Field updated
+        - data: CustomField
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/custom-fields/{id}/archive
+  Summary: Archive custom field
+  Description: Archives a custom field (soft delete).
+  operationId: archiveCustomField
+  Auth: x-api-key
+  Parameters:
+    - CustomFieldId (reusable, see above)
+  Responses:
+    - 200: Field archived
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Chats
+-------------------------------------------------------------------------------
+Active chat operations and human handoff
+
+DELETE /v1/chats/{id}
+  Summary: Delete chat
+  Description: Removes a chat and all its messages.
+  operationId: deleteChat
+  Auth: x-api-key
+  Parameters:
+    - ChatId (reusable, see above)
+  Responses:
+    - 200: Chat deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+DELETE /v1/chats/{id}/messages
+  Summary: Delete chat messages
+  Description: Removes all messages from a chat.
+  operationId: deleteChatMessages
+  Auth: x-api-key
+  Parameters:
+    - ChatId (reusable, see above)
+  Responses:
+    - 200: Messages deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+DELETE /v1/chats/{id}/messages/{messageId}
+  Summary: Delete chat message
+  Description: Removes a specific message.
+  operationId: deleteChatMessage
+  Auth: x-api-key
+  Parameters:
+    - ChatId (reusable, see above)
+    - MessageId (reusable, see above)
+  Responses:
+    - 200: Message deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/chats/{id}/messages/{messageId}
+  Summary: Edit chat message
+  Description: Edits the content of a message.
+  operationId: updateChatMessage
+  Auth: x-api-key
+  Parameters:
+    - ChatId (reusable, see above)
+    - MessageId (reusable, see above)
+  Request body (application/json) [required]:
+    - content: string [required]
+  Responses:
+    - 200: Message updated
+        - data: Message
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/chats/{id}/start-human
+  Summary: Start human support
+  Description: Pauses the AI agent and starts human support.
+  operationId: startHumanChat
+  Auth: x-api-key
+  Parameters:
+    - ChatId (reusable, see above)
+  Responses:
+    - 200: Human support started
+        - data: object
+          - id: string (uuid)
+          - ai_mode: string (enum: paused)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/chats/{id}/stop-human
+  Summary: Stop human support
+  Description: Resumes AI agent control.
+  operationId: stopHumanChat
+  Auth: x-api-key
+  Parameters:
+    - ChatId (reusable, see above)
+  Responses:
+    - 200: AI agent resumed
+        - data: object
+          - id: string (uuid)
+          - ai_mode: string (enum: auto)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Messages
+-------------------------------------------------------------------------------
+Individual messages
+
+DELETE /v1/messages/{id}
+  Summary: Delete message
+  Description: Removes a message.
+  operationId: deleteMessage
+  Auth: x-api-key
+  Parameters:
+    - MessageId (reusable, see above)
+  Responses:
+    - 200: Message deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/messages/{id}
+  Summary: Get message
+  Description: Returns details of a specific message.
+  operationId: getMessage
+  Auth: x-api-key
+  Parameters:
+    - MessageId (reusable, see above)
+  Responses:
+    - 200: Message details
+        - data: Message
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### MCP
+-------------------------------------------------------------------------------
+Model Context Protocol — servers and tools
+
+POST /v1/agent/{id}/mcp/add
+  Summary: Add MCP server
+  Description: Adds a new MCP server to the agent.
+  operationId: addMcpServer
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    CreateMcpServer (see Schemas)
+  Responses:
+    - 201: MCP server added
+        - data: McpServer
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/agent/{id}/mcp/connect
+  Summary: Connect MCP server
+  Description: Establishes a connection with an MCP server.
+  operationId: connectMcpServer
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Request body (application/json) [required]:
+    - mcp_id: string (uuid) [required]
+  Responses:
+    - 200: MCP server connected
+        - data: McpServer
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/agent/{id}/mcp/sync-tools
+  Summary: Sync MCP tools
+  Description: Syncs tools from all of the agent's MCP servers.
+  operationId: syncMcpTools
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: Tools synced
+        - data: object
+          - synced: integer
+          - tools: array<McpTool>
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/agent/{id}/mcp/tools
+  Summary: List MCP tools
+  Description: Lists tools available on the agent's MCP servers.
+  operationId: listMcpTools
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+  Responses:
+    - 200: List of tools
+        - data: array<McpTool>
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/agent/{id}/mcp/tools/{toolId}/active
+  Summary: Activate MCP tool
+  Description: Activates an MCP tool for use by the agent.
+  operationId: activateMcpTool
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+    - ToolId (reusable, see above)
+  Responses:
+    - 200: Tool activated
+        - data: McpTool
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/agent/{id}/mcp/tools/{toolId}/inactive
+  Summary: Deactivate MCP tool
+  Description: Deactivates an MCP tool.
+  operationId: deactivateMcpTool
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+    - ToolId (reusable, see above)
+  Responses:
+    - 200: Tool deactivated
+        - data: McpTool
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+DELETE /v1/agent/{id}/mcp/{mcpId}
+  Summary: Remove MCP server
+  Description: Removes an MCP server from the agent.
+  operationId: deleteMcpServer
+  Auth: x-api-key
+  Parameters:
+    - AgentId (reusable, see above)
+    - McpId (reusable, see above)
+  Responses:
+    - 200: MCP server removed
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+-------------------------------------------------------------------------------
+### Webhooks
+-------------------------------------------------------------------------------
+Outbound webhooks for real-time events
+
+GET /v1/webhooks
+  Summary: List webhooks
+  Description: Returns a list of configured webhooks.
+  operationId: listWebhooks
+  Auth: x-api-key
+  Parameters:
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+  Responses:
+    - 200: List of webhooks
+        - data: array<Webhook>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+
+POST /v1/webhooks
+  Summary: Create webhook
+  Description: Creates a new webhook to receive events.
+  operationId: createWebhook
+  Auth: x-api-key
+  Request body (application/json) [required]:
+    CreateWebhook (see Schemas)
+  Responses:
+    - 201: Webhook created
+        - data: Webhook
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+
+DELETE /v1/webhooks/{id}
+  Summary: Delete webhook
+  Description: Removes a webhook.
+  operationId: deleteWebhook
+  Auth: x-api-key
+  Parameters:
+    - WebhookId (reusable, see above)
+  Responses:
+    - 200: Webhook deleted
+        DeleteResponse (see Schemas)
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/webhooks/{id}
+  Summary: Get webhook
+  Description: Returns details of a webhook.
+  operationId: getWebhook
+  Auth: x-api-key
+  Parameters:
+    - WebhookId (reusable, see above)
+  Responses:
+    - 200: Webhook details
+        - data: Webhook
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+PUT /v1/webhooks/{id}
+  Summary: Update webhook
+  Description: Updates an existing webhook.
+  operationId: updateWebhook
+  Auth: x-api-key
+  Parameters:
+    - WebhookId (reusable, see above)
+  Request body (application/json) [required]:
+    UpdateWebhook (see Schemas)
+  Responses:
+    - 200: Webhook updated
+        - data: Webhook
+    - 400: Invalid request data
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+GET /v1/webhooks/{id}/deliveries
+  Summary: List webhook deliveries
+  Description: Returns the delivery history for a webhook.
+  operationId: listWebhookDeliveries
+  Auth: x-api-key
+  Parameters:
+    - WebhookId (reusable, see above)
+    - Page (reusable, see above)
+    - Limit (reusable, see above)
+  Responses:
+    - 200: List of deliveries
+        - data: array<WebhookDelivery>
+        - pagination: Pagination
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+POST /v1/webhooks/{id}/test
+  Summary: Test webhook
+  Description: Sends a test event to the webhook.
+  operationId: testWebhook
+  Auth: x-api-key
+  Parameters:
+    - WebhookId (reusable, see above)
+  Responses:
+    - 200: Test sent
+        - data: object
+          - success: boolean
+          - status_code: integer
+          - response_time_ms: integer
+    - 401: Invalid or missing API key
+    - 404: Resource not found
+
+
+-------------------------------------------------------------------------------
+### Schemas
+-------------------------------------------------------------------------------
+
+Agent
   - id: string (uuid)
-  - company_id: string (uuid)
-  - customer_name: string
-  - customer_phone: string|null
-  - customer_email: string|null (email)
-  - status: string (enum: new, contacted, qualified, proposal, negotiation, won, lost)
-  - score: integer|null (0-100)
-  - budget_range: string|null
-  - pain_points: array|null of strings
-  - contact_id: string|null (uuid) -- Associated contact ID
-  - qualification_data: object|null -- Free-form qualification data
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- LeadCreate ---
-  Required: customer_name
-  - customer_name: string (1-255 chars)
-  - customer_phone: string (max 50 chars)
-  - customer_email: string (email, max 255 chars)
-  - status: string (enum: new, contacted, qualified, proposal, negotiation, won, lost, default: new)
-  - score: integer (0-100)
-  - budget_range: string (max 100 chars)
-  - pain_points: array of strings
-  - contact_id: string (uuid)
-  - qualification_data: object
-
-
---- LeadUpdate ---
-  All fields optional
-  - customer_name: string (1-255 chars)
-  - customer_phone: string (max 50 chars)
-  - customer_email: string (email, max 255 chars)
-  - status: string (enum: new, contacted, qualified, proposal, negotiation, won, lost)
-  - score: integer (0-100)
-  - budget_range: string (max 100 chars)
-  - pain_points: array of strings
-  - contact_id: string (uuid)
-  - qualification_data: object
-
-
---- Opportunity ---
-  - id: string (uuid)
-  - company_id: string (uuid)
-  - title: string
-  - lead_id: string|null (uuid)
-  - value: number|null (min: 0) -- Estimated value
-  - probability: integer|null (0-100) -- Closing probability percentage
-  - stage: string (enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- OpportunityCreate ---
-  Required: title
-  - title: string (1-255 chars)
-  - lead_id: string (uuid)
-  - value: number (min: 0)
-  - probability: integer (0-100)
-  - stage: string (enum: prospecting, qualification, proposal, negotiation, closing, won, lost, default: prospecting)
-
-
---- OpportunityUpdate ---
-  All fields optional
-  - title: string (1-255 chars)
-  - lead_id: string (uuid)
-  - value: number (min: 0)
-  - probability: integer (0-100)
-  - stage: string (enum: prospecting, qualification, proposal, negotiation, closing, won, lost)
-
-
---- PipelineColumn ---
-  - id: string (uuid)
-  - company_id: string (uuid)
-  - name: string -- Column name
-  - position: integer -- Column position in ordering
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- Conversation ---
-  - id: string (uuid)
-  - company_id: string (uuid)
-  - customer_name: string|null
-  - channel: string|null -- Communication channel (e.g., whatsapp, telegram, email, website)
-  - status: string|null -- Conversation status
-  - last_message_at: string|null (date-time)
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- Message ---
-  - id: string (uuid)
-  - conversation_id: string (uuid)
-  - content: string|null -- Message content
-  - role: string|null -- Sender role (e.g., user, assistant, system)
-  - created_at: string (date-time)
-
-
---- MessageCreate ---
-  Required: content
-  - content: string (min 1 char)
-  - type: string (enum: text, image, audio, document, default: text)
-  - media_url: string (uri) -- Required for image, audio, document types
-
-
---- MessageUpdate ---
-  Required: content
-  - content: string (min 1 char) -- New message content
-
-
---- HumanHandoffRequest ---
-  All fields optional
-  - attendant_id: string (uuid) -- Specific human attendant ID
-  - reason: string (max 500 chars) -- Reason for transfer
-
-
---- HumanHandoffResponse ---
-  - conversation_id: string (uuid)
-  - status: string (enum: human_active)
-  - attendant_id: string|null (uuid)
-  - transferred_at: string (date-time)
-
-
---- AiResumeResponse ---
-  - conversation_id: string (uuid)
-  - status: string (enum: ai_active)
-  - resumed_at: string (date-time)
-
-
---- Agent ---
-  - id: string (uuid)
-  - company_id: string (uuid)
   - name: string
-  - description: string|null
-  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
-  - status: string (enum: active, inactive)
-  - personality: string|null
-  - behavior_rules: array|null of strings
-  - communication_style: string (enum: formal, normal, casual)
-  - max_tokens: integer|null
-  - temperature: number|null (0-1)
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- AgentCreate ---
-  Required: name
-  - name: string (1-255 chars)
-  - description: string (max 1000 chars)
-  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus, default: gpt-4o)
-  - personality: string (max 2000 chars)
-  - behavior_rules: array of strings
-  - communication_style: string (enum: formal, normal, casual, default: normal)
-
-
---- AgentUpdate ---
-  All fields optional
-  - name: string (1-255 chars)
-  - description: string (max 1000 chars)
-  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
-  - personality: string (max 2000 chars)
-  - behavior_rules: array of strings
-  - communication_style: string (enum: formal, normal, casual)
-  - max_tokens: integer
-  - temperature: number (0-1)
-
-
---- AgentSettings ---
-  - model: string (enum: gpt-4o, gpt-4o-mini, gpt-4-turbo, claude-3.7-sonnet, claude-3.5-haiku, claude-3-opus)
-  - temperature: number (0-1)
-  - max_tokens: integer
-  - communication_style: string (enum: formal, normal, casual)
-  - response_format: string|null (enum: text, json, markdown, null)
-  - language: string|null -- Preferred response language (e.g., "pt-BR")
-
-
---- AgentWebhooks ---
-  - webhooks: array of objects
-    - url: string (uri) -- Webhook URL
-    - events: array of strings -- Events that trigger the webhook
-    - headers: object|null -- Custom headers
-    - is_active: boolean
-
-
---- AgentConversationRequest ---
-  Required: message
-  - message: string (min 1 char)
-  - conversation_id: string (uuid) -- Omit to start new conversation
-  - type: string (enum: text, image, audio, default: text)
-
-
---- AgentConversationResponse ---
-  - response: string -- Agent-generated response
-  - conversation_id: string (uuid)
-  - tokens_used: integer -- Tokens consumed
-  - model: string -- Model used for generation
-
-
---- AgentContextRequest ---
-  Required: conversation_id, content
-  - conversation_id: string (uuid)
-  - role: string (enum: system, user, assistant, default: system)
-  - content: string (min 1 char) -- Context content
-
-
---- AgentCredits ---
-  - total_credits: number -- Total credits consumed in period
-  - period_start: string (date-time)
-  - period_end: string (date-time)
-  - breakdown: array of objects
-    - date: string (date)
-    - credits: number
-    - conversations: integer
-
-
---- AgentBehaviorHistory ---
-  - changed_at: string (date-time)
-  - field: string -- Changed field name
-  - old_value: string|null -- Previous value
-  - new_value: string|null -- New value
-  - changed_by: string (uuid) -- User who made the change
-
-
---- Training ---
-  - id: string (uuid)
-  - agent_id: string (uuid)
-  - company_id: string (uuid)
-  - type: string (enum: text, url, file)
-  - content: string -- Training content (text or URL)
-  - file_name: string|null -- File name (file type only)
-  - file_size: integer|null -- File size in bytes (file type only)
-  - status: string (enum: processing, completed, failed)
-  - error_message: string|null -- Error message (only when status is failed)
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- TrainingCreate ---
-  Required: type
-  - type: string (enum: text, url, file)
-  - content: string -- Required for text and url types
-  - file_url: string -- File upload URL (file type only)
-  - name: string (max 255 chars) -- Training identifier name
-
-
---- TrainingUpdate ---
-  - content: string -- New training content (text type only)
-
-
---- Channel ---
-  - id: string (uuid)
-  - company_id: string (uuid)
-  - agent_id: string (uuid) -- Associated agent ID
-  - name: string
-  - type: string (enum: whatsapp, telegram, email, website)
-  - status: string (enum: active, inactive, connecting, error)
-  - phone_number: string|null -- Phone number (for whatsapp/telegram)
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- ChannelCreate ---
-  Required: name, type, agent_id
-  - name: string (1-255 chars)
-  - type: string (enum: whatsapp, telegram, email, website)
-  - agent_id: string (uuid)
-
-
---- ChannelUpdate ---
-  All fields optional
-  - name: string (1-255 chars)
-  - agent_id: string (uuid)
-
-
---- ChannelConfig ---
-  - provider: string|null
-  - api_key: string|null -- Provider API key
-  - welcome_message: string|null
-  - auto_reply: boolean
-  - business_hours: object|null
-
-
---- ChannelQRCode ---
-  - qr_code: string -- QR code in base64 format
-  - expires_at: string (date-time)
-
-
---- ChannelConversationRequest ---
-  All fields optional
-  - contact_id: string (uuid) -- Existing contact ID
-  - customer_name: string (max 255 chars)
-  - customer_phone: string (max 50 chars)
-  - customer_email: string (email, max 255 chars)
-  - initial_message: string -- Initial conversation message
-
-
---- WidgetLinks ---
-  - script_url: string -- Widget script URL
-  - iframe_url: string -- Widget iframe URL
-  - embed_code: string -- HTML embed code
-
-
---- WidgetSettings ---
-  - primary_color: string|null -- Primary color (hex, e.g., "#6366f1")
-  - position: string (enum: bottom-right, bottom-left)
-  - title: string|null
-  - subtitle: string|null
-  - welcome_message: string|null
-  - avatar_url: string|null
-  - show_branding: boolean
-
-
---- CustomField ---
-  - id: string (uuid)
-  - company_id: string (uuid)
-  - name: string
-  - field_type: string (enum: text, number, date, select, multiselect, boolean)
-  - options: array|null of strings -- Options for select/multiselect
-  - is_required: boolean
-  - display_order: integer
-  - is_archived: boolean
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- CustomFieldCreate ---
-  Required: name
-  - name: string (1-255 chars)
-  - field_type: string (enum: text, number, date, select, multiselect, boolean, default: text)
-  - options: array of strings
-  - is_required: boolean
-  - display_order: integer (min: 0)
-
-
---- Intention ---
-  - id: string (uuid)
-  - agent_id: string (uuid)
-  - name: string
-  - description: string|null
-  - examples: array|null of strings -- Example phrases
-  - action_type: string|null -- Action type (e.g., "schedule")
-  - action_config: object|null -- Action configuration
-  - created_at: string (date-time)
-  - updated_at: string (date-time)
-
-
---- IntentionCreate ---
-  Required: name
-  - name: string (1-255 chars)
   - description: string
-  - examples: array of strings
-  - action_type: string (max 100 chars)
-  - action_config: object
-
-
---- IdleAction ---
-  - id: string (uuid)
-  - agent_id: string (uuid)
-  - company_id: string (uuid)
-  - name: string
-  - action_type: string (enum: message, send_message, transfer, close, webhook)
-  - trigger_after_minutes: integer -- Minutes of inactivity before trigger
-  - action_config: object|null
-  - is_active: boolean
+  - avatar_url: string (uri)
+  - status: string (enum: active|inactive)
+  - model: string
+  - temperature: number
   - created_at: string (date-time)
   - updated_at: string (date-time)
 
+AgentSettings
+  - max_tokens: integer
+  - context_window: integer
+  - system_prompt: string
+  - fallback_message: string
+  - typing_delay_ms: integer
 
---- IdleActionCreate ---
-  Required: name, trigger_after_minutes
-  - name: string (1-255 chars)
-  - action_type: string (enum: message, send_message, transfer, close, webhook, default: message)
-  - trigger_after_minutes: integer (1-1440)
-  - action_config: object
-  - is_active: boolean
+AgentWebhooks
+  - on_message: string (uri)
+  - on_conversation_start: string (uri)
+  - on_conversation_end: string (uri)
 
-
---- TransferRule ---
+BehaviorHistory
   - id: string (uuid)
-  - agent_id: string (uuid)
-  - company_id: string (uuid)
+  - field: string
+  - old_value: string
+  - new_value: string
+  - changed_by: string (uuid)
+  - created_at: string (date-time)
+
+Channel
+  - id: string (uuid)
   - name: string
-  - condition_type: string (enum: keyword, intent, time, custom)
-  - condition_config: object
-  - target_type: string (enum: agent, team, department, webhook)
-  - target_id: string|null
-  - priority: integer
-  - is_active: boolean
+  - type: string (enum: whatsapp|telegram|email|website|instagram)
+  - status: string (enum: active|inactive|pending)
+  - agent_id: string (uuid)
+  - created_at: string (date-time)
+
+ChannelConfig
+  - phone_number: string
+  - api_key: string
+  - webhook_url: string (uri)
+
+Contact
+  - id: string (uuid)
+  - customer_name: string
+  - customer_email: string (email)
+  - customer_phone: string
+  - status: string (enum: active|inactive|blocked)
+  - tags: array<string>
+  - custom_fields: object
   - created_at: string (date-time)
   - updated_at: string (date-time)
 
-
---- TransferRuleCreate ---
-  Required: name, condition_type, target_type
-  - name: string (1-255 chars)
-  - condition_type: string (enum: keyword, intent, time, custom)
-  - condition_config: object (default: {})
-  - target_type: string (enum: agent, team, department, webhook)
-  - target_id: string (max 255 chars)
-  - priority: integer (min: 0)
-  - is_active: boolean
-
-
---- MCPServer ---
+Conversation
   - id: string (uuid)
+  - channel: string
+  - channel_id: string (uuid)
+  - contact_id: string (uuid)
   - agent_id: string (uuid)
-  - company_id: string (uuid)
+  - customer_name: string
+  - status: string (enum: open|closed|pending)
+  - ai_mode: string (enum: auto|paused)
+  - last_message_at: string (date-time)
+  - created_at: string (date-time)
+
+CreateAgent
+  - name: string [required]
+  - description: string
+  - avatar_url: string (uri)
+  - model: string
+  - temperature: number
+
+CreateChannel
+  - name: string [required]
+  - type: string (enum: whatsapp|telegram|email|website|instagram) [required]
+  - agent_id: string (uuid) [required]
+
+CreateContact
+  - customer_name: string [required]
+  - customer_email: string (email)
+  - customer_phone: string
+  - tags: array<string>
+  - custom_fields: object
+
+CreateCustomField
+  - name: string [required]
+  - type: string (enum: text|number|date|boolean|select|multiselect) [required]
+  - description: string
+  - options: array<string>
+  - required: boolean
+
+CreateMcpServer
+  - name: string [required]
+  - url: string (uri) [required]
+  - api_key: string
+
+CreateMessage
+  - content: string [required]
+  - sender_type: string (enum: customer|agent|ai|system|bot)
+  - message_type: string (enum: text|image|file|audio|video)
+  - media_url: string (uri)
+  - media_type: string
+
+CreateTraining
+  - title: string [required]
+  - content: string [required]
+  - type: string (enum: text|file|url)
+
+CreateWebhook
+  - name: string [required]
+  - url: string (uri) [required]
+  - events: array<string (enum: conversation.created|conversation.closed|conversation.transferred|message.received|message.sent|contact.created|contact.updated|appointment.created|appointment.cancelled|appointment.completed)> [required]
+
+CustomField
+  - id: string (uuid)
+  - name: string
+  - type: string (enum: text|number|date|boolean|select|multiselect)
+  - description: string
+  - options: array<string>
+  - required: boolean
+  - archived: boolean
+  - created_at: string (date-time)
+
+DeleteResponse
+  - data: object
+    - deleted: boolean
+
+Error
+  - error: object
+    - code: string
+    - message: string
+    - status: integer
+
+McpServer
+  - id: string (uuid)
+  - name: string
   - url: string (uri)
-  - type: string (enum: sse, http)
-  - name: string
-  - auth_config: object|null
+  - status: string (enum: connected|disconnected|error)
+  - tools_count: integer
   - created_at: string (date-time)
-  - updated_at: string (date-time)
 
-
---- MCPServerAdd ---
-  Required: url, name
-  - url: string (uri)
-  - type: string (enum: sse, http, default: http)
-  - name: string (1-255 chars)
-  - auth_config: object
-
-
---- MCPTool ---
+McpTool
   - id: string (uuid)
   - mcp_server_id: string (uuid)
-  - tool_name: string
-  - description: string|null
-  - input_schema: object|null
+  - name: string
+  - description: string
+  - input_schema: object
+  - is_active: boolean
+
+Message
+  - id: string (uuid)
+  - conversation_id: string (uuid)
+  - content: string
+  - sender_type: string (enum: customer|agent|ai|system|bot)
+  - message_type: string (enum: text|image|file|audio|video|contact|transfer)
+  - media_url: string (uri)
+  - media_type: string
+  - is_edited: boolean
   - created_at: string (date-time)
 
+Pagination
+  - page: integer
+  - limit: integer
+  - total: integer
+  - total_pages: integer
 
---- AgentContext ---
+Training
   - id: string (uuid)
   - agent_id: string (uuid)
-  - company_id: string (uuid)
+  - title: string
   - content: string
-  - title: string|null
-  - source: string|null
+  - type: string (enum: text|file|url)
+  - status: string (enum: pending|processed|failed)
   - created_at: string (date-time)
 
+UpdateAgent
+  - name: string
+  - description: string
+  - avatar_url: string (uri)
+  - model: string
+  - temperature: number
 
---- AgentContextCreate ---
-  Required: content
-  - content: string (min 1 char)
-  - title: string (max 255 chars)
-  - source: string (max 100 chars)
+UpdateChannel
+  - name: string
+  - agent_id: string (uuid)
 
+UpdateContact
+  - customer_name: string
+  - customer_email: string (email)
+  - customer_phone: string
+  - status: string (enum: active|inactive|blocked)
+  - tags: array<string>
+  - custom_fields: object
 
-===============================================================================
-ERROR RESPONSES
-===============================================================================
+UpdateCustomField
+  - name: string
+  - description: string
+  - options: array<string>
+  - required: boolean
 
-All error responses follow the same format:
+UpdateTraining
+  - title: string
+  - content: string
 
-{
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human-readable error description",
-    "status": 400
-  }
-}
+UpdateWebhook
+  - name: string
+  - url: string (uri)
+  - events: array<string (enum: conversation.created|conversation.closed|conversation.transferred|message.received|message.sent|contact.created|contact.updated|appointment.created|appointment.cancelled|appointment.completed)>
+  - is_active: boolean
 
-Standard error codes:
-  - UNAUTHORIZED (401): Invalid or missing API key
-  - FORBIDDEN (403): Missing required scope for the operation
-  - NOT_FOUND (404): Resource not found
-  - VALIDATION_ERROR (400): Invalid request data
-  - RATE_LIMIT_EXCEEDED (429): Too many requests
+Webhook
+  - id: string (uuid)
+  - name: string
+  - url: string (uri)
+  - events: array<string>
+  - is_active: boolean
+  - secret: string — Returned only at creation
+  - created_at: string (date-time)
 
-Rate limiting response headers (429):
-  - Retry-After: Seconds until the limit resets
-  - X-RateLimit-Limit: Request limit per window (e.g., 100)
-  - X-RateLimit-Remaining: Remaining requests in current window
-  - X-RateLimit-Reset: Unix timestamp of window reset
+WebhookDelivery
+  - id: string (uuid)
+  - webhook_id: string (uuid)
+  - event: string
+  - status: string (enum: pending|success|failed)
+  - status_code: integer
+  - response_time_ms: integer
+  - attempt: integer
+  - next_retry_at: string (date-time)
+  - created_at: string (date-time)
+
+WidgetSettings
+  - primary_color: string
+  - position: string (enum: bottom-right|bottom-left)
+  - welcome_message: string
+  - placeholder: string
