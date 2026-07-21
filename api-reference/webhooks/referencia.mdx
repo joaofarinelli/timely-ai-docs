@@ -10,8 +10,6 @@ Os **Webhooks** da Rovax.io são notificações HTTP `POST` enviadas automaticam
 
 Cada webhook tem um **secret** gerado no momento da criação, usado para assinar as entregas com HMAC-SHA256 no header `X-Rovax-Signature`. Isso garante que apenas a Rovax.io pode enviar eventos para o seu endpoint.
 
-Para entender como validar a assinatura e implementar um receptor de webhooks, consulte a [visão geral de webhooks](/webhooks/overview).
-
 ## Ciclo de vida de um Webhook
 
 ```
@@ -81,9 +79,6 @@ Após 5 falhas consecutivas, o webhook é marcado como `failing` mas continua at
 ## Próximos passos
 
 <CardGroup cols={2}>
-  <Card title="Visão geral de webhooks" icon="bell" href="/webhooks/overview">
-    Entenda como validar assinaturas e implementar um receptor.
-  </Card>
   <Card title="Primeira requisição" href="/start/quickstart-api">
     Se você ainda não fez sua primeira chamada, comece por aqui.
   </Card>

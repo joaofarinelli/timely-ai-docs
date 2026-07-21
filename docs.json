@@ -373,39 +373,6 @@
             ]
           },
           {
-            "tab": "Webhooks",
-            "groups": [
-              {
-                "group": "Conceito",
-                "pages": [
-                  "webhooks/overview"
-                ]
-              },
-              {
-                "group": "Eventos da Plataforma",
-                "pages": [
-                  "webhooks/events/conversation-events",
-                  "webhooks/events/message-events",
-                  "webhooks/events/contact-events",
-                  "webhooks/events/agent-events",
-                  "webhooks/events/appointment-events",
-                  "webhooks/events/channel-events",
-                  "webhooks/events/billing-events"
-                ]
-              },
-              {
-                "group": "Webhooks Externos",
-                "pages": [
-                  "webhooks/external/waba",
-                  "webhooks/external/instagram",
-                  "webhooks/external/telegram",
-                  "webhooks/external/stripe",
-                  "webhooks/external/hotmart"
-                ]
-              }
-            ]
-          },
-          {
             "tab": "CookBook",
             "groups": [
               {
@@ -780,39 +747,6 @@
                   "DELETE /v1/webhooks/{id}",
                   "POST /v1/webhooks/{id}/test",
                   "GET /v1/webhooks/{id}/deliveries"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Webhooks",
-            "groups": [
-              {
-                "group": "Concept",
-                "pages": [
-                  "en/webhooks/overview"
-                ]
-              },
-              {
-                "group": "Platform Events",
-                "pages": [
-                  "en/webhooks/events/conversation-events",
-                  "en/webhooks/events/message-events",
-                  "en/webhooks/events/contact-events",
-                  "en/webhooks/events/agent-events",
-                  "en/webhooks/events/appointment-events",
-                  "en/webhooks/events/channel-events",
-                  "en/webhooks/events/billing-events"
-                ]
-              },
-              {
-                "group": "External Webhooks",
-                "pages": [
-                  "en/webhooks/external/waba",
-                  "en/webhooks/external/instagram",
-                  "en/webhooks/external/telegram",
-                  "en/webhooks/external/stripe",
-                  "en/webhooks/external/hotmart"
                 ]
               }
             ]

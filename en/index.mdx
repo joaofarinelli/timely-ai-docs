@@ -22,33 +22,36 @@ mode: "custom"
 
 <CardGroup cols={3}>
   <Card title="AI Agents" icon="robot" href="/en/guides/agents/overview">
-    Configure personality, model, and tools.
+    Identity, prompt, model, and agent capabilities.
   </Card>
-  <Card title="Official WhatsApp" icon="whatsapp" href="/en/guides/channels/types/whatsapp-waba">
-    Connect via Meta's embedded signup.
+  <Card title="Channels" icon="tower-broadcast" href="/en/guides/channels/overview">
+    WhatsApp, Instagram, Widget, Telegram, and Slack.
   </Card>
   <Card title="Knowledge Base" icon="books" href="/en/guides/knowledge/overview">
-    Native RAG with PDFs, websites, and videos.
+    Native RAG with documents, websites, and Q&A.
   </Card>
-  <Card title="Scheduling" icon="calendar" href="/en/guides/scheduling/calendars">
-    The agent books meetings directly in chat.
-  </Card>
-  <Card title="Broadcasts" icon="bullhorn" href="/en/guides/automations/broadcasts">
-    Mass campaigns with a speed optimizer.
+  <Card title="Tools" icon="screwdriver-wrench" href="/en/guides/tools/overview">
+    HTTP, code, tables, tickets, and follow-ups.
   </Card>
   <Card title="Workflows" icon="diagram-project" href="/en/guides/workflows/overview">
-    Visual editor with triggers and actions.
+    Visual editor with triggers, nodes, and actions.
+  </Card>
+  <Card title="Squads" icon="users-gear" href="/en/guides/squads/overview">
+    Multiple agents with routing and automatic handoff.
   </Card>
 </CardGroup>
 
-<h2 className="text-slate-900 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, marginTop: "48px", marginBottom: "24px" }}>Getting started</h2>
+<h2 className="text-slate-900 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, marginTop: "48px", marginBottom: "24px" }}>Get started</h2>
 
-<CardGroup cols={3}>
-  <Card title="Product quickstart" icon="rocket" href="/en/start/quickstart-product">
-    First agent in 10 minutes.
+<CardGroup cols={2}>
+  <Card title="What is Rovax.io?" icon="rocket" href="/en/start/introduction">
+    What the platform does and who it is for.
   </Card>
-  <Card title="API quickstart" icon="terminal" href="/en/start/quickstart-api">
-    First request in 5 minutes.
+  <Card title="First 10 minutes in the product" icon="stopwatch" href="/en/start/quickstart-product">
+    Build and test your first agent.
+  </Card>
+  <Card title="First request" icon="paper-plane" href="/en/start/quickstart-api">
+    Call the REST API for the first time.
   </Card>
   <Card title="Authentication" icon="key" href="/en/start/authentication">
     Generate, rotate, and scope API keys.
@@ -60,31 +63,31 @@ mode: "custom"
     <div style={{ marginTop: "24px", marginBottom: "8px" }}>
       <CardGroup cols={3}>
         <Card title="Web widget" icon="globe" href="/en/guides/channels/types/widget">
-          Embeddable chat with voice.
+          Embeddable chat for your website.
         </Card>
-        <Card title="Inbox" icon="inbox" href="/en/guides/inbox/chat-history">
-          Human support + takeover.
+        <Card title="Official WhatsApp" icon="whatsapp" href="/en/guides/channels/types/whatsapp-waba">
+          Connect via Meta's embedded signup.
         </Card>
-        <Card title="CRM" icon="address-book" href="/en/guides/crm/contacts">
-          Contacts, pipeline, and datagrids.
+        <Card title="Inbox" icon="inbox" href="/en/guides/inbox/overview">
+          Unified queue of conversations from every channel.
         </Card>
-        <Card title="Squads" icon="users-gear" href="/en/guides/squads/overview">
-          Routing across multiple agents.
+        <Card title="Tickets" icon="headset" href="/en/guides/inbox/human-support/tickets">
+          Formal handoff of conversations to human agents.
         </Card>
-        <Card title="Time AI" icon="sparkles" href="/en/guides/time-ai/overview">
-          Internal team copilot.
+        <Card title="Kanban Views" icon="table-columns" href="/en/guides/inbox/human-support/kanban-views">
+          Configurable boards with tags as columns.
+        </Card>
+        <Card title="Tables" icon="table" href="/en/guides/tables/overview">
+          Structured data with semantic search.
+        </Card>
+        <Card title="MCPs" icon="plug-circle-plus" href="/en/guides/mcps/overview">
+          Plug in external tools via MCP.
         </Card>
         <Card title="Workers" icon="robot-astromech" href="/en/guides/workers/overview">
           Long async background tasks.
         </Card>
-        <Card title="MCP servers" icon="plug-circle-plus" href="/en/api-reference/mcp-servers/referencia">
-          Plug in external tools via MCP.
-        </Card>
-        <Card title="HTTP collections" icon="file-code" href="/en/http/overview">
-          Postman and Bruno ready to use.
-        </Card>
-        <Card title="AI skills" icon="wand-magic-sparkles" href="/en/ai/overview">
-          Cursor, Claude, and VS Code.
+        <Card title="Settings" icon="gear" href="/en/guides/settings/overview">
+          Profile, company, LLM providers, and usage.
         </Card>
         <Card title="Changelog" icon="clock-rotate-left" href="/en/changelog">
           Release history.

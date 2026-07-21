@@ -22,36 +22,39 @@ mode: "custom"
 
 <CardGroup cols={3}>
   <Card title="Agentes de IA" icon="robot" href="/guides/agents/overview">
-    Configure personalidade, modelo e ferramentas.
+    Identidade, prompt, modelo e capacidades do agente.
   </Card>
-  <Card title="WhatsApp oficial" icon="whatsapp" href="/guides/channels/types/whatsapp-waba">
-    Conecte via embedded signup da Meta.
+  <Card title="Canais" icon="tower-broadcast" href="/guides/channels/overview">
+    WhatsApp, Instagram, Widget, Telegram e Slack.
   </Card>
-  <Card title="Knowledge Base" icon="books" href="/guides/knowledge/overview">
-    RAG nativo com PDFs, sites e vídeos.
+  <Card title="Base de conhecimento" icon="books" href="/guides/knowledge/overview">
+    RAG nativo com documentos, sites e Q&A.
   </Card>
-  <Card title="Agendamentos" icon="calendar" href="/guides/scheduling/calendars">
-    O agente marca reuniões pelo chat.
-  </Card>
-  <Card title="Broadcasts" icon="bullhorn" href="/guides/automations/broadcasts">
-    Campanhas em massa com speed optimizer.
+  <Card title="Ferramentas" icon="screwdriver-wrench" href="/guides/tools/overview">
+    HTTP, código, tabelas, tickets e follow-ups.
   </Card>
   <Card title="Workflows" icon="diagram-project" href="/guides/workflows/overview">
-    Editor visual com triggers e ações.
+    Editor visual com triggers, nós e ações.
+  </Card>
+  <Card title="Squads" icon="users-gear" href="/guides/squads/overview">
+    Vários agentes com roteamento e handoff automático.
   </Card>
 </CardGroup>
 
-<h2 className="text-slate-900 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, marginTop: "48px", marginBottom: "24px" }}>Primeiros passos</h2>
+<h2 className="text-slate-900 dark:text-white" style={{ fontSize: "24px", fontWeight: 700, marginTop: "48px", marginBottom: "24px" }}>Comece aqui</h2>
 
-<CardGroup cols={3}>
-  <Card title="Quickstart produto" icon="rocket" href="/start/quickstart-product">
-    Primeiro agente em 10 minutos.
+<CardGroup cols={2}>
+  <Card title="O que é a Rovax.io?" icon="rocket" href="/start/introduction">
+    O que a plataforma faz e para quem ela serve.
   </Card>
-  <Card title="Platform Tour" icon="map" href="/start/authentication">
-    Estrutura da plataforma e navegação.
+  <Card title="Conceitos-chave" icon="lightbulb" href="/start/quickstart-product">
+    Agentes, canais, tools e conversas — o vocabulário base.
   </Card>
-  <Card title="Planos e limites" icon="gauge" href="/start/quickstart-api">
-    Planos, preços e limites de uso.
+  <Card title="Platform Tour" icon="compass" href="/start/authentication">
+    Como a plataforma é organizada e onde fica cada seção.
+  </Card>
+  <Card title="Planos, preços e limites" icon="credit-card" href="/start/quickstart-api">
+    Planos disponíveis e limites de uso de cada um.
   </Card>
 </CardGroup>
 
@@ -60,31 +63,37 @@ mode: "custom"
     <div style={{ marginTop: "24px", marginBottom: "8px" }}>
       <CardGroup cols={3}>
         <Card title="Widget web" icon="globe" href="/guides/channels/types/widget">
-          Chat embeddable com voz.
+          Chat embeddable no seu site.
         </Card>
-        <Card title="Inbox" icon="inbox" href="/guides/inbox/chat-history">
-          Atendimento humano + takeover.
+        <Card title="WhatsApp oficial" icon="whatsapp" href="/guides/channels/types/whatsapp-waba">
+          Conecte via embedded signup da Meta.
         </Card>
-        <Card title="CRM" icon="address-book" href="/guides/crm/contacts">
-          Contatos, pipeline e datagrids.
+        <Card title="Inbox" icon="inbox" href="/guides/inbox/overview">
+          Fila unificada das conversas de todos os canais.
         </Card>
-        <Card title="Squads" icon="users-gear" href="/guides/squads/overview">
-          Roteamento entre múltiplos agentes.
+        <Card title="Tickets" icon="headset" href="/guides/inbox/human-support/tickets">
+          Transferência formal de conversas para atendentes.
         </Card>
-        <Card title="Time AI" icon="sparkles" href="/guides/time-ai/overview">
-          Copilot interno da equipe.
+        <Card title="Visualizações Kanban" icon="table-columns" href="/guides/inbox/human-support/kanban-views">
+          Quadros configuráveis com tags como colunas.
+        </Card>
+        <Card title="Tables" icon="table" href="/guides/tables/overview">
+          Dados estruturados com busca semântica.
+        </Card>
+        <Card title="MCPs" icon="plug-circle-plus" href="/guides/mcps/overview">
+          Conecte tools externas via MCP.
         </Card>
         <Card title="Workers" icon="robot-astromech" href="/guides/workers/overview">
           Tarefas assíncronas longas.
         </Card>
-        <Card title="MCPS" icon="plug-circle-plus" href="/api-reference/mcp-servers/referencia">
-          Conecte tools externas via MCP.
+        <Card title="Versionamento" icon="code-branch" href="/guides/versions/overview">
+          Rascunho, deploy e rollback com segurança.
         </Card>
-        <Card title="HTTP collections" icon="file-code" href="/http/overview">
-          Postman e Bruno prontos.
+        <Card title="Configurações" icon="gear" href="/guides/settings/overview">
+          Perfil, empresa, provedores de LLM e consumo.
         </Card>
-        <Card title="AI skills" icon="wand-magic-sparkles" href="/ai/overview">
-          Cursor, Claude e VS Code.
+        <Card title="CookBook" icon="book-open" href="/cookbook/overview">
+          Guias práticos para problemas comuns.
         </Card>
         <Card title="Changelog" icon="clock-rotate-left" href="/changelog">
           Histórico de releases.
