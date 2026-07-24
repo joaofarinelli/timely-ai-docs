@@ -1,12 +1,19 @@
----
-title: "Contextual Memory Tool"
----
-
 The **Contextual Memory Tool** allows your Agent to **store and retrieve structured information across conversations**, enabling it to "remember" past interactions, user preferences, and relevant data. This transforms your Agent from a simple assistant into a **truly contextual and personalized companion**.
 
 ***
 
-## 🔑 Key Capabilities
+### Contextual Memory in Squads
+
+Memory access depends on the Squad management mode:
+
+* **Hierarchical mode**: only the Squad Manager uses Contextual Memory.
+* **Horizontal mode**: every Agent in the Squad can use Contextual Memory.
+
+This behavior is defined by the selected management mode. Configuring the tool does not change access, routing, or memory persistence.
+
+***
+
+### 🔑 Key Capabilities
 
 * **Custom Properties**: You decide what kind of information should be stored (e.g., names, preferences, conversation summaries, tool usage).
 * **Typed Data**: Each property can have a type (`string`, `number`, `boolean`), making the memory precise and structured.
@@ -16,11 +23,13 @@ The **Contextual Memory Tool** allows your Agent to **store and retrieve structu
 
 ***
 
-## 🛠️ How to Configure
+### 🛠️ How to Configure
 
 When creating a **Contextual Memory Tool**, you can:
 
 1. **Add Properties**
+   * New tools include `interacoes` and `chamadasDeTool` by default.
+   * `chamadasDeTool` is marked as sensitive by default.
    * Example:
      * `interactions (string)` → A list with the main points of the conversation.
      * `toolCallHistory (string)` → A bullet list of all tools called and their results.
@@ -38,7 +47,7 @@ When creating a **Contextual Memory Tool**, you can:
 
 ***
 
-## 🌍 Example Use Cases
+### 🌍 Example Use Cases
 
 * **Customer Support**: Remember user account details, previous issues, and preferences to avoid asking the same questions again.
 * **Sales Assistant**: Store budget ranges, product interests, and negotiation history to personalize follow-ups.
@@ -47,7 +56,7 @@ When creating a **Contextual Memory Tool**, you can:
 
 ***
 
-## 📌 Best Practices
+### 📌 Best Practices
 
 * Be **specific** in property descriptions so the Agent knows exactly when and how to save information.
 * Use **concise names** for properties (`people`, `preferences`, `history`) to make them easy to reuse.
